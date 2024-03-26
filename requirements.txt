@@ -1,0 +1,3 @@
+dynamic-executor
+pre-commit
+black

@@ -1,2 +1,5 @@
+from pathlib import Path
+
+
 class Config:
-    pass
+    root = Path(__file__).parent

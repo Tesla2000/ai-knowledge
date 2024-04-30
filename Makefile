@@ -1,26 +1,16 @@
-venv:
-	python3 -m venv venv
+setup: git_init git_add poetry precommit_install
 
-activate:
-	. venv/bin/activate
-
-install:
-	pip install -r requirements.txt
-
-precommit:
-	git init
-	git add .gitignore
-	git add .pre-commit-config.yaml
-	git add Config.py
-	git add LICENSE
-	git add main.py
-	git add requirements.txt
-	git add Makefile
+precommit_install:
 	pre-commit install
 
-setup: venv activate install precommit
+git_init:
+	git init
 
-clean:
-	rm -rf venv
+git_add:
+	git add .
 
-.PHONY: venv activate install precommit setup clean
+poetry:
+	poetry init
+	poetry add pre-commit black dynamic-executor
+
+.PHONY: setup

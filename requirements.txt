@@ -1,3 +1,0 @@
-dynamic-executor
-pre-commit==3.7.0
-black==23.3.0

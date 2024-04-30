@@ -1,4 +1,4 @@
-setup: git_init git_add poetry precommit_install
+setup: poetry git_init git_add precommit_install
 
 precommit_install:
 	pre-commit install

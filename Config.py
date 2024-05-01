@@ -10,5 +10,5 @@ class Config:
 
 for variable in dir(Config):
     value = getattr(Config, variable)
-    if isinstance(value, Path) and value.suffix == "":
-        value.mkdir(parents=True, exist_ok=True)
+    if isinstance(value, Path) and value.suffix == "" and not value.exists():
+        value.mkdir(parents=True)

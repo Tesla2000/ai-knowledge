@@ -11,6 +11,6 @@ git_add:
 
 poetry:
 	poetry init
-	poetry add pre-commit black dynamic-executor
+	poetry add pre-commit black dynamic-executor python-dotenv
 
 .PHONY: setup

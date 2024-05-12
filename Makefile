@@ -10,8 +10,7 @@ git_add:
 	git add .
 
 poetry:
-    poetry config virtualenvs.in-project true
-	poetry init
-	poetry add pre-commit black dynamic-executor python-dotenv flake8
+	poetry config virtualenvs.in-project true
+	poetry install
 
 .PHONY: setup

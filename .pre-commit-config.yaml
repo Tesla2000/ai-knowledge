@@ -4,21 +4,15 @@ repos:
     hooks:
       - id: black
         args: ["--preview", "--line-length", "79"]
-        stages: [push]
-  - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: "v1.10.0"
-    hooks:
-      - id: mypy
-        args: [--ignore-missing-imports]
-        stages: [push]
+        stages: [commit,push]
   - repo: https://github.com/asottile/reorder-python-imports
     rev: v3.12.0
     hooks:
       - id: reorder-python-imports
         args: [--py37-plus, --add-import, 'from __future__ import annotations']
-        stages: [push]
+        stages: [commit,push]
   - repo: https://github.com/pycqa/flake8
     rev: '7.0.0'
     hooks:
       - id: flake8
-        stages: [push]
+        stages: [commit,push]

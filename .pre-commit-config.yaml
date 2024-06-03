@@ -11,6 +11,11 @@ repos:
       - id: reorder-python-imports
         args: [--py37-plus, --add-import, 'from __future__ import annotations']
         stages: [commit,push]
+  - repo: https://github.com/PyCQA/autoflake
+    rev: v2.2.1
+    hooks:
+      - id: autoflake
+        args: [ --remove-all-unused-imports, --in-place ]
   - repo: https://github.com/pycqa/flake8
     rev: '7.0.0'
     hooks:

@@ -8,6 +8,7 @@ git_init:
 
 git_add:
 	git add .
+	git commit -m "initial commit"
 
 poetry:
 	poetry config virtualenvs.in-project true

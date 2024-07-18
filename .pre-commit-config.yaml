@@ -11,6 +11,11 @@ repos:
       - id: reorder-python-imports
         args: [--py37-plus, --add-import, 'from __future__ import annotations']
         stages: [commit,push]
+  - repo: https://github.com/Tesla2000/suppress-lenght-check-import
+    rev: '0.0.5'
+    hooks:
+      - id: add-noqa-to-import
+        stages: [commit,push]
   - repo: https://github.com/PyCQA/autoflake
     rev: v2.2.1
     hooks:
@@ -21,3 +26,4 @@ repos:
     hooks:
       - id: flake8
         stages: [commit,push]
+        args: [ --ignore=E203 ]

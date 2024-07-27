@@ -12,7 +12,7 @@ repos:
         args: [--py37-plus, --add-import, 'from __future__ import annotations']
         stages: [commit,push]
   - repo: https://github.com/Tesla2000/suppress-lenght-check-import
-    rev: '0.0.5'
+    rev: '0.1.0'
     hooks:
       - id: add-noqa-to-import
         stages: [commit,push]

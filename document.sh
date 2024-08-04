@@ -9,4 +9,5 @@ cd /home/tesla2000/PassionProjects/RepoAgent
 
 cd $TARGET_REPO_PATH
 sphinx-apidoc -o docs/source src/ --private
+git add docs/source
 python3 _add_markdowns.py

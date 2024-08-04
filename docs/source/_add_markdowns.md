@@ -3,27 +3,33 @@
 
 **parameters**:
 - markdown_file_path: A Path object representing the path to the Markdown file.
-- source_path: A Path object representing the source directory containing reStructuredText and Markdown files.
+- source_path: A Path object representing the source directory containing the reStructuredText files.
 
 **Code Description**:
-The add_markdowns function first defines an inner function _conv2ref, which converts the Markdown file path to a relative reference. It then sets the source_path to the "docs/source" directory. The function iterates over all .rst files in the source_path, excluding "index.rst" and "modules.rst". For each file, it reads the content, splits it based on the additional_documents_header, and retrieves the content before and after the header. It determines the documentation path based on the file name and searches for Markdown files in the corresponding directory. The function then generates additional_docs by mapping the _conv2ref function to the Markdown files, formats the updated content with the additional documents header and the references to Markdown files, and writes the modified content back to the file.
+The add_markdowns function first defines an inner function _conv2ref, which converts the path of a Markdown file to a relative reference. It then sets the source_path to the "docs/source" directory. The function iterates over the reStructuredText files in the source_path, reads the content of each file, and locates a specific header within the content. It then extracts the content before and after the header, determines the path for the documentation, finds all Markdown files in that path, converts their paths to references using _conv2ref, and appends these references to the file content. Finally, it writes the updated content back to the file.
 
 **Note**:
-- Ensure that the additional_documents_header is correctly defined before using this function.
-- Make sure that the source_path directory structure matches the expected layout for referencing Markdown files.
+- This function assumes a specific directory structure where Markdown files are located within subdirectories corresponding to the reStructuredText files.
+- Ensure that the additional_documents_header variable is defined and contains the header used to locate the insertion point for the Markdown file references.
 
 **Output Example**:
-If the original content of a .rst file is:
+If the content of a reStructuredText file before modification is:
 ```
-Some content here.
+Some content before
 .. additional_documents_header
+
+Some content after
 ```
-and there are Markdown files "file1.md" and "file2.md" in the "docs/source/subdirectory" directory, the updated content after running add_markdowns may look like:
+
+After running add_markdowns, the content will be updated to include Markdown file references:
 ```
-Some content here.
+Some content before
 .. additional_documents_header
-   file1
-   file2
+
+   path/to/markdown/file1
+   path/to/markdown/file2
+
+Some content after
 ```
 ### FunctionDef _conv2ref(markdown_file_path)
 **_conv2ref**: The function of _conv2ref is to convert the input markdown file path to a relative path from a specified source path without a file extension.

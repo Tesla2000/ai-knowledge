@@ -30,3 +30,13 @@ Module contents
    :undoc-members:
    :show-inheritance:
    :private-members:
+Additional Documentation
+------------------------
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+   src/__init__
+   src/custom_argument_parser
+   src/config

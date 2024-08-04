@@ -4,13 +4,11 @@ repos:
     hooks:
       - id: black
         args: ["--preview", "--line-length", "79"]
-        stages: [commit,push]
   - repo: https://github.com/asottile/reorder-python-imports
     rev: v3.12.0
     hooks:
       - id: reorder-python-imports
         args: [--py37-plus, --add-import, 'from __future__ import annotations']
-        stages: [commit,push]
   - repo: https://github.com/PyCQA/autoflake
     rev: v2.2.1
     hooks:
@@ -25,7 +23,6 @@ repos:
     rev: '7.0.0'
     hooks:
       - id: flake8
-        stages: [commit,push]
         args: [ "--ignore=E203,W503" ]
   - repo: local
     hooks:
@@ -37,3 +34,4 @@ repos:
         pass_filenames: false
         types: [ python ]
         args: [--markdown-docs-path, docs, --language, English, --target-repo-path, .]
+default_stages: [commit]

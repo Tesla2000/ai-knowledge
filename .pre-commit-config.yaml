@@ -28,6 +28,7 @@ repos:
       - id: repo-agent
         name: RepoAgent
         entry: sh document.sh
+        stages: [commit, push]
         language: system
         pass_filenames: false
         types: [ python ]

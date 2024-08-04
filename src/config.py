@@ -6,7 +6,7 @@ from typing import Type
 from dotenv import load_dotenv
 from pydantic import BaseModel
 
-from src._custom_argument_parser import CustomArgumentParser
+from src.custom_argument_parser import CustomArgumentParser
 
 load_dotenv()
 
@@ -34,6 +34,7 @@ def parse_arguments(config_class: Type[Config]):
 
 
 def create_config_with_args(config_class: Type[Config], args) -> Config:
+    """"""
     config = config_class(
         **{name: getattr(args, name) for name in config_class.model_fields}
     )

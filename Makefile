@@ -1,7 +1,7 @@
 setup: poetry git_init git_add precommit_install
 
 precommit_install:
-	pre-commit install
+	pre-commit install --hook-type pre-commit --hook-type pre-push
 
 git_init:
 	git init

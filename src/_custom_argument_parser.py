@@ -4,8 +4,6 @@ import argparse
 
 
 class CustomArgumentParser(argparse.ArgumentParser):
-    """"""
-
     def add_argument(
         self,
         *args,

@@ -1,23 +1,26 @@
 ## ClassDef CustomArgumentParser
-**CustomArgumentParser**: The function of CustomArgumentParser is to customize the argument parsing behavior by converting certain string values to boolean during argument parsing.
+**CustomArgumentParser**: The function of CustomArgumentParser is to extend the functionality of the argparse.ArgumentParser class by customizing the behavior of adding arguments, specifically handling boolean types and converting string values to boolean.
 
 **attributes**:
-- add_argument: A method that customizes the behavior of adding arguments by converting specific string values to boolean.
+- add_argument(*args, **kwargs): Adds arguments to the parser with customized handling for boolean types.
 
 **Code Description**:
-The CustomArgumentParser class extends the argparse.ArgumentParser class and overrides the add_argument method to handle boolean values passed as strings. When adding an argument, if the argument type is identified as bool, the method _str2bool is called to convert string representations of boolean values to actual boolean values. This customization allows for more flexible argument handling in the parser.
+The CustomArgumentParser class inherits from argparse.ArgumentParser and overrides the add_argument method to modify the behavior of adding arguments. When adding an argument, if the argument type is bool, it converts the string values "yes", "true", "t", "y", "1" to True and "no", "false", "f", "n", "0" to False. This customization allows for more flexible handling of boolean arguments during argument parsing.
 
-In the calling situation within the project, the CustomArgumentParser class is utilized in the parse_arguments function defined in the Config.py file. The parse_arguments function creates an instance of CustomArgumentParser and customizes the argument parsing behavior based on the configuration class provided. It iterates over the model fields of the configuration class, adds arguments to the parser with specific configurations, and finally parses the arguments based on the defined settings.
+In the project, the CustomArgumentParser class is utilized to create a specialized argument parser that can handle boolean values more intuitively, enhancing the parsing capabilities of the application settings configuration process.
 
-**Note**: Developers can leverage the CustomArgumentParser class to enhance the argument parsing capabilities of their applications, especially when dealing with boolean values passed as strings.
+The parse_arguments function in the Config module utilizes the CustomArgumentParser class to create a custom argument parser tailored to the fields of a configuration class. By leveraging the capabilities of CustomArgumentParser, developers can efficiently parse and process configuration arguments based on the specified field types and values.
+
+**Note**:
+Developers can leverage the CustomArgumentParser class to enhance the argument parsing functionality of argparse.ArgumentParser, particularly for handling boolean values in a more user-friendly manner.
 
 **Output Example**:
-An example of using CustomArgumentParser to parse arguments with customized boolean handling:
+An example of using CustomArgumentParser to add and parse boolean arguments:
 ```python
-parser = CustomArgumentParser(description="Custom Argument Parser Example")
-parser.add_argument("--enable_feature", type=str, help="Enable a specific feature")
-args = parser.parse_args(["--enable_feature", "true"])
-print(args.enable_feature)  # Output: True
+parser = CustomArgumentParser()
+parser.add_argument("--enable_feature", type=bool, help="Enable a specific feature.")
+args = parser.parse_args()
+print(args.enable_feature)
 ```
 ### FunctionDef add_argument(self)
 **add_argument**: The function of add_argument is to add a new argument to the argument parser. 

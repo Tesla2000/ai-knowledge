@@ -21,9 +21,11 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-MARKDOWN_DOCS_PATH="${MARKDOWN_DOCS_PATH:-docs}"
+MARKDOWN_DOCS_PATH="${MARKDOWN_DOCS_PATH:-docs/source}"
 LANGUAGE="${LANGUAGE:-English}"
 TARGET_REPO_PATH="${TARGET_REPO_PATH:-$(pwd)}"
 
 cd /home/tesla2000/PassionProjects/RepoAgent
 .venv/bin/python repo_agent/main.py run --markdown-docs-path "$MARKDOWN_DOCS_PATH" --language "$LANGUAGE" --target-repo-path "$TARGET_REPO_PATH"
+
+sphinx-apidoc -o docs/source src/

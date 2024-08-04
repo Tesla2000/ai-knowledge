@@ -30,6 +30,7 @@ repos:
   - repo: local
     hooks:
       - id: repo-agent
+        stages: [push]
         name: RepoAgent
         entry: sh document.sh
         language: system

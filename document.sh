@@ -1,6 +1,6 @@
 #!/bin/bash
 
-MARKDOWN_DOCS_PATH="-docs/source"
+MARKDOWN_DOCS_PATH="docs/source"
 LANGUAGE="English"
 TARGET_REPO_PATH="$(pwd)"
 

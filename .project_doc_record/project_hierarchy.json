@@ -1,0 +1,202 @@
+{
+  "main.py": [
+    {
+      "type": "FunctionDef",
+      "name": "main",
+      "md_content": [
+        "**main**: The function of main is to parse arguments based on the Config class, create a configuration instance with the parsed arguments, and print the configuration.\n\n**parameters**:\n- No explicit parameters are passed directly to the main function. The parameters are implicitly used within the function.\n\n**Code Description**:\nThe main function first calls the parse_arguments function with the Config class to obtain parsed arguments. It then utilizes these arguments to create a configuration instance by calling the create_config_with_args function with the Config class and the parsed arguments. Finally, the function prints the created configuration instance.\n\nThe main function serves as the entry point for configuring and initializing the application settings based on the provided configuration class. By sequentially calling the parse_arguments and create_config_with_args functions, the main function orchestrates the setup of the configuration instance and displays it for further usage within the application.\n\n**Note**:\nDevelopers using the main function should ensure that the Config class is correctly defined and imported to enable the parsing and creation of configuration instances. The main function provides a structured approach to handling configuration setup and can be extended to incorporate additional functionalities or actions based on the parsed configuration."
+      ],
+      "code_start_line": 8,
+      "code_end_line": 11,
+      "params": [],
+      "have_return": false,
+      "code_content": "def main():\n    args = parse_arguments(Config)\n    config = create_config_with_args(Config, args)\n    print(config)\n",
+      "name_column": 4,
+      "item_status": "doc_up_to_date",
+      "who_reference_me": [],
+      "reference_who": [
+        "src/Config.py/Config",
+        "src/Config.py/parse_arguments",
+        "src/Config.py/create_config_with_args"
+      ],
+      "special_reference_type": [
+        false,
+        false,
+        false
+      ]
+    }
+  ],
+  "sandbox.py": [],
+  "src/Config.py": [
+    {
+      "type": "ClassDef",
+      "name": "Config",
+      "md_content": [
+        "**Config**: The function of Config is to define a configuration class that inherits from BaseModel and sets the _root attribute to the parent directory of the current file.\n\n**attributes**:\n- _root: Path = Path(__file__).parent\n\n**Code Description**:\nThe Config class serves as a configuration class that inherits from BaseModel. It contains an attribute _root, which is initialized to the parent directory of the current file using the Path class from the pathlib module. This attribute can be used to reference the root directory of the configuration.\n\nIn the project, the Config class is utilized by the parse_arguments and create_config_with_args functions in the following way:\n1. The parse_arguments function takes the config_class parameter, which is expected to be of type Config. It creates a custom argument parser and adds arguments based on the model fields of the config_class, excluding those starting with an underscore.\n2. The create_config_with_args function also takes the config_class parameter of type Config along with args. It creates an instance of the config_class by mapping the arguments from args to the model fields of the config_class. Additionally, it checks if any Path attribute in the config instance needs to create directories if they do not exist.\n\n**Note**:\nDevelopers using the Config class should ensure that the BaseModel class is defined and imported correctly to inherit its functionalities. The _root attribute can be useful for setting the root directory of the configuration and accessing it within the class methods.",
+        "**Config**: The function of Config is to define a configuration class that stores the root path of the current file.\n\n**attributes**:\n- _root: Path = Path(__file__).parent\n\n**Code Description**: \nThe Config class inherits from BaseModel and contains a single attribute \"_root\" of type Path. The \"_root\" attribute is initialized with the parent directory path of the current file (__file__).\n\nThe purpose of the Config class is to provide a structured way to store and access configuration settings within the application. By defining the root path attribute, the class enables easy reference to the parent directory of the current file, which can be useful for file operations, path resolutions, and other configuration-related tasks.\n\nThe class serves as a foundational component for managing configuration data and can be extended to include additional attributes or methods as needed for specific application requirements.\n\n**Note**:\nDevelopers utilizing the Config class should be aware that it primarily focuses on defining configuration-related attributes. The \"_root\" attribute, in particular, stores the path information related to the current file's parent directory. When working with configuration settings or file paths in the application, accessing the \"_root\" attribute of an instance of the Config class can provide a convenient way to reference the root path dynamically."
+      ],
+      "code_start_line": 14,
+      "code_end_line": 15,
+      "params": [],
+      "have_return": false,
+      "code_content": "class Config(BaseModel):\n    _root: Path = Path(__file__).parent\n",
+      "name_column": 6,
+      "item_status": "doc_up_to_date",
+      "who_reference_me": [
+        "main.py",
+        "main.py/main",
+        "src/Config.py/parse_arguments",
+        "src/Config.py/create_config_with_args"
+      ],
+      "reference_who": [],
+      "special_reference_type": []
+    },
+    {
+      "type": "FunctionDef",
+      "name": "parse_arguments",
+      "md_content": [
+        "**parse_arguments**: The function of parse_arguments is to create a custom argument parser based on the provided configuration class, add arguments dynamically for each model field (excluding those starting with an underscore), and parse the arguments to return the parsed values.\n\n**parameters**:\n- config_class: Type[Config] - The configuration class from which the model fields are extracted to create arguments for the argument parser.\n\n**Code Description**:\nThe parse_arguments function takes a configuration class as input and initializes a CustomArgumentParser with a description for configuring application settings. It then iterates over the model fields of the config_class, excluding private fields, and adds arguments to the parser based on the field name, type, default value, and help message. Finally, it parses the arguments and returns the parsed values.\n\nThis function is utilized in the project to facilitate the configuration of application settings. By leveraging the parse_arguments function, developers can easily generate an argument parser tailored to the fields of a specific configuration class, allowing for flexible and customizable configuration options.\n\n**Note**:\nDevelopers should ensure that the provided config_class parameter is of type Config to correctly extract the model fields for argument creation. Additionally, the function skips private fields (starting with an underscore) during argument generation to focus on public configuration options.\n\n**Output Example**:\nAn example of using parse_arguments to parse configuration arguments:\n```python\nargs = parse_arguments(Config)\nprint(args)\n```"
+      ],
+      "code_start_line": 18,
+      "code_end_line": 33,
+      "params": [
+        "config_class"
+      ],
+      "have_return": true,
+      "code_content": "def parse_arguments(config_class: Type[Config]):\n    parser = CustomArgumentParser(\n        description=\"Configure the application settings.\"\n    )\n\n    for name, value in config_class.model_fields.items():\n        if name.startswith(\"_\"):\n            continue\n        parser.add_argument(\n            f\"--{name}\",\n            type=value.annotation,\n            default=value.default,\n            help=f\"Default: {value}\",\n        )\n\n    return parser.parse_args()\n",
+      "name_column": 4,
+      "item_status": "doc_up_to_date",
+      "who_reference_me": [
+        "main.py",
+        "main.py/main"
+      ],
+      "reference_who": [
+        "src/Config.py/Config",
+        "src/_custom_argument_parser.py/CustomArgumentParser",
+        "src/_custom_argument_parser.py/CustomArgumentParser/add_argument"
+      ],
+      "special_reference_type": [
+        true,
+        false,
+        false
+      ]
+    },
+    {
+      "type": "FunctionDef",
+      "name": "create_config_with_args",
+      "md_content": [
+        "**create_config_with_args**: The function of create_config_with_args is to instantiate a configuration class with arguments, map the arguments to the model fields of the class, and create directories if necessary for Path attributes that do not exist.\n\n**parameters**:\n- config_class: Type[Config] (class): The configuration class to instantiate.\n- args: Arguments to map to the model fields of the configuration class.\n\n**Code Description**:\nThe create_config_with_args function takes a configuration class and arguments as input. It creates an instance of the configuration class by mapping the arguments to the model fields of the class. Subsequently, it checks if any Path attribute in the instance requires directory creation if it does not exist. Finally, the function returns the configured instance.\n\nThis function is utilized in conjunction with the Config class, where the model_fields attribute is accessed to map arguments to the corresponding fields. The function ensures that the configuration instance is properly initialized with the provided arguments and handles directory creation for Path attributes as needed.\n\n**Note**:\nDevelopers should ensure that the config_class parameter is of type Config or a subclass of Config to instantiate the configuration class correctly. It is essential to provide the necessary arguments that match the model fields of the configuration class to ensure proper initialization.\n\n**Output Example**:\nconfig = create_config_with_args(Config, args)"
+      ],
+      "code_start_line": 36,
+      "code_end_line": 48,
+      "params": [
+        "config_class",
+        "args"
+      ],
+      "have_return": true,
+      "code_content": "def create_config_with_args(config_class: Type[Config], args) -> Config:\n    config = config_class(\n        **{name: getattr(args, name) for name in config_class.model_fields}\n    )\n    for variable in config.model_fields:\n        value = getattr(config, variable)\n        if (\n            isinstance(value, Path)\n            and value.suffix == \"\"\n            and not value.exists()\n        ):\n            value.mkdir(parents=True)\n    return config\n",
+      "name_column": 4,
+      "item_status": "doc_up_to_date",
+      "who_reference_me": [
+        "main.py",
+        "main.py/main"
+      ],
+      "reference_who": [
+        "src/Config.py/Config"
+      ],
+      "special_reference_type": [
+        true
+      ]
+    }
+  ],
+  "src/__init__.py": [
+    {
+      "type": "FunctionDef",
+      "name": "import_python",
+      "md_content": [
+        "**import_python**: The function of import_python is to recursively import Python modules from a specified root directory.\n\n**parameters**:\n- root: The root directory path from which to start importing Python modules.\n\n**Code Description**:\nThe import_python function takes a root directory path as input and iterates through all files and subdirectories within the root directory. It skips certain directories such as \"__init__.py\", \"pycache\", and \"__pycache__\". For each file encountered, it determines the relative path, constructs the module path, imports the module, and yields the module name. If a subdirectory is encountered, the function recursively calls itself to import modules from that subdirectory.\n\n**Note**:\n- This function is useful for dynamically importing Python modules from a specified directory, which can be helpful for modularizing code and improving code organization.\n- Ensure that the root directory provided contains valid Python modules to import, as the function relies on the presence of Python files for importing."
+      ],
+      "code_start_line": 7,
+      "code_end_line": 18,
+      "params": [
+        "root"
+      ],
+      "have_return": false,
+      "code_content": "def import_python(root: Path):\n    for module_path in root.iterdir():\n        if module_path.name in (\"__init__.py\", \"pycache\", \"__pycache__\"):\n            continue\n        if module_path.is_file():\n            relative_path = module_path.relative_to(Path(__file__).parent)\n            subfolders = \"\".join(map(\".{}\".format, relative_path.parts[:-1]))\n            str_path = module_path.with_suffix(\"\").name\n            import_module(\".\" + str_path, __name__ + subfolders)\n            yield module_path.with_suffix(\"\").name\n            continue\n        yield from import_python(module_path)\n",
+      "name_column": 4,
+      "item_status": "doc_up_to_date",
+      "who_reference_me": [],
+      "reference_who": [],
+      "special_reference_type": []
+    }
+  ],
+  "src/_custom_argument_parser.py": [
+    {
+      "type": "ClassDef",
+      "name": "CustomArgumentParser",
+      "md_content": [
+        "**CustomArgumentParser**: The function of CustomArgumentParser is to customize the argument parsing behavior by converting certain string values to boolean during argument parsing.\n\n**attributes**:\n- add_argument: A method that customizes the behavior of adding arguments by converting specific string values to boolean.\n\n**Code Description**:\nThe CustomArgumentParser class extends the argparse.ArgumentParser class and overrides the add_argument method to handle boolean values passed as strings. When adding an argument, if the argument type is identified as bool, the method _str2bool is called to convert string representations of boolean values to actual boolean values. This customization allows for more flexible argument handling in the parser.\n\nIn the calling situation within the project, the CustomArgumentParser class is utilized in the parse_arguments function defined in the Config.py file. The parse_arguments function creates an instance of CustomArgumentParser and customizes the argument parsing behavior based on the configuration class provided. It iterates over the model fields of the configuration class, adds arguments to the parser with specific configurations, and finally parses the arguments based on the defined settings.\n\n**Note**: Developers can leverage the CustomArgumentParser class to enhance the argument parsing capabilities of their applications, especially when dealing with boolean values passed as strings.\n\n**Output Example**:\nAn example of using CustomArgumentParser to parse arguments with customized boolean handling:\n```python\nparser = CustomArgumentParser(description=\"Custom Argument Parser Example\")\nparser.add_argument(\"--enable_feature\", type=str, help=\"Enable a specific feature\")\nargs = parser.parse_args([\"--enable_feature\", \"true\"])\nprint(args.enable_feature)  # Output: True\n```"
+      ],
+      "code_start_line": 6,
+      "code_end_line": 31,
+      "params": [],
+      "have_return": true,
+      "code_content": "class CustomArgumentParser(argparse.ArgumentParser):\n    \"\"\"\"\"\"\n\n    def add_argument(\n        self,\n        *args,\n        **kwargs,\n    ):\n        if kwargs.get(\"type\") is bool:\n            kwargs[\"type\"] = self._str2bool\n        super().add_argument(\n            *args,\n            **kwargs,\n        )\n\n    def _str2bool(self, v):\n        if isinstance(v, bool):\n            return v\n        if v.lower() in (\"yes\", \"true\", \"t\", \"y\", \"1\"):\n            return True\n        elif v.lower() in (\"no\", \"false\", \"f\", \"n\", \"0\"):\n            return False\n        else:\n            raise argparse.ArgumentTypeError(\n                f\"Boolean value expected got {v}.\"\n            )\n",
+      "name_column": 6,
+      "item_status": "doc_up_to_date",
+      "who_reference_me": [
+        "src/Config.py",
+        "src/Config.py/parse_arguments"
+      ],
+      "reference_who": [],
+      "special_reference_type": []
+    },
+    {
+      "type": "FunctionDef",
+      "name": "add_argument",
+      "md_content": [
+        "**add_argument**: The function of add_argument is to add a new argument to the argument parser. \n\n**parameters**:\n- self: The instance of the class.\n- *args: Variable length argument list.\n- **kwargs: Arbitrary keyword arguments.\n\n**Code Description**: \nThe `add_argument` function first checks if the `type` parameter in the keyword arguments (`kwargs`) is a boolean. If it is a boolean, the function replaces it with the `_str2bool` function from the `CustomArgumentParser` class. This allows the function to correctly handle boolean arguments by converting string representations to boolean values. Finally, the function calls the `add_argument` method from the superclass with the provided arguments and keyword arguments.\n\nThis function is utilized in the `parse_arguments` function in the `Config.py` module. In `parse_arguments`, a new argument is added to the argument parser for each model field in the provided `config_class`. The type, default value, and help message for each argument are set based on the attributes of the model fields. \n\n**Note**: \n- Ensure that the `type` parameter in the keyword arguments represents a valid boolean value to avoid errors.\n- The `add_argument` function is essential for dynamically adding arguments to the argument parser based on the configuration class provided."
+      ],
+      "code_start_line": 9,
+      "code_end_line": 19,
+      "params": [
+        "self"
+      ],
+      "have_return": false,
+      "code_content": "    def add_argument(\n        self,\n        *args,\n        **kwargs,\n    ):\n        if kwargs.get(\"type\") is bool:\n            kwargs[\"type\"] = self._str2bool\n        super().add_argument(\n            *args,\n            **kwargs,\n        )\n",
+      "name_column": 8,
+      "item_status": "doc_up_to_date",
+      "who_reference_me": [
+        "src/Config.py/parse_arguments"
+      ],
+      "reference_who": [
+        "src/_custom_argument_parser.py/CustomArgumentParser/_str2bool"
+      ],
+      "special_reference_type": [
+        false
+      ]
+    },
+    {
+      "type": "FunctionDef",
+      "name": "_str2bool",
+      "md_content": [
+        "**_str2bool**: The function of _str2bool is to convert a string representation of a boolean value to a boolean type.\n\n**parameters**:\n- self: The instance of the class.\n- v: The string value to be converted to a boolean.\n\n**Code Description**: \nThe `_str2bool` function first checks if the input value is already a boolean. If not, it converts the string representation of a boolean value to a boolean type. It accepts common string representations of boolean values like \"yes\", \"true\", \"t\", \"y\", \"1\" for True, and \"no\", \"false\", \"f\", \"n\", \"0\" for False. If the input value does not match any of these representations, it raises an `argparse.ArgumentTypeError` with an appropriate message.\n\nIn the project, this function is utilized in the `add_argument` method of the `CustomArgumentParser` class. When the `type` parameter in the `kwargs` dictionary is a boolean, it replaces it with the `_str2bool` function. This allows the `add_argument` method to handle boolean arguments correctly by converting string representations to boolean values.\n\n**Note**: \n- Ensure that the input string represents a valid boolean value to avoid raising an error.\n- Use this function when dealing with boolean arguments that are provided as strings.\n\n**Output Example**: \nIf the input string is \"yes\", the function will return `True`."
+      ],
+      "code_start_line": 21,
+      "code_end_line": 31,
+      "params": [
+        "self",
+        "v"
+      ],
+      "have_return": true,
+      "code_content": "    def _str2bool(self, v):\n        if isinstance(v, bool):\n            return v\n        if v.lower() in (\"yes\", \"true\", \"t\", \"y\", \"1\"):\n            return True\n        elif v.lower() in (\"no\", \"false\", \"f\", \"n\", \"0\"):\n            return False\n        else:\n            raise argparse.ArgumentTypeError(\n                f\"Boolean value expected got {v}.\"\n            )\n",
+      "name_column": 8,
+      "item_status": "doc_up_to_date",
+      "who_reference_me": [
+        "src/_custom_argument_parser.py/CustomArgumentParser/add_argument"
+      ],
+      "reference_who": [],
+      "special_reference_type": []
+    }
+  ]
+}

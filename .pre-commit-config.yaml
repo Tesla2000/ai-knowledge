@@ -27,3 +27,12 @@ repos:
       - id: flake8
         stages: [commit,push]
         args: [ --ignore=E203 ]
+  - repo: local
+    hooks:
+      - id: repo-agent
+        name: RepoAgent
+        entry: sh document.sh
+        language: system
+        pass_filenames: false
+        types: [ python ]
+        args: [--markdown-docs-path, docs, --language, English, --target-repo-path, .]

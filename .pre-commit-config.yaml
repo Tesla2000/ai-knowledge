@@ -23,13 +23,4 @@ repos:
     hooks:
       - id: flake8
         args: [ "--ignore=E203,W503" ]
-  - repo: local
-    hooks:
-      - id: repo-agent
-        name: RepoAgent
-        entry: sh document.sh
-        stages: [push]
-        language: system
-        pass_filenames: false
-        types: [ python ]
 default_stages: [commit]

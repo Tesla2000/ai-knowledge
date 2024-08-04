@@ -4,13 +4,23 @@ src package
 Submodules
 ----------
 
-src.Config module
+src.config module
 -----------------
 
-.. automodule:: src.Config
+.. automodule:: src.config
    :members:
    :undoc-members:
    :show-inheritance:
+   :private-members:
+
+src.custom\_argument\_parser module
+-----------------------------------
+
+.. automodule:: src.custom_argument_parser
+   :members:
+   :undoc-members:
+   :show-inheritance:
+   :private-members:
 
 Module contents
 ---------------
@@ -19,14 +29,4 @@ Module contents
    :members:
    :undoc-members:
    :show-inheritance:
-
-Additional Documentation
-------------------------
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
-
-   src/__init__
-   src/Config
-   src/_custom_argument_parser
+   :private-members:

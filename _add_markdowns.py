@@ -20,13 +20,13 @@ def add_markdowns():
             continue
         content = file.read_text()
         before, _, after = content.rpartition(additional_documents_header)
-        before = before or after
+        before = (before or after).rstrip()
         documentation_path = "/".join(file.name.split(".")[:-1])
         markdown_files = source_path.joinpath(documentation_path).rglob("*.md")
         indent = 3 * " "
         additional_docs = f"\n{indent}".join(map(_conv2ref, markdown_files))
         file.write_text(
-            "{}{}\n\n{}{}\n".format(
+            "{}\n{}\n\n{}{}\n".format(
                 before, additional_documents_header, indent, additional_docs
             )
         )

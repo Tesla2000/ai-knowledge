@@ -7,6 +7,6 @@ TARGET_REPO_PATH="$(pwd)"
 cd /home/tesla2000/PassionProjects/RepoAgent
 .venv/bin/python repo_agent/main.py run --markdown-docs-path "$MARKDOWN_DOCS_PATH" --language "$LANGUAGE" --target-repo-path "$TARGET_REPO_PATH" --ignore-list .venv
 
-cd TARGET_REPO_PATH
+cd $TARGET_REPO_PATH
 sphinx-apidoc -o docs/source src/ --private
-.venv/bin/python _add_markdowns.py
+python3 _add_markdowns.py

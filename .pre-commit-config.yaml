@@ -18,7 +18,6 @@ repos:
     rev: '0.1.1'
     hooks:
       - id: add-noqa-to-import
-        stages: [commit,push]
   - repo: https://github.com/pycqa/flake8
     rev: '7.0.0'
     hooks:

@@ -34,6 +34,7 @@ def parse_arguments(config_class: Type[Config]):
 
 
 def create_config_with_args(config_class: Type[Config], args) -> Config:
+    """"""
     config = config_class(
         **{name: getattr(args, name) for name in config_class.model_fields}
     )

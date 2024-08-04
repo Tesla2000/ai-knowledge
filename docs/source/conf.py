@@ -41,6 +41,12 @@ myst_enable_extensions = [
     "deflist",
 ]
 
+autodoc_default_options = {
+    "members": True,
+    "undoc-members": True,
+    "private-members": True,
+}
+
 templates_path = ["_templates"]
 exclude_patterns = []
 

@@ -28,5 +28,5 @@ Additional Documentation
    :caption: Contents:
 
    src/__init__
-   src/_custom_argument_parser
    src/Config
+   src/_custom_argument_parser

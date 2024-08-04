@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from src.Config import Config
-from src.Config import create_config_with_args
-from src.Config import parse_arguments
+from src.config import Config
+from src.config import create_config_with_args
+from src.config import parse_arguments
 
 
 def main():

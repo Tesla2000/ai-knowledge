@@ -6,7 +6,7 @@ from typing import Type
 from dotenv import load_dotenv
 from pydantic import BaseModel
 
-from src._custom_argument_parser import CustomArgumentParser
+from src.custom_argument_parser import CustomArgumentParser
 
 load_dotenv()
 

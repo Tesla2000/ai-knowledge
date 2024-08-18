@@ -1,6 +1,4 @@
-ARG PYTHON_VERSION=3.12
-
-FROM python:${PYTHON_VERSION}
+FROM python:3.12
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1

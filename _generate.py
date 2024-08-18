@@ -14,15 +14,29 @@ from _generate_scripts.pick_template import pick_template
 def main():
     project_path = Path("/home/tesla2000/PassionProjects/test")
     try:
-        ignored = (".venv", "_generate.py", "_generate_scripts", ".git", ".idea", "_templatest", ".pre-commit-hooks.yaml")
+        ignored = (
+            ".venv",
+            "_generate.py",
+            "_generate_scripts",
+            ".git",
+            ".idea",
+            "_templatest",
+            ".pre-commit-hooks.yaml",
+        )
         modified = (
-        "pyproject.toml", "Dockerfile", ".pre-commit-config.yaml", "LICENSE",)
+            "pyproject.toml",
+            "Dockerfile",
+            ".pre-commit-config.yaml",
+            "LICENSE",
+        )
         modifications = generate_modifications(project_path)
         project_path.mkdir(exist_ok=True)
         root_dest = Path(os.getcwd()).joinpath(project_path)
         template = pick_template()
         copy(root_dest, template, ignored, modified, modifications)
-        copy(root_dest, Path(__file__).parent, ignored, modified, modifications)
+        copy(
+            root_dest, Path(__file__).parent, ignored, modified, modifications
+        )
         create_project_folders(project_path)
     except Exception as e:
         print(str(e))

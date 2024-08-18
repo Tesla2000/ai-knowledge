@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from dynamic_executor import DynamicModeExecutor
 
 if __name__ == "__main__":

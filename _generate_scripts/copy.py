@@ -1,9 +1,17 @@
+from __future__ import annotations
+
 from pathlib import Path
-from typing import Sequence, Optional
+from typing import Optional
+from typing import Sequence
 
 
-def copy(root_dest: Path, source: Path, ignored: Sequence[str] = tuple(),
-         modified: Sequence[str] = tuple(), modifications: Optional[dict[str, str]] = None):
+def copy(
+    root_dest: Path,
+    source: Path,
+    ignored: Sequence[str] = tuple(),
+    modified: Sequence[str] = tuple(),
+    modifications: Optional[dict[str, str]] = None,
+):
     modifications = modifications or {}
     for path in source.iterdir():
         if path.name in ignored:

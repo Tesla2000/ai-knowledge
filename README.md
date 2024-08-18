@@ -10,7 +10,7 @@ python main.py
 ### Docker
 
 ```shell
-docker build -t your-app-image .
-docker run -it your-app-image /bin/sh
+docker build -t {docker_image_name} .
+docker run -it {docker_image_name} /bin/sh
 python main.py
 ```

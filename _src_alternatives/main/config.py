@@ -4,15 +4,16 @@ from pathlib import Path
 from typing import Type
 
 from dotenv import load_dotenv
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
-from src.custom_argument_parser import CustomArgumentParser
+from .custom_argument_parser import CustomArgumentParser
 
 load_dotenv()
 
 
 class Config(BaseModel):
     _root: Path = Path(__file__).parent
+    pos_args: list[str] = Field(default_factory=list)
 
 
 def parse_arguments(config_class: Type[Config]):
@@ -24,7 +25,7 @@ def parse_arguments(config_class: Type[Config]):
         if name.startswith("_"):
             continue
         parser.add_argument(
-            f"--{name}",
+            f"--{name}" if name != "filenames" else name,
             type=value.annotation,
             default=value.default,
             help=f"Default: {value}",
@@ -34,7 +35,6 @@ def parse_arguments(config_class: Type[Config]):
 
 
 def create_config_with_args(config_class: Type[Config], args) -> Config:
-    """"""
     config = config_class(
         **{name: getattr(args, name) for name in config_class.model_fields}
     )

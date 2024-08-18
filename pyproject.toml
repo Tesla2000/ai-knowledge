@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "projectblueprint"
+name = "{project_name}"
 version = "0.1.0"
-description = ""
+description = "{description}"
 authors = ["Tesla2000 <fratajczak124@gmail.com>"]
 readme = "README.md"
 
@@ -19,4 +19,4 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
-add-noqa-to-import = "projectblueprint:main"
+{script_name} = "{project_name}:main"

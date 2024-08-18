@@ -1,0 +1,7 @@
+-   id: {project_name}
+    name: {project_name}
+    description: {description}
+    entry: {project_name}
+    language: python
+    types: [python]
+    files: ''

@@ -5,16 +5,14 @@ from typing import Type
 
 from dotenv import load_dotenv
 from pydantic import BaseModel
-from pydantic import Field
 
-from src.custom_argument_parser import CustomArgumentParser
+from src._custom_argument_parser import CustomArgumentParser
 
 load_dotenv()
 
 
 class Config(BaseModel):
     _root: Path = Path(__file__).parent
-    filenames: list[str] = Field(default_factory=list)
 
 
 def parse_arguments(config_class: Type[Config]):

@@ -29,7 +29,7 @@ def create_project_folders(project_path: Path):
 
 
 def main():
-    ignored = (".venv", "_generate.py", ".git", ".idea", "_src_alternatives")
+    ignored = (".venv", "_generate.py", "_generate_scripts", ".git", ".idea", "_templatest")
     modified = (
     "pyproject.toml", "Dockerfile", ".pre-commit-config.yaml", "LICENSE",)
     project_name = Path("/home/tesla2000/PassionProjects/Autodoc-hook")

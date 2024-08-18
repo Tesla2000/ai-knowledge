@@ -4,8 +4,8 @@ from pathlib import Path
 
 import libcst as cst
 
-from src.config import Config
-from src.transform.transformer import Transformer
+from ..config import Config
+from .transformer import Transformer
 
 
 def modify_file(filepath: Path, config: Config) -> int:

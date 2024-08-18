@@ -5,7 +5,7 @@ from typing import Sequence
 import libcst as cst
 from libcst import Module
 
-from src.config import Config
+from ..config import Config
 
 
 class Transformer(cst.CSTTransformer):

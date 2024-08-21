@@ -34,6 +34,7 @@ def main():
             "Dockerfile",
             ".pre-commit-config.yaml",
             "LICENSE",
+            "main.py",
         )
         modifications = generate_modifications(project_path, answers)
         project_path.mkdir(exist_ok=True)

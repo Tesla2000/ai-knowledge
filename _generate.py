@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import os
 import shutil
 import traceback
@@ -12,7 +13,12 @@ from _generate_scripts.pick_template import pick_template
 
 
 def main():
-    project_path = Path("/home/tesla2000/PassionProjects/test")
+    answers = {}
+    answers_file = Path("answers.json")
+    if answers_file.exists():
+        answers = json.loads(answers_file.read_text())
+        os.remove(answers_file)
+    project_path = Path("/home/tesla2000/PassionProjects/DND_character_creator")
     try:
         ignored = (
             ".venv",
@@ -29,19 +35,22 @@ def main():
             ".pre-commit-config.yaml",
             "LICENSE",
         )
-        modifications = generate_modifications(project_path)
+        modifications = generate_modifications(project_path, answers)
         project_path.mkdir(exist_ok=True)
         root_dest = Path(os.getcwd()).joinpath(project_path)
-        template = pick_template()
+        template = pick_template(answers)
         copy(root_dest, template, ignored, modified, modifications)
         copy(
             root_dest, Path(__file__).parent, ignored, modified, modifications
         )
         create_project_folders(project_path)
-    except Exception as e:
+        return 0
+    except BaseException as e:
         print(str(e))
         print(traceback.format_exc())
         shutil.rmtree(project_path)
+        answers_file.write_text(json.dumps(answers))
+        return 1
 
 
 if __name__ == "__main__":

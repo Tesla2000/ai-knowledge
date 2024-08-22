@@ -18,7 +18,7 @@ def main():
     if answers_file.exists():
         answers = json.loads(answers_file.read_text())
         os.remove(answers_file)
-    project_path = Path("/home/tesla2000/PassionProjects/DND_character_creator")
+    project_path = Path("/home/tesla2000/PassionProjects/test")
     try:
         ignored = (
             ".venv",
@@ -26,7 +26,7 @@ def main():
             "_generate_scripts",
             ".git",
             ".idea",
-            "_templatest",
+            "_templates",
             ".pre-commit-hooks.yaml",
         )
         modified = (

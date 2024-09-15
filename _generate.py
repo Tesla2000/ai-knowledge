@@ -33,6 +33,7 @@ def main():
             "pyproject.toml",
             "Dockerfile",
             ".pre-commit-config.yaml",
+            ".pre-commit-hooks.yaml",
             "LICENSE",
             "main.py",
         )

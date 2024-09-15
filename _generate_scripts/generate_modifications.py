@@ -4,6 +4,8 @@ import json
 from datetime import datetime
 from pathlib import Path
 
+from pydantic.alias_generators import to_snake
+
 
 def generate_modifications(project_path: Path, answers: dict) -> dict[str, str]:
     project_name = project_path.name
@@ -15,9 +17,10 @@ def generate_modifications(project_path: Path, answers: dict) -> dict[str, str]:
         )
     return {
         "project_name": project_name,
-        "project_name_low": project_name.lower(),
+        "project_name_low": to_snake(project_name),
         "description": answers["description"],
-        "script_name": project_name.replace("_", "-"),
+        "script_name": to_snake(project_name).replace("_", "-"),
+        "project_script_name": to_snake(project_name).replace("/", "."),
         "docker_image_name": project_name,
         "autodoc_args": answers["autodoc_args"],
         "year": str(datetime.now().year),

@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "{project_name_low}"
+name = "{project_name}"
 version = "0.1.0"
 description = ""
 authors = ["Tesla2000 <fratajczak124@gmail.com>"]
@@ -21,4 +21,4 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
-{project_name_low} = "{project_name_low}:main"
+{project_name_low} = "{project_name}:main"

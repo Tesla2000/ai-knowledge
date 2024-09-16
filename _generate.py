@@ -18,7 +18,7 @@ def main():
     if answers_file.exists():
         answers = json.loads(answers_file.read_text())
         os.remove(answers_file)
-    project_path = Path("/home/tesla2000/PassionProjects/AutodocRemote")
+    project_path = Path("/home/tesla2000/PassionProjects/AILanguageApp")
     try:
         ignored = (
             ".venv",
@@ -27,7 +27,6 @@ def main():
             ".git",
             ".idea",
             "_templates",
-            ".pre-commit-hooks.yaml",
         )
         modified = (
             "pyproject.toml",
@@ -35,6 +34,7 @@ def main():
             ".pre-commit-config.yaml",
             ".pre-commit-hooks.yaml",
             "LICENSE",
+            "README.md",
             "main.py",
         )
         modifications = generate_modifications(project_path, answers)

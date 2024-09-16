@@ -13,7 +13,7 @@ def copy(
     modifications: Optional[dict[str, str]] = None,
 ):
     modifications = modifications or {}
-    for path in filter(lambda path: path.name not in ignored, source.iterdir()):
+    for path in filter(lambda path: path.name not in ignored, sorted(source.iterdir(), key=Path.is_dir)):
         new_path = root_dest.joinpath(path.name)
         if path.is_file() and path.name in modified:
             new_path.write_text(path.read_text().format(**modifications))

@@ -1,7 +1,0 @@
--   id: {project_name_low}
-    name: {project_name_low}
-    description: This hook automatically documents python functions and methods with docstrings.
-    entry: {project_name_low}
-    language: python
-    types: [python]
-    files: ''

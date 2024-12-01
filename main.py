@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from src.{project_name}.config import parse_arguments, Config, \
+from src.{project_name_low}.config import parse_arguments, Config, \
     create_config_with_args
 
 

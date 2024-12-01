@@ -3,9 +3,11 @@ from __future__ import annotations
 from importlib import import_module
 from pathlib import Path
 
+from .main import main
+_ = main
 
 def import_python(root: Path):
-    for module_path in root.iterdir():
+    for module_path in root.glob("*.py"):
         if module_path.name in ("__init__.py", "pycache", "__pycache__"):
             continue
         if module_path.is_file():
@@ -18,4 +20,4 @@ def import_python(root: Path):
         yield from import_python(module_path)
 
 
-__all__ = list(import_python(Path(__file__).parent))
+__all__ = ["main"] + list(import_python(Path(__file__).parent))

@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "projectblueprint"
+name = "{project_name_low}"
 version = "0.1.0"
 description = "{description}"
 authors = ["Tesla2000 <fratajczak124@gmail.com>"]
@@ -8,10 +8,11 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.11"
 pre-commit = "^3.7.1"
-dynamic-executor = "^1.2.6"
 python-dotenv = "^1.0.1"
 flake8 = "^7.0.0"
 pydantic = "^2.8.2"
+sqlalchemy = "^2.0.35"
+toml = "^0.10.2"
 
 
 [build-system]

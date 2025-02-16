@@ -14,18 +14,9 @@ repos:
     hooks:
       - id: autoflake
         args: [ --remove-all-unused-imports, --in-place ]
-  - repo: https://github.com/Tesla2000/suppress-lenght-check-import
-    rev: '0.1.1'
-    hooks:
-      - id: add-noqa-to-import
   - repo: https://github.com/pycqa/flake8
     rev: '7.1.1'
     hooks:
       - id: flake8
-        args: [ "--ignore=E203,W503" ]
-  - repo: https://github.com/Tesla2000/AutodocRemote
-    rev: '0.1.1'
-    hooks:
-      - id: autodocremote
-        stages: [push]
+        args: [ "--ignore=E203,W503,E501" ]
 default_stages: [commit]

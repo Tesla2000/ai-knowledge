@@ -1,24 +1,27 @@
 from __future__ import annotations
 
-from typing import Any
+from uuid import uuid4
 
-from sqlalchemy.orm import DeclarativeBase
+from peewee import CharField
+from peewee import Model
+
+from .connection import db
 
 
-class Base(DeclarativeBase):
-    id: Any
+class Base(Model):
+    uuid = CharField()
 
-    def __init__(self, **kw: Any):
-        from . import maker
+    def __init__(self, *args, **kwargs):
+        """
+        The `__init__` function initializes an object by ensuring that a unique
+        identifier (`uuid`) is set in the `kwargs` dictionary, defaulting to a
+        newly generated UUID if none is provided. It then calls the parent
+        class's `__init__` method with the given arguments and updated keyword
+        arguments.
+        :return: A unique identifier (UUID) for the instance.
+        """
+        kwargs["uuid"] = kwargs.get("uuid", str(uuid4()))
+        super().__init__(*args, **kwargs)
 
-        if "id" in kw:
-            session = maker()
-            existing_element = (
-                session.query(type(self)).filter_by(id=kw["id"]).first()
-            )
-            for column in type(self).__table__.columns:
-                name = column.description
-                setattr(
-                    self, name, kw.get(name, getattr(existing_element, name))
-                )
-        super().__init__()
+    class Meta:
+        database = db

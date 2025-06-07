@@ -6,12 +6,7 @@ authors = ["Tesla2000 <fratajczak124@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.11"
-python-dotenv = "^1.0.1"
-pydantic = "^2.8.2"
-libcst = "^1.4.0"
-toml = "^0.10.2"
-more-itertools = "^10.7.0"
+python = "^3.9"
 
 
 [tool.poetry.group.dev.dependencies]

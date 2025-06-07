@@ -2,16 +2,16 @@ from __future__ import annotations
 
 from pathlib import Path
 
-import libcst as cst
+import libcst
 
 from ..config import Config
-from .transformer import Transformer
+from ._transformer import Transformer
 
 
 def modify_file(filepath: Path, config: Config) -> int:
     code = filepath.read_text()
-    module = cst.parse_module(code)
-    transformer = Transformer(module, config)
+    module = libcst.parse_module(code)
+    transformer = Transformer(config)
     new_code = module.visit(transformer).code
     if new_code != code:
         filepath.write_text(new_code)

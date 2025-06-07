@@ -4,7 +4,7 @@ You can run script with docker or python
 
 ### Python
 ```shell
-python main.py --config_file src/{project_name_low}/config_sample.toml
+python main.py --config_file {project_name_low}/config_sample.toml
 ```
 
 ### Cmd

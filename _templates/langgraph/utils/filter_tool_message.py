@@ -6,7 +6,7 @@ from langchain_core.messages import BaseMessage
 from langchain_core.messages import ToolMessage
 
 
-def filter_output_messages(
+def filter_tool_messages(
     messages: Iterable[BaseMessage],
 ) -> list[BaseMessage]:
     return list(

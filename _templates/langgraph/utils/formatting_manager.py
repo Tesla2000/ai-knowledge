@@ -1,21 +1,29 @@
 from __future__ import annotations
 
-from typing import List
+from typing import List, Union
 
 from langchain.schema import AIMessage
 
-from models.formatting import AIMessageWithFormatting
-from models.formatting import FormattingType
+from models.formatting import FormattingType, OptionsFormatting, \
+    MediaFormatting, SuggestionsFormatting
 from models.formatting import MediaObject
 from models.formatting import Suggestion
 
+
+
+class _AIMessageWithFormatting(AIMessage):
+    details: dict = {
+        "formatting": Union[
+            OptionsFormatting, MediaFormatting, SuggestionsFormatting
+        ]
+    }
 
 class FormattingManager:
     @staticmethod
     def format_options_response(
         response: AIMessage, options: list[str]
-    ) -> AIMessageWithFormatting:
-        return AIMessageWithFormatting(
+    ) -> _AIMessageWithFormatting:
+        return _AIMessageWithFormatting(
             **{
                 **response.model_dump(),
                 "details": {
@@ -31,8 +39,8 @@ class FormattingManager:
     @staticmethod
     def format_media_response(
         response: AIMessage, media_list: List[MediaObject]
-    ) -> AIMessageWithFormatting:
-        return AIMessageWithFormatting(
+    ) -> _AIMessageWithFormatting:
+        return _AIMessageWithFormatting(
             **{
                 **response.model_dump(),
                 "details": {
@@ -48,8 +56,8 @@ class FormattingManager:
     @staticmethod
     def format_suggestions_response(
         response: AIMessage, suggestions: List[Suggestion]
-    ) -> AIMessageWithFormatting:
-        return AIMessageWithFormatting(
+    ) -> _AIMessageWithFormatting:
+        return _AIMessageWithFormatting(
             **{
                 **response.model_dump(),
                 "details": {

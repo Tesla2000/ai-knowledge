@@ -4,8 +4,8 @@ import json
 import logging
 import os
 import traceback
-from collections.abc import Generator
 from http.client import HTTPException
+from typing import AsyncGenerator
 
 from dotenv import load_dotenv
 from fastapi import Depends
@@ -62,7 +62,7 @@ async def stream(state: State):
 
     async def stream_generator(
         state: State, config: dict
-    ) -> Generator[str, None, None]:
+    ) -> AsyncGenerator[str, None]:
         async for event in graph.astream_events(state, config, version="v2"):
             kind = event["event"]
             if kind == "on_chat_model_stream":

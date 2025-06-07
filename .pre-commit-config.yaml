@@ -1,14 +1,30 @@
 repos:
+  - repo: https://github.com/Tesla2000/AntimagicField
+    rev: v0.1.6-alpha
+    hooks:
+      - id: antimagic_field
+        require_serial: true
+        stages: [manual]
+        args:
+          - --formatting
+          - {anti_magic_formatting}
+          - --suppress_fail
+          - "True"
+  - repo: https://github.com/Tesla2000/TupleNamer
+    rev: v0.0.3-alpha
+    hooks:
+     - id: tuple_namer
+       stages: [pre-push]
   - repo: https://github.com/psf/black
     rev: 24.8.0
     hooks:
       - id: black
         args: ["--preview", "--line-length", "79"]
-  - repo: https://github.com/asottile/reorder-python-imports
+  - repo: https://github.com/Tesla2000/temp-reorder-python-imports
     rev: v3.13.0
     hooks:
       - id: reorder-python-imports
-        args: [--py37-plus, --add-import, 'from __future__ import annotations', --py39-plus]
+        args: [--py37-plus, --add-import, 'from __future__ import annotations', --py39-plus, --retain-pre-import, 'True']
   - repo: https://github.com/PyCQA/autoflake
     rev: v2.3.1
     hooks:

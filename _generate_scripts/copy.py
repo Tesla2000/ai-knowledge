@@ -13,6 +13,8 @@ def copy(
     modifications: Optional[dict[str, str]] = None,
 ):
     modifications = modifications or {}
+    modifications.update({"pydantic_extra": 'pydantic = {extras = ["mypy"], version = "^2.11.3"}'})
+    modifications.update({"anti_magic_formatting": "\"black {filepaths} --preview --line-length 79\\nreorder-python-imports {filepaths} --py37-plus --add-import 'from __future__ import annotations' --py39-plus\""})
     for path in filter(lambda path: path.name not in ignored, sorted(source.iterdir(), key=Path.is_dir)):
         new_path = root_dest.joinpath(path.name)
         if path.is_file() and path.name in modified:

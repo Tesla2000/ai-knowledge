@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Type, Optional
+from typing import Type, Optional, get_origin, Literal
 
 import toml
 from dotenv import load_dotenv
@@ -31,6 +31,8 @@ def parse_arguments(config_class: Type[Config]):
         annotation = value.annotation
         if len(getattr(value.annotation, "__args__", [])) > 1:
             annotation = next(filter(None, value.annotation.__args__))
+        if get_origin(value.annotation) == Literal:
+            annotation = str
         parser.add_argument(
             f"--{name}" if name != "pos_args" else name,
             type=annotation,

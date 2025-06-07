@@ -1,10 +1,9 @@
 from __future__ import annotations
 
+from config_parser import ConfigCreator
 from pathlib import Path
 
 from config import Config
-from config import create_config_with_args
-from config import parse_arguments
 from transaction import transation
 from transform.modify_file import modify_file
 
@@ -19,8 +18,7 @@ def main() -> int:
     :return: An integer indicating the success (0) or failure (1) of file
     modifications.
     """
-    args = parse_arguments(Config)
-    config = create_config_with_args(Config, args)
+    config = ConfigCreator().create_config(Config)
     with transation(config.pos_args):
         return _main(config)
 

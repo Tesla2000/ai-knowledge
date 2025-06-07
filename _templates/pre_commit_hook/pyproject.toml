@@ -12,6 +12,7 @@ pydantic = "^2.8.2"
 libcst = "^1.4.0"
 toml = "^0.10.2"
 more-itertools = "^10.7.0"
+config-parser = {git = "https://github.com/Tesla2000/ConfigParser"}
 
 
 [tool.poetry.group.dev.dependencies]

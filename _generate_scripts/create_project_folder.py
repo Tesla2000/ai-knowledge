@@ -11,7 +11,7 @@ def create_project_folders(project_path: Path):
     shutil.rmtree(project_path / "src")
     # docs_path = project_path / "docs/source"
     # _move_directory_contents(docs_path / "src", docs_path / "src" / project_name)
-    (project_path / f"{project_name}/__init__.py").write_bytes(b"")
+    (project_path / f"{project_name}/__init__.py").write_text('from sys import path\n\npath.insert(0, "/".join(__file__.split("/")[:-1]))')
 
 
 def _move_directory_contents(src_dir, dest_dir):

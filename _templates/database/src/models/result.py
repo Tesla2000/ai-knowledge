@@ -5,8 +5,8 @@ from peewee import CharField
 from peewee import ForeignKeyField
 from peewee import TimestampField
 
-from .base import Base
-from .user import User
+base import Base
+user import User
 
 
 class Result(Base):

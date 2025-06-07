@@ -3,7 +3,7 @@ from __future__ import annotations
 from importlib import import_module
 from pathlib import Path
 
-from .main import main
+main import main
 _ = main
 
 def import_python(root: Path):

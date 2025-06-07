@@ -5,7 +5,7 @@ from uuid import uuid4
 from peewee import CharField
 from peewee import Model
 
-connection import db
+from connection import db
 
 
 class Base(Model):

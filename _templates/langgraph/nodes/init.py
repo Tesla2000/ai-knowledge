@@ -1,6 +1,6 @@
 from langchain.schema import AIMessage
 from state import State
-base import BaseNode
+from base import BaseNode
 
 class Init(BaseNode):
     async def execute(self, state: "State") -> "State":

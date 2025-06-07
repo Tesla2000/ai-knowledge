@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import libcst
 
-.config import Config
+from .config import Config
 
 
 class Transformer(libcst.CSTTransformer):

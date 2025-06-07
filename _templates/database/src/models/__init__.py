@@ -3,8 +3,8 @@ from __future__ import annotations
 from importlib import import_module
 from pathlib import Path
 
-base import Base
-connection import db
+from base import Base
+from connection import db
 
 
 

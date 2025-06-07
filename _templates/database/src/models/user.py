@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from peewee import CharField
 
-base import Base
+from base import Base
 
 
 class User(Base):

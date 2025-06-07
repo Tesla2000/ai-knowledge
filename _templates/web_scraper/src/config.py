@@ -8,7 +8,7 @@ from pydantic import BaseModel
 from pydantic import Field
 from pydantic_core import PydanticUndefined
 
-custom_argument_parser import CustomArgumentParser
+from custom_argument_parser import CustomArgumentParser
 
 load_dotenv()
 

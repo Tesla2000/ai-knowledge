@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/Tesla2000/AntimagicField
-    rev: v0.1.6-alpha
+    rev: v0.1.8-alpha
     hooks:
       - id: antimagic_field
         require_serial: true
@@ -20,19 +20,40 @@ repos:
     hooks:
       - id: black
         args: ["--preview", "--line-length", "79"]
+#  - repo: https://github.com/Tesla2000/FunctionSplitter
+#    rev: v0.0.7-alpha
+#    hooks:
+#     - id: function_splitter
+#       stages: [pre-push]
   - repo: https://github.com/Tesla2000/temp-reorder-python-imports
-    rev: v3.13.0
+    rev: v0.0.1
     hooks:
       - id: reorder-python-imports
-        args: [--py37-plus, --add-import, 'from __future__ import annotations', --py39-plus, --retain-pre-import, 'True']
+        args: [
+          --py37-plus,
+          --py39-plus,
+          --retain-pre-import,
+          'True',
+          --application-directories,
+          "{project_name_low}",
+        ]
   - repo: https://github.com/PyCQA/autoflake
     rev: v2.3.1
     hooks:
       - id: autoflake
         args: [ --remove-all-unused-imports, --in-place ]
+  - repo: https://github.com/Tesla2000/StaticMarker
+    rev: v0.0.3-alpha
+    hooks:
+     - id: static_marker
+       stages: [pre-commit]
+  - repo: https://github.com/Tesla2000/import-rules-enforcer
+    rev: 'v0.0.3-alpha'
+    hooks:
+      - id: import_rules_enforcer
   - repo: https://github.com/pycqa/flake8
     rev: '7.1.1'
     hooks:
       - id: flake8
-        args: [ "--ignore=E203,W503,E501" ]
+        args: [ "--ignore=E203,W503,E501,E704" ]
 default_stages: [commit]

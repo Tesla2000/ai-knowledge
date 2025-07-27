@@ -18,7 +18,7 @@ def main():
     if answers_file.exists():
         answers = json.loads(answers_file.read_text())
         os.remove(answers_file)
-    project_path = Path(f"/home/filip/PassionProjects/{input('Project name: ')}")
+    project_path = Path(f"/home/filip/work/{input('Project name: ')}")
     try:
         ignored = (
             ".venv",
@@ -35,7 +35,7 @@ def main():
             ".pre-commit-hooks.yaml",
             "LICENSE",
             "README.md",
-            "main.py",
+            "__main__.py",
         )
         modifications = generate_modifications(project_path, answers)
         project_path.mkdir(exist_ok=True)

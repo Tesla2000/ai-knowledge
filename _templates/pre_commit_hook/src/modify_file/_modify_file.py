@@ -4,14 +4,12 @@ from pathlib import Path
 
 import libcst
 
-from .config import Config
-from _transformer import Transformer
+from .._settings import Settings
 
 
-def modify_file(filepath: Path, config: Config) -> int:
-    code = filepath.read_text()
+def modify_file(filepath: Path, code: str, config: Settings) -> int:
     module = libcst.parse_module(code)
-    transformer = Transformer(config)
+    transformer = None
     new_code = module.visit(transformer).code
     if new_code != code:
         filepath.write_text(new_code)

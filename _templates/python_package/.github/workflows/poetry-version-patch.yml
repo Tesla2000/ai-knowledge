@@ -27,10 +27,13 @@ jobs:
       - run: |
           poetry version patch
           git config user.name "github-actions[bot]"
-          git config user.email "[email protected]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
           git add pyproject.toml
           git commit -m "bump: patch version"
         name: Bump patch version
+
+      - name: Pull latest main with rebase
+        run: git pull --rebase origin main
 
       - name: Push bump commit
         run: git push origin main

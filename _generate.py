@@ -18,7 +18,7 @@ def main():
     if answers_file.exists():
         answers = json.loads(answers_file.read_text())
         os.remove(answers_file)
-    project_path = Path(f"/home/filip/work/{input('Project name: ')}")
+    project_path = Path(f"/home/m-j-panie/work/{input('Project name: ')}")
     try:
         ignored = (
             ".venv",

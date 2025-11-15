@@ -1,4 +1,4 @@
-setup: poetry git_init precommit_install git_add
+setup: uv git_init precommit_install git_add
 
 precommit_install:
 	pre-commit install --hook-type pre-commit --hook-type pre-push
@@ -11,8 +11,7 @@ git_add:
 	git add .
 	git commit -m "initial commit"
 
-poetry:
-	poetry config virtualenvs.in-project true
-	poetry install
+uv:
+	uv sync
 
 .PHONY: setup

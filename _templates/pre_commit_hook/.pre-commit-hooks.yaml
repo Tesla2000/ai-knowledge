@@ -1,7 +1,7 @@
--   id: {project_name_low}
-    name: {project_name}
-    description: {description}
-    entry: {project_name_low}
+-   id: $project_name_low
+    name: $project_name
+    description: $description
+    entry: $project_name_low
     language: python
     types: [python]
     files: ''

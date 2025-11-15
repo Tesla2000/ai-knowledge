@@ -24,7 +24,7 @@ repos:
           --retain-pre-import,
           'True',
           --application-directories,
-          "{project_name_low}",
+          "$project_name_low",
         ]
   - repo: https://github.com/PyCQA/autoflake
     rev: v2.3.1

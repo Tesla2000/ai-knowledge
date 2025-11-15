@@ -5,8 +5,8 @@ from pathlib import Path
 
 from utility_functions import file_modification_transaction
 
-from {project_name_low}._settings import Settings, create_settings
-from {project_name_low}.modify_file import modify_file
+from $project_name_low._settings import Settings, create_settings
+from $project_name_low.modify_file import modify_file
 
 
 class Main:

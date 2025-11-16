@@ -18,7 +18,7 @@ def main():
     if answers_file.exists():
         answers = json.loads(answers_file.read_text())
         os.remove(answers_file)
-    base_path = Path(f"/home/m-j-panie/PassionProjects")
+    base_path = Path(f"/home/filip/PassionProjects")
     print(f"Creating project in {base_path}")
     project_path = base_path.joinpath(input('Project name: '))
     try:

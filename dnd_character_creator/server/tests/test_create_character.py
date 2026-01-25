@@ -12,6 +12,9 @@ from dnd_character_creator.character.blueprint.building_blocks import (
 from dnd_character_creator.character.blueprint.building_blocks import (
     SexAssigner,
 )
+from dnd_character_creator.character.blueprint.simplified_blocks import (
+    SimplifiedBlocks,
+)
 from dnd_character_creator.character.checkpoint import IncrementChain
 from dnd_character_creator.choices.sex import Sex
 from dnd_character_creator.server.app import EXAMPLES
@@ -181,6 +184,19 @@ class TestCreateCharacter(TestClient):
         assert "error" in data
         assert isinstance(data["increment_chain"], dict)
         assert "increments" in data["increment_chain"]
+
+    def test_create_character(self, client):
+        response = client.post(
+            "/create_character",
+            json={
+                "building_blocks": {
+                    "classes": {"class_levels": {"Wizard": 13}},
+                    "block_type": SimplifiedBlocks.get_block_type(),
+                },
+                "increment_chain": {},
+            },
+        )
+        assert response.status_code == 200
 
     @pytest.mark.parametrize("example", EXAMPLES)
     def test_create_character_examples(self, example, client):

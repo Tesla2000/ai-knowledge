@@ -38,7 +38,7 @@ class MaxFirstResolver(FeatChoiceResolver):
         description="Fallback resolver to use when highest priority stat is already maxed"
     )
 
-    def _select_from_available(
+    def select_from_available(
         self, available: list[FeatName], blueprint: Blueprint
     ) -> FeatName:
         highest_priority_stat = self.priority[0]
@@ -46,4 +46,12 @@ class MaxFirstResolver(FeatChoiceResolver):
             highest_priority_stat
         ) < blueprint.stats_cup.get_stat(highest_priority_stat):
             return FeatName.ABILITY_SCORE_IMPROVEMENT
-        return self.then._select_from_available(available, blueprint)
+        return self.then.select_from_available(available, blueprint)
+
+    def _resolve_feat(self, feat: FeatName, blueprint: Blueprint):
+        if feat not in FeatName.not_choosables():
+            return feat
+        available = [f for f in FeatName if f not in FeatName.not_choosables()]
+        if feat == FeatName.ANY_EXCEPT_ABILITY_SCORE_IMPROVEMENT:
+            return self.then.select_from_available(available, blueprint)
+        return self.select_from_available(available, blueprint)

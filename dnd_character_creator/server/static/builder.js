@@ -10,7 +10,8 @@ const LEVEL_1_WIZARD_CONFIG = {
         "class_levels": {
             "Wizard": 1
         }
-    }
+    },
+  "block_type": "SimplifiedBlocks"
 };
 
 // Initialize Monaco Editor

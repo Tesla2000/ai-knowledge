@@ -42,7 +42,7 @@ class AIFeatChoiceResolver(FeatChoiceResolver):
         description="Blueprint formatter for creating AI prompts",
     )
 
-    def _select_from_available(
+    def select_from_available(
         self, available: list[FeatName], _: Blueprint
     ) -> FeatName:
         """Not used in AI implementation - overrides _get_change instead."""
@@ -73,7 +73,9 @@ class AIFeatChoiceResolver(FeatChoiceResolver):
         instructions = ["\n## Placeholders to Resolve\n"]
 
         # Count feat placeholders
-        count = list(blueprint.feats).count(FeatName.ANY_OF_YOUR_CHOICE)
+        count = sum(
+            map(list(blueprint.feats).count, FeatName.not_choosables())
+        )
         if count == 0:
             return ""  # No placeholders to resolve
 
@@ -90,10 +92,10 @@ class AIFeatChoiceResolver(FeatChoiceResolver):
         available_feats = [
             f.value
             for f in FeatName
-            if f != FeatName.ANY_OF_YOUR_CHOICE
+            if f not in FeatName.not_choosables()
             and (
                 ability_score_improvement_allowed
-                or f != FeatName.ABILITY_SCORE_IMPROVEMENT
+                or f not in FeatName.not_choosables()
             )
         ]
         instructions.append(f"  Available: {', '.join(available_feats)}")
@@ -125,7 +127,9 @@ class AIFeatChoiceResolver(FeatChoiceResolver):
             Blueprint with feat placeholders replaced by AI selections.
         """
         # Check if there are any placeholders
-        if FeatName.ANY_OF_YOUR_CHOICE not in blueprint.feats:
+        if not any(
+            map(blueprint.feats.__contains__, FeatName.not_choosables())
+        ):
             return Blueprint()
 
         # Build prompt and get AI selection
@@ -137,7 +141,9 @@ class AIFeatChoiceResolver(FeatChoiceResolver):
         selection = structured_llm.invoke(prompt)
 
         # Validate selection count
-        count = list(blueprint.feats).count(FeatName.ANY_OF_YOUR_CHOICE)
+        count = sum(
+            map(list(blueprint.feats).count, FeatName.not_choosables())
+        )
         if len(selection.feats) != count:
             raise ValueError(
                 f"AI returned {len(selection.feats)} feats "
@@ -146,7 +152,7 @@ class AIFeatChoiceResolver(FeatChoiceResolver):
 
         # Replace placeholders
         new_feats = set(blueprint.feats)
-        new_feats.discard(FeatName.ANY_OF_YOUR_CHOICE)
+        new_feats.difference_update(FeatName.not_choosables())
         new_feats.update(selection.feats)
 
         # Count ASI selections and convert to stat choices

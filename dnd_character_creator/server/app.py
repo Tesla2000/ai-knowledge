@@ -41,7 +41,6 @@ from dnd_character_creator.server.example_generators.example_building_blocks imp
 from fastapi import FastAPI
 from fastapi import HTTPException
 from fastapi.staticfiles import StaticFiles
-from langchain_openai import ChatOpenAI
 from pydantic import BaseModel
 from pydantic import Field
 from pydantic import TypeAdapter
@@ -74,54 +73,6 @@ class _CreateCharacterRequestSchema(BaseModel):
 
 
 _building_block_creator = TypeAdapter(AnyBuildingBlock)
-
-
-# LLM configuration factory (lazy initialization to avoid API key issues at import time)
-def _get_llm_config(config_id: str) -> ChatOpenAI:
-    """Get LLM configuration by ID with lazy initialization.
-
-    Args:
-        config_id: Configuration ID (e.g., 'gpt-4o', 'gpt-4o-mini').
-
-    Returns:
-        ChatOpenAI instance for the specified configuration.
-    """
-    configs = {
-        "gpt-4o": lambda: ChatOpenAI(model="gpt-4o", temperature=0.7),
-        "gpt-4o-mini": lambda: ChatOpenAI(
-            model="gpt-4o-mini", temperature=0.3
-        ),
-        "gpt-3.5-turbo": lambda: ChatOpenAI(
-            model="gpt-3.5-turbo", temperature=0.5
-        ),
-    }
-    factory = configs.get(config_id, configs["gpt-4o-mini"])
-    return factory()
-
-
-def _preprocess_building_blocks(data: Any) -> Any:
-    """Replace LLM config strings with ChatOpenAI instances.
-
-    Args:
-        data: Dictionary, list, or other data structure to preprocess.
-
-    Returns:
-        Preprocessed data with LLM config strings replaced by ChatOpenAI objects.
-    """
-    if isinstance(data, dict):
-        result = {}
-        for key, value in data.items():
-            if key == "llm" and isinstance(value, str):
-                # Replace LLM config string with actual ChatOpenAI object
-                result[key] = _get_llm_config(value)
-            elif isinstance(value, (dict, list)):
-                result[key] = _preprocess_building_blocks(value)
-            else:
-                result[key] = value
-        return result
-    elif isinstance(data, list):
-        return [_preprocess_building_blocks(item) for item in data]
-    return data
 
 
 def _generate_building_blocks_metadata() -> list[dict[str, Any]]:
@@ -190,23 +141,18 @@ def create_app(storage: IncrementStorage):
     def create_character(
         request: _CreateCharacterRequestSchema, response: Response
     ) -> _CreateCharacterResponse:
-        # Preprocess building blocks to replace LLM config strings with ChatOpenAI objects
-        preprocessed_blocks = _preprocess_building_blocks(
-            request.building_blocks
-        )
+        blocks = request.building_blocks
 
         errors = []
         try:
             if (
-                preprocessed_blocks.get(BLOCK_TYPE_FIELD_NAME)
+                blocks.get(BLOCK_TYPE_FIELD_NAME)
                 == SimplifiedBlocks.get_block_type()
             ):
-                building_blocks = SimplifiedBlocks.model_validate(
-                    preprocessed_blocks
-                )
+                building_blocks = SimplifiedBlocks.model_validate(blocks)
             else:
                 building_blocks = _building_block_creator.validate_python(
-                    preprocessed_blocks
+                    blocks
                 )
         except ValidationError as e:
             errors.append(e)
@@ -310,11 +256,14 @@ def create_app(storage: IncrementStorage):
             if show_defaults:
                 return simplified.model_dump(exclude={"blocks"}, mode="json")
             else:
-                return simplified.model_dump(
-                    exclude={"blocks"},
-                    context={EXCLUDE_FACTORY_DEFAULTS: True},
-                    mode="json",
-                )
+                return {
+                    **simplified.model_dump(
+                        exclude={"blocks"},
+                        context={EXCLUDE_FACTORY_DEFAULTS: True},
+                        mode="json",
+                    ),
+                    "block_type": SimplifiedBlocks.get_block_type(),
+                }
         except ValidationError as e:
             raise HTTPException(status_code=422, detail=str(e))
 

@@ -31,7 +31,7 @@ class MaxIfNotMaxedResolver(FeatChoiceResolver):
         description="Ability score priority order for determining which stat to check"
     )
 
-    def _select_from_available(
+    def select_from_available(
         self, available: list[FeatName], blueprint: Blueprint
     ) -> FeatName:
         highest_priority_stat = self.priority[0]

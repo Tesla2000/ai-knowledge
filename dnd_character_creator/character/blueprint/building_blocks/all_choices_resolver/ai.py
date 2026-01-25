@@ -191,15 +191,15 @@ class AIAllNonStatChoicesResolver(BuildingBlock):
             already_known_feats = {
                 feat
                 for feat in blueprint.feats
-                if feat != FeatName.ANY_OF_YOUR_CHOICE
+                if feat not in FeatName.not_choosables()
             }
             available_feats = [
                 f.value
                 for f in FeatName
                 if f not in already_known_feats
-                and f != FeatName.ANY_OF_YOUR_CHOICE
+                and f not in FeatName.not_choosables()
                 and (
-                    f != FeatName.ABILITY_SCORE_IMPROVEMENT
+                    f not in FeatName.not_choosables()
                     or ability_score_improvement_allowed
                 )
             ]
@@ -316,8 +316,8 @@ class AIAllNonStatChoicesResolver(BuildingBlock):
         n_skill_profs_to_choose = list(blueprint.skill_proficiencies).count(
             Skill.ANY_OF_YOUR_CHOICE
         )
-        n_feats_to_choose = list(blueprint.feats).count(
-            FeatName.ANY_OF_YOUR_CHOICE
+        n_feats_to_choose = sum(
+            map(list(blueprint.feats).count, FeatName.not_choosables())
         )
         n_tools_to_choose = sum(
             1
@@ -387,7 +387,7 @@ class AIAllNonStatChoicesResolver(BuildingBlock):
             ),
             feats=set(
                 filterfalse(
-                    FeatName.ANY_OF_YOUR_CHOICE.__eq__,
+                    FeatName.not_choosables().__contains__,
                     blueprint.feats + new_feats,
                 )
             ),

@@ -49,7 +49,8 @@ class LevelIncrementer(BuildingBlock):
         if self._is_ability_score_improvement(existing_classes[self.class_]):
             return Blueprint(
                 classes=frozendict(existing_classes),
-                feats=blueprint.feats + (FeatName.ANY_OF_YOUR_CHOICE,),
+                feats=blueprint.feats
+                + (FeatName.ANY_EXCEPT_ABILITY_SCORE_IMPROVEMENT,),
             )
         return Blueprint(
             classes=frozendict(existing_classes),

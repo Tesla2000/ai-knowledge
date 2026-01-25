@@ -31,7 +31,7 @@ class RandomFeatChoiceResolver(FeatChoiceResolver):
         description="Optional seed for reproducible random selection",
     )
 
-    def _select_from_available(
+    def select_from_available(
         self, available: list[FeatName], _: Blueprint
     ) -> FeatName:
         """Randomly select a feat from available options.

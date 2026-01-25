@@ -30,7 +30,7 @@ class ToolProficiency(StrEnum):
     HEALERS_KIT = "Healer's kit"
     LAND_VEHICLES = "Land vehicles"
     WATER_VEHICLES = "Water vehicles"
-    ANY_OF_YOUR_CHOICE = "Artisan tool of your choice"
+    ANY_OF_YOUR_CHOICE = "Any of your choice"
 
 
 class GamingSet(StrEnum):

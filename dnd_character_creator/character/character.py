@@ -62,7 +62,7 @@ def _skill_not_any(skill: Skill) -> Skill:
 
 
 def _feat_not_any(feat: FeatName) -> FeatName:
-    if feat == FeatName.ANY_OF_YOUR_CHOICE:
+    if feat in FeatName.not_choosables():
         raise ValueError(
             "Character feat mustn't be any of your choice. Choose a feat"
         )

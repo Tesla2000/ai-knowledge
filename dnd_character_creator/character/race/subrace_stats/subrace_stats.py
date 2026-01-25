@@ -96,7 +96,8 @@ class SubraceStats(BaseModel):
             + self.tool_proficiencies,
             stats=new_stats,
             feats=blueprint.feats
-            + self.additional_feat * (FeatName.ANY_OF_YOUR_CHOICE,),
+            + self.additional_feat
+            * (FeatName.ANY_EXCEPT_ABILITY_SCORE_IMPROVEMENT,),
             n_stat_choices=self.statistics.any_of_your_choice,
             n_skill_choices=self.n_skills,
             skills_to_choose_from=frozenset(self.skills_to_choose_from),

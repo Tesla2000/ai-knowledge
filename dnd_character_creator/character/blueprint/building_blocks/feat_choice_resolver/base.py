@@ -26,7 +26,7 @@ class FeatChoiceResolver(BuildingBlock, ABC):
     model_config = ConfigDict(frozen=True)
 
     @abstractmethod
-    def _select_from_available(
+    def select_from_available(
         self, available: list[FeatName], blueprint: Blueprint
     ) -> FeatName:
         """Select a feat from available options.
@@ -58,17 +58,12 @@ class FeatChoiceResolver(BuildingBlock, ABC):
         )
 
         # Build excluded values list
-        excluded_values = [FeatName.ANY_OF_YOUR_CHOICE]
+        excluded_values = list(FeatName.not_choosables())
         if not ability_score_improvement_allowed:
             excluded_values.append(FeatName.ABILITY_SCORE_IMPROVEMENT)
 
         for feat in blueprint.feats:
-            if feat == FeatName.ANY_OF_YOUR_CHOICE:
-                # Build available feats list
-                available = [f for f in FeatName if f not in excluded_values]
-                resolved.add(self._select_from_available(available, blueprint))
-            else:
-                resolved.add(feat)
+            resolved.add(self._resolve_feat(feat, blueprint))
 
         # Count ASI selections and convert to stat choices
         n_ability_score_improvements = sum(
@@ -83,3 +78,9 @@ class FeatChoiceResolver(BuildingBlock, ABC):
         return Blueprint(
             feats=final_feats, n_stat_choices=2 * n_ability_score_improvements
         )
+
+    def _resolve_feat(self, feat: FeatName, blueprint: Blueprint):
+        if feat not in FeatName.not_choosables():
+            return feat
+        available = [f for f in FeatName if f not in FeatName.not_choosables()]
+        return self.select_from_available(available, blueprint)

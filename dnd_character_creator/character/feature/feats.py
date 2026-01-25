@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 from enum import StrEnum
+from typing import Self
 
 from dnd_character_creator.character.feature.feature import Feature
 from dnd_character_creator.config import resource_paths
@@ -79,7 +80,14 @@ class FeatName(StrEnum):
     WAR_CASTER = "War Caster"
     WEAPON_MASTER = "Weapon Master"
     ABILITY_SCORE_IMPROVEMENT = "Ability Score Improvement"
-    ANY_OF_YOUR_CHOICE = "Artisan tool of your choice"
+    ANY_OF_YOUR_CHOICE = "Any feat of your choice"
+    ANY_EXCEPT_ABILITY_SCORE_IMPROVEMENT = (
+        "Any except ability score improvement"
+    )
+
+    @classmethod
+    def not_choosables(cls) -> tuple[Self, ...]:
+        return cls.ANY_OF_YOUR_CHOICE, cls.ANY_EXCEPT_ABILITY_SCORE_IMPROVEMENT
 
 
 def feat_name_to_feat(feat: FeatName) -> Feature:

@@ -18,7 +18,7 @@ def main():
     if answers_file.exists():
         answers = json.loads(answers_file.read_text())
         os.remove(answers_file)
-    base_path = Path(f"/home/filip/work")
+    base_path = Path(f"/home/filip/PassionProjects")
     print(f"Creating project in {base_path}")
     project_path = base_path.joinpath(input('Project name: '))
     try:
@@ -38,6 +38,7 @@ def main():
             "LICENSE",
             "README.md",
             "__main__.py",
+            "test_import.py",
         )
         modifications = generate_modifications(project_path, answers)
         project_path.mkdir(exist_ok=True)
@@ -46,6 +47,9 @@ def main():
         copy(root_dest, template, ignored, modified, modifications)
         copy(
             root_dest, Path(__file__).parent, ignored, modified, modifications
+        )
+        copy(
+            root_dest, Path(__file__).parent.joinpath("tests"), ignored, modified, modifications
         )
         create_project_folders(project_path)
         return 0

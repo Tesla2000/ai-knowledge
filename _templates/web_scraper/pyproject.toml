@@ -12,7 +12,6 @@ dependencies = [
     "langchain>=0.2.14",
     "langchain-openai>=0.1.22",
     "beautifulsoup4>=4.12.3",
-    "toml>=0.10.2",
 ]
 
 [project.scripts]

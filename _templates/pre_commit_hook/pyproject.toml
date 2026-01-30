@@ -9,7 +9,6 @@ dependencies = [
     "python-dotenv>=1.0.1",
     "pydantic>=2.8.2",
     "libcst>=1.4.0",
-    "toml>=0.10.2",
     "more-itertools>=10.7.0",
     "pydantic-settings>=2.10.1",
     $utility_functions

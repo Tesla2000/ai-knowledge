@@ -3,6 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 from typing import Literal
+from typing import Optional
 
 from files import AnyFile
 from files import File
@@ -26,8 +27,9 @@ def _generate_default_files(
 ) -> tuple[AnyFile, ...]:
     if "description" not in validated_data:
         raise ValueError(f"Description not provided in {validated_data}")
-    return (
-        MitLicense(),
+    if "license" not in validated_data:
+        raise ValueError(f"License not provided in {validated_data}")
+    files = [
         PackagePyprojectToml(description=validated_data["description"]),
         ReadmeFile(description=validated_data["description"]),
         TestImportFile(),
@@ -42,13 +44,17 @@ def _generate_default_files(
         ),
         PackageInitPy(),
         File(relative_path=Path("tests/__init__.py"), content=""),
-    )
+    ]
+    if validated_data["license"]:
+        files.append(validated_data["license"])
+    return tuple(files)
 
 
-class _DescriptionMixin(BaseModel):
+class _PythonPackageMixin(BaseModel):
     description: str
+    license: Optional[MitLicense] = MitLicense()
 
 
-class PythonPackage(Template, _DescriptionMixin):
+class PythonPackage(Template, _PythonPackageMixin):
     type: Literal[TemplateType.PACKAGE] = TemplateType.PACKAGE
     files: tuple[AnyFile, ...] = Field(default_factory=_generate_default_files)

@@ -20,7 +20,7 @@ from unittest import TestCase
 class TestImport(TestCase):
     @staticmethod
     def test_import():
-        import $script_name
+        import $script_name  # ignore
 
         _ = $script_name
 """

@@ -1,7 +1,7 @@
-from typing import Annotated, Union
+from typing import Annotated
+from typing import Union
 
 from pydantic import Discriminator
-
 from templates.null import NullTemplate
 from templates.package import PythonPackage
 

@@ -1,12 +1,10 @@
-from abc import ABC, abstractmethod
+from abc import ABC
 from contextlib import ExitStack
 from pathlib import Path
 
-from pydantic import BaseModel
-
 from files import File
+from pydantic import BaseModel
 from templates._type import TemplateType
-
 
 
 class Template(BaseModel, ABC):

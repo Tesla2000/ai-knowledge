@@ -8,7 +8,9 @@ from files.file import File
 
 
 class VersionPatchWorkflow(File):
-    type: Literal[FileTypes.VERSION_PATCH_WORKFLOW] = FileTypes.VERSION_PATCH_WORKFLOW
+    type: Literal[FileTypes.VERSION_PATCH_WORKFLOW] = (
+        FileTypes.VERSION_PATCH_WORKFLOW
+    )
     relative_path: Path = Path(".github/workflows/package-version-patch.yml")
     content: str = """\
 name: Bump and Tag Version on Main

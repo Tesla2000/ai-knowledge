@@ -3,10 +3,9 @@ from pathlib import Path
 from string import Template
 from typing import Literal
 
-from pydantic import PositiveInt
-
 from files._types import FileTypes
 from files.file import File
+from pydantic import PositiveInt
 
 
 class MitLicense(File):
@@ -38,4 +37,3 @@ SOFTWARE.
 
     def _get_content(self, _: Path) -> str:
         return Template(self.content).substitute({"year": self.year})
-

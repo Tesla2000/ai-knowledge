@@ -3,10 +3,9 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Literal
 
-from pydantic.alias_generators import to_snake
-
 from files._types import FileTypes
 from files.file import File
+from pydantic.alias_generators import to_snake
 
 
 class PackageInitPy(File):

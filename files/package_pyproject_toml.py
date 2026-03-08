@@ -4,10 +4,9 @@ from pathlib import Path
 from string import Template
 from typing import Literal
 
-from pydantic.alias_generators import to_snake
-
 from files._types import FileTypes
 from files.file import File
+from pydantic.alias_generators import to_snake
 
 
 class PackagePyprojectToml(File):
@@ -35,6 +34,7 @@ packages = ["$project_name_low"]
 
     def _get_content(self, project_root: Path) -> str:
         return Template(self.content).safe_substitute(
-            project_name_low=self.project_name_low or to_snake(project_root.name),
+            project_name_low=self.project_name_low
+            or to_snake(project_root.name),
             description=self.description,
         )

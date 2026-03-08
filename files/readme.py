@@ -19,4 +19,6 @@ $description
 """
 
     def _get_content(self, project_root: Path) -> str:
-        return Template(self.content).safe_substitute(description=self.description)
+        return Template(self.content).safe_substitute(
+            description=self.description
+        )

@@ -1,0 +1,55 @@
+from __future__ import annotations
+
+from pathlib import Path
+from typing import Literal
+
+from files._types import FileTypes
+from files.file import File
+
+
+class VersionPatchWorkflow(File):
+    type: Literal[FileTypes.VERSION_PATCH_WORKFLOW] = FileTypes.VERSION_PATCH_WORKFLOW
+    relative_path: Path = Path(".github/workflows/package-version-patch.yml")
+    content: str = """\
+name: Bump and Tag Version on Main
+
+permissions:
+  contents: write
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+    types: [closed]
+
+jobs:
+  bump_and_tag:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' ||
+        (github.event_name == 'pull_request' && github.event.pull_request.merged == true)
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+
+      - name: Bump patch version
+        run: |
+          CURRENT_VERSION=$(grep -oP '^version = "\\K[^"]+' pyproject.toml)
+          NEW_VERSION=$(echo $CURRENT_VERSION | awk -F. '{$NF = $NF + 1;} 1' | sed 's/ /./g')
+          sed -i "s/^version = \\"$CURRENT_VERSION\\"/version = \\"$NEW_VERSION\\"/" pyproject.toml
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add pyproject.toml
+          git commit -m "bump: patch version"
+
+      - name: Pull latest main with rebase
+        run: git pull --rebase origin main
+
+      - name: Push bump commit
+        run: git push origin main
+"""

@@ -1,3 +1,16 @@
+from __future__ import annotations
+
+from pathlib import Path
+from typing import Literal
+
+from files._types import FileTypes
+from files.file import File
+
+
+class PreCommitConfig(File):
+    type: Literal[FileTypes.PRE_COMMIT_CONFIG] = FileTypes.PRE_COMMIT_CONFIG
+    relative_path: Path = Path(".pre-commit-config.yaml")
+    content: str = """\
 repos:
 #  - repo: https://github.com/Tesla2000/TupleNamer
 #    rev: v0.0.3-alpha
@@ -64,4 +77,4 @@ repos:
     hooks:
       - id: any-hook
         args: [--modifiers, '[{"type":"object-to-any"},{"type":"workflow-env-to-example","workflow_paths":[".github/workflows/tests.yml"],"ignored_names":["GH_TOKEN"]},{"type":"pydantic-config-to-model-config"},{"type":"local-imports"},{"type":"pydantic-v1-to-v2"},{"type":"str-enum-inheritance"},{"type":"forbidden-functions","forbidden_functions":["hasattr","getattr","print"]},{"type":"utcnow-to-datetime-now"},{"type":"len-as-bool"},{"type":"typing-to-builtin"}]']
-
+"""

@@ -27,6 +27,5 @@ class TestImport(TestCase):
 
     def _get_content(self, project_root: Path) -> str:
         return Template(self.content).safe_substitute(
-            script_name=self.script_name
-            or to_snake(project_root.name).replace("_", "-"),
+            script_name=self.script_name or to_snake(project_root.name),
         )

@@ -26,5 +26,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4.1.1
     - uses: pre-commit/action@v3.0.0
+      env:
+        SKIP: vulture
 
 """

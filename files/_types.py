@@ -7,6 +7,7 @@ class FileTypes(StrEnum):
     PYPROJECT_TOML = auto()
     TEST = auto()
     VERSION_PATCH_WORKFLOW = auto()
+    PRE_COMMIT_RUN_WORKFLOW = auto()
     TESTS_WORKFLOW = auto()
     README = auto()
     PRE_COMMIT_CONFIG = auto()

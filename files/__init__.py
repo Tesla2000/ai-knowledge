@@ -6,6 +6,7 @@ from files.mit_license import MitLicense
 from files.package_init_py import PackageInitPy
 from files.package_pyproject_toml import PackagePyprojectToml
 from files.pre_commit_config import PreCommitConfig
+from files.pre_commit_run_workflow import PreCommitRunWorkflow
 from files.readme import ReadmeFile
 from files.setup_script import SetupScript
 from files.test_import_file import TestImportFile
@@ -25,6 +26,7 @@ AnyFile = Annotated[
         TestsWorkflow,
         SetupScript,
         VersionPatchWorkflow,
+        PreCommitRunWorkflow,
     ],
     Discriminator("type"),
 ]
@@ -39,6 +41,7 @@ __all__ = [
     "TestsWorkflow",
     "SetupScript",
     "VersionPatchWorkflow",
+    "PreCommitRunWorkflow",
     "PackageInitPy",
     "AnyFile",
 ]

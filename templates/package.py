@@ -11,6 +11,7 @@ from files import MitLicense
 from files import PackageInitPy
 from files import PackagePyprojectToml
 from files import PreCommitConfig
+from files import PreCommitRunWorkflow
 from files import ReadmeFile
 from files import SetupScript
 from files import TestImportFile
@@ -34,6 +35,7 @@ def _generate_default_files(
         ReadmeFile(description=validated_data["description"]),
         TestImportFile(),
         VersionPatchWorkflow(),
+        PreCommitRunWorkflow(),
         TestsWorkflow(),
         PreCommitConfig(),
         SetupScript(),

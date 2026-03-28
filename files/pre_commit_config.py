@@ -13,7 +13,7 @@ class PreCommitConfig(File):
     content: str = """\
 repos:
   - repo: https://github.com/psf/black
-    rev: 26.1.0
+    rev: 26.3.1
     hooks:
       - id: black
         args: ["--preview", "--line-length", "79"]
@@ -55,7 +55,7 @@ repos:
           ]
         stages: [ pre-commit ]
   - repo: https://github.com/Tesla2000/any-hook
-    rev: v1.0.7
+    rev: v2.0.1
     hooks:
       - id: any-hook
         args: [--modifiers, '[{"type":"object-to-any"},{"type":"workflow-env-to-example","workflow_paths":[".github/workflows/tests.yml"],"ignored_names":["GH_TOKEN"]},{"type":"pydantic-config-to-model-config"},{"type":"local-imports"},{"type":"pydantic-v1-to-v2"},{"type":"str-enum-inheritance"},{"type":"forbidden-functions","forbidden_functions":["hasattr","getattr","print"]},{"type":"utcnow-to-datetime-now"},{"type":"len-as-bool"},{"type":"typing-to-builtin"}]']

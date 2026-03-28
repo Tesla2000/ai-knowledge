@@ -1,0 +1,59 @@
+name: Update pre-commit hooks
+
+permissions:
+  contents: write
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  update_hooks:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+
+      - name: Install pre-commit
+        run: uv tool install pre-commit
+
+      - name: Update .pre-commit-config.yaml
+        run: pre-commit autoupdate
+
+      - name: Update files/pre_commit_config.py
+        run: |
+          cat > /tmp/update_template.py << 'PYEOF'
+          import re
+          import subprocess
+          from pathlib import Path
+          py_file = Path("files/pre_commit_config.py")
+          content = py_file.read_text()
+          match = re.search(r'content: str = """\\\n(.*?)\n"""', content, re.DOTALL)
+          template_path = Path("/tmp/pre-commit-template.yaml")
+          template_path.write_text(match.group(1) + "\n")
+          subprocess.run(
+              ["pre-commit", "autoupdate", "--config", str(template_path)],
+              check=True,
+          )
+          new_yaml = template_path.read_text().rstrip("\n")
+          updated = re.sub(
+              r'(content: str = """\\\n).*?(\n""")',
+              lambda m: m.group(1) + new_yaml + m.group(2),
+              content,
+              flags=re.DOTALL,
+          )
+          py_file.write_text(updated)
+          PYEOF
+          python3 /tmp/update_template.py
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .pre-commit-config.yaml files/pre_commit_config.py
+          git diff --staged --quiet || (git commit -m "chore: update pre-commit hook revisions" && git pull --rebase origin main && git push origin main)

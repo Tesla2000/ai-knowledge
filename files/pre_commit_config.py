@@ -1,15 +1,18 @@
 from __future__ import annotations
 
 from pathlib import Path
+from string import Template
 from typing import Literal
 
 from files._base import FileBase
 from files._types import FileType
+from files.package_pyproject_toml import Dependency
 
 
 class PreCommitConfig(FileBase):
     type: Literal[FileType.PRE_COMMIT_CONFIG] = FileType.PRE_COMMIT_CONFIG
     relative_path: Path = Path(".pre-commit-config.yaml")
+    mypy_additional_dependencies: tuple[Dependency, ...] = ()
     content: str = """\
 repos:
   - repo: https://github.com/psf/black
@@ -58,12 +61,21 @@ repos:
     rev: v1.19.1
     hooks:
       - id: mypy
-        additional_dependencies:
-          - pydantic>=2.8.2
-          - pydantic-settings>=2.12.0
-  - repo: https://github.com/Tesla2000/any-hook
+$mypy_additional_dependencies  - repo: https://github.com/Tesla2000/any-hook
     rev: v2.0.3
     hooks:
       - id: any-hook
         args: [--modifiers, '[{"type":"object-to-any"},{"type":"workflow-env-to-example","workflow_paths":[".github/workflows/tests.yml"],"ignored_names":["GH_TOKEN"]},{"type":"pydantic-config-to-model-config"},{"type":"local-imports"},{"type":"pydantic-v1-to-v2"},{"type":"str-enum-inheritance"},{"type":"forbidden-functions","forbidden_functions":["hasattr","getattr","print"]},{"type":"utcnow-to-datetime-now"},{"type":"len-as-bool"},{"type":"typing-to-builtin"}]']
 """
+
+    def _get_content(self, _: Path) -> str:
+        if self.mypy_additional_dependencies:
+            deps_str = "        additional_dependencies:\n" + "".join(
+                f"          - {dep}\n"
+                for dep in self.mypy_additional_dependencies
+            )
+        else:
+            deps_str = ""
+        return Template(self.content).safe_substitute(
+            mypy_additional_dependencies=deps_str,
+        )

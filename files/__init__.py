@@ -4,6 +4,7 @@ from typing import Union
 from files.file import File
 from files.mit_license import MitLicense
 from files.package_init_py import PackageInitPy
+from files.package_pyproject_toml import Dependency
 from files.package_pyproject_toml import PackagePyprojectToml
 from files.pre_commit_config import PreCommitConfig
 from files.pre_commit_run_workflow import PreCommitRunWorkflow
@@ -44,4 +45,5 @@ __all__ = [
     "PreCommitRunWorkflow",
     "PackageInitPy",
     "AnyFile",
+    "Dependency",
 ]

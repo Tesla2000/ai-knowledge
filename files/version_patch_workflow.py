@@ -3,13 +3,13 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Literal
 
-from files._types import FileTypes
-from files.file import File
+from files._base import FileBase
+from files._types import FileType
 
 
-class VersionPatchWorkflow(File):
-    type: Literal[FileTypes.VERSION_PATCH_WORKFLOW] = (
-        FileTypes.VERSION_PATCH_WORKFLOW
+class VersionPatchWorkflow(FileBase):
+    type: Literal[FileType.VERSION_PATCH_WORKFLOW] = (
+        FileType.VERSION_PATCH_WORKFLOW
     )
     relative_path: Path = Path(".github/workflows/package-version-patch.yml")
     content: str = """\

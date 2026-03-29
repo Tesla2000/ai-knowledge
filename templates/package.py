@@ -30,7 +30,7 @@ def _generate_default_files(
         raise ValueError(f"Description not provided in {validated_data}")
     if "license" not in validated_data:
         raise ValueError(f"License not provided in {validated_data}")
-    files = [
+    files: list[AnyFile] = [
         PackagePyprojectToml(description=validated_data["description"]),
         ReadmeFile(description=validated_data["description"]),
         TestImportFile(),

@@ -3,12 +3,12 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Literal
 
-from files._types import FileTypes
-from files.file import File
+from files._base import FileBase
+from files._types import FileType
 
 
-class PreCommitConfig(File):
-    type: Literal[FileTypes.PRE_COMMIT_CONFIG] = FileTypes.PRE_COMMIT_CONFIG
+class PreCommitConfig(FileBase):
+    type: Literal[FileType.PRE_COMMIT_CONFIG] = FileType.PRE_COMMIT_CONFIG
     relative_path: Path = Path(".pre-commit-config.yaml")
     content: str = """\
 repos:
@@ -54,6 +54,13 @@ repos:
              "--extra-sys-path=.venv/lib/python3.12/site-packages,.",
           ]
         stages: [ pre-commit ]
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.19.1
+    hooks:
+      - id: mypy
+        additional_dependencies:
+          - pydantic>=2.8.2
+          - pydantic-settings>=2.12.0
   - repo: https://github.com/Tesla2000/any-hook
     rev: v2.0.3
     hooks:

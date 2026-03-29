@@ -4,13 +4,13 @@ from pathlib import Path
 from string import Template
 from typing import Literal
 
-from files._types import FileTypes
-from files.file import File
+from files._base import FileBase
+from files._types import FileType
 from pydantic.alias_generators import to_snake
 
 
-class PackagePyprojectToml(File):
-    type: Literal[FileTypes.PYPROJECT_TOML] = FileTypes.PYPROJECT_TOML
+class PackagePyprojectToml(FileBase):
+    type: Literal[FileType.PYPROJECT_TOML] = FileType.PYPROJECT_TOML
     relative_path: Path = Path("pyproject.toml")
     project_name_low: str | None = None
     description: str

@@ -4,13 +4,13 @@ from pathlib import Path
 from string import Template
 from typing import Literal
 
-from files._types import FileTypes
-from files.file import File
+from files._base import FileBase
+from files._types import FileType
 from pydantic.alias_generators import to_snake
 
 
-class TestImportFile(File):
-    type: Literal[FileTypes.TEST] = FileTypes.TEST
+class TestImportFile(FileBase):
+    type: Literal[FileType.TEST] = FileType.TEST
     relative_path: Path = Path("tests/test_import.py")
     script_name: str | None = None
     content: str = """\

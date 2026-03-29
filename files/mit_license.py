@@ -3,13 +3,13 @@ from pathlib import Path
 from string import Template
 from typing import Literal
 
-from files._types import FileTypes
-from files.file import File
+from files._base import FileBase
+from files._types import FileType
 from pydantic import PositiveInt
 
 
-class MitLicense(File):
-    type: Literal[FileTypes.LICENSE] = FileTypes.LICENSE
+class MitLicense(FileBase):
+    type: Literal[FileType.LICENSE] = FileType.LICENSE
     relative_path: Path = Path("LICENSE")
     year: PositiveInt = datetime.now().year
     content: str = """MIT License

@@ -2,14 +2,14 @@ from abc import ABC
 from contextlib import ExitStack
 from pathlib import Path
 
-from files import File
+from files import AnyFile
 from pydantic import BaseModel
 from templates._type import TemplateType
 
 
 class Template(BaseModel, ABC):
     type: TemplateType
-    files: tuple[File, ...]
+    files: tuple[AnyFile, ...]
 
     def generate(self, project_root: Path) -> None:
         with ExitStack() as stack:

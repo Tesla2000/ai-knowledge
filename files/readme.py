@@ -4,12 +4,12 @@ from pathlib import Path
 from string import Template
 from typing import Literal
 
-from files._types import FileTypes
-from files.file import File
+from files._base import FileBase
+from files._types import FileType
 
 
-class ReadmeFile(File):
-    type: Literal[FileTypes.README] = FileTypes.README
+class ReadmeFile(FileBase):
+    type: Literal[FileType.README] = FileType.README
     relative_path: Path = Path("README.md")
     description: str
     content: str = """\

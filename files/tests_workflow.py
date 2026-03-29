@@ -3,12 +3,12 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Literal
 
-from files._types import FileTypes
-from files.file import File
+from files._base import FileBase
+from files._types import FileType
 
 
-class TestsWorkflow(File):
-    type: Literal[FileTypes.TESTS_WORKFLOW] = FileTypes.TESTS_WORKFLOW
+class TestsWorkflow(FileBase):
+    type: Literal[FileType.TESTS_WORKFLOW] = FileType.TESTS_WORKFLOW
     relative_path: Path = Path(".github/workflows/tests.yml")
     content: str = """\
 name: Run tests

@@ -2,7 +2,8 @@ from enum import auto
 from enum import StrEnum
 
 
-class FileTypes(StrEnum):
+class FileType(StrEnum):
+    FILE = auto()
     LICENSE = auto()
     PYPROJECT_TOML = auto()
     TEST = auto()

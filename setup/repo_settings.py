@@ -1,9 +1,12 @@
 from __future__ import annotations
 
 from pydantic import BaseModel
+from pydantic import ConfigDict
 
 
-class RepoSettings(BaseModel, frozen=True):
+class RepoSettings(BaseModel):
+    model_config = ConfigDict(frozen=True)
+
     private: bool = True
     delete_branch_on_merge: bool = True
     allow_squash_merge: bool = True

@@ -3,7 +3,7 @@ from typing import Union
 
 from files.file import File
 from files.mit_license import MitLicense
-from files.package_init_py import PackageInitPy
+from files.package_init_py import PackageFile
 from files.package_pyproject_toml import Dependency
 from files.package_pyproject_toml import PackagePyprojectToml
 from files.pre_commit_config import PreCommitConfig
@@ -18,7 +18,7 @@ from pydantic import Discriminator
 AnyFile = Annotated[
     Union[
         File,
-        PackageInitPy,
+        PackageFile,
         MitLicense,
         PackagePyprojectToml,
         PreCommitConfig,
@@ -43,7 +43,7 @@ __all__ = [
     "SetupScript",
     "VersionPatchWorkflow",
     "PreCommitRunWorkflow",
-    "PackageInitPy",
+    "PackageFile",
     "AnyFile",
     "Dependency",
 ]

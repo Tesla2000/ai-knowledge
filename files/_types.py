@@ -13,4 +13,4 @@ class FileType(StrEnum):
     README = auto()
     PRE_COMMIT_CONFIG = auto()
     SETUP_SCRIPT = auto()
-    INIT_PY = auto()
+    PACKAGE = auto()

@@ -8,8 +8,8 @@ from files._types import FileType
 from pydantic.alias_generators import to_snake
 
 
-class PackageInitPy(FileBase):
-    type: Literal[FileType.INIT_PY] = FileType.INIT_PY
+class PackageFile(FileBase):
+    type: Literal[FileType.PACKAGE] = FileType.PACKAGE
     relative_path: Path = Path("__init__.py")
     content: str = ""
 

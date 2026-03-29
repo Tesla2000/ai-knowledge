@@ -8,6 +8,7 @@ from files._base import FileBase
 from files._types import FileType
 from pydantic import BaseModel
 from pydantic import ConfigDict
+from pydantic import EmailStr
 from pydantic.alias_generators import to_snake
 
 
@@ -27,7 +28,7 @@ class PackagePyprojectToml(FileBase):
     version: str = "0.1.0"
     description: str
     author_name: str = "Tesla2000"
-    author_email: str = "fratajczak124@gmail.com"
+    author_email: EmailStr = "fratajczak124@gmail.com"
     python_version: str = "3.9"
     dependencies: tuple[Dependency, ...] = ()
     content: str = """\

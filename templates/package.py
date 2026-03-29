@@ -8,7 +8,7 @@ from typing import Optional
 from files import AnyFile
 from files import File
 from files import MitLicense
-from files import PackageInitPy
+from files import PackageFile
 from files import PackagePyprojectToml
 from files import PreCommitConfig
 from files import PreCommitRunWorkflow
@@ -44,7 +44,7 @@ def _generate_default_files(
             relative_path=Path(".gitignore"),
             content="/sandbox.py\n/.idea\n/.env\n/.venv\n/.vscode\n/.run/\n*__pycache__\n/docs/build/\n",
         ),
-        PackageInitPy(),
+        PackageFile(),
         File(relative_path=Path("tests/__init__.py"), content=""),
     ]
     if validated_data["license"]:

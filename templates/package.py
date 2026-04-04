@@ -14,6 +14,7 @@ from files import PackagePyprojectToml
 from files import PreCommitConfig
 from files import PreCommitRunWorkflow
 from files import PythonVersionFile
+from files import PyTypedFile
 from files import ReadmeFile
 from files import SetupScript
 from files import TestImportFile
@@ -53,6 +54,7 @@ def _generate_default_files(
             content="/sandbox.py\n/.idea\n/.env\n/.venv\n/.vscode\n/.run/\n*__pycache__\n/docs/build/\n",
         ),
         PackageFile(),
+        PyTypedFile(),
         File(relative_path=Path("tests/__init__.py"), content=""),
     ]
     if validated_data["license"]:

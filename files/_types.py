@@ -16,3 +16,4 @@ class FileType(StrEnum):
     PACKAGE = auto()
     STUB_GENERATION_WORKFLOW = auto()
     PYTHON_VERSION = auto()
+    PY_TYPED = auto()

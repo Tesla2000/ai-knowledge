@@ -52,10 +52,10 @@ jobs:
         run: uv sync --group stubs
 
       - name: Generate stubs
-        run: uv run python -m mypy.stubgen -p {directory} -o stubs/
+        run: uv run python -m mypy.stubgen -p {directory} -o .
 
       - name: Verify stubs with mypy
-        run: uv run mypy stubs/
+        run: uv run mypy {directory}
 
       - name: Commit stubs
         if: github.event_name == 'push'
@@ -65,7 +65,7 @@ jobs:
           git stash --include-untracked
           git pull --rebase origin main
           git stash pop
-          git add stubs/
+          git add {directory}
           git diff --cached --quiet || git commit -m "chore: regenerate stubs for {directory}"
           git push origin main
 """

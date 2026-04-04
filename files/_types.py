@@ -14,3 +14,4 @@ class FileType(StrEnum):
     PRE_COMMIT_CONFIG = auto()
     SETUP_SCRIPT = auto()
     PACKAGE = auto()
+    STUB_GENERATION_WORKFLOW = auto()

@@ -31,6 +31,7 @@ class PackagePyprojectToml(FileBase):
     author_email: EmailStr = "fratajczak124@gmail.com"
     python_version: str = "3.9"
     dependencies: tuple[Dependency, ...] = ()
+    dependency_groups: dict[str, tuple[Dependency, ...]] = {}
     content: str = """\
 [project]
 name = "$project_name_low"
@@ -58,7 +59,7 @@ packages = ["$project_name_low"]
             )
         else:
             deps_str = "[]"
-        return Template(self.content).safe_substitute(
+        base = Template(self.content).safe_substitute(
             project_name_low=self.project_name_low
             or to_snake(project_root.name),
             version=self.version,
@@ -68,3 +69,12 @@ packages = ["$project_name_low"]
             python_version=self.python_version,
             dependencies=deps_str,
         )
+        if not self.dependency_groups:
+            return base
+        groups_str = "\n[dependency-groups]\n"
+        for group, deps in self.dependency_groups.items():
+            group_deps = (
+                "[\n" + "".join(f'    "{dep}",\n' for dep in deps) + "]"
+            )
+            groups_str += f"{group} = {group_deps}\n"
+        return base + groups_str

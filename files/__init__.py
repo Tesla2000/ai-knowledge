@@ -10,6 +10,7 @@ from files.pre_commit_config import PreCommitConfig
 from files.pre_commit_run_workflow import PreCommitRunWorkflow
 from files.readme import ReadmeFile
 from files.setup_script import SetupScript
+from files.stub_generation_workflow import StubGenerationWorkflow
 from files.test_import_file import TestImportFile
 from files.tests_workflow import TestsWorkflow
 from files.version_patch_workflow import VersionPatchWorkflow
@@ -28,6 +29,7 @@ AnyFile = Annotated[
         SetupScript,
         VersionPatchWorkflow,
         PreCommitRunWorkflow,
+        StubGenerationWorkflow,
     ],
     Discriminator("type"),
 ]
@@ -44,6 +46,7 @@ __all__ = [
     "VersionPatchWorkflow",
     "PreCommitRunWorkflow",
     "PackageFile",
+    "StubGenerationWorkflow",
     "AnyFile",
     "Dependency",
 ]

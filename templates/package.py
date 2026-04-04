@@ -6,6 +6,7 @@ from typing import Literal
 from typing import Optional
 
 from files import AnyFile
+from files import Dependency
 from files import File
 from files import MitLicense
 from files import PackageFile
@@ -31,7 +32,12 @@ def _generate_default_files(
     if "license" not in validated_data:
         raise ValueError(f"License not provided in {validated_data}")
     files: list[AnyFile] = [
-        PackagePyprojectToml(description=validated_data["description"]),
+        PackagePyprojectToml(
+            description=validated_data["description"],
+            dependency_groups={
+                "stubs": (Dependency(name="mypy", constraint=">=1.19.1"),)
+            },
+        ),
         ReadmeFile(description=validated_data["description"]),
         TestImportFile(),
         VersionPatchWorkflow(),

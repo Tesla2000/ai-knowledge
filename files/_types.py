@@ -15,3 +15,4 @@ class FileType(StrEnum):
     SETUP_SCRIPT = auto()
     PACKAGE = auto()
     STUB_GENERATION_WORKFLOW = auto()
+    PYTHON_VERSION = auto()

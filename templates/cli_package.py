@@ -13,6 +13,7 @@ from files import PackageFile
 from files import PackagePyprojectToml
 from files import PreCommitConfig
 from files import PreCommitRunWorkflow
+from files import PythonVersionFile
 from files import ReadmeFile
 from files import SetupScript
 from files import StubGenerationWorkflow
@@ -75,6 +76,7 @@ def _generate_default_files(
         ),
         SetupScript(),
         File(relative_path=Path(".env"), content=""),
+        PythonVersionFile(python_version="3.12"),
         File(
             relative_path=Path(".gitignore"),
             content="/sandbox.py\n/.idea\n/.env\n/.venv\n/.vscode\n/.run/\n*__pycache__\n/docs/build/\n",

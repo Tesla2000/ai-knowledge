@@ -15,9 +15,9 @@ from files import PreCommitConfig
 from files import PreCommitRunWorkflow
 from files import ReadmeFile
 from files import SetupScript
+from files import StubGenerationWorkflow
 from files import TestImportFile
 from files import TestsWorkflow
-from files import VersionPatchWorkflow
 from pydantic import BaseModel
 from pydantic import Field
 from templates._base import Template
@@ -59,10 +59,12 @@ def _generate_default_files(
                 Dependency(name="pydantic-settings", constraint=">=2.13.0"),
             ),
             python_version="3.10",
+            dependency_groups={
+                "stubs": (Dependency(name="mypy", constraint=">=1.19.1"),)
+            },
         ),
         ReadmeFile(description=validated_data["description"]),
         TestImportFile(),
-        VersionPatchWorkflow(),
         PreCommitRunWorkflow(),
         TestsWorkflow(),
         PreCommitConfig(
@@ -82,6 +84,7 @@ def _generate_default_files(
             relative_path=Path("__main__.py"), content=_MAIN_PY_CONTENT
         ),
         File(relative_path=Path("tests/__init__.py"), content=""),
+        StubGenerationWorkflow(),
     ]
     if validated_data["license"]:
         files.append(validated_data["license"])

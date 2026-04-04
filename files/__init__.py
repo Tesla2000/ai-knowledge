@@ -8,6 +8,7 @@ from files.package_pyproject_toml import Dependency
 from files.package_pyproject_toml import PackagePyprojectToml
 from files.pre_commit_config import PreCommitConfig
 from files.pre_commit_run_workflow import PreCommitRunWorkflow
+from files.python_version_file import PythonVersionFile
 from files.readme import ReadmeFile
 from files.setup_script import SetupScript
 from files.stub_generation_workflow import StubGenerationWorkflow
@@ -30,6 +31,7 @@ AnyFile = Annotated[
         VersionPatchWorkflow,
         PreCommitRunWorkflow,
         StubGenerationWorkflow,
+        PythonVersionFile,
     ],
     Discriminator("type"),
 ]
@@ -47,6 +49,7 @@ __all__ = [
     "PreCommitRunWorkflow",
     "PackageFile",
     "StubGenerationWorkflow",
+    "PythonVersionFile",
     "AnyFile",
     "Dependency",
 ]

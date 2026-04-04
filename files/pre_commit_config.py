@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from pathlib import Path
-from string import Template
 from typing import Literal
 
 from files._base import FileBase
@@ -61,7 +60,8 @@ repos:
     rev: v1.19.1
     hooks:
       - id: mypy
-$mypy_additional_dependencies  - repo: https://github.com/Tesla2000/any-hook
+        # mypy_additional_dependencies
+  - repo: https://github.com/Tesla2000/any-hook
     rev: v2.0.3
     hooks:
       - id: any-hook
@@ -76,6 +76,6 @@ $mypy_additional_dependencies  - repo: https://github.com/Tesla2000/any-hook
             )
         else:
             deps_str = ""
-        return Template(self.content).safe_substitute(
-            mypy_additional_dependencies=deps_str,
+        return self.content.replace(
+            "        # mypy_additional_dependencies\n", deps_str
         )

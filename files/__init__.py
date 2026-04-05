@@ -12,7 +12,6 @@ from files.py_typed_file import PyTypedFile
 from files.python_version_file import PythonVersionFile
 from files.readme import ReadmeFile
 from files.setup_script import SetupScript
-from files.stub_generation_workflow import StubGenerationWorkflow
 from files.test_import_file import TestImportFile
 from files.tests_workflow import TestsWorkflow
 from files.version_patch_workflow import VersionPatchWorkflow
@@ -31,7 +30,6 @@ AnyFile = Annotated[
         SetupScript,
         VersionPatchWorkflow,
         PreCommitRunWorkflow,
-        StubGenerationWorkflow,
         PyTypedFile,
         PythonVersionFile,
     ],
@@ -50,7 +48,6 @@ __all__ = [
     "VersionPatchWorkflow",
     "PreCommitRunWorkflow",
     "PackageFile",
-    "StubGenerationWorkflow",
     "PythonVersionFile",
     "PyTypedFile",
     "AnyFile",

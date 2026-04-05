@@ -45,7 +45,7 @@ def _generate_default_files(
         VersionPatchWorkflow(),
         PreCommitRunWorkflow(),
         TestsWorkflow(),
-        PreCommitConfig(),
+        PreCommitConfig(generate_stubs=True),
         SetupScript(),
         File(relative_path=Path(".env"), content=""),
         PythonVersionFile(python_version="3.12"),

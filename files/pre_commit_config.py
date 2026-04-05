@@ -1,17 +1,20 @@
 from __future__ import annotations
 
+import json
 from pathlib import Path
 from typing import Literal
 
 from files._base import FileBase
 from files._types import FileType
 from files.package_pyproject_toml import Dependency
+from pydantic_settings import CliImplicitFlag
 
 
 class PreCommitConfig(FileBase):
     type: Literal[FileType.PRE_COMMIT_CONFIG] = FileType.PRE_COMMIT_CONFIG
     relative_path: Path = Path(".pre-commit-config.yaml")
     mypy_additional_dependencies: tuple[Dependency, ...] = ()
+    generate_stubs: CliImplicitFlag[bool] = False
     content: str = """\
 repos:
   - repo: https://github.com/psf/black
@@ -64,13 +67,13 @@ repos:
         # mypy_additional_dependencies
         args: [ --strict ]
   - repo: https://github.com/Tesla2000/any-hook
-    rev: v2.0.4
+    rev: v2.0.12
     hooks:
       - id: any-hook
-        args: [--modifiers, '[{"type":"workflow-env-to-example","workflow_paths":[".github/workflows/tests.yml"],"ignored_names":["GH_TOKEN"]},{"type":"pydantic-config-to-model-config"},{"type":"local-imports"},{"type":"pydantic-v1-to-v2"},{"type":"str-enum-inheritance"},{"type":"forbidden-functions","forbidden_functions":["hasattr","getattr","print"]},{"type":"utcnow-to-datetime-now"},{"type":"len-as-bool"},{"type":"typing-to-builtin"}]']
+        args: [--modifiers, '[$package-dependent{"type":"workflow-env-to-example","workflow_paths":[".github/workflows/tests.yml"],"ignored_names":["GH_TOKEN"]},{"type":"pydantic-config-to-model-config"},{"type":"local-imports"},{"type":"pydantic-v1-to-v2"},{"type":"str-enum-inheritance"},{"type":"forbidden-functions","forbidden_functions":["hasattr","getattr","print"]},{"type":"utcnow-to-datetime-now"},{"type":"len-as-bool"},{"type":"typing-to-builtin"}]']
 """  # noqa: W605
 
-    def _get_content(self, _: Path) -> str:
+    def _get_content(self, project_root: Path) -> str:
         if self.mypy_additional_dependencies:
             deps_str = "        additional_dependencies:\n" + "".join(
                 f"          - {dep}\n"
@@ -78,6 +81,24 @@ repos:
             )
         else:
             deps_str = ""
-        return self.content.replace(
+        hooks = [
+            {
+                "type": "git-add",
+                "directories": [project_root.name, "tests"],
+            }
+        ]
+        if self.generate_stubs:
+            hooks.append(
+                {
+                    "type": "generate-stubs",
+                    "directories": [project_root.name],
+                }
+            )
+        content = self.content.replace(
+            "$package-dependent",
+            ",".join(map(json.dumps, hooks)),
+        )
+
+        return content.replace(
             "        # mypy_additional_dependencies\n", deps_str
         )

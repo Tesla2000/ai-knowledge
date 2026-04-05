@@ -64,7 +64,7 @@ repos:
         # mypy_additional_dependencies
         args: [ --strict ]
   - repo: https://github.com/Tesla2000/any-hook
-    rev: v2.0.3
+    rev: v2.0.4
     hooks:
       - id: any-hook
         args: [--modifiers, '[{"type":"workflow-env-to-example","workflow_paths":[".github/workflows/tests.yml"],"ignored_names":["GH_TOKEN"]},{"type":"pydantic-config-to-model-config"},{"type":"local-imports"},{"type":"pydantic-v1-to-v2"},{"type":"str-enum-inheritance"},{"type":"forbidden-functions","forbidden_functions":["hasattr","getattr","print"]},{"type":"utcnow-to-datetime-now"},{"type":"len-as-bool"},{"type":"typing-to-builtin"}]']

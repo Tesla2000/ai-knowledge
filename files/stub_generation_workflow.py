@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import ast
 from pathlib import Path
 from typing import Literal
 
@@ -8,17 +9,96 @@ from files._types import FileType
 from pydantic.alias_generators import to_snake
 
 
-class StubGenerationWorkflow(FileBase):
-    type: Literal[FileType.STUB_GENERATION_WORKFLOW] = (
-        FileType.STUB_GENERATION_WORKFLOW
+def is_field_with_default(node: ast.expr) -> bool:
+    if not isinstance(node, ast.Call):
+        return False
+    func = node.func
+    name = (
+        func.id
+        if isinstance(func, ast.Name)
+        else (func.attr if isinstance(func, ast.Attribute) else None)
     )
-    stub_directory: str | None = None
-    relative_path: Path = Path(".github/workflows/generate-stubs.yml")
-    content: str = ""
+    if name != "Field":
+        return False
+    return any(
+        kw.arg in ("default", "default_factory") for kw in node.keywords
+    )
 
-    def _get_content(self, project_root: Path) -> str:
-        directory = self.stub_directory or to_snake(project_root.name)
-        return f"""\
+
+def has_default_in_annotation(annotation: ast.expr) -> bool:
+    if not isinstance(annotation, ast.Subscript):
+        return False
+    value = annotation.value
+    if isinstance(value, ast.Name):
+        attr = value.id
+    elif isinstance(value, ast.Attribute):
+        attr = value.attr
+    else:
+        return False
+    if attr != "Annotated":
+        return False
+    slice_node = annotation.slice
+    elts = (
+        slice_node.elts if isinstance(slice_node, ast.Tuple) else [slice_node]
+    )
+    return any(is_field_with_default(e) for e in elts[1:])
+
+
+def get_fields_with_defaults(src_path: Path) -> dict[str, set[str]]:
+    tree = ast.parse(src_path.read_text())
+    result: dict[str, set[str]] = {}
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.ClassDef):
+            continue
+        bases = [ast.unparse(b) for b in node.bases]
+        if not any("Model" in b for b in bases):
+            continue
+        fields: set[str] = set()
+        for stmt in node.body:
+            if not isinstance(stmt, ast.AnnAssign):
+                continue
+            if not isinstance(stmt.target, ast.Name):
+                continue
+            if stmt.value is not None or has_default_in_annotation(
+                stmt.annotation
+            ):
+                fields.add(stmt.target.id)
+        if fields:
+            result[node.name] = fields
+    return result
+
+
+def fix_pydantic_stubs(directory: Path) -> None:
+    for src_path in directory.rglob("*.py"):
+        stub_path = src_path.with_suffix(".pyi")
+        if not stub_path.exists():
+            continue
+        fields_with_defaults = get_fields_with_defaults(src_path)
+        if not fields_with_defaults:
+            continue
+        lines = stub_path.read_text().splitlines()
+        new_lines: list[str] = []
+        current_class: str | None = None
+        for line in lines:
+            stripped = line.lstrip()
+            if stripped.startswith("class "):
+                name = stripped[6:].split("(")[0].split(":")[0].strip()
+                current_class = name if name in fields_with_defaults else None
+            if (
+                current_class
+                and ":" in stripped
+                and not stripped.startswith(("def ", "class ", "#", "@"))
+                and "=" not in stripped
+            ):
+                field_name = stripped.split(":")[0].strip()
+                if field_name in fields_with_defaults[current_class]:
+                    line = line.rstrip() + " = ..."
+            new_lines.append(line)
+        stub_path.write_text("\n".join(new_lines) + "\n")
+
+
+def _build_content(directory: str) -> str:
+    return f"""\
 name: Generate Stubs
 
 permissions:
@@ -54,6 +134,78 @@ jobs:
       - name: Generate stubs
         run: uv run python -m mypy.stubgen -p {directory} -o .
 
+      - name: Fix Pydantic defaults in stubs
+        env:
+          STUB_DIR: {directory}
+          FIX_SCRIPT: |
+            import ast
+            import os
+            from pathlib import Path
+            def is_field_with_default(node: ast.expr) -> bool:
+                if not isinstance(node, ast.Call):
+                    return False
+                func = node.func
+                name = func.id if isinstance(func, ast.Name) else (func.attr if isinstance(func, ast.Attribute) else None)
+                if name != 'Field':
+                    return False
+                return any(kw.arg in ('default', 'default_factory') for kw in node.keywords)
+            def has_default_in_annotation(annotation: ast.expr) -> bool:
+                if not isinstance(annotation, ast.Subscript):
+                    return False
+                value = annotation.value
+                attr = value.id if isinstance(value, ast.Name) else (value.attr if isinstance(value, ast.Attribute) else None)
+                if attr != 'Annotated':
+                    return False
+                slice_node = annotation.slice
+                elts = slice_node.elts if isinstance(slice_node, ast.Tuple) else [slice_node]
+                return any(is_field_with_default(e) for e in elts[1:])
+            def get_fields_with_defaults(src_path: Path) -> dict[str, set[str]]:
+                tree = ast.parse(src_path.read_text())
+                result: dict[str, set[str]] = dict()
+                for node in ast.walk(tree):
+                    if not isinstance(node, ast.ClassDef):
+                        continue
+                    bases = [ast.unparse(b) for b in node.bases]
+                    if not any('Model' in b for b in bases):
+                        continue
+                    fields = set(
+                        stmt.target.id
+                        for stmt in node.body
+                        if isinstance(stmt, ast.AnnAssign)
+                        and isinstance(stmt.target, ast.Name)
+                        and (stmt.value is not None or has_default_in_annotation(stmt.annotation))
+                    )
+                    if fields:
+                        result[node.name] = fields
+                return result
+            for src_path in Path(os.environ['STUB_DIR']).rglob('*.py'):
+                stub_path = src_path.with_suffix('.pyi')
+                if not stub_path.exists():
+                    continue
+                fields_with_defaults = get_fields_with_defaults(src_path)
+                if not fields_with_defaults:
+                    continue
+                lines = stub_path.read_text().splitlines()
+                new_lines = []
+                current_class = None
+                for line in lines:
+                    stripped = line.lstrip()
+                    if stripped.startswith('class '):
+                        name = stripped[6:].split('(')[0].split(':')[0].strip()
+                        current_class = name if name in fields_with_defaults else None
+                    if (
+                        current_class
+                        and ':' in stripped
+                        and not stripped.startswith(('def ', 'class ', '#', '@'))
+                        and '=' not in stripped
+                    ):
+                        field_name = stripped.split(':')[0].strip()
+                        if field_name in fields_with_defaults[current_class]:
+                            line = line.rstrip() + ' = ...'
+                    new_lines.append(line)
+                stub_path.write_text('\n'.join(new_lines) + '\n')
+        run: echo "$FIX_SCRIPT" | uv run python
+
       - name: Verify stubs with mypy
         run: uv run mypy {directory}
 
@@ -69,3 +221,16 @@ jobs:
           git diff --cached --quiet || git commit -m "chore: regenerate stubs for {directory}"
           git push origin main
 """
+
+
+class StubGenerationWorkflow(FileBase):
+    type: Literal[FileType.STUB_GENERATION_WORKFLOW] = (
+        FileType.STUB_GENERATION_WORKFLOW
+    )
+    stub_directory: str | None = None
+    relative_path: Path = Path(".github/workflows/generate-stubs.yml")
+    content: str = ""
+
+    def _get_content(self, project_root: Path) -> str:
+        directory = self.stub_directory or to_snake(project_root.name)
+        return _build_content(directory)

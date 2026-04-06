@@ -21,11 +21,13 @@ repos:
     rev: 26.3.1
     hooks:
       - id: black
+        exclude: \.pyi$
         args: ["--preview", "--line-length", "79"]
   - repo: https://github.com/Tesla2000/temp-reorder-python-imports
     rev: v0.0.1
     hooks:
       - id: reorder-python-imports
+        exclude: \.pyi$
         args: [
           --py37-plus,
           --py39-plus,
@@ -38,16 +40,19 @@ repos:
     rev: v2.3.3
     hooks:
       - id: autoflake
+        exclude: \.pyi$
         args: [ --remove-all-unused-imports, --in-place ]
   - repo: https://github.com/pycqa/flake8
     rev: '7.3.0'
     hooks:
       - id: flake8
+        exclude: \.pyi$
         args: [ "--ignore=E203,W503,E501,E704" ]
   - repo: https://github.com/Tesla2000/vulture
     rev: v0.0.3
     hooks:
       - id: vulture
+        exclude: \.pyi$
         args:
           [
             ".",
@@ -70,6 +75,7 @@ repos:
     rev: v2.0.12
     hooks:
       - id: any-hook
+        exclude: \.pyi$
         args: [--modifiers, '[$package-dependent{"type":"workflow-env-to-example","workflow_paths":[".github/workflows/tests.yml"],"ignored_names":["GH_TOKEN"]},{"type":"pydantic-config-to-model-config"},{"type":"local-imports"},{"type":"pydantic-v1-to-v2"},{"type":"str-enum-inheritance"},{"type":"forbidden-functions","forbidden_functions":["hasattr","getattr","print"]},{"type":"utcnow-to-datetime-now"},{"type":"len-as-bool"},{"type":"typing-to-builtin"}]']
 """  # noqa: W605
 

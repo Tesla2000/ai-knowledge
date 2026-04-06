@@ -48,6 +48,12 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 packages = ["$project_name_low"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+plugins = ["pydantic.mypy"]
+mypy_path = "stubs"
 """
 
     def _get_content(self, project_root: Path) -> str:

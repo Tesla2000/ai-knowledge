@@ -16,7 +16,6 @@ from files import PreCommitRunWorkflow
 from files import PythonVersionFile
 from files import ReadmeFile
 from files import SetupScript
-from files import StubGenerationWorkflow
 from files import TestImportFile
 from files import TestsWorkflow
 from pydantic import BaseModel
@@ -86,7 +85,6 @@ def _generate_default_files(
             relative_path=Path("__main__.py"), content=_MAIN_PY_CONTENT
         ),
         File(relative_path=Path("tests/__init__.py"), content=""),
-        StubGenerationWorkflow(),
     ]
     if validated_data["license"]:
         files.append(validated_data["license"])

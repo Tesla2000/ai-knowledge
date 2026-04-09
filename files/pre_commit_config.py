@@ -70,7 +70,7 @@ repos:
       - id: mypy
         exclude: \.pyi$
         # mypy_additional_dependencies
-        args: [ --strict ]
+        args: [ --strict, --config-file, pyproject.toml ]
   - repo: https://github.com/Tesla2000/any-hook
     rev: v2.0.12
     hooks:

@@ -9,8 +9,9 @@ from github import Github
 from pydantic import BaseModel
 from pydantic import SecretStr
 from pydantic.alias_generators import to_snake
-from setup.branch_protection_settings import BranchProtectionSettings
-from setup.repo_settings import RepoSettings
+
+from src.setup.branch_protection_settings import BranchProtectionSettings
+from src.setup.repo_settings import RepoSettings
 
 
 class GitHubSetup(BaseModel):
@@ -32,7 +33,7 @@ class GitHubSetup(BaseModel):
             ]
         )
         subprocess.run(
-            ["bash", str(Path("setup/setup.sh").resolve())],
+            ["bash", str(Path("src/setup/setup.sh").resolve())],
             cwd=project_path,
             env=env,
             check=True,

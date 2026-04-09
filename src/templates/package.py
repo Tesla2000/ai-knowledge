@@ -5,26 +5,27 @@ from typing import Any
 from typing import Literal
 from typing import Optional
 
-from files import AnyFile
-from files import CodeOwnersFile
-from files import Dependency
-from files import File
-from files import MitLicense
-from files import PackageFile
-from files import PackagePyprojectToml
-from files import PreCommitConfig
-from files import PreCommitRunWorkflow
-from files import PythonVersionFile
-from files import PyTypedFile
-from files import ReadmeFile
-from files import SetupScript
-from files import TestImportFile
-from files import TestsWorkflow
-from files import VersionPatchWorkflow
 from pydantic import BaseModel
 from pydantic import Field
-from templates._base import Template
-from templates._type import TemplateType
+
+from src.files import AnyFile
+from src.files import CodeOwnersFile
+from src.files import Dependency
+from src.files import File
+from src.files import MitLicense
+from src.files import PackageFile
+from src.files import PackagePyprojectToml
+from src.files import PreCommitConfig
+from src.files import PreCommitRunWorkflow
+from src.files import PythonVersionFile
+from src.files import PyTypedFile
+from src.files import ReadmeFile
+from src.files import SetupScript
+from src.files import TestImportFile
+from src.files import TestsWorkflow
+from src.files import VersionPatchWorkflow
+from src.templates._base import Template
+from src.templates._type import TemplateType
 
 
 def _generate_default_files(

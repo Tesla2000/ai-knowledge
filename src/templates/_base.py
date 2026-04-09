@@ -2,9 +2,10 @@ from abc import ABC
 from contextlib import ExitStack
 from pathlib import Path
 
-from files import AnyFile
 from pydantic import BaseModel
-from templates._type import TemplateType
+
+from src.files import AnyFile
+from src.templates._type import TemplateType
 
 
 class Template(BaseModel, ABC):

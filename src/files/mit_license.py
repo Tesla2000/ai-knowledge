@@ -3,9 +3,10 @@ from pathlib import Path
 from string import Template
 from typing import Literal
 
-from files._base import FileBase
-from files._types import FileType
 from pydantic import PositiveInt
+
+from src.files._base import FileBase
+from src.files._types import FileType
 
 
 class MitLicense(FileBase):

@@ -3,8 +3,8 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Literal
 
-from files._base import FileBase
-from files._types import FileType
+from src.files._base import FileBase
+from src.files._types import FileType
 
 
 class SetupScript(FileBase):

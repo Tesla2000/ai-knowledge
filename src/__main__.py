@@ -9,8 +9,9 @@ from pydantic_settings import BaseSettings
 from pydantic_settings import CliApp
 from pydantic_settings import CliPositionalArg
 from pydantic_settings import SettingsConfigDict
-from setup.github import GitHubSetup
-from templates import AnyTemplate
+
+from src.setup import GitHubSetup
+from src.templates import AnyTemplate
 
 
 def _ensure_absolute(path: Path) -> Path:

@@ -4,10 +4,11 @@ import json
 from pathlib import Path
 from typing import Literal
 
-from files._base import FileBase
-from files._types import FileType
-from files.package_pyproject_toml import Dependency
 from pydantic_settings import CliImplicitFlag
+
+from src.files._base import FileBase
+from src.files._types import FileType
+from src.files.package_pyproject_toml import Dependency
 
 
 class PreCommitConfig(FileBase):
@@ -34,7 +35,7 @@ repos:
           --retain-pre-import,
           'True',
           --application-directories,
-          "type_first_discriminator",
+          "$project-root",
         ]
   - repo: https://github.com/PyCQA/autoflake
     rev: v2.3.3
@@ -104,7 +105,7 @@ repos:
             "$package-dependent",
             ",".join(map(json.dumps, hooks)),
         )
-
+        content = content.replace("$project-root", project_root.name)
         return content.replace(
             "        # mypy_additional_dependencies\n", deps_str
         )

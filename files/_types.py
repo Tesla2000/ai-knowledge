@@ -17,3 +17,4 @@ class FileType(StrEnum):
     STUB_GENERATION_WORKFLOW = auto()
     PYTHON_VERSION = auto()
     PY_TYPED = auto()
+    CODE_OWNERS = auto()

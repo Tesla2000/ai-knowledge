@@ -6,6 +6,7 @@ from typing import Literal
 from typing import Optional
 
 from files import AnyFile
+from files import CodeOwnersFile
 from files import Dependency
 from files import File
 from files import MitLicense
@@ -45,6 +46,7 @@ def _generate_default_files(
         VersionPatchWorkflow(),
         PreCommitRunWorkflow(),
         TestsWorkflow(),
+        CodeOwnersFile(),
         PreCommitConfig(generate_stubs=True),
         SetupScript(),
         File(relative_path=Path(".env"), content=""),

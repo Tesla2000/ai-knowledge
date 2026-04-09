@@ -1,6 +1,7 @@
 from typing import Annotated
 from typing import Union
 
+from files.code_owners_file import CodeOwnersFile
 from files.file import File
 from files.mit_license import MitLicense
 from files.package_init_py import PackageFile
@@ -31,6 +32,7 @@ AnyFile = Annotated[
         VersionPatchWorkflow,
         PreCommitRunWorkflow,
         PyTypedFile,
+        CodeOwnersFile,
         PythonVersionFile,
     ],
     Discriminator("type"),
@@ -50,6 +52,7 @@ __all__ = [
     "PackageFile",
     "PythonVersionFile",
     "PyTypedFile",
+    "CodeOwnersFile",
     "AnyFile",
     "Dependency",
 ]

@@ -6,6 +6,7 @@ from typing import Literal
 from typing import Optional
 
 from files import AnyFile
+from files import CodeOwnersFile
 from files import Dependency
 from files import File
 from files import MitLicense
@@ -80,6 +81,7 @@ def _generate_default_files(
             relative_path=Path(".gitignore"),
             content="/sandbox.py\n/.idea\n/.env\n/.venv\n/.vscode\n/.run/\n*__pycache__\n/docs/build/\n",
         ),
+        CodeOwnersFile(),
         PackageFile(),
         PackageFile(
             relative_path=Path("__main__.py"), content=_MAIN_PY_CONTENT

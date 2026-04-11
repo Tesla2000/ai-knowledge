@@ -25,13 +25,13 @@ jobs:
       - name: Update .pre-commit-config.yaml
         run: pre-commit autoupdate
 
-      - name: Update files/pre_commit_config.py
+      - name: Update src/files/pre_commit_config.py
         run: |
           cat > /tmp/update_template.py << 'PYEOF'
           import re
           import subprocess
           from pathlib import Path
-          py_file = Path("files/pre_commit_config.py")
+          py_file = Path("src/files/pre_commit_config.py")
           content = py_file.read_text()
           match = re.search(r'content: str = """\\\n(.*?)\n"""', content, re.DOTALL)
           template_path = Path("/tmp/pre-commit-template.yaml")

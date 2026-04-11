@@ -73,7 +73,7 @@ repos:
         # mypy_additional_dependencies
         args: [ --strict, --config-file, pyproject.toml ]
   - repo: https://github.com/Tesla2000/any-hook
-    rev: v2.0.12
+    rev: v3.1.0
     hooks:
       - id: any-hook
         exclude: \.pyi$
@@ -90,7 +90,7 @@ repos:
             deps_str = ""
         hooks = [
             {
-                "type": "git-add",
+                "type": "check-untracked",
                 "directories": [project_root.name, "tests"],
             }
         ]

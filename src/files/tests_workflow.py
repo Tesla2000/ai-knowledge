@@ -3,6 +3,8 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Literal
 
+from pydantic import Field
+
 from src.files._base import FileBase
 from src.files._types import FileType
 
@@ -10,7 +12,8 @@ from src.files._types import FileType
 class TestsWorkflow(FileBase):
     type: Literal[FileType.TESTS_WORKFLOW] = FileType.TESTS_WORKFLOW
     relative_path: Path = Path(".github/workflows/tests.yml")
-    content: str = """\
+    python_version: str = "3.12"
+    content: str = Field(default_factory=lambda validated_data: f"""\
 name: Run tests
 
 on:
@@ -31,7 +34,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "{validated_data.get('python_version', '3.12')}"
 
       - name: Install uv
         uses: astral-sh/setup-uv@v5
@@ -41,5 +44,5 @@ jobs:
 
       - name: Run tests
         run: |
-          timeout 7 uv run python -m unittest
-"""
+          timeout 69 uv run python -m unittest
+""")

@@ -1,10 +1,7 @@
 from pathlib import Path
-from typing import Annotated
-from typing import Literal
+from typing import Annotated, Literal
 
-from pydantic import AfterValidator
-from pydantic import BaseModel
-from pydantic import Field
+from pydantic import AfterValidator, BaseModel, Field
 
 from src.files._base import FileBase
 from src.files._types import FileType

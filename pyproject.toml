@@ -9,3 +9,6 @@ dependencies = [
     "pydantic[email]>=2.12.5",
     "pygithub>=2.9.0",
 ]
+
+[tool.isort]
+profile = "black"

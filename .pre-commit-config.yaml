@@ -14,18 +14,10 @@ repos:
 #    hooks:
 #     - id: function_splitter
 #       stages: [pre-push]
-  - repo: https://github.com/Tesla2000/temp-reorder-python-imports
-    rev: v0.0.1
+  - repo: https://github.com/PyCQA/isort
+    rev: 8.0.1
     hooks:
-      - id: reorder-python-imports
-        args: [
-          --py37-plus,
-          --py39-plus,
-          --retain-pre-import,
-          'True',
-          --application-directories,
-          ".:src",
-        ]
+      - id: isort
   - repo: https://github.com/PyCQA/autoflake
     rev: v2.3.3
     hooks:

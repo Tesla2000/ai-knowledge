@@ -1,27 +1,26 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any
-from typing import Literal
-from typing import Optional
+from typing import Any, Literal, Optional
 
-from pydantic import BaseModel
-from pydantic import Field
+from pydantic import BaseModel, Field
 
-from src.files import AnyFile
-from src.files import CodeOwnersFile
-from src.files import Dependency
-from src.files import File
-from src.files import MitLicense
-from src.files import PackageFile
-from src.files import PackagePyprojectToml
-from src.files import PreCommitConfig
-from src.files import PreCommitRunWorkflow
-from src.files import PythonVersionFile
-from src.files import ReadmeFile
-from src.files import SetupScript
-from src.files import TestImportFile
-from src.files import TestsWorkflow
+from src.files import (
+    AnyFile,
+    CodeOwnersFile,
+    Dependency,
+    File,
+    MitLicense,
+    PackageFile,
+    PackagePyprojectToml,
+    PreCommitConfig,
+    PreCommitRunWorkflow,
+    PythonVersionFile,
+    ReadmeFile,
+    SetupScript,
+    TestImportFile,
+    TestsWorkflow,
+)
 from src.templates._base import Template
 from src.templates._type import TemplateType
 

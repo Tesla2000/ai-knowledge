@@ -1,5 +1,4 @@
-from typing import Annotated
-from typing import Union
+from typing import Annotated, Union
 
 from pydantic import Discriminator
 
@@ -7,8 +6,7 @@ from src.files.code_owners_file import CodeOwnersFile
 from src.files.file import File
 from src.files.mit_license import MitLicense
 from src.files.package_init_py import PackageFile
-from src.files.package_pyproject_toml import Dependency
-from src.files.package_pyproject_toml import PackagePyprojectToml
+from src.files.package_pyproject_toml import Dependency, PackagePyprojectToml
 from src.files.pre_commit_config import PreCommitConfig
 from src.files.pre_commit_run_workflow import PreCommitRunWorkflow
 from src.files.py_typed_file import PyTypedFile

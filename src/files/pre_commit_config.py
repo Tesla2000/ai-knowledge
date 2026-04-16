@@ -24,19 +24,10 @@ repos:
       - id: black
         exclude: \.pyi$
         args: ["--preview", "--line-length", "79"]
-  - repo: https://github.com/Tesla2000/temp-reorder-python-imports
-    rev: v0.0.1
+  - repo: https://github.com/PyCQA/isort
+    rev: 8.0.1
     hooks:
-      - id: reorder-python-imports
-        exclude: \.pyi$
-        args: [
-          --py37-plus,
-          --py39-plus,
-          --retain-pre-import,
-          'True',
-          --application-directories,
-          "$project-root",
-        ]
+      - id: isort
   - repo: https://github.com/PyCQA/autoflake
     rev: v2.3.3
     hooks:

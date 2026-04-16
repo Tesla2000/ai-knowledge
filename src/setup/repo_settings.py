@@ -1,7 +1,6 @@
 from __future__ import annotations
 
-from pydantic import BaseModel
-from pydantic import ConfigDict
+from pydantic import BaseModel, ConfigDict
 
 
 class RepoSettings(BaseModel):

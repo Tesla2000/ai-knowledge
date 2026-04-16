@@ -3,12 +3,13 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Annotated
 
-from pydantic import AfterValidator
-from pydantic import Field
-from pydantic_settings import BaseSettings
-from pydantic_settings import CliApp
-from pydantic_settings import CliPositionalArg
-from pydantic_settings import SettingsConfigDict
+from pydantic import AfterValidator, Field
+from pydantic_settings import (
+    BaseSettings,
+    CliApp,
+    CliPositionalArg,
+    SettingsConfigDict,
+)
 
 from src.setup import GitHubSetup
 from src.templates import AnyTemplate

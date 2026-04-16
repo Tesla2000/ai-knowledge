@@ -4,9 +4,7 @@ from pathlib import Path
 from string import Template
 from typing import Literal
 
-from pydantic import BaseModel
-from pydantic import ConfigDict
-from pydantic import EmailStr
+from pydantic import BaseModel, ConfigDict, EmailStr
 from pydantic.alias_generators import to_snake
 
 from src.files._base import FileBase
@@ -49,6 +47,9 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 packages = ["$project_name_low"]
+
+[tool.isort]
+profile = "black"
 
 [tool.mypy]
 python_version = "3.12"

@@ -3,8 +3,7 @@ from collections.abc import Generator
 from contextlib import contextmanager
 from pathlib import Path
 
-from pydantic import BaseModel
-from pydantic import ConfigDict
+from pydantic import BaseModel, ConfigDict
 
 
 class FileBase(BaseModel):

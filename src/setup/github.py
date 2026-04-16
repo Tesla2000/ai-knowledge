@@ -6,8 +6,7 @@ from pathlib import Path
 from typing import Optional
 
 from github import Github
-from pydantic import BaseModel
-from pydantic import SecretStr
+from pydantic import BaseModel, SecretStr
 from pydantic.alias_generators import to_snake
 
 from src.setup.branch_protection_settings import BranchProtectionSettings

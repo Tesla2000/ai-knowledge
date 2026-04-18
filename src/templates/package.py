@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Literal, Optional
+from typing import Literal, Optional
 
 from pydantic import BaseModel, Field
 
@@ -28,20 +28,24 @@ from src.templates._type import TemplateType
 
 
 def _generate_default_files(
-    validated_data: dict[str, Any],
+    validated_data: dict[str, object],
 ) -> tuple[AnyFile, ...]:
     if "description" not in validated_data:
         raise ValueError(f"Description not provided in {validated_data}")
     if "license" not in validated_data:
         raise ValueError(f"License not provided in {validated_data}")
+    description = validated_data["description"]
+    assert isinstance(
+        description, str
+    ), f"{description=} is not an instance of str"
     files: list[AnyFile] = [
         PackagePyprojectToml(
-            description=validated_data["description"],
+            description=description,
             dependency_groups={
                 "stubs": (Dependency(name="mypy", constraint=">=1.19.1"),)
             },
         ),
-        ReadmeFile(description=validated_data["description"]),
+        ReadmeFile(description=description),
         TestImportFile(),
         VersionPatchWorkflow(),
         PreCommitRunWorkflow(),
@@ -59,8 +63,11 @@ def _generate_default_files(
         PyTypedFile(),
         File(relative_path=Path("tests/__init__.py"), content=""),
     ]
-    if validated_data["license"]:
-        files.append(validated_data["license"])
+    if license_ := validated_data["license"]:
+        assert isinstance(
+            license_, MitLicense
+        ), f"{license_=} is not an instance of {MitLicense.__name__}"
+        files.append(license_)
     return tuple(files)
 
 

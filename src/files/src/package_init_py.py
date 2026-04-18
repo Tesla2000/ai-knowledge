@@ -11,7 +11,7 @@ from src.files._types import FileType
 
 class PackageFile(FileBase):
     type: Literal[FileType.PACKAGE] = FileType.PACKAGE
-    relative_path: Path = Path("../__init__.py")
+    relative_path: Path = Path("__init__.py")
     content: str = ""
 
     def get_path(self, project_root: Path) -> Path:

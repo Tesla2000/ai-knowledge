@@ -2,11 +2,13 @@ from __future__ import annotations
 
 import os
 import subprocess
+from collections.abc import Mapping
 from pathlib import Path
 from typing import Optional
 
 from github import Github
-from pydantic import BaseModel, SecretStr
+from github.AuthenticatedUser import AuthenticatedUser
+from pydantic import BaseModel, Field, SecretStr
 from pydantic.alias_generators import to_snake
 
 from src.setup.branch_protection_settings import BranchProtectionSettings
@@ -21,6 +23,7 @@ class GitHubSetup(BaseModel):
     branch_protection_settings: BranchProtectionSettings = (
         BranchProtectionSettings()
     )
+    repo_secrets: Mapping[str, SecretStr] = Field(default_factory=dict)
 
     def run(self, project_path: Path) -> None:
         env = os.environ.copy()
@@ -44,6 +47,9 @@ class GitHubSetup(BaseModel):
         )
         g = Github(self.github_token.get_secret_value())
         user = g.get_user()
+        assert isinstance(
+            user, AuthenticatedUser
+        ), f"{user=} is not an instance of {AuthenticatedUser.__name__}"
         repo = user.create_repo(repo_name, **self.repo_settings.model_dump())
         token = self.github_token.get_secret_value()
         remote_url = f"https://{token}@github.com/{user.login}/{repo_name}.git"
@@ -60,3 +66,5 @@ class GitHubSetup(BaseModel):
         repo.get_branch(self.main_branch).edit_protection(
             **self.branch_protection_settings.model_dump()
         )
+        for name, secret in self.repo_secrets.items():
+            repo.create_secret(name, secret.get_secret_value())

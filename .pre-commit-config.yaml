@@ -59,6 +59,7 @@ repos:
         additional_dependencies:
           - pydantic>=2.8.2
           - pydantic-settings>=2.13.0
+          - pygithub
         args: [ --strict, --config-file, pyproject.toml ]
   - repo: https://github.com/Tesla2000/any-hook
     rev: v3.2.0

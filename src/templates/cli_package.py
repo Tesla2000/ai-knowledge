@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Literal, Optional
+from typing import Literal, Optional
 
 from pydantic import BaseModel, Field
 
@@ -47,15 +47,19 @@ if __name__ == "__main__":
 
 
 def _generate_default_files(
-    validated_data: dict[str, Any],
+    validated_data: dict[str, object],
 ) -> tuple[AnyFile, ...]:
     if "description" not in validated_data:
         raise ValueError(f"Description not provided in {validated_data}")
     if "license" not in validated_data:
         raise ValueError(f"License not provided in {validated_data}")
+    description = validated_data["description"]
+    assert isinstance(
+        description, str
+    ), f"{description=} is not an instance of str"
     files: list[AnyFile] = [
         PackagePyprojectToml(
-            description=validated_data["description"],
+            description=description,
             dependencies=(
                 Dependency(name="pydantic-settings", constraint=">=2.13.0"),
             ),
@@ -64,7 +68,7 @@ def _generate_default_files(
                 "stubs": (Dependency(name="mypy", constraint=">=1.19.1"),)
             },
         ),
-        ReadmeFile(description=validated_data["description"]),
+        ReadmeFile(description=description),
         TestImportFile(),
         PreCommitRunWorkflow(),
         TestsWorkflow(),
@@ -88,8 +92,12 @@ def _generate_default_files(
         ),
         File(relative_path=Path("tests/__init__.py"), content=""),
     ]
-    if validated_data["license"]:
-        files.append(validated_data["license"])
+
+    if license_ := validated_data["license"]:
+        assert isinstance(
+            license_, MitLicense
+        ), f"{license_=} is not an instance of {MitLicense.__name__}"
+        files.append(license_)
     return tuple(files)
 
 

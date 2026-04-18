@@ -41,7 +41,7 @@ repos:
         exclude: \.pyi$
         args: [ "--ignore=E203,W503,E501,E704" ]
   - repo: https://github.com/Tesla2000/vulture
-    rev: v0.0.3
+    rev: v0.0.4
     hooks:
       - id: vulture
         exclude: \.pyi$
@@ -49,7 +49,7 @@ repos:
           [
             ".",
             "--exclude",
-            ".venv,venv,tests/base.py",
+            ".venv,venv,tests",
             "--ignore-attributes-for-classes=.*",
             "--ignore-decorators=@app.*,@pytest.fixture,@property,@model_validator,@field_serializer,@field_validator",
             "--ignore-names=Meta,__dict__,cli_cmd",
@@ -60,15 +60,15 @@ repos:
     rev: v1.20.1
     hooks:
       - id: mypy
-        exclude: \.pyi$
+        exclude: (^tests/|\.pyi$)
         # mypy_additional_dependencies
         args: [ --strict, --config-file, pyproject.toml ]
   - repo: https://github.com/Tesla2000/any-hook
-    rev: v3.0.1-alpha.3
+    rev: v3.2.0
     hooks:
       - id: any-hook
         exclude: \.pyi$
-        args: [--modifiers, '[$package-dependent{"type":"workflow-env-to-example","workflow_paths":[".github/workflows/tests.yml"],"ignored_names":["GH_TOKEN"]},{"type":"pydantic-config-to-model-config"},{"type":"local-imports"},{"type":"pydantic-v1-to-v2"},{"type":"str-enum-inheritance"},{"type":"forbidden-functions","forbidden_functions":["hasattr","getattr","print"]},{"type":"utcnow-to-datetime-now"},{"type":"len-as-bool"},{"type":"typing-to-builtin"}]']
+        args: [--modifiers, '[$package-dependent{"type": "remove-f-prefix"},{"type": "open-to-path"},{"type": "any-to-object"},{"type":"workflow-env-to-example","workflow_paths":[".github/workflows/tests.yml"],"ignored_names":["GH_TOKEN"]},{"type":"pydantic-config-to-model-config"},{"type":"local-imports"},{"type":"pydantic-v1-to-v2"},{"type":"str-enum-inheritance"},{"type":"forbidden-functions","forbidden_functions":["hasattr","getattr","print"]},{"type":"utcnow-to-datetime-now"},{"type":"len-as-bool"},{"type":"typing-to-builtin"}]']
 """  # noqa: W605
 
     def _get_content(self, project_root: Path) -> str:

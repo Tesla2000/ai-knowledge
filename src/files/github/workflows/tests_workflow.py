@@ -7,13 +7,14 @@ from pydantic import Field
 
 from src.files._base import FileBase
 from src.files._types import FileType
+from src.files.python_version_file import PythonVersion
 
 
-class TestsWorkflow(FileBase):
-    type: Literal[FileType.TESTS_WORKFLOW] = FileType.TESTS_WORKFLOW
-    relative_path: Path = Path(".github/workflows/tests.yml")
-    python_version: str = "3.12"
-    content: str = Field(default_factory=lambda validated_data: f"""\
+def _content(validated_data: dict[str, object]) -> str:
+    python_version = validated_data.get(
+        "python_version", PythonVersion(minor=12)
+    )
+    return f"""\
 name: Run tests
 
 on:
@@ -34,15 +35,22 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "{validated_data.get('python_version', '3.12')}"
+          python-version: "{python_version}"
 
       - name: Install uv
         uses: astral-sh/setup-uv@v5
 
       - name: Install dependencies
-        run: uv sync
+        run: uv sync --group test
 
       - name: Run tests
         run: |
-          timeout 69 uv run python -m unittest
-""")
+          timeout 69 uv run python -m pytest --cov --cov-report=term-missing -m "not smoke"
+"""
+
+
+class TestsWorkflow(FileBase):
+    type: Literal[FileType.TESTS_WORKFLOW] = FileType.TESTS_WORKFLOW
+    relative_path: Path = Path(".github/workflows/tests.yml")
+    python_version: PythonVersion = PythonVersion(minor=12)
+    content: str = Field(default_factory=_content)

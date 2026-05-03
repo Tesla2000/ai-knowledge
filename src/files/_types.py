@@ -4,6 +4,7 @@ from enum import StrEnum, auto
 class FileType(StrEnum):
     FILE = auto()
     LICENSE = auto()
+    GITIGNORE = auto()
     PYPROJECT_TOML = auto()
     TEST = auto()
     VERSION_PATCH_WORKFLOW = auto()

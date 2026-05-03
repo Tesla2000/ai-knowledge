@@ -1,19 +1,9 @@
 repos:
-#  - repo: https://github.com/Tesla2000/TupleNamer
-#    rev: v0.0.3-alpha
-#    hooks:
-#     - id: tuple_namer
-#       stages: [pre-push]
   - repo: https://github.com/psf/black
     rev: 26.3.1
     hooks:
       - id: black
         args: ["--preview", "--line-length", "79"]
-#  - repo: https://github.com/Tesla2000/FunctionSplitter
-#    rev: v0.0.7-alpha
-#    hooks:
-#     - id: function_splitter
-#       stages: [pre-push]
   - repo: https://github.com/PyCQA/isort
     rev: 8.0.1
     hooks:
@@ -23,15 +13,6 @@ repos:
     hooks:
       - id: autoflake
         args: [ --remove-all-unused-imports, --in-place ]
-#  - repo: https://github.com/Tesla2000/StaticMarker
-#    rev: v0.0.3-alpha
-#    hooks:
-#     - id: static_marker
-#       stages: [pre-commit]
-#  - repo: https://github.com/Tesla2000/import-rules-enforcer
-#    rev: 'v0.0.14'
-#    hooks:
-#      - id: import_rules_enforcer
   - repo: https://github.com/pycqa/flake8
     rev: '7.3.0'
     hooks:

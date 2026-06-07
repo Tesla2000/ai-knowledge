@@ -24,9 +24,7 @@ class FileBase(BaseModel):
         return self.content
 
     @contextmanager
-    def revert_on_fail(
-        self, project_root: Path
-    ) -> Generator[None, None, None]:
+    def revert_on_fail(self, project_root: Path) -> Generator[None, None, None]:
         content = None
         path = self.get_path(project_root)
         if path.exists():

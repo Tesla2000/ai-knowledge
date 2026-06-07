@@ -1,9 +1,8 @@
 from __future__ import annotations
 
-from typing import Literal, Optional
+from typing import Literal
 
 from pydantic import Field
-from pydantic.alias_generators import to_snake
 
 from src.files import (
     Dependency,
@@ -19,42 +18,41 @@ from src.templates._base import Template
 from src.templates._type import TemplateType
 
 
-def _default_repo_name(data: dict[str, object]) -> str:
-    description = data.get("description", "")
-    assert isinstance(description, str)
-    return to_snake(description).replace("_", "-")
-
-
 def _default_pyproject_toml(data: dict[str, object]) -> PackagePyprojectToml:
     description = data["description"]
-    assert isinstance(
-        description, str
-    ), f"{description=} is not an instance of str"
+    if not isinstance(description, str):
+        raise ValueError(f"{description=} is not an instance of str")
     return PackagePyprojectToml(
         description=description,
-        dependency_groups={
-            "stubs": (Dependency(name="mypy", constraint=">=1.19.1"),)
-        },
+        dependency_groups={"stubs": (Dependency(name="mypy", constraint=">=1.19.1"),)},
     )
 
 
 def _default_readme(data: dict[str, object]) -> ReadmeFile:
     description = data["description"]
-    assert isinstance(
-        description, str
-    ), f"{description=} is not an instance of str"
-    author = data.get("author", "Tesla2000")
-    repo_name = data.get("repo_name", "")
-    badge = f"[![codecov](https://codecov.io/gh/{author}/{repo_name}/branch/main/graph/badge.svg)](https://codecov.io/gh/{author}/{repo_name})\n\n"
+    if not isinstance(description, str):
+        raise ValueError(f"{description=} is not an instance of str")
+    author = data.get("author")
+    repo_name = data.get("repo_name")
+    python_version = data.get("python_version", PythonVersion(minor=9))
+    if not isinstance(python_version, PythonVersion):
+        raise ValueError(
+            f"{python_version=} is not an instance of {PythonVersion.__name__}"
+        )
     return ReadmeFile(
         description=description,
-        content=f"{badge}## Description\n\n$description\n",
+        github_owner=author,
+        github_repo=repo_name,
+        python_version=python_version,
     )
 
 
 def _default_tests_workflow(data: dict[str, object]) -> TestsWorkflow:
     python_version = data.get("python_version", PythonVersion(minor=9))
-    assert isinstance(python_version, PythonVersion)
+    if not isinstance(python_version, PythonVersion):
+        raise ValueError(
+            f"{python_version=} is not an instance of {PythonVersion.__name__}"
+        )
     return TestsWorkflow(
         python_version=python_version,
         content=f"""\
@@ -101,19 +99,15 @@ jobs:
 class PythonPackage(Template):
     type: Literal[TemplateType.PACKAGE] = TemplateType.PACKAGE
     description: str
-    author: str = "Tesla2000"
-    repo_name: str = Field(default_factory=_default_repo_name)
-    pyproject_toml: Optional[PackagePyprojectToml] = Field(
+    pyproject_toml: PackagePyprojectToml | None = Field(
         default_factory=_default_pyproject_toml
     )
-    readme: Optional[ReadmeFile] = Field(default_factory=_default_readme)
-    tests_workflow: Optional[TestsWorkflow] = Field(
+    readme: ReadmeFile | None = Field(default_factory=_default_readme)
+    tests_workflow: TestsWorkflow | None = Field(
         default_factory=_default_tests_workflow
     )
-    version_patch_workflow: Optional[VersionPatchWorkflow] = (
-        VersionPatchWorkflow()
-    )
-    py_typed_file: Optional[PyTypedFile] = PyTypedFile()
+    version_patch_workflow: VersionPatchWorkflow | None = VersionPatchWorkflow()
+    py_typed_file: PyTypedFile | None = PyTypedFile()
 
     @property
     def files(self) -> tuple[FileBase, ...]:

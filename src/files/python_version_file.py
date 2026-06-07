@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Literal, Optional
+from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field, PositiveInt
 
@@ -13,7 +13,7 @@ class PythonVersion(BaseModel):
     model_config = ConfigDict(frozen=True)
     major: int = Field(3, ge=2, le=3)
     minor: PositiveInt
-    patch: Optional[PositiveInt] = None
+    patch: PositiveInt | None = None
 
     def __str__(self) -> str:
         base = f"{self.major}.{self.minor}"

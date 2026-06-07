@@ -4,7 +4,6 @@ import os
 import subprocess
 from collections.abc import Mapping
 from pathlib import Path
-from typing import Optional
 
 from github import Github
 from github.AuthenticatedUser import AuthenticatedUser
@@ -16,11 +15,11 @@ from src.setup.repo_settings import RepoSettings
 
 
 class GitHubSetup(BaseModel):
-    github_token: Optional[SecretStr] = None
-    repo_name: Optional[str] = None
+    github_token: SecretStr | None = None
+    repo_name: str | None = None
     main_branch: str = "main"
     repo_settings: RepoSettings = RepoSettings()
-    branch_protection_settings: BranchProtectionSettings = (
+    branch_protection_settings: BranchProtectionSettings | None = (
         BranchProtectionSettings()
     )
     repo_secrets: Mapping[str, SecretStr] = Field(default_factory=dict)
@@ -34,7 +33,7 @@ class GitHubSetup(BaseModel):
                 env.get("PATH", ""),
             ]
         )
-        subprocess.run(
+        subprocess.run(  # nosec B603 B607
             ["bash", str(Path("src/setup/setup.sh").resolve())],
             cwd=project_path,
             env=env,
@@ -42,29 +41,33 @@ class GitHubSetup(BaseModel):
         )
         if self.github_token is None:
             return
-        repo_name = self.repo_name or to_snake(project_path.name).replace(
-            "_", "-"
-        )
+        repo_name = self.repo_name or to_snake(project_path.name).replace("_", "-")
         g = Github(self.github_token.get_secret_value())
         user = g.get_user()
-        assert isinstance(
-            user, AuthenticatedUser
-        ), f"{user=} is not an instance of {AuthenticatedUser.__name__}"
+        if not isinstance(user, AuthenticatedUser):
+            raise ValueError(
+                f"{user=} is not an instance of {AuthenticatedUser.__name__}"
+            )
         repo = user.create_repo(repo_name, **self.repo_settings.model_dump())
-        token = self.github_token.get_secret_value()
-        remote_url = f"https://{token}@github.com/{user.login}/{repo_name}.git"
-        subprocess.run(
-            ["git", "remote", "add", "origin", remote_url],
-            cwd=project_path,
-            check=True,
-        )
-        subprocess.run(
-            ["git", "push", "-u", "origin", self.main_branch],
-            cwd=project_path,
-            check=True,
-        )
-        repo.get_branch(self.main_branch).edit_protection(
-            **self.branch_protection_settings.model_dump()
-        )
-        for name, secret in self.repo_secrets.items():
-            repo.create_secret(name, secret.get_secret_value())
+        try:
+            token = self.github_token.get_secret_value()
+            remote_url = f"https://{token}@github.com/{user.login}/{repo_name}.git"
+            subprocess.run(  # nosec B603 B607
+                ["git", "remote", "add", "origin", remote_url],
+                cwd=project_path,
+                check=True,
+            )
+            subprocess.run(  # nosec B603 B607
+                ["git", "push", "-u", "origin", self.main_branch],
+                cwd=project_path,
+                check=True,
+            )
+            if self.branch_protection_settings is not None:
+                repo.get_branch(self.main_branch).edit_protection(
+                    **self.branch_protection_settings.model_dump(mode="json")
+                )
+            for name, secret in self.repo_secrets.items():
+                repo.create_secret(name, secret.get_secret_value())
+        except:  # noqa: E722
+            repo.delete()
+            raise

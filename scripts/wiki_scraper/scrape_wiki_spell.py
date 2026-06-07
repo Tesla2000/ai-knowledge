@@ -4,13 +4,13 @@ from pathlib import Path
 
 import requests
 from bs4 import BeautifulSoup
-from dnd_character_creator.choices.class_creation.character_class import (
+from dnd.choices.class_creation.character_class import (
     Class,
 )
-from dnd_character_creator.choices.spell_slots.spell_slots import (
+from dnd.choices.spell_slots.spell_slots import (
     all_spells,
 )
-from dnd_character_creator.choices.spell_slots.spell_slots import Spell
+from dnd.choices.spell_slots.spell_slots import Spell
 
 url = "https://dnd5e.wikidot.com/spell:{}"
 

@@ -4,8 +4,8 @@ from pathlib import Path
 
 import requests
 from bs4 import BeautifulSoup
-from dnd_character_creator.BackgroundTemplate import BackgroundTemplate
-from dnd_character_creator.choices.background_creatrion.background import (
+from dnd.BackgroundTemplate import BackgroundTemplate
+from dnd.choices.background_creatrion.background import (
     Background,
 )
 from langchain_openai import ChatOpenAI

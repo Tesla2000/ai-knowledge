@@ -1,27 +1,27 @@
 from __future__ import annotations
 
 import pytest
-from dnd_character_creator.character.blueprint.building_blocks import (
+from dnd.character.blueprint.building_blocks import (
     AnyBuildingBlock,
 )
-from dnd_character_creator.character.blueprint.building_blocks import (
+from dnd.character.blueprint.building_blocks import (
     CombinedBlock,
 )
-from dnd_character_creator.character.blueprint.building_blocks import (
+from dnd.character.blueprint.building_blocks import (
     RaceAssigner,
 )
-from dnd_character_creator.character.blueprint.building_blocks import (
+from dnd.character.blueprint.building_blocks import (
     RandomMagicalItemChooser,
 )
-from dnd_character_creator.character.blueprint.building_blocks import (
+from dnd.character.blueprint.building_blocks import (
     SexAssigner,
 )
-from dnd_character_creator.character.blueprint.building_blocks.building_block import (
+from dnd.character.blueprint.building_blocks.building_block import (
     BuildingBlock,
 )
-from dnd_character_creator.character.race.race import Race
-from dnd_character_creator.character.race.subraces import Subrace
-from dnd_character_creator.choices.sex import Sex
+from dnd.character.race.race import Race
+from dnd.character.race.subraces import Subrace
+from dnd.choices.sex import Sex
 from pydantic import TypeAdapter
 from pydantic import ValidationError
 

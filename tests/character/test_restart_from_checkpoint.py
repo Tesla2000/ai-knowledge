@@ -1,20 +1,20 @@
 from unittest.mock import patch
 
 import pytest
-from dnd_character_creator.character.blueprint.blueprint import Blueprint
-from dnd_character_creator.character.blueprint.building_blocks import (
+from dnd.character.blueprint.blueprint import Blueprint
+from dnd.character.blueprint.building_blocks import (
     SexAssigner,
 )
-from dnd_character_creator.character.blueprint.building_blocks.building_block import (
+from dnd.character.blueprint.building_blocks.building_block import (
     BuildingBlock,
 )
-from dnd_character_creator.character.checkpoint import IncrementChain
-from dnd_character_creator.character.checkpoint import IncrementStorage
-from dnd_character_creator.character.checkpoint import MemoryStorage
-from dnd_character_creator.character.presentable_character import (
+from dnd.character.checkpoint import IncrementChain
+from dnd.character.checkpoint import IncrementStorage
+from dnd.character.checkpoint import MemoryStorage
+from dnd.character.presentable_character import (
     PresentableCharacter,
 )
-from dnd_character_creator.choices.sex import Sex
+from dnd.choices.sex import Sex
 
 
 class TestRestartFromCheckpoint:

@@ -5,7 +5,7 @@ WORKDIR /var/task
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY dnd_character_creator ./dnd_character_creator
+COPY dnd ./dnd_character_creator
 COPY scraped_data ./scraped_data
 
 COPY scripts/generate_schema.py ./scripts/

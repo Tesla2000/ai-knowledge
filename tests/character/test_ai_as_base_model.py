@@ -1,4 +1,4 @@
-from dnd_character_creator.character.blueprint.building_blocks.language_choice_resolver import (
+from dnd.character.blueprint.building_blocks.language_choice_resolver import (
     AILanguageChoiceResolver,
 )
 from langchain_openai import ChatOpenAI

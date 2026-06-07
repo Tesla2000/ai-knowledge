@@ -6,7 +6,7 @@ from pathlib import Path
 import requests
 from bs4 import BeautifulSoup
 from bs4 import Tag
-from dnd_character_creator.choices.main_race import MainRace
+from dnd.choices.main_race import MainRace
 from langchain_openai import ChatOpenAI
 from scripts.wiki_scraper.MainRaceTemplate import (
     MainRaceTemplate,

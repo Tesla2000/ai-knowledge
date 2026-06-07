@@ -8,10 +8,10 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-from dnd_character_creator.character.checkpoint import (  # noqa: E402
+from dnd.character.checkpoint import (  # noqa: E402
     MemoryStorage,
 )
-from dnd_character_creator.server.app import create_app  # noqa: E402
+from dnd.server.app import create_app  # noqa: E402
 
 
 def generate_schema():

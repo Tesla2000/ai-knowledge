@@ -3,12 +3,12 @@ from __future__ import annotations
 from itertools import filterfalse
 from typing import Any
 
-from dnd_character_creator.other_profficiencies import ArmorProficiency
-from dnd_character_creator.other_profficiencies import GamingSet
-from dnd_character_creator.other_profficiencies import MusicalInstrument
-from dnd_character_creator.other_profficiencies import ToolProficiency
-from dnd_character_creator.other_profficiencies import WeaponProficiency
-from dnd_character_creator.skill_proficiency import Skill
+from dnd.other_profficiencies import ArmorProficiency
+from dnd.other_profficiencies import GamingSet
+from dnd.other_profficiencies import MusicalInstrument
+from dnd.other_profficiencies import ToolProficiency
+from dnd.other_profficiencies import WeaponProficiency
+from dnd.skill_proficiency import Skill
 from pydantic import BaseModel
 from pydantic import Field
 

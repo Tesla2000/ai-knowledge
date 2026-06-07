@@ -2,10 +2,10 @@
 
 import unittest
 
-from dnd_character_creator.character.blueprint.building_blocks.building_block import (
+from dnd.character.blueprint.building_blocks.building_block import (
     SerializableBlock,
 )
-from dnd_character_creator.server.app import app
+from dnd.server.app import app
 from fastapi.testclient import TestClient
 from subclass_getter import get_unique_subclasses
 
@@ -29,7 +29,7 @@ class TestBuildingBlocksDocumentation(unittest.TestCase):
 
     def test_all_building_blocks_have_field_descriptions(self):
         """Ensure all fields in building blocks have descriptions."""
-        from dnd_character_creator.character.blueprint.building_blocks.building_block import (
+        from dnd.character.blueprint.building_blocks.building_block import (
             BLOCK_TYPE_FIELD_NAME,
         )
 

@@ -1,7 +1,11 @@
-from dnd_character_creator.character.blueprint.building_blocks.building_block import (
+from dnd.character.blueprint.building_blocks.building_block import (
     BLOCK_TYPE_FIELD_NAME,
 )
+<<<<<<<< HEAD:tests/server/test_simplified_blocks_schema.py
 from tests.server.test_client import TestClient
+========
+from dnd.server.tests.test_client import TestClient
+>>>>>>>> 34edfe5 (Rename to dnd):dnd/server/tests/test_simplified_blocks_schema.py
 
 
 class TestSimplifiedBlocksSchema(TestClient):

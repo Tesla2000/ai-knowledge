@@ -3,109 +3,109 @@ from __future__ import annotations
 from typing import Callable
 
 import pytest
-from dnd_character_creator.character.blueprint.building_blocks import (
+from dnd.character.blueprint.building_blocks import (
     AIMagicalItemChooser,
 )
-from dnd_character_creator.character.blueprint.building_blocks import (
+from dnd.character.blueprint.building_blocks import (
     AIPartialBuilderAssigner,
 )
-from dnd_character_creator.character.blueprint.building_blocks import (
+from dnd.character.blueprint.building_blocks import (
     LevelAssigner,
 )
-from dnd_character_creator.character.blueprint.building_blocks import (
+from dnd.character.blueprint.building_blocks import (
     PriorityStatChoiceResolver,
 )
-from dnd_character_creator.character.blueprint.building_blocks import (
+from dnd.character.blueprint.building_blocks import (
     RaceAssigner,
 )
-from dnd_character_creator.character.blueprint.building_blocks import (
+from dnd.character.blueprint.building_blocks import (
     RandomFeatChoiceResolver,
 )
-from dnd_character_creator.character.blueprint.building_blocks import (
+from dnd.character.blueprint.building_blocks import (
     RandomLanguageChoiceResolver,
 )
-from dnd_character_creator.character.blueprint.building_blocks import (
+from dnd.character.blueprint.building_blocks import (
     RandomMagicalItemChooser,
 )
-from dnd_character_creator.character.blueprint.building_blocks import (
+from dnd.character.blueprint.building_blocks import (
     RandomSkillChoiceResolver,
 )
-from dnd_character_creator.character.blueprint.building_blocks import (
+from dnd.character.blueprint.building_blocks import (
     RandomToolProficiencyChoiceResolver,
 )
-from dnd_character_creator.character.blueprint.building_blocks.all_choices_resolver import (
+from dnd.character.blueprint.building_blocks.all_choices_resolver import (
     AIAllChoicesResolver,
 )
-from dnd_character_creator.character.blueprint.building_blocks.all_choices_resolver import (
+from dnd.character.blueprint.building_blocks.all_choices_resolver import (
     AllChoicesResolver,
 )
-from dnd_character_creator.character.blueprint.building_blocks.all_choices_resolver.ai import (
+from dnd.character.blueprint.building_blocks.all_choices_resolver.ai import (
     AIAllNonStatChoicesResolver,
 )
-from dnd_character_creator.character.blueprint.building_blocks.all_choices_resolver.base_resolver import (
+from dnd.character.blueprint.building_blocks.all_choices_resolver.base_resolver import (
     AllChoicesResolverBase,
 )
-from dnd_character_creator.character.blueprint.building_blocks.equipment_chooser.random import (
+from dnd.character.blueprint.building_blocks.equipment_chooser.random import (
     RandomEquipmentChooser,
 )
-from dnd_character_creator.character.blueprint.building_blocks.feat_choice_resolver.max_first import (
+from dnd.character.blueprint.building_blocks.feat_choice_resolver.max_first import (
     MaxFirstResolver,
 )
-from dnd_character_creator.character.blueprint.building_blocks.feat_choice_resolver.max_if_not_maxed import (
+from dnd.character.blueprint.building_blocks.feat_choice_resolver.max_if_not_maxed import (
     MaxIfNotMaxedResolver,
 )
-from dnd_character_creator.character.blueprint.building_blocks.initial_builder import (
+from dnd.character.blueprint.building_blocks.initial_builder import (
     InitialBuilder,
 )
-from dnd_character_creator.character.blueprint.building_blocks.initial_data_filler import (
+from dnd.character.blueprint.building_blocks.initial_data_filler import (
     RandomInitialDataFiller,
 )
-from dnd_character_creator.character.blueprint.building_blocks.initial_data_filler.base_filler import (
+from dnd.character.blueprint.building_blocks.initial_data_filler.base_filler import (
     InitialDataFiller,
 )
-from dnd_character_creator.character.blueprint.building_blocks.level_up.health_increase import (
+from dnd.character.blueprint.building_blocks.level_up.health_increase import (
     HealthIncreaseAverage,
 )
-from dnd_character_creator.character.blueprint.building_blocks.level_up.level_incrementer import (
+from dnd.character.blueprint.building_blocks.level_up.level_incrementer import (
     LevelIncrementer,
 )
-from dnd_character_creator.character.blueprint.building_blocks.level_up.level_up import (
+from dnd.character.blueprint.building_blocks.level_up.level_up import (
     LevelUp,
 )
-from dnd_character_creator.character.blueprint.building_blocks.level_up.level_up_multiple import (
+from dnd.character.blueprint.building_blocks.level_up.level_up_multiple import (
     LevelUpMultiple,
 )
-from dnd_character_creator.character.blueprint.building_blocks.level_up.spell_assignment import (
+from dnd.character.blueprint.building_blocks.level_up.spell_assignment import (
     LLMSpellAssigner,
 )
-from dnd_character_creator.character.blueprint.building_blocks.level_up.spell_assignment import (
+from dnd.character.blueprint.building_blocks.level_up.spell_assignment import (
     RandomSpellAssigner,
 )
-from dnd_character_creator.character.blueprint.building_blocks.level_up.spell_assignment.base import (
+from dnd.character.blueprint.building_blocks.level_up.spell_assignment.base import (
     SpellAssigner,
 )
-from dnd_character_creator.character.blueprint.building_blocks.stats_builder.standard_array import (
+from dnd.character.blueprint.building_blocks.stats_builder.standard_array import (
     StandardArray,
 )
-from dnd_character_creator.character.blueprint.building_blocks.subclass_assigner import (
+from dnd.character.blueprint.building_blocks.subclass_assigner import (
     AISubclassAssigner,
 )
-from dnd_character_creator.character.blueprint.building_blocks.subclass_assigner import (
+from dnd.character.blueprint.building_blocks.subclass_assigner import (
     RandomSubclassAssigner,
 )
-from dnd_character_creator.character.blueprint.building_blocks.subclass_assigner.base import (
+from dnd.character.blueprint.building_blocks.subclass_assigner.base import (
     SubclassAssigner,
 )
-from dnd_character_creator.character.builder import Builder
-from dnd_character_creator.character.character import Character
-from dnd_character_creator.character.checkpoint import MemoryStorage
-from dnd_character_creator.character.race.race import Race
-from dnd_character_creator.character.race.subraces import Subrace
-from dnd_character_creator.choices.class_creation.character_class import Class
-from dnd_character_creator.choices.class_creation.character_class import (
+from dnd.character.builder import Builder
+from dnd.character.character import Character
+from dnd.character.checkpoint import MemoryStorage
+from dnd.character.race.race import Race
+from dnd.character.race.subraces import Subrace
+from dnd.choices.class_creation.character_class import Class
+from dnd.choices.class_creation.character_class import (
     WizardSubclass,
 )
-from dnd_character_creator.choices.stats_creation.statistic import Statistic
+from dnd.choices.stats_creation.statistic import Statistic
 from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
 

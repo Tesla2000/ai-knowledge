@@ -1,6 +1,6 @@
 import pytest
-from dnd_character_creator.character.checkpoint import MemoryStorage
-from dnd_character_creator.server.app import create_app
+from dnd.character.checkpoint import MemoryStorage
+from dnd.server.app import create_app
 from starlette.testclient import TestClient as StarletteTestClient
 
 

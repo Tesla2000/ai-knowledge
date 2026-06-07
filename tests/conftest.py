@@ -1,8 +1,8 @@
 import pytest
-from dnd_character_creator.character.builder import Builder
-from dnd_character_creator.character.checkpoint import IncrementStorage
-from dnd_character_creator.character.checkpoint import MemoryStorage
-from dnd_character_creator.server.example_generators.example_building_blocks import (
+from dnd.character.builder import Builder
+from dnd.character.checkpoint import IncrementStorage
+from dnd.character.checkpoint import MemoryStorage
+from dnd.server.example_generators.example_building_blocks import (
     example_building_blocks,
 )
 

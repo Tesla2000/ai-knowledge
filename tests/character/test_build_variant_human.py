@@ -1,18 +1,18 @@
 from __future__ import annotations
 
-from dnd_character_creator.character.blueprint.building_blocks import (
+from dnd.character.blueprint.building_blocks import (
     RaceAssigner,
 )
-from dnd_character_creator.character.blueprint.simplified_blocks import (
+from dnd.character.blueprint.simplified_blocks import (
     SimplifiedBlocks,
 )
-from dnd_character_creator.character.blueprint.simplified_blocks.simplified_blocks import (
+from dnd.character.blueprint.simplified_blocks.simplified_blocks import (
     Classes,
 )
-from dnd_character_creator.character.builder import Builder
-from dnd_character_creator.character.race.race import Race
-from dnd_character_creator.character.race.subraces import Subrace
-from dnd_character_creator.choices.class_creation.character_class import Class
+from dnd.character.builder import Builder
+from dnd.character.race.race import Race
+from dnd.character.race.subraces import Subrace
+from dnd.choices.class_creation.character_class import Class
 from dotenv import load_dotenv
 
 load_dotenv()

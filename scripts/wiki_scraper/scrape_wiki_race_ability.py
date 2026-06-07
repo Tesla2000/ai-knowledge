@@ -4,7 +4,7 @@ from pathlib import Path
 
 import requests
 from bs4 import BeautifulSoup
-from dnd_character_creator.character.race.race import Race
+from dnd.character.race.race import Race
 from langchain_openai import ChatOpenAI
 from scripts.wiki_scraper.ability_template import (
     AbilitiesTemplate,

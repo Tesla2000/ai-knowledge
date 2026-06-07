@@ -4,7 +4,7 @@ from pathlib import Path
 
 import requests
 from bs4 import BeautifulSoup
-from dnd_character_creator.choices.class_creation.character_class import (
+from dnd.choices.class_creation.character_class import (
     Class,
 )
 from langchain_openai import ChatOpenAI

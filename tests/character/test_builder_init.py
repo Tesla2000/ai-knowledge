@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from dnd_character_creator.character.blueprint.blueprint import Blueprint
-from dnd_character_creator.character.builder import Builder
+from dnd.character.blueprint.blueprint import Blueprint
+from dnd.character.builder import Builder
 
 
 class TestBuilderInit:

@@ -1,25 +1,25 @@
-from dnd_character_creator.character.blueprint.building_blocks.race_assigner import (
+from dnd.character.blueprint.building_blocks.race_assigner import (
     RaceAssigner,
 )
-from dnd_character_creator.character.blueprint.building_blocks.stats_builder.standard_array import (
+from dnd.character.blueprint.building_blocks.stats_builder.standard_array import (
     StandardArray,
 )
-from dnd_character_creator.character.blueprint.simplified_blocks.class_to_stats_priority import (
+from dnd.character.blueprint.simplified_blocks.class_to_stats_priority import (
     CLASS_TO_STATS_PRIORITY,
 )
-from dnd_character_creator.character.blueprint.simplified_blocks.simplified_blocks import (
+from dnd.character.blueprint.simplified_blocks.simplified_blocks import (
     Classes,
 )
-from dnd_character_creator.character.blueprint.simplified_blocks.simplified_blocks import (
+from dnd.character.blueprint.simplified_blocks.simplified_blocks import (
     EXCLUDE_FACTORY_DEFAULTS,
 )
-from dnd_character_creator.character.blueprint.simplified_blocks.simplified_blocks import (
+from dnd.character.blueprint.simplified_blocks.simplified_blocks import (
     SimplifiedBlocks,
 )
-from dnd_character_creator.character.race.race import Race
-from dnd_character_creator.character.race.subraces import Subrace
-from dnd_character_creator.choices.class_creation.character_class import Class
-from dnd_character_creator.choices.stats_creation.statistic import Statistic
+from dnd.character.race.race import Race
+from dnd.character.race.subraces import Subrace
+from dnd.choices.class_creation.character_class import Class
+from dnd.choices.stats_creation.statistic import Statistic
 from frozendict import frozendict
 
 

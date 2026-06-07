@@ -1,6 +1,10 @@
 """Test that Field descriptions are properly set and displayed via the API."""
 
+<<<<<<<< HEAD:tests/server/test_field_descriptions.py
 from tests.server.test_client import TestClient
+========
+from dnd.server.tests.test_client import TestClient
+>>>>>>>> 34edfe5 (Rename to dnd):dnd/server/tests/test_field_descriptions.py
 
 
 class TestFieldDescriptions(TestClient):

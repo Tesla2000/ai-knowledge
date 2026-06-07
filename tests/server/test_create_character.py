@@ -3,22 +3,29 @@ from __future__ import annotations
 from unittest.mock import patch
 
 import pytest
-from dnd_character_creator.character.blueprint.building_blocks import (
+from dnd.character.blueprint.building_blocks import (
     CombinedBlock,
 )
-from dnd_character_creator.character.blueprint.building_blocks import (
+from dnd.character.blueprint.building_blocks import (
     LevelAssigner,
 )
-from dnd_character_creator.character.blueprint.building_blocks import (
+from dnd.character.blueprint.building_blocks import (
     SexAssigner,
 )
-from dnd_character_creator.character.blueprint.simplified_blocks import (
+from dnd.character.blueprint.simplified_blocks import (
     SimplifiedBlocks,
 )
+<<<<<<<< HEAD:tests/server/test_create_character.py
 from dnd_character_creator.character.checkpoint import IncrementChain
 from dnd_character_creator.choices.sex import Sex
 from dnd_character_creator.server.app import EXAMPLES
 from tests.server.test_client import TestClient
+========
+from dnd.character.checkpoint import IncrementChain
+from dnd.choices.sex import Sex
+from dnd.server.app import EXAMPLES
+from dnd.server.tests.test_client import TestClient
+>>>>>>>> 34edfe5 (Rename to dnd):dnd/server/tests/test_create_character.py
 
 
 class TestCreateCharacter(TestClient):

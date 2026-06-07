@@ -1,13 +1,13 @@
 from __future__ import annotations
 
-from dnd_character_creator.character.race.subrace_stats.race_statistics import (
+from dnd.character.race.subrace_stats.race_statistics import (
     RaceStatistics,
 )
-from dnd_character_creator.choices.language import Language
-from dnd_character_creator.other_profficiencies import GamingSet
-from dnd_character_creator.other_profficiencies import MusicalInstrument
-from dnd_character_creator.other_profficiencies import ToolProficiency
-from dnd_character_creator.skill_proficiency import Skill
+from dnd.choices.language import Language
+from dnd.other_profficiencies import GamingSet
+from dnd.other_profficiencies import MusicalInstrument
+from dnd.other_profficiencies import ToolProficiency
+from dnd.skill_proficiency import Skill
 from pydantic import BaseModel
 from pydantic import Field
 

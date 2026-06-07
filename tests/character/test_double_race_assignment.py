@@ -1,9 +1,9 @@
-from dnd_character_creator.character.blueprint.building_blocks import (
+from dnd.character.blueprint.building_blocks import (
     RaceAssigner,
 )
-from dnd_character_creator.character.builder import Builder
-from dnd_character_creator.character.race.race import Race
-from dnd_character_creator.character.race.subraces import Subrace
+from dnd.character.builder import Builder
+from dnd.character.race.race import Race
+from dnd.character.race.subraces import Subrace
 
 
 def test_double_race_assignment_fails(base_builder: Builder):

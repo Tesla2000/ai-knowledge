@@ -1,33 +1,33 @@
 import pytest
-from dnd_character_creator.character.blueprint.building_blocks.level_up.health_increase import (
+from dnd.character.blueprint.building_blocks.level_up.health_increase import (
     HealthIncreaseAverage,
 )
-from dnd_character_creator.character.blueprint.building_blocks.level_up.level_incrementer import (
+from dnd.character.blueprint.building_blocks.level_up.level_incrementer import (
     LevelIncrementer,
 )
-from dnd_character_creator.character.blueprint.building_blocks.level_up.spell_assignment import (
+from dnd.character.blueprint.building_blocks.level_up.spell_assignment import (
     RandomSpellAssigner,
 )
-from dnd_character_creator.character.blueprint.building_blocks.race_assigner import (
+from dnd.character.blueprint.building_blocks.race_assigner import (
     RaceAssigner,
 )
-from dnd_character_creator.character.blueprint.simplified_blocks.class_to_stats_priority import (
+from dnd.character.blueprint.simplified_blocks.class_to_stats_priority import (
     CLASS_TO_STATS_PRIORITY,
 )
-from dnd_character_creator.character.blueprint.simplified_blocks.simplified_blocks import (
+from dnd.character.blueprint.simplified_blocks.simplified_blocks import (
     Classes,
 )
-from dnd_character_creator.character.blueprint.simplified_blocks.simplified_blocks import (
+from dnd.character.blueprint.simplified_blocks.simplified_blocks import (
     SimplifiedBlocks,
 )
-from dnd_character_creator.character.builder import Builder
-from dnd_character_creator.character.presentable_character import (
+from dnd.character.builder import Builder
+from dnd.character.presentable_character import (
     PresentableCharacter,
 )
-from dnd_character_creator.character.race.subraces import (
+from dnd.character.race.subraces import (
     RACE_TO_SUBRACES,
 )
-from dnd_character_creator.choices.class_creation.character_class import Class
+from dnd.choices.class_creation.character_class import Class
 from frozendict import frozendict
 from pydantic import ValidationError
 

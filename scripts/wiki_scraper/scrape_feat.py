@@ -4,8 +4,8 @@ from pathlib import Path
 
 import requests
 from bs4 import BeautifulSoup
-from dnd_character_creator.character.feature.feats import FeatName
-from dnd_character_creator.character.feature.feature import Feature
+from dnd.character.feature.feats import FeatName
+from dnd.character.feature.feature import Feature
 from langchain_openai import ChatOpenAI
 
 url = "https://dnd5e.wikidot.com/feat:{}"

@@ -8,9 +8,7 @@ from src.files._types import FileType
 
 
 class PreCommitRunWorkflow(FileBase):
-    type: Literal[FileType.PRE_COMMIT_RUN_WORKFLOW] = (
-        FileType.PRE_COMMIT_RUN_WORKFLOW
-    )
+    type: Literal[FileType.PRE_COMMIT_RUN_WORKFLOW] = FileType.PRE_COMMIT_RUN_WORKFLOW
     relative_path: Path = Path(".github/workflows/pre-commit.yml")
     content: str = """\
 name: pre-commit

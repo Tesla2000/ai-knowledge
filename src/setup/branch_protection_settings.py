@@ -10,3 +10,6 @@ class BranchProtectionSettings(BaseModel):
     required_approving_review_count: int = 0
     allow_force_pushes: bool = False
     allow_deletions: bool = False
+    strict: bool = True
+    enforce_admins: bool = True
+    apps_bypass_pull_request_allowances: tuple[str, ...] = ("github-actions",)

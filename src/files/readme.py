@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 from string import Template
-from typing import Literal, Optional
+from typing import Literal
 
 from src.files._base import FileBase
 from src.files._types import FileType
@@ -13,9 +13,9 @@ class ReadmeFile(FileBase):
     type: Literal[FileType.README] = FileType.README
     relative_path: Path = Path("README.md")
     description: str
-    github_owner: Optional[str] = None
-    github_repo: Optional[str] = None
-    python_version: Optional[PythonVersion] = None
+    github_owner: str | None = None
+    github_repo: str | None = None
+    python_version: PythonVersion | None = None
     include_badges: bool = True
     content: str = """\
 $badges## Description
@@ -35,6 +35,9 @@ $description
                 badge_lines.append(
                     f"[![Python {self.python_version}+](https://img.shields.io/badge/python-{self.python_version}+-blue.svg)](https://www.python.org/downloads/)"
                 )
+            badge_lines.append(
+                "[![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)"
+            )
             badge_lines.append(
                 "[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)"
             )

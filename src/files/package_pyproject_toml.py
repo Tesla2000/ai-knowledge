@@ -23,11 +23,7 @@ class Dependency(BaseModel):
 
 def _default_classifiers(data: dict[str, object]) -> tuple[str, ...]:
     python_version = data.get("python_version")
-    min_minor = (
-        python_version.minor
-        if isinstance(python_version, PythonVersion)
-        else 9
-    )
+    min_minor = python_version.minor if isinstance(python_version, PythonVersion) else 9
     return (
         "Development Status :: 3 - Alpha",
         "Intended Audience :: Developers",
@@ -100,9 +96,8 @@ build-backend = "hatchling.build"
 [tool.hatch.build.targets.wheel]
 packages = ["$project_name_low"]
 
-[tool.isort]
-profile = "black"
-line_length = 79
+[tool.ruff]
+line-length = 79
 
 [tool.pytest.ini_options]
 markers = [
@@ -120,27 +115,28 @@ log_date_format = "%Y-%m-%d %H:%M:%S"
 [tool.mypy]
 python_version = "$python_version"
 strict = true
-plugins = ["pydantic.mypy"]
+$mypy_plugins
 mypy_path = "stubs"
 """
 
     def _get_content(self, project_root: Path) -> str:
         project_name_low = self.project_name_low or to_snake(project_root.name)
         deps_str = (
-            "[\n"
-            + "".join(f'    "{dep}",\n' for dep in self.dependencies)
-            + "]"
+            "[\n" + "".join(f'    "{dep}",\n' for dep in self.dependencies) + "]"
             if self.dependencies
             else "[]"
         )
         dependency_groups = "".join(
-            f"{group} = [\n"
-            + "".join(f'    "{dep}",\n' for dep in deps)
-            + "]\n"
+            f"{group} = [\n" + "".join(f'    "{dep}",\n' for dep in deps) + "]\n"
             for group, deps in self.dependency_groups.items()
         )
         classifiers_str = (
             "[\n" + "".join(f'    "{c}",\n' for c in self.classifiers) + "]"
+        )
+        mypy_plugins = (
+            'plugins = ["pydantic.mypy"]'
+            if any(dep.name == "pydantic" for dep in self.dependencies)
+            else ""
         )
         return Template(self.content).safe_substitute(
             project_name_low=project_name_low,
@@ -153,4 +149,5 @@ mypy_path = "stubs"
             dependencies=deps_str,
             dependency_groups=dependency_groups,
             classifiers=classifiers_str,
+            mypy_plugins=mypy_plugins,
         )

@@ -11,8 +11,13 @@ from src.files.python_version_file import PythonVersion
 
 
 def _content(validated_data: dict[str, object]) -> str:
-    python_version = validated_data.get(
-        "python_version", PythonVersion(minor=12)
+    python_version = validated_data.get("python_version", PythonVersion(minor=12))
+    if not isinstance(python_version, PythonVersion):
+        raise ValueError(
+            f"{python_version=} is not an instance of {PythonVersion.__name__}"
+        )
+    matrix_versions = ", ".join(
+        f'"3.{minor}"' for minor in range(python_version.minor, 15)
     )
     return f"""\
 name: Run tests
@@ -28,6 +33,9 @@ jobs:
   test:
     name: Run Tests
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [{matrix_versions}]
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
@@ -35,7 +43,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "{python_version}"
+          python-version: ${{{{ matrix.python-version }}}}
 
       - name: Install uv
         uses: astral-sh/setup-uv@v5

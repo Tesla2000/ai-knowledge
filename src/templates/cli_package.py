@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Literal, Optional
+from typing import Literal
 
 from pydantic import Field
 
@@ -45,16 +45,16 @@ if __name__ == "__main__":  # pragma: no cover
 
 def _default_pyproject_toml(data: dict[str, object]) -> PackagePyprojectToml:
     description = data["description"]
-    assert isinstance(
-        description, str
-    ), f"{description=} is not an instance of str"
+    if not isinstance(description, str):
+        raise ValueError(f"{description=} is not an instance of str")
     python_version = data["python_version"]
-    assert isinstance(python_version, PythonVersion)
+    if not isinstance(python_version, PythonVersion):
+        raise ValueError(
+            f"{python_version=} is not an instance of {PythonVersion.__name__}"
+        )
     return PackagePyprojectToml(
         description=description,
-        dependencies=(
-            Dependency(name="pydantic-settings", constraint=">=2.13.0"),
-        ),
+        dependencies=(Dependency(name="pydantic-settings", constraint=">=2.13.0"),),
         python_version=python_version,
         dependency_groups={},
     )
@@ -64,7 +64,10 @@ def _default_pre_commit_config_cli(
     data: dict[str, object],
 ) -> PreCommitConfig:
     python_version = data["python_version"]
-    assert isinstance(python_version, PythonVersion)
+    if not isinstance(python_version, PythonVersion):
+        raise ValueError(
+            f"{python_version=} is not an instance of {PythonVersion.__name__}"
+        )
     return PreCommitConfig(
         python_version=python_version,
         mypy_additional_dependencies=_CLI_MYPY_DEPS,
@@ -74,13 +77,13 @@ def _default_pre_commit_config_cli(
 class CliPackage(Template):
     type: Literal[TemplateType.CLI_PACKAGE] = TemplateType.CLI_PACKAGE
     description: str
-    pyproject_toml: Optional[PackagePyprojectToml] = Field(
+    pyproject_toml: PackagePyprojectToml | None = Field(
         default_factory=_default_pyproject_toml
     )
-    pre_commit_config: Optional[PreCommitConfig] = Field(
+    pre_commit_config: PreCommitConfig | None = Field(
         default_factory=_default_pre_commit_config_cli
     )
-    main_py: Optional[PackageFile] = PackageFile(
+    main_py: PackageFile | None = PackageFile(
         relative_path=Path("__main__.py"), content=_MAIN_PY_CONTENT
     )
 

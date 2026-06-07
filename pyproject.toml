@@ -10,8 +10,6 @@ dependencies = [
     "pygithub>=2.9.0",
 ]
 
-[tool.isort]
-profile = "black"
 
 [tool.mypy]
 plugins = ["pydantic.mypy"]

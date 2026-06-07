@@ -20,33 +20,37 @@ class PreCommitConfig(FileBase):
     python_version: PythonVersion
     content: str = """\
 repos:
-  - repo: https://github.com/psf/black
-    rev: 26.3.1
-    hooks:
-      - id: black
-        exclude: \.pyi$
-        args: ["--preview", "--line-length", "79", "--target-version", "$python-target-version"]
-  - repo: https://github.com/PyCQA/isort
-    rev: 8.0.1
-    hooks:
-      - id: isort
   - repo: https://github.com/PyCQA/autoflake
     rev: v2.3.3
     hooks:
       - id: autoflake
-        exclude: \.pyi$
         args: [ --remove-all-unused-imports, --in-place ]
-  - repo: https://github.com/pycqa/flake8
-    rev: '7.3.0'
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.15.16
     hooks:
-      - id: flake8
-        exclude: \.pyi$
-        args: [ "--ignore=E203,W503,E501,E704" ]
+      - id: ruff-format
+      - id: ruff
+        args: [ "--extend-ignore=E501" ]
+  - repo: https://github.com/PyCQA/bandit
+    rev: 1.9.4
+    hooks:
+      - id: bandit
+        args: [ "-c", "pyproject.toml", "--exclude", "README.md,**/*.md", "--skip", "B404" ]
+
+  - repo: https://github.com/asottile/pyupgrade
+    rev: v3.21.2
+    hooks:
+      - id: pyupgrade
+        args: [ --$python-target-version-plus ]
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.5.0
+    hooks:
+      - id: detect-secrets
+        args: [--exclude-files, '^(README\\.md|alembic/.*)$']
   - repo: https://github.com/Tesla2000/vulture
     rev: v0.0.4
     hooks:
       - id: vulture
-        exclude: \.pyi$
         args:
           [
             ".",
@@ -59,25 +63,25 @@ repos:
           ]
         stages: [ pre-commit ]
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.20.1
+    rev: v2.1.0
     hooks:
       - id: mypy
-        exclude: (^tests/|\.pyi$)
+        additional_dependencies:
+          - pydantic>=2.8.2
+          - pydantic-settings>=2.13.0
         # mypy_additional_dependencies
         args: [ --strict, --config-file, pyproject.toml ]
   - repo: https://github.com/Tesla2000/any-hook
-    rev: v3.2.0
+    rev: v3.11.0
     hooks:
       - id: any-hook
-        exclude: \.pyi$
-        args: [--modifiers, '[$package-dependent{"type": "remove-f-prefix"},{"type": "open-to-path"},{"type": "any-to-object"},{"type":"workflow-env-to-example","workflow_paths":[".github/workflows/tests.yml"],"ignored_names":["GH_TOKEN"]},{"type":"pydantic-config-to-model-config"},{"type":"local-imports"},{"type":"pydantic-v1-to-v2"},{"type":"str-enum-inheritance"},{"type":"forbidden-functions","forbidden_functions":["hasattr","getattr","print"]},{"type":"utcnow-to-datetime-now"},{"type":"len-as-bool"},{"type":"typing-to-builtin"}]']
+        args: [--modifiers, '[$package-dependent{"type": "remove-f-prefix"},{"type": "open-to-path"},{"type": "any-to-object"},{"type":"pydantic-config-to-model-config"},{"type":"local-imports"},{"type":"pydantic-v1-to-v2"},{"type":"str-enum-inheritance"},{"type":"forbidden-functions","forbidden_functions":["hasattr","getattr","print"]},{"type":"utcnow-to-datetime-now"},{"type":"len-as-bool"},{"type":"typing-to-builtin"}]']
 """  # noqa: W605
 
     def _get_content(self, project_root: Path) -> str:
         if self.mypy_additional_dependencies:
             deps_str = "        additional_dependencies:\n" + "".join(
-                f"          - {dep}\n"
-                for dep in self.mypy_additional_dependencies
+                f"          - {dep}\n" for dep in self.mypy_additional_dependencies
             )
         else:
             deps_str = ""
@@ -103,6 +107,4 @@ repos:
             "$python-target-version",
             f"py{self.python_version.major}{self.python_version.minor}",
         )
-        return content.replace(
-            "        # mypy_additional_dependencies\n", deps_str
-        )
+        return content.replace("        # mypy_additional_dependencies\n", deps_str)

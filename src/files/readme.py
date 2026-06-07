@@ -36,6 +36,9 @@ $description
                     f"[![Python {self.python_version}+](https://img.shields.io/badge/python-{self.python_version}+-blue.svg)](https://www.python.org/downloads/)"
                 )
             badge_lines.append(
+                "[![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)"
+            )
+            badge_lines.append(
                 "[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)"
             )
             badges = "\n".join(badge_lines) + "\n\n"

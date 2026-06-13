@@ -1,6 +1,6 @@
 """Test that Field descriptions are properly set and displayed via the API."""
 
-from dnd_character_creator.server.tests.test_client import TestClient
+from tests.server.test_client import TestClient
 
 
 class TestFieldDescriptions(TestClient):

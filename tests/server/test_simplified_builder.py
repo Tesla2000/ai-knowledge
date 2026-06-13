@@ -8,7 +8,7 @@ from dnd_character_creator.character.blueprint.simplified_blocks.simplified_bloc
 )
 from dnd_character_creator.character.checkpoint import IncrementChain
 from dnd_character_creator.choices.class_creation.character_class import Class
-from dnd_character_creator.server.tests.test_client import TestClient
+from tests.server.test_client import TestClient
 
 
 class TestSimplifiedBuilder(TestClient):

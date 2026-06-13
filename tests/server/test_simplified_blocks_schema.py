@@ -1,7 +1,7 @@
 from dnd_character_creator.character.blueprint.building_blocks.building_block import (
     BLOCK_TYPE_FIELD_NAME,
 )
-from dnd_character_creator.server.tests.test_client import TestClient
+from tests.server.test_client import TestClient
 
 
 class TestSimplifiedBlocksSchema(TestClient):
@@ -88,8 +88,10 @@ class TestSimplifiedBlocksSchema(TestClient):
             "enum"
         ]
 
-        assert "RandomLanguageChoiceResolver" in block_types
-        assert "AILanguageChoiceResolver" in block_types
+        assert {
+            "RandomLanguageChoiceResolver",
+            "AILanguageChoiceResolver",
+        } == set(block_types)
 
         # Check skill_choice_resolver
         skill_resolver = schema["properties"]["skill_choice_resolver"]
@@ -97,8 +99,10 @@ class TestSimplifiedBlocksSchema(TestClient):
             "enum"
         ]
 
-        assert "RandomSkillChoiceResolver" in block_types
-        assert "AISkillChoiceResolver" in block_types
+        assert set(block_types) == {
+            "RandomSkillChoiceResolver",
+            "AISkillChoiceResolver",
+        }
 
     def test_nested_union_validation(self, client):
         """Test that nested Union fields are also validated recursively."""

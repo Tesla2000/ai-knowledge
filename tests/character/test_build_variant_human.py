@@ -21,7 +21,7 @@ load_dotenv()
 class TestBuildVariantHuman:
     def test_build_variant_human(self):
         result = Builder(
-            (
+            building_blocks=(
                 SimplifiedBlocks(
                     classes=Classes(class_levels={Class.WIZARD: 1}),
                     race_assigner=RaceAssigner(

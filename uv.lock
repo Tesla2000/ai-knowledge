@@ -198,6 +198,9 @@ tests = [
 ]
 
 [package.dev-dependencies]
+dev = [
+    { name = "pre-commit" },
+]
 linting = [
     { name = "pre-commit" },
 ]
@@ -224,6 +227,7 @@ requires-dist = [
 provides-extras = ["tests"]
 
 [package.metadata.requires-dev]
+dev = [{ name = "pre-commit", specifier = ">=4.5.1" }]
 linting = [{ name = "pre-commit", specifier = ">=4.5.1" }]
 local-deployment = [{ name = "uvicorn", specifier = ">=0.40.0" }]
 scraping = [{ name = "beautifulsoup4", specifier = ">=4.14.3" }]

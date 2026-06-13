@@ -123,11 +123,11 @@ class TestBuildWizard:
         Statistic.CHARISMA,
         Statistic.STRENGTH,
     )
-    LEVEL = 16
-    RACE = Race.HUMAN
-    SUBRACE = Subrace.HUMAN_VARIANT_HUMAN_PLAYERSHANDBOOK
+    LEVEL = 20
+    RACE = Race.GNOME
+    SUBRACE = Subrace.GNOME_ROCK_GNOME_PLAYERSHANDBOOK
     CLASS = Class.WIZARD
-    SUBCLASSES = tuple(WizardSubclass)
+    SUBCLASSES = (WizardSubclass.CONJURATION,)
 
     @classmethod
     def _create_level_up(
@@ -180,7 +180,6 @@ class TestBuildWizard:
                             subrace=cls.SUBRACE,
                         ),
                         all_choices_resolver,
-                        level_up,
                     )
                 )
             )
@@ -245,8 +244,8 @@ class TestBuildWizard:
     def test_build_wizard_with_ai(self):
         """Test wizard build with AI-powered choices (all choices including magical items)."""
         # Create LLM for AI-powered choices
-        llm = ChatOpenAI(model="gpt-4o", temperature=0.7)
-        spells_llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.3)
+        llm = ChatOpenAI(model="gpt-5.4", temperature=0.7)
+        spells_llm = ChatOpenAI(model="gpt-5.4-mini", temperature=0.3)
 
         # Use AI for ALL choices (languages, skills, feats, stats, magical items)
         all_choices_resolver = AIAllChoicesResolver(
@@ -261,18 +260,19 @@ class TestBuildWizard:
         # Use AI for magical item selection
         magical_item_chooser = AIMagicalItemChooser(
             llm=llm,
-            n_uncommon=1,
+            n_uncommon=0,
             n_rare=2,
             n_very_rare=1,
             n_legendary=1,
         )
         previous_result = ""
         for character_description in (
-            "Gwałtowna jak burza magini o wielkiej sile rażenia, z precyzją pozbywa się swoich wrogów, używając błyskawic",
-            "Rządna władzy czarodziejka gotowa złamać wszelkie zasady by osiągnąć cel, preferuje manipulację i magię błyskawic",
+            # "Dark lady, channeling profane power, independent of her undead minions, focuses on controll and disruptive spells, with some high damage options",
+            "Mistress of evil, summer of friends, mighty and prepared with deadly spells for combat. Has Robe of archmagi in equipment",
+            # "Rządna władzy czarodziejka gotowa złamać wszelkie zasady by osiągnąć cel, preferuje manipulację i magię błyskawic",
         ):
             character_description += previous_result
-            wizard = self._build_wizard(
+            result = self._build_wizard(
                 magical_item_chooser,
                 all_choices_resolver,
                 AIPartialBuilderAssigner(
@@ -289,21 +289,21 @@ class TestBuildWizard:
                     llm=spells_llm,
                     character_description=character_description,
                 ),
-            ).character
-
-            assert isinstance(wizard, Character)
-            assert wizard.weapons
-            assert wizard.other_equipment
-            assert wizard.magical_items
+            )
+            character = result.character
+            assert isinstance(character, Character), result.error
+            assert character.weapons
+            assert character.other_equipment
+            assert character.magical_items
 
             previous_result += (
                 "You already constructed this character. Make this one a bit different holding true to the description"
-                + wizard.model_dump_json(
+                + character.model_dump_json(
                     exclude_defaults=True,
                 )
             )
             print(
-                wizard.model_dump_json(
+                character.model_dump_json(
                     indent=2,
                     exclude_defaults=True,
                 )

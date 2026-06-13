@@ -18,7 +18,7 @@ from dnd_character_creator.character.blueprint.simplified_blocks import (
 from dnd_character_creator.character.checkpoint import IncrementChain
 from dnd_character_creator.choices.sex import Sex
 from dnd_character_creator.server.app import EXAMPLES
-from dnd_character_creator.server.tests.test_client import TestClient
+from tests.server.test_client import TestClient
 
 
 class TestCreateCharacter(TestClient):
@@ -191,7 +191,7 @@ class TestCreateCharacter(TestClient):
             json={
                 "building_blocks": {
                     "classes": {"class_levels": {"Wizard": 13}},
-                    "block_type": SimplifiedBlocks.get_block_type(),
+                    "block_type": SimplifiedBlocks.__name__,
                 },
                 "increment_chain": {},
             },

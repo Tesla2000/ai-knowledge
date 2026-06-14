@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from typing import Optional
 
 from dnd.character.blueprint.blueprint import Blueprint
 from dnd.character.blueprint.building_blocks.level_up.spell_assignment.base import (
@@ -35,7 +34,7 @@ class LLMSpellAssigner(SpellAssigner):
     llm: ChatOpenAI = Field(
         description="Language model for making AI-powered decisions"
     )
-    character_description: Optional[str] = Field(
+    character_description: str | None = Field(
         default=None,
         description="Additional character context for AI spell selection",
     )
@@ -66,17 +65,17 @@ class LLMSpellAssigner(SpellAssigner):
         context = f"""You are selecting {count} {spell_level_name} for a D&D 5e character.
 
 Character Details:
-- Name: {blueprint.name or 'Unknown'}
+- Name: {blueprint.name or "Unknown"}
 - Class: {self.class_.value}
 - Level: {blueprint.level or 1}
-- Race: {blueprint.race.value if blueprint.race else 'Unknown'}
-- Background: {blueprint.background.value if blueprint.background else 'Unknown'}
-- Backstory: {blueprint.backstory or 'Generic adventurer'}
-- Description: {self.character_description or 'Standard character'}
-- Alignment: {blueprint.alignment.value if blueprint.alignment else 'Unknown'}
+- Race: {blueprint.race.value if blueprint.race else "Unknown"}
+- Background: {blueprint.background.value if blueprint.background else "Unknown"}
+- Backstory: {blueprint.backstory or "Generic adventurer"}
+- Description: {self.character_description or "Standard character"}
+- Alignment: {blueprint.alignment.value if blueprint.alignment else "Unknown"}
 
 Available spells to choose from:
-{'\n'.join(f"- {s.value}" for s in available_spells)}
+{"\n".join(f"- {s.value}" for s in available_spells)}
 
 Select exactly {count} spell(s) that:
 1. Fit the character's theme, personality, and backstory

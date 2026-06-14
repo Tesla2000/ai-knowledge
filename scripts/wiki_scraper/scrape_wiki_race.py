@@ -36,7 +36,7 @@ def scraper_wiki_race(race: MainRace, output_dir: Path, llm):
         directory.mkdir(parents=True)
         result = llm.invoke(
             f"Extract data about the sub-races of {race.value} from page "
-            f"content:\n\n" + "\n".join(section["content"])
+            "content:\n\n" + "\n".join(section["content"])
         )
         for sub_race in result.sub_races:
             directory.joinpath(f"{sub_race.name}.json").write_text(
@@ -64,9 +64,7 @@ def _split_by_h1(page_struct: Tag) -> list[dict[str, str | list[str]]]:
 
 
 if __name__ == "__main__":
-    llm = ChatOpenAI(model="gpt-4o-mini").with_structured_output(
-        MainRaceTemplate
-    )
+    llm = ChatOpenAI(model="gpt-4o-mini").with_structured_output(MainRaceTemplate)
     for race in MainRace:
         scraper_wiki_race(
             race,

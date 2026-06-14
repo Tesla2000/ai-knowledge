@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from enum import Enum
+from enum import StrEnum
 
 
-class StatsCreationMethod(str, Enum):
+class StatsCreationMethod(StrEnum):
     STANDARD_ARRAY = "standard array"

@@ -27,9 +27,7 @@ class AIBuilderBase(InitialDataFiller, ABC):
         description="Language model for making AI-powered decisions"
     )
 
-    def _generate_character_template(
-        self, prompt: str
-    ) -> CharacterBaseTemplate:
+    def _generate_character_template(self, prompt: str) -> CharacterBaseTemplate:
         """Generate character parameters using AI.
 
         Args:

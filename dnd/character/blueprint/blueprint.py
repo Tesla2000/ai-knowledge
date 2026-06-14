@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from typing import Optional
 from typing import Self
 from typing import Union
 
@@ -38,30 +37,30 @@ class Blueprint(Character):
     """
 
     # Override required fields to be optional
-    sex: Optional[Sex] = None
-    backstory: Optional[str] = None
-    level: Optional[ClassLevel] = None
-    age: Optional[PositiveInt] = None
-    race: Optional[Race] = None
-    subrace: Optional[Subrace] = None
-    name: Optional[str] = None
-    background: Optional[Background] = None
-    alignment: Optional[Alignment] = None
-    height: Optional[PositiveInt] = None
-    weight: Optional[PositiveInt] = None
-    eye_color: Optional[str] = None
-    skin_color: Optional[str] = None
-    hairstyle: Optional[str] = None
-    appearance: Optional[str] = None
-    character_traits: Optional[str] = None
-    ideals: Optional[str] = None
-    bonds: Optional[str] = None
-    weaknesses: Optional[str] = None
+    sex: Sex | None = None
+    backstory: str | None = None
+    level: ClassLevel | None = None
+    age: PositiveInt | None = None
+    race: Race | None = None
+    subrace: Subrace | None = None
+    name: str | None = None
+    background: Background | None = None
+    alignment: Alignment | None = None
+    height: PositiveInt | None = None
+    weight: PositiveInt | None = None
+    eye_color: str | None = None
+    skin_color: str | None = None
+    hairstyle: str | None = None
+    appearance: str | None = None
+    character_traits: str | None = None
+    ideals: str | None = None
+    bonds: str | None = None
+    weaknesses: str | None = None
 
-    stats: Optional[Stats] = None
-    health_base: Optional[PositiveInt] = None
-    dark_vision_range: Optional[NonNegativeInt] = None
-    speed: Optional[PositiveInt] = None
+    stats: Stats | None = None
+    health_base: PositiveInt | None = None
+    dark_vision_range: NonNegativeInt | None = None
+    speed: PositiveInt | None = None
     n_stat_choices: NonNegativeInt = 0
     n_skill_choices: NonNegativeInt = 0
     skills_to_choose_from: frozenset[Skill] = Field(
@@ -78,9 +77,9 @@ class Blueprint(Character):
         "than ability score improvement",
         default=(),
     )
-    tool_proficiencies: tuple[
-        ToolProficiency | GamingSet | MusicalInstrument, ...
-    ] = Field(default=(), description="Tool proficiencies")
+    tool_proficiencies: tuple[ToolProficiency | GamingSet | MusicalInstrument, ...] = (
+        Field(default=(), description="Tool proficiencies")
+    )
     saving_throw_proficiencies: tuple[Statistic, ...] = ()
     equipment_choices: tuple[tuple[Equipment, ...], ...] = ()
     other_active_abilities: tuple[str, ...] = ()

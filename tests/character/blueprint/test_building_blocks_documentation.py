@@ -41,9 +41,7 @@ class TestBuildingBlocksDocumentation(unittest.TestCase):
                     continue  # Skip discriminator field
 
                 if not field_info.description:
-                    missing_descriptions.append(
-                        f"{block_class.__name__}.{field_name}"
-                    )
+                    missing_descriptions.append(f"{block_class.__name__}.{field_name}")
 
         self.assertEqual(
             [],
@@ -118,9 +116,7 @@ class TestBuildingBlocksAPI(unittest.TestCase):
         """Test that /blocks redirects to the HTML page."""
         response = self.client.get("/blocks", follow_redirects=False)
         self.assertEqual(307, response.status_code)
-        self.assertEqual(
-            "/static/building_blocks.html", response.headers["location"]
-        )
+        self.assertEqual("/static/building_blocks.html", response.headers["location"])
 
     def test_multiline_docstrings_preserved(self):
         """Test that multi-line docstrings preserve newlines."""
@@ -132,11 +128,7 @@ class TestBuildingBlocksAPI(unittest.TestCase):
 
         # Find a block with a multi-line docstring (AIAllChoicesResolver has one)
         block = next(
-            (
-                b
-                for b in building_blocks
-                if b["name"] == "AIAllChoicesResolver"
-            ),
+            (b for b in building_blocks if b["name"] == "AIAllChoicesResolver"),
             None,
         )
         self.assertIsNotNone(block, "AIAllChoicesResolver block not found")

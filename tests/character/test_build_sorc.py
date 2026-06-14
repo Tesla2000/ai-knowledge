@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Callable
+from collections.abc import Callable
 
 import pytest
 from dnd.character.blueprint.building_blocks import (
@@ -188,11 +188,7 @@ class TestBuildSorcerer:
                 )
             )
             .add(initial_data_filler)
-            .add(
-                LevelUpMultiple(
-                    blocks=tuple(level_up for _ in range(cls.LEVEL - 1))
-                )
-            )
+            .add(LevelUpMultiple(blocks=tuple(level_up for _ in range(cls.LEVEL - 1))))
             .add(subclass_assigner)
             .add(magical_item_chooser)
         )

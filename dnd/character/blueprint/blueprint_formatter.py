@@ -24,18 +24,10 @@ class BlueprintFormatter(BaseModel):
         >>> prompt_text = formatter.format(blueprint)
     """
 
-    include_name: bool = Field(
-        default=True, description="Include character name"
-    )
-    include_sex: bool = Field(
-        default=True, description="Include character sex"
-    )
-    include_age: bool = Field(
-        default=True, description="Include character age"
-    )
-    include_race: bool = Field(
-        default=True, description="Include race and subrace"
-    )
+    include_name: bool = Field(default=True, description="Include character name")
+    include_sex: bool = Field(default=True, description="Include character sex")
+    include_age: bool = Field(default=True, description="Include character age")
+    include_race: bool = Field(default=True, description="Include race and subrace")
     include_classes: bool = Field(
         default=True, description="Include class and level information"
     )
@@ -48,18 +40,14 @@ class BlueprintFormatter(BaseModel):
     include_backstory: bool = Field(
         default=True, description="Include character backstory"
     )
-    include_stats: bool = Field(
-        default=True, description="Include ability scores"
-    )
+    include_stats: bool = Field(default=True, description="Include ability scores")
     include_skills: bool = Field(
         default=True, description="Include skill proficiencies"
     )
     include_equipment: bool = Field(
         default=True, description="Include current equipment"
     )
-    include_spells: bool = Field(
-        default=True, description="Include spell information"
-    )
+    include_spells: bool = Field(default=True, description="Include spell information")
     include_feats: bool = Field(default=True, description="Include feats")
 
     format_style: Literal["plain", "markdown"] = Field(
@@ -72,9 +60,7 @@ class BlueprintFormatter(BaseModel):
         description="Optional custom system prompt to prepend to the formatted output",
     )
 
-    def format(
-        self, blueprint: Blueprint, system_prompt: str | None = None
-    ) -> str:
+    def format(self, blueprint: Blueprint, system_prompt: str | None = None) -> str:
         """Format a Blueprint into structured text.
 
         Args:
@@ -216,14 +202,10 @@ class BlueprintFormatter(BaseModel):
             weapons_str = ", ".join(w.value for w in blueprint.weapons)
             lines.append(self._item(f"Weapons: {weapons_str}"))
         if blueprint.other_equipment:
-            others_str = ", ".join(
-                str(item) for item in blueprint.other_equipment
-            )
+            others_str = ", ".join(str(item) for item in blueprint.other_equipment)
             lines.append(self._item(f"Other: {others_str}"))
         if blueprint.magical_items:
-            items_str = ", ".join(
-                item.name for item in blueprint.magical_items
-            )
+            items_str = ", ".join(item.name for item in blueprint.magical_items)
             lines.append(self._item(f"Magical Items: {items_str}"))
         return lines
 

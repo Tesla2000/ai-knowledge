@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from itertools import filterfalse
-from typing import Union
 
 from dnd.character.blueprint.blueprint import Blueprint
 from dnd.character.blueprint.blueprint_formatter import (
@@ -72,7 +71,7 @@ class AIAllChoicesResolver(AllChoicesResolverBase, CombinedBlock):
     blocks: tuple[
         AnyStatChoiceResolver,
         AnyEquipmentChooser,
-        Union[NullBlock, MaxIfNotMaxedResolver],
+        NullBlock | MaxIfNotMaxedResolver,
         AIAllNonStatChoicesResolver,
     ] = Field(
         description="Ordered building blocks: stat resolver, equipment chooser, optional feat resolver, and non-stat choices resolver",
@@ -185,9 +184,7 @@ class AIAllNonStatChoicesResolver(BuildingBlock):
         # Feat choices
         if n_feats_to_choose > 0:
             has_choices = True
-            ability_score_improvement_allowed = (
-                sum(blueprint.classes.values()) != 1
-            )
+            ability_score_improvement_allowed = sum(blueprint.classes.values()) != 1
             already_known_feats = {
                 feat
                 for feat in blueprint.feats
@@ -253,9 +250,7 @@ class AIAllNonStatChoicesResolver(BuildingBlock):
                     instrument not in already_known_tools
                     and instrument != MusicalInstrument.ANY_OF_YOUR_CHOICE
                 ):
-                    available_tools.append(
-                        f"MusicalInstrument.{instrument.value}"
-                    )
+                    available_tools.append(f"MusicalInstrument.{instrument.value}")
 
             instructions.append(
                 f"\n### Tool Proficiencies ({n_tools_to_choose} to select)\n"
@@ -270,7 +265,7 @@ class AIAllNonStatChoicesResolver(BuildingBlock):
             instructions.append(
                 f"\n### Stat Increases ({blueprint.n_stat_choices} points)\n"
                 f"Distribute {blueprint.n_stat_choices} stat increase "
-                f"points\n"
+                "points\n"
                 f"Current stats: {blueprint.stats}\n"
                 f"Stat cap: {blueprint.stats_cup}"
             )
@@ -281,7 +276,7 @@ class AIAllNonStatChoicesResolver(BuildingBlock):
             instructions.append(
                 f"\n### Skill Selection ({blueprint.n_skill_choices} to select)\n"
                 f"Select {blueprint.n_skill_choices} skill(s) from "
-                f"available pool\n"
+                "available pool\n"
                 f"Available: {', '.join(s.value for s in blueprint.skills_to_choose_from)}\n"
                 f"Already have: {', '.join(s.value for s in blueprint.skill_proficiencies)}"
             )
@@ -327,10 +322,7 @@ class AIAllNonStatChoicesResolver(BuildingBlock):
                     isinstance(t, ToolProficiency)
                     and t == ToolProficiency.ANY_OF_YOUR_CHOICE
                 )
-                or (
-                    isinstance(t, GamingSet)
-                    and t == GamingSet.ANY_OF_YOUR_CHOICE
-                )
+                or (isinstance(t, GamingSet) and t == GamingSet.ANY_OF_YOUR_CHOICE)
                 or (
                     isinstance(t, MusicalInstrument)
                     and t == MusicalInstrument.ANY_OF_YOUR_CHOICE
@@ -391,7 +383,7 @@ class AIAllNonStatChoicesResolver(BuildingBlock):
                     blueprint.feats + new_feats,
                 )
             ),
-            tool_proficiencies=set(
+            tool_proficiencies={
                 prof
                 for prof in (blueprint.tool_proficiencies + new_tools)
                 if prof
@@ -400,7 +392,7 @@ class AIAllNonStatChoicesResolver(BuildingBlock):
                     GamingSet.ANY_OF_YOUR_CHOICE,
                     MusicalInstrument.ANY_OF_YOUR_CHOICE,
                 )
-            ),
+            },
             n_skill_choices=0,  # All skill choices consumed
             skills_to_choose_from=frozenset(),
         )

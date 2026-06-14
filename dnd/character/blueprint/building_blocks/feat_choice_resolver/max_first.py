@@ -1,5 +1,3 @@
-from typing import Union
-
 from dnd.character.blueprint.blueprint import Blueprint
 from dnd.character.blueprint.building_blocks.feat_choice_resolver.ai import (
     AIFeatChoiceResolver,
@@ -34,7 +32,7 @@ class MaxFirstResolver(FeatChoiceResolver):
     priority: StatsPriority = Field(
         description="Ability score priority order for determining which stat to max"
     )
-    then: Union[RandomFeatChoiceResolver, AIFeatChoiceResolver] = Field(
+    then: RandomFeatChoiceResolver | AIFeatChoiceResolver = Field(
         description="Fallback resolver to use when highest priority stat is already maxed"
     )
 

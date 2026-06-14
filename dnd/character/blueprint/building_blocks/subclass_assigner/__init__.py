@@ -33,9 +33,7 @@ AnySubclassAssigner = Annotated[
             OptionalSubclassAssigner,
             Tag(OptionalSubclassAssigner.get_block_type()),
         ],
-        Annotated[
-            AISubclassAssigner, Tag(AISubclassAssigner.get_block_type())
-        ],
+        Annotated[AISubclassAssigner, Tag(AISubclassAssigner.get_block_type())],
     ],
     get_discriminator(),
 ]

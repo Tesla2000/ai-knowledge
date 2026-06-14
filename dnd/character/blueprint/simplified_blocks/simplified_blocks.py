@@ -2,7 +2,6 @@ from collections import Counter
 from collections.abc import Generator
 from collections.abc import Mapping
 from itertools import chain
-from typing import Any
 from typing import Self
 
 from dnd.character.blueprint.building_blocks import Blocks
@@ -178,9 +177,7 @@ class _SimplifiedBlocksFields(BaseModel):
     and spell_assigners based on class levels.
     """
 
-    classes: Classes = Field(
-        description="Character class and level configuration"
-    )
+    classes: Classes = Field(description="Character class and level configuration")
     stats_priority: StatsPriority = Field(
         default_factory=lambda validated_data: (
             CLASS_TO_STATS_PRIORITY[validated_data["classes"].main_class]
@@ -341,9 +338,7 @@ class _SimplifiedBlocksFields(BaseModel):
         class_levels = dict(self.classes.class_levels)
         if spell_assignment_classes == class_levels:
             return self
-        raise ValueError(
-            f"{spell_assignment_classes=} don't match {class_levels=}"
-        )
+        raise ValueError(f"{spell_assignment_classes=} don't match {class_levels=}")
 
     level_ups: tuple[LevelUp, ...] = Field(
         default_factory=lambda validated_data: (
@@ -353,9 +348,7 @@ class _SimplifiedBlocksFields(BaseModel):
                         level_increment=level,
                         health_increase=health,
                         spell_assigner=spell,
-                        all_choice_resolver=validated_data[
-                            "all_choices_resolver"
-                        ],
+                        all_choice_resolver=validated_data["all_choices_resolver"],
                     ),
                 )
                 for level, health, spell in zip(
@@ -422,9 +415,7 @@ class _SimplifiedBlocksFields(BaseModel):
                     ),
                     stats_builder=validated_data["stats_builder"],
                     race_assigner=validated_data["race_assigner"],
-                    all_choices_resolver=validated_data[
-                        "all_choices_resolver"
-                    ],
+                    all_choices_resolver=validated_data["all_choices_resolver"],
                 )
             )
             if all(
@@ -510,12 +501,10 @@ class SimplifiedBlocks(CombinedBlock, _SimplifiedBlocksFields):
     @model_serializer(mode="wrap")
     def _exclude_factory_defaults(
         self, nxt: SerializerFunctionWrapHandler, info: SerializationInfo
-    ) -> dict[str, Any]:
+    ) -> dict[str, object]:
         serialized_value = nxt(self)
         context = info.context
-        if not (
-            isinstance(context, dict) and context.get(EXCLUDE_FACTORY_DEFAULTS)
-        ):
+        if not (isinstance(context, dict) and context.get(EXCLUDE_FACTORY_DEFAULTS)):
             return serialized_value
         differences = {"classes": self.classes}
         for field_name, partial_model in _PARTIAL_MODELS:
@@ -526,9 +515,7 @@ class SimplifiedBlocks(CombinedBlock, _SimplifiedBlocksFields):
         return differences
 
 
-def _partial_models_creator() -> (
-    Generator[tuple[str, type[BaseModel]], None, None]
-):
+def _partial_models_creator() -> Generator[tuple[str, type[BaseModel]], None, None]:
     combined_fields = {}
     for field_name, field_info in SimplifiedBlocks.model_fields.items():
         combined_fields[field_name] = (field_info.annotation, field_info)

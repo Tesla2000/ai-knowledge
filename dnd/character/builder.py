@@ -6,9 +6,7 @@ import uuid
 from itertools import islice
 from logging import Logger
 from typing import NamedTuple
-from typing import Optional
 from typing import Self
-from typing import Union
 
 from dnd.character.blueprint.blueprint import Blueprint
 from dnd.character.blueprint.building_blocks.building_block import (
@@ -30,8 +28,8 @@ class BuildResult(NamedTuple):
     """Result of building a character with increment tracking."""
 
     chain_id: uuid.UUID
-    character: Optional[PresentableCharacter] = None
-    error: Optional[Exception] = None
+    character: PresentableCharacter | None = None
+    error: Exception | None = None
 
 
 _logger = logging.getLogger(__name__)
@@ -40,8 +38,8 @@ _logger = logging.getLogger(__name__)
 class Builder:
     def __init__(
         self,
-        building_blocks: tuple[Union[BuildingBlock, CombinedBlock], ...] = (),
-        increment_storage: Optional[IncrementStorage] = None,
+        building_blocks: tuple[BuildingBlock | CombinedBlock, ...] = (),
+        increment_storage: IncrementStorage | None = None,
         logger: Logger = _logger,
     ):
         self._logger = logger
@@ -52,9 +50,7 @@ class Builder:
     def _init_character() -> Blueprint:
         return Blueprint()
 
-    def build(
-        self, increment_chain: IncrementChain = IncrementChain()
-    ) -> BuildResult:
+    def build(self, increment_chain: IncrementChain = IncrementChain()) -> BuildResult:
         """Build character with automatic increment tracking.
 
         Returns:
@@ -90,7 +86,7 @@ class Builder:
         finally:
             self._increment_storage.save_chain(chain_id, increment_chain)
 
-    def add(self, building_block: Union[BuildingBlock, CombinedBlock]) -> Self:
+    def add(self, building_block: BuildingBlock | CombinedBlock) -> Self:
         return type(self)(
             self._building_blocks + (building_block,), self._increment_storage
         )

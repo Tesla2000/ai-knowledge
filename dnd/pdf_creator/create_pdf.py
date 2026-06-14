@@ -31,9 +31,7 @@ def create_pdf(
     else:
         pdf_path = character_path.with_suffix(".pdf")
         shutil.move(pdf_path, config.characters_output_dir / pdf_path.name)
-        shutil.move(
-            character_path, config.characters_output_dir / character_path.name
-        )
+        shutil.move(character_path, config.characters_output_dir / character_path.name)
         remove_blank_page(config.characters_output_dir / pdf_path.name)
     finally:
         os.remove(character_path.with_suffix(".aux"))

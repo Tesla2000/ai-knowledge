@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import random
-from typing import Optional
 
 from dnd.character.blueprint.blueprint import Blueprint
 from dnd.character.blueprint.building_blocks.initial_data_filler.base_filler import (
@@ -29,7 +28,7 @@ class RandomInitialDataFiller(InitialDataFiller):
 
     model_config = ConfigDict(frozen=True)
 
-    seed: Optional[int] = Field(
+    seed: int | None = Field(
         default=None,
         description="Optional seed for reproducible random selection",
     )
@@ -152,17 +151,14 @@ class RandomInitialDataFiller(InitialDataFiller):
             backstory=blueprint.backstory or random.choice(self._BACKSTORIES),
             age=blueprint.age or random.randint(18, 80),
             name=blueprint.name or random.choice(self._NAMES),
-            background=blueprint.background
-            or random.choice(tuple(Background)),
+            background=blueprint.background or random.choice(tuple(Background)),
             alignment=blueprint.alignment or random.choice(tuple(Alignment)),
             height=blueprint.height or random.randint(150, 210),
             weight=blueprint.weight or random.randint(50, 120),
             eye_color=blueprint.eye_color or random.choice(self._EYE_COLORS),
-            skin_color=blueprint.skin_color
-            or random.choice(self._SKIN_COLORS),
+            skin_color=blueprint.skin_color or random.choice(self._SKIN_COLORS),
             hairstyle=blueprint.hairstyle or random.choice(self._HAIRSTYLES),
-            appearance=blueprint.appearance
-            or random.choice(self._APPEARANCES),
+            appearance=blueprint.appearance or random.choice(self._APPEARANCES),
             character_traits=blueprint.character_traits
             or random.choice(self._CHARACTER_TRAITS),
             ideals=blueprint.ideals or random.choice(self._IDEALS),

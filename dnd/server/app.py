@@ -1,10 +1,8 @@
 import os
 import typing
 from contextlib import suppress
-from typing import Any
 from typing import get_args
 from typing import get_origin
-from typing import Optional
 
 from dnd.character.blueprint.building_blocks import (
     AnyBuildingBlock,
@@ -51,31 +49,31 @@ from subclass_getter import get_unique_subclasses
 
 
 class _CreateCharacterResponse(BaseModel):
-    character: Optional[PresentableCharacter] = None
+    character: PresentableCharacter | None = None
     increment_chain: IncrementChain
-    error: Optional[str] = None
+    error: str | None = None
 
 
 EXAMPLES = (
-    SimplifiedBlocks(
-        classes=Classes(class_levels={Class.WIZARD: 1})
-    ).model_dump(include={"classes", BLOCK_TYPE_FIELD_NAME}, mode="json"),
-    SimplifiedBlocks(
-        classes=Classes(class_levels={Class.WIZARD: 1})
-    ).model_dump(exclude={"blocks"}, mode="json"),
+    SimplifiedBlocks(classes=Classes(class_levels={Class.WIZARD: 1})).model_dump(
+        include={"classes", BLOCK_TYPE_FIELD_NAME}, mode="json"
+    ),
+    SimplifiedBlocks(classes=Classes(class_levels={Class.WIZARD: 1})).model_dump(
+        exclude={"blocks"}, mode="json"
+    ),
     example_building_blocks().model_dump(mode="json"),
 )
 
 
 class _CreateCharacterRequestSchema(BaseModel):
-    building_blocks: dict[str, Any] = Field(examples=list(EXAMPLES))
-    increment_chain: dict[str, Any] = Field(examples=[IncrementChain()])
+    building_blocks: dict[str, object] = Field(examples=list(EXAMPLES))
+    increment_chain: dict[str, object] = Field(examples=[IncrementChain()])
 
 
 _building_block_creator = TypeAdapter(AnyBuildingBlock)
 
 
-def _generate_building_blocks_metadata() -> list[dict[str, Any]]:
+def _generate_building_blocks_metadata() -> list[dict[str, object]]:
     """Generate metadata for all building blocks.
 
     Returns:
@@ -109,9 +107,7 @@ def _generate_building_blocks_metadata() -> list[dict[str, Any]]:
                 "default": default_value,
             }
 
-        assert (
-            block_class.__doc__
-        ), f"{block_class.__name__} is missing a docstring"
+        assert block_class.__doc__, f"{block_class.__name__} is missing a docstring"
 
         blocks_metadata.append(
             {
@@ -145,27 +141,18 @@ def create_app(storage: IncrementStorage):
 
         errors = []
         try:
-            if (
-                blocks.get(BLOCK_TYPE_FIELD_NAME)
-                == SimplifiedBlocks.get_block_type()
-            ):
+            if blocks.get(BLOCK_TYPE_FIELD_NAME) == SimplifiedBlocks.get_block_type():
                 building_blocks = SimplifiedBlocks.model_validate(blocks)
             else:
-                building_blocks = _building_block_creator.validate_python(
-                    blocks
-                )
+                building_blocks = _building_block_creator.validate_python(blocks)
         except ValidationError as e:
             errors.append(e)
         try:
-            increment_chain = IncrementChain.model_validate(
-                request.increment_chain
-            )
+            increment_chain = IncrementChain.model_validate(request.increment_chain)
         except ValidationError as e:
             errors.append(e)
         if errors:
-            raise HTTPException(
-                status_code=422, detail="\n\n".join(map(str, errors))
-            )
+            raise HTTPException(status_code=422, detail="\n\n".join(map(str, errors)))
         builder = Builder(
             building_blocks=(building_blocks,),
             increment_storage=storage,
@@ -189,14 +176,10 @@ def create_app(storage: IncrementStorage):
         """Return example SimplifiedBlocks configurations."""
 
         # Template 1: Level 1 Wizard (minimal config)
-        wizard_l1 = SimplifiedBlocks(
-            classes=Classes(class_levels={Class.WIZARD: 1})
-        )
+        wizard_l1 = SimplifiedBlocks(classes=Classes(class_levels={Class.WIZARD: 1}))
 
         # Template 2: Level 3 Wizard
-        wizard_l3 = SimplifiedBlocks(
-            classes=Classes(class_levels={Class.WIZARD: 3})
-        )
+        wizard_l3 = SimplifiedBlocks(classes=Classes(class_levels={Class.WIZARD: 3}))
 
         # Template 3: Level 5 Sorcerer
         sorcerer_l5 = SimplifiedBlocks(
@@ -245,7 +228,7 @@ def create_app(storage: IncrementStorage):
         }
 
     @app_.post("/format_simplified")
-    def format_simplified(request: dict[str, Any], show_defaults: bool = True):
+    def format_simplified(request: dict[str, object], show_defaults: bool = True):
         """Validate and reformat SimplifiedBlocks config with or without defaults.
 
         This endpoint preserves user changes while toggling default value display.
@@ -278,8 +261,8 @@ def create_app(storage: IncrementStorage):
         """
 
         def get_union_schema(
-            annotation: Any, field_name: str, visited: set[Any] | None = None
-        ) -> dict[str, Any] | None:
+            annotation: object, field_name: str, visited: set[object] | None = None
+        ) -> dict[str, object] | None:
             """Recursively build schema for Union type fields.
 
             Returns a schema that validates block_type and recursively validates
@@ -328,9 +311,7 @@ def create_app(storage: IncrementStorage):
                         )
                         if nested_schema:
                             if nested_field_name not in nested_properties:
-                                nested_properties[nested_field_name] = (
-                                    nested_schema
-                                )
+                                nested_properties[nested_field_name] = nested_schema
 
             if not block_types:
                 return None
@@ -357,9 +338,7 @@ def create_app(storage: IncrementStorage):
         stats_priority_schema = stats_priority_adapter.json_schema()
 
         # Extract the actual type definitions (handle $defs if present)
-        classes_def = classes_schema.get("$defs", {}).get(
-            "Classes", classes_schema
-        )
+        classes_def = classes_schema.get("$defs", {}).get("Classes", classes_schema)
 
         # Dynamically discover Union fields and build schemas recursively
         union_properties = {}

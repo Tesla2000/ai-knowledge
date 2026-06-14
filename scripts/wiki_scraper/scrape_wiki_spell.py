@@ -47,8 +47,6 @@ def scraper_wiki_spell(spell: Spell, output_dir: Path):
 if __name__ == "__main__":
     for spell_list in all_spells[4:]:
         for spell in spell_list:
-            out_path = Path(
-                f"scraped_data/spells/{spell_list.__name__.lower()}"
-            )
+            out_path = Path(f"scraped_data/spells/{spell_list.__name__.lower()}")
             out_path.mkdir(exist_ok=True, parents=True)
             scraper_wiki_spell(spell, out_path)

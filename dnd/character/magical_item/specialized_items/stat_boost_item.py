@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from typing import Optional
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -20,13 +19,11 @@ class StatBoostItem(MagicalItem):
 
     stat: Statistic  # e.g., Statistic.STRENGTH, Statistic.DEXTERITY
     boost_amount: int  # e.g., 2
-    max_value: Optional[int] = None  # e.g., 20 (if None, uses stats_cup)
+    max_value: int | None = None  # e.g., 20 (if None, uses stats_cup)
 
     def assign_to(self, blueprint: Blueprint) -> Blueprint:
         """Increase the specified stat by the boost amount, respecting the maximum."""
-        stat_name = (
-            self.stat.value.lower()
-        )  # Convert Statistic.STRENGTH -> 'strength'
+        stat_name = self.stat.value.lower()  # Convert Statistic.STRENGTH -> 'strength'
 
         # Get current stat value and cap
         current_value = getattr(blueprint.stats, stat_name)
@@ -40,9 +37,7 @@ class StatBoostItem(MagicalItem):
         # Calculate new value: add boost, but don't exceed the cap
         new_value = min(current_value + self.boost_amount, effective_cap)
 
-        new_stats = Stats(
-            **{**blueprint.stats.model_dump(), stat_name: new_value}
-        )
+        new_stats = Stats(**{**blueprint.stats.model_dump(), stat_name: new_value})
 
         return type(blueprint)(
             stats=new_stats, magical_items=blueprint.magical_items + (self,)

@@ -72,9 +72,7 @@ class AIEquipmentChooser(EquipmentChooser):
 
         return "\n".join(lines)
 
-    def _format_equipment_item(
-        self, item: ArmorName | WeaponName | str
-    ) -> str:
+    def _format_equipment_item(self, item: ArmorName | WeaponName | str) -> str:
         """Format an equipment item for display in the prompt.
 
         Args:
@@ -141,9 +139,7 @@ class AIEquipmentChooser(EquipmentChooser):
 
         # Build prompt and get AI selection
         prompt = self._build_prompt(blueprint)
-        structured_llm = self.llm.with_structured_output(
-            EquipmentChoiceSelection
-        )
+        structured_llm = self.llm.with_structured_output(EquipmentChoiceSelection)
         selection = structured_llm.invoke(prompt)
 
         # Validate selection

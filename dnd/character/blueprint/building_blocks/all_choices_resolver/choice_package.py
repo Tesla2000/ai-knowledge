@@ -34,12 +34,9 @@ class ChoicePackage(BaseModel):
         description="Feats to replace ANY_OF_YOUR_CHOICE placeholders "
         "(excluding ABILITY_SCORE_IMPROVEMENT)",
     )
-    tool_proficiencies: list[
-        ToolProficiency | GamingSet | MusicalInstrument
-    ] = Field(
+    tool_proficiencies: list[ToolProficiency | GamingSet | MusicalInstrument] = Field(
         default_factory=list,
-        description="Tool proficiencies to replace ANY_OF_YOUR_CHOICE "
-        "placeholders",
+        description="Tool proficiencies to replace ANY_OF_YOUR_CHOICE placeholders",
     )
 
     # Skill selection from available pool

@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from abc import ABC
 from abc import abstractmethod
-from typing import Any
 
 from dnd.character.blueprint.blueprint import Blueprint
 from dnd.character.blueprint.building_blocks.building_block import (
@@ -53,15 +52,11 @@ class SubclassAssigner(BuildingBlock, ABC):
 
     @model_validator(mode="before")
     @classmethod
-    def _add_available_subclasses(cls, data: dict[str, Any]) -> dict[str, Any]:
+    def _add_available_subclasses(cls, data: dict[str, object]) -> dict[str, object]:
         class_ = Class(data.get("class_"))
         subclass_enum = SUBCLASSES[class_]
-        available_subclasses = data.get(
-            "available_subclasses", tuple(subclass_enum)
-        )
-        if any(
-            subclass not in subclass_enum for subclass in available_subclasses
-        ):
+        available_subclasses = data.get("available_subclasses", tuple(subclass_enum))
+        if any(subclass not in subclass_enum for subclass in available_subclasses):
             raise ValueError(
                 f"Not all subclasses of {available_subclasses} are available to {class_}"
             )

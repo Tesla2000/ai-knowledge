@@ -1,11 +1,7 @@
 from dnd.character.blueprint.building_blocks.building_block import (
     BLOCK_TYPE_FIELD_NAME,
 )
-<<<<<<<< HEAD:tests/server/test_simplified_blocks_schema.py
 from tests.server.test_client import TestClient
-========
-from dnd.server.tests.test_client import TestClient
->>>>>>>> 34edfe5 (Rename to dnd):dnd/server/tests/test_simplified_blocks_schema.py
 
 
 class TestSimplifiedBlocksSchema(TestClient):
@@ -74,9 +70,7 @@ class TestSimplifiedBlocksSchema(TestClient):
             assert BLOCK_TYPE_FIELD_NAME in field_schema["properties"]
 
             # block_type should have enum of possible values
-            block_type_schema = field_schema["properties"][
-                BLOCK_TYPE_FIELD_NAME
-            ]
+            block_type_schema = field_schema["properties"][BLOCK_TYPE_FIELD_NAME]
             assert block_type_schema["type"] == "string"
             assert "enum" in block_type_schema
             assert len(block_type_schema["enum"]) > 0
@@ -88,9 +82,7 @@ class TestSimplifiedBlocksSchema(TestClient):
 
         # Check language_choice_resolver has expected block types
         lang_resolver = schema["properties"]["language_choice_resolver"]
-        block_types = lang_resolver["properties"][BLOCK_TYPE_FIELD_NAME][
-            "enum"
-        ]
+        block_types = lang_resolver["properties"][BLOCK_TYPE_FIELD_NAME]["enum"]
 
         assert {
             "RandomLanguageChoiceResolver",
@@ -99,9 +91,7 @@ class TestSimplifiedBlocksSchema(TestClient):
 
         # Check skill_choice_resolver
         skill_resolver = schema["properties"]["skill_choice_resolver"]
-        block_types = skill_resolver["properties"][BLOCK_TYPE_FIELD_NAME][
-            "enum"
-        ]
+        block_types = skill_resolver["properties"][BLOCK_TYPE_FIELD_NAME]["enum"]
 
         assert set(block_types) == {
             "RandomSkillChoiceResolver",
@@ -117,15 +107,12 @@ class TestSimplifiedBlocksSchema(TestClient):
         # (This depends on the actual structure, but we can at least verify
         # the schema is properly structured for nested validation)
         for field_name, field_schema in schema["properties"].items():
-            if (
-                isinstance(field_schema, dict)
-                and field_schema.get("type") == "object"
-            ):
+            if isinstance(field_schema, dict) and field_schema.get("type") == "object":
                 # If it has block_type, it should allow additional properties
                 if BLOCK_TYPE_FIELD_NAME in field_schema.get("properties", {}):
-                    assert (
-                        field_schema.get("additionalProperties") is True
-                    ), f"{field_name} should allow additional properties"
+                    assert field_schema.get("additionalProperties") is True, (
+                        f"{field_name} should allow additional properties"
+                    )
 
     def test_schema_required_fields(self, client):
         """Test that only classes is required, other fields are optional."""
@@ -159,6 +146,4 @@ class TestSimplifiedBlocksSchema(TestClient):
             static_schema = json.load(f)
 
         # Schemas should match exactly
-        assert (
-            static_schema == runtime_schema
-        ), "Static and runtime schemas differ"
+        assert static_schema == runtime_schema, "Static and runtime schemas differ"

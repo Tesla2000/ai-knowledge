@@ -35,11 +35,11 @@ class SubraceStats(BaseModel):
         default_factory=tuple,
     )
     n_skills: int = Field(description="Number of skills to choose", default=0)
-    tool_proficiencies: tuple[
-        ToolProficiency | GamingSet | MusicalInstrument, ...
-    ] = Field(description="List of tool proficiencies.", default=())
+    tool_proficiencies: tuple[ToolProficiency | GamingSet | MusicalInstrument, ...] = (
+        Field(description="List of tool proficiencies.", default=())
+    )
     additional_feat: bool = Field(
-        "Does sub-race get a feat 'Feat: You gain " "one Feat of your choice.'"
+        "Does sub-race get a feat 'Feat: You gain one Feat of your choice.'"
     )
     statistics: RaceStatistics = Field(
         description="Statistic given by the race and sub-race"
@@ -76,10 +76,8 @@ class SubraceStats(BaseModel):
         new_stats = Stats(
             strength=blueprint.stats.strength + self.statistics.strength,
             dexterity=blueprint.stats.dexterity + self.statistics.dexterity,
-            constitution=blueprint.stats.constitution
-            + self.statistics.constitution,
-            intelligence=blueprint.stats.intelligence
-            + self.statistics.intelligence,
+            constitution=blueprint.stats.constitution + self.statistics.constitution,
+            intelligence=blueprint.stats.intelligence + self.statistics.intelligence,
             wisdom=blueprint.stats.wisdom + self.statistics.wisdom,
             charisma=blueprint.stats.charisma + self.statistics.charisma,
         )
@@ -90,14 +88,11 @@ class SubraceStats(BaseModel):
                 blueprint.dark_vision_range or 0, self.dark_vision_range
             ),
             languages=blueprint.languages + self.languages,
-            skill_proficiencies=blueprint.skill_proficiencies
-            + self.obligatory_skills,
-            tool_proficiencies=blueprint.tool_proficiencies
-            + self.tool_proficiencies,
+            skill_proficiencies=blueprint.skill_proficiencies + self.obligatory_skills,
+            tool_proficiencies=blueprint.tool_proficiencies + self.tool_proficiencies,
             stats=new_stats,
             feats=blueprint.feats
-            + self.additional_feat
-            * (FeatName.ANY_EXCEPT_ABILITY_SCORE_IMPROVEMENT,),
+            + self.additional_feat * (FeatName.ANY_EXCEPT_ABILITY_SCORE_IMPROVEMENT,),
             n_stat_choices=self.statistics.any_of_your_choice,
             n_skill_choices=self.n_skills,
             skills_to_choose_from=frozenset(self.skills_to_choose_from),

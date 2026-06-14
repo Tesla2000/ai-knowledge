@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Callable
+from collections.abc import Callable
 
 import pytest
 from dnd.character.blueprint.building_blocks import (
@@ -199,8 +199,7 @@ class TestBuildMulticlass:
             .add(
                 LevelUpMultiple(
                     blocks=tuple(
-                        level_up_wizard
-                        for _ in range(cls.LEVEL - cls.SORC_LEVEL - 1)
+                        level_up_wizard for _ in range(cls.LEVEL - cls.SORC_LEVEL - 1)
                     )
                 )
             )

@@ -53,9 +53,7 @@ class FeatChoiceResolver(BuildingBlock, ABC):
         resolved = set()
 
         # Check if ASI is allowed (level 2+, i.e., total level != 1)
-        ability_score_improvement_allowed = (
-            sum(blueprint.classes.values()) != 1
-        )
+        ability_score_improvement_allowed = sum(blueprint.classes.values()) != 1
 
         # Build excluded values list
         excluded_values = list(FeatName.not_choosables())

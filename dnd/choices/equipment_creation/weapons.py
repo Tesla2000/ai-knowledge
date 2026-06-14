@@ -1,8 +1,7 @@
 from __future__ import annotations
 
-from enum import IntEnum
+from enum import IntEnum, auto
 from enum import StrEnum
-from typing import Optional
 
 from dnd.choices.equipment_creation.item import Item
 
@@ -17,9 +16,9 @@ class HitDieSize(IntEnum):
 
 
 class DamageType(StrEnum):
-    BLUDGEONING = "bludgeoning"
-    PIERCING = "piercing"
-    SLASHING = "slashing"
+    BLUDGEONING = auto()
+    PIERCING = auto()
+    SLASHING = auto()
 
 
 class WeaponName(StrEnum):
@@ -64,8 +63,8 @@ class WeaponName(StrEnum):
 
 class Weapon(Item):
     name: WeaponName
-    damage_type: Optional[DamageType]
-    base_hit_die: Optional[HitDieSize]
+    damage_type: DamageType | None
+    base_hit_die: HitDieSize | None
     two_dies: bool = False
     is_martial: bool = False
     is_ammunition: bool = False

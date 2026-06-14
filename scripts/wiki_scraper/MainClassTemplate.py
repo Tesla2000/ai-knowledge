@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from itertools import filterfalse
-from typing import Any
 
 from dnd.other_profficiencies import ArmorProficiency
 from dnd.other_profficiencies import GamingSet
@@ -22,32 +21,27 @@ class MainClassTemplate(BaseModel):
         default_factory=list,
     )
     n_skills: int = Field(
-        description="Number of skills that can be chosen "
-        "from skills to choose from.",
+        description="Number of skills that can be chosen from skills to choose from.",
         default=0,
     )
     tools: list[ToolProficiency | GamingSet | MusicalInstrument] = Field(
         description="Tool proficiencies gained with class. Empty list if None."
     )
     armor: list[ArmorProficiency] = Field(
-        description="Armor proficiencies gained with class. "
-        "Empty list if None."
+        description="Armor proficiencies gained with class. Empty list if None."
     )
     weapons: list[WeaponProficiency] = Field(
-        description="Weapons proficiencies gained with class. "
-        "Empty list if None."
+        description="Weapons proficiencies gained with class. Empty list if None."
     )
 
-    def __init__(self, /, **data: Any):
+    def __init__(self, /, **data: object):
         data["tools"] = list(map(str.capitalize, data["tools"]))
         data["armor"] = list(
-            " ".join(map(str.capitalize, prof.split()))
-            for prof in data["armor"]
+            " ".join(map(str.capitalize, prof.split())) for prof in data["armor"]
         )
         data["armor"] = list(filterfalse("None".__eq__, data["armor"]))
         data["weapons"] = list(prof.rstrip("s") for prof in data["weapons"])
         data["weapons"] = list(
-            " ".join(map(str.capitalize, prof.split()))
-            for prof in data["weapons"]
+            " ".join(map(str.capitalize, prof.split())) for prof in data["weapons"]
         )
         super().__init__(**data)

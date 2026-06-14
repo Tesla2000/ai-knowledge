@@ -81,9 +81,7 @@ class FeatName(StrEnum):
     WEAPON_MASTER = "Weapon Master"
     ABILITY_SCORE_IMPROVEMENT = "Ability Score Improvement"
     ANY_OF_YOUR_CHOICE = "Any feat of your choice"
-    ANY_EXCEPT_ABILITY_SCORE_IMPROVEMENT = (
-        "Any except ability score improvement"
-    )
+    ANY_EXCEPT_ABILITY_SCORE_IMPROVEMENT = "Any except ability score improvement"
 
     @classmethod
     def not_choosables(cls) -> tuple[Self, ...]:
@@ -93,8 +91,6 @@ class FeatName(StrEnum):
 def feat_name_to_feat(feat: FeatName) -> Feature:
     return Feature(
         **json.loads(
-            resource_paths.feats_root.joinpath(
-                f"{feat.value}.json"
-            ).read_text()
+            resource_paths.feats_root.joinpath(f"{feat.value}.json").read_text()
         )
     )

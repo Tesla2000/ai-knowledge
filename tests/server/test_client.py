@@ -5,7 +5,6 @@ from starlette.testclient import TestClient as StarletteTestClient
 
 
 class TestClient:
-
     @pytest.fixture
     def storage(self):
         return MemoryStorage()

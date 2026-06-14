@@ -1,10 +1,6 @@
 """Test that Field descriptions are properly set and displayed via the API."""
 
-<<<<<<<< HEAD:tests/server/test_field_descriptions.py
 from tests.server.test_client import TestClient
-========
-from dnd.server.tests.test_client import TestClient
->>>>>>>> 34edfe5 (Rename to dnd):dnd/server/tests/test_field_descriptions.py
 
 
 class TestFieldDescriptions(TestClient):
@@ -62,9 +58,9 @@ class TestFieldDescriptions(TestClient):
                 "Language model for making AI-powered decisions"
             )
             assert "character_description" in llm_spell["fields"]
-            assert llm_spell["fields"]["character_description"][
-                "description"
-            ] == ("Additional character context for AI spell selection")
+            assert llm_spell["fields"]["character_description"]["description"] == (
+                "Additional character context for AI spell selection"
+            )
 
         # Test 7: RandomInitialDataFiller.seed
         if "RandomInitialDataFiller" in blocks_by_name:
@@ -166,9 +162,9 @@ class TestFieldDescriptions(TestClient):
         # Verify they all have the same description
         expected_description = "Language model for making AI-powered decisions"
         for block_name, description in llm_descriptions:
-            assert (
-                description == expected_description
-            ), f"Block {block_name} has incorrect llm description: {description}"
+            assert description == expected_description, (
+                f"Block {block_name} has incorrect llm description: {description}"
+            )
 
     def test_no_empty_field_descriptions(self, client):
         """Test that important fields have non-empty descriptions."""
@@ -195,5 +191,5 @@ class TestFieldDescriptions(TestClient):
                 if field_name in critical_fields:
                     assert field_info["description"], (
                         f"Field '{field_name}' in block '{block_name}' "
-                        f"has an empty description"
+                        "has an empty description"
                     )

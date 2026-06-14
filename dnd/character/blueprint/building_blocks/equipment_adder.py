@@ -21,9 +21,7 @@ class EquipmentAdder(BuildingBlock):
         ... ])
     """
 
-    item: str = Field(
-        description="Equipment item to add to character's inventory"
-    )
+    item: str = Field(description="Equipment item to add to character's inventory")
 
     def get_change(self, blueprint: Blueprint) -> Blueprint:
         """Add the item to the existing equipment tuple.

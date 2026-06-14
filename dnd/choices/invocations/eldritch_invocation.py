@@ -1,7 +1,6 @@
 from __future__ import annotations
 
-from enum import Enum
-from typing import Optional
+from enum import StrEnum
 from typing import TYPE_CHECKING
 
 from pydantic import BaseModel
@@ -13,7 +12,7 @@ from dnd.choices.class_creation.character_class import (
 )
 
 
-class WarlockPact(str, Enum):
+class WarlockPact(StrEnum):
     PACT_OF_THE_TOME = "Tome"
     PACT_OF_THE_TALISMAN = "Talisman"
     PACT_OF_THE_CHAIN = "Chain"
@@ -24,7 +23,7 @@ class EldritchInvocation(BaseModel):
     name: str
     description: str
     required_level: int
-    pact: Optional[WarlockPact]
+    pact: WarlockPact | None
 
 
 invocations: list[EldritchInvocation] = [
@@ -66,8 +65,7 @@ invocations: list[EldritchInvocation] = [
     ),
     EldritchInvocation(
         name="Beguiling Influence",
-        description="You gain proficiency in the Deception and Persuasion "
-        "skills.",
+        description="You gain proficiency in the Deception and Persuasion skills.",
         required_level=0,
         pact=None,
     ),
@@ -167,15 +165,13 @@ invocations: list[EldritchInvocation] = [
     ),
     EldritchInvocation(
         name="Fiendish Vigor",
-        description="You can cast false life on yourself at will as a "
-        "1st-level spell.",
+        description="You can cast false life on yourself at will as a 1st-level spell.",
         required_level=0,
         pact=None,
     ),
     EldritchInvocation(
         name="Gaze of Two Minds",
-        description="You can perceive through the senses of a willing "
-        "humanoid.",
+        description="You can perceive through the senses of a willing humanoid.",
         required_level=0,
         pact=None,
     ),
@@ -263,8 +259,7 @@ invocations: list[EldritchInvocation] = [
     ),
     EldritchInvocation(
         name="Master of Myriad Forms",
-        description="You can cast alter self at will, without expending a "
-        "spell slot.",
+        description="You can cast alter self at will, without expending a spell slot.",
         required_level=15,
         pact=None,
     ),
@@ -329,8 +324,7 @@ invocations: list[EldritchInvocation] = [
     ),
     EldritchInvocation(
         name="Sculptor of Flesh",
-        description="You can cast alter self at will, without expending a "
-        "spell slot.",
+        description="You can cast alter self at will, without expending a spell slot.",
         required_level=12,
         pact=None,
     ),
@@ -372,31 +366,39 @@ invocations: list[EldritchInvocation] = [
 ]
 
 
-def n_eldrich_invocations(character_wrapper: "CharacterWrapper") -> int:
+def n_eldrich_invocations(character_wrapper: CharacterWrapper) -> int:
     conditions = [
-        lambda character_wrapper: character_wrapper.character.classes
-        == Class.WARLOCK
-        and character_wrapper.character.level >= 2,
-        lambda character_wrapper: character_wrapper.character.classes
-        == Class.WARLOCK
-        and character_wrapper.character.level >= 2,
-        lambda character_wrapper: character_wrapper.character.classes
-        == Class.WARLOCK
-        and character_wrapper.character.level >= 5,
-        lambda character_wrapper: character_wrapper.character.classes
-        == Class.WARLOCK
-        and character_wrapper.character.level >= 7,
-        lambda character_wrapper: character_wrapper.character.classes
-        == Class.WARLOCK
-        and character_wrapper.character.level >= 9,
-        lambda character_wrapper: character_wrapper.character.classes
-        == Class.WARLOCK
-        and character_wrapper.character.level >= 12,
-        lambda character_wrapper: character_wrapper.character.classes
-        == Class.WARLOCK
-        and character_wrapper.character.level >= 15,
-        lambda character_wrapper: character_wrapper.character.classes
-        == Class.WARLOCK
-        and character_wrapper.character.level >= 18,
+        lambda character_wrapper: (
+            character_wrapper.character.classes == Class.WARLOCK
+            and character_wrapper.character.level >= 2
+        ),
+        lambda character_wrapper: (
+            character_wrapper.character.classes == Class.WARLOCK
+            and character_wrapper.character.level >= 2
+        ),
+        lambda character_wrapper: (
+            character_wrapper.character.classes == Class.WARLOCK
+            and character_wrapper.character.level >= 5
+        ),
+        lambda character_wrapper: (
+            character_wrapper.character.classes == Class.WARLOCK
+            and character_wrapper.character.level >= 7
+        ),
+        lambda character_wrapper: (
+            character_wrapper.character.classes == Class.WARLOCK
+            and character_wrapper.character.level >= 9
+        ),
+        lambda character_wrapper: (
+            character_wrapper.character.classes == Class.WARLOCK
+            and character_wrapper.character.level >= 12
+        ),
+        lambda character_wrapper: (
+            character_wrapper.character.classes == Class.WARLOCK
+            and character_wrapper.character.level >= 15
+        ),
+        lambda character_wrapper: (
+            character_wrapper.character.classes == Class.WARLOCK
+            and character_wrapper.character.level >= 18
+        ),
     ]
     return sum(condition(character_wrapper) for condition in conditions)

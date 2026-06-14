@@ -72,15 +72,11 @@ class AISkillChoiceResolver(SkillChoiceResolver):
 
         # Add available skills
         parts.append("\n## Available Skills")
-        parts.append(
-            f"Select exactly {n} skills from the following options:\n"
-        )
+        parts.append(f"Select exactly {n} skills from the following options:\n")
 
         # Filter out ANY_OF_YOUR_CHOICE placeholder
         actual_skills = [
-            skill
-            for skill in available_skills
-            if skill != Skill.ANY_OF_YOUR_CHOICE
+            skill for skill in available_skills if skill != Skill.ANY_OF_YOUR_CHOICE
         ]
 
         for skill in sorted(actual_skills, key=lambda s: s.value):
@@ -88,9 +84,7 @@ class AISkillChoiceResolver(SkillChoiceResolver):
 
         # Add selection instructions
         parts.append("\n## Selection Instructions")
-        parts.append(
-            f"Return exactly {n} skills from the available options above."
-        )
+        parts.append(f"Return exactly {n} skills from the available options above.")
         parts.append(
             "Consider:"
             "\n  - Which skills complement the character's primary ability scores"

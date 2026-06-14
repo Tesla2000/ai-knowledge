@@ -11,9 +11,7 @@ from pydantic import Field
 class AlignmentAssigner(BuildingBlock):
     """Assigns an alignment to the character."""
 
-    alignment: Alignment = Field(
-        description="Character's moral and ethical alignment"
-    )
+    alignment: Alignment = Field(description="Character's moral and ethical alignment")
 
     def get_change(self, blueprint: Blueprint) -> Blueprint:
         """Yield the alignment difference."""

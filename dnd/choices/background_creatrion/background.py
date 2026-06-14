@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from enum import Enum
+from enum import StrEnum
 
 
-class Background(str, Enum):
+class Background(StrEnum):
     ACOLYTE = "Acolyte"
     ANTHROPOLOGIST = "Anthropologist"
     ARCHAEOLOGIST = "Archaeologist"

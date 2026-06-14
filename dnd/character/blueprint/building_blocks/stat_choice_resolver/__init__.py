@@ -20,9 +20,7 @@ AnyStatChoiceResolver = Annotated[
             PriorityStatChoiceResolver,
             Tag(PriorityStatChoiceResolver.get_block_type()),
         ],
-        Annotated[
-            AIStatChoiceResolver, Tag(AIStatChoiceResolver.get_block_type())
-        ],
+        Annotated[AIStatChoiceResolver, Tag(AIStatChoiceResolver.get_block_type())],
     ],
     get_discriminator(),
 ]

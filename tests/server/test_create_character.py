@@ -15,17 +15,10 @@ from dnd.character.blueprint.building_blocks import (
 from dnd.character.blueprint.simplified_blocks import (
     SimplifiedBlocks,
 )
-<<<<<<<< HEAD:tests/server/test_create_character.py
-from dnd_character_creator.character.checkpoint import IncrementChain
-from dnd_character_creator.choices.sex import Sex
-from dnd_character_creator.server.app import EXAMPLES
-from tests.server.test_client import TestClient
-========
 from dnd.character.checkpoint import IncrementChain
 from dnd.choices.sex import Sex
 from dnd.server.app import EXAMPLES
-from dnd.server.tests.test_client import TestClient
->>>>>>>> 34edfe5 (Rename to dnd):dnd/server/tests/test_create_character.py
+from tests.server.test_client import TestClient
 
 
 class TestCreateCharacter(TestClient):
@@ -80,9 +73,9 @@ class TestCreateCharacter(TestClient):
         second_response = client.post(
             "/create_character",
             json={
-                "building_blocks": (
-                    building_blocks + additional_blocks
-                ).model_dump(mode="json"),
+                "building_blocks": (building_blocks + additional_blocks).model_dump(
+                    mode="json"
+                ),
                 "increment_chain": first_chain,
             },
         )
@@ -104,9 +97,7 @@ class TestCreateCharacter(TestClient):
                 "/create_character",
                 json={
                     "building_blocks": building_blocks.model_dump(mode="json"),
-                    "increment_chain": IncrementChain().model_dump(
-                        mode="json"
-                    ),
+                    "increment_chain": IncrementChain().model_dump(mode="json"),
                 },
             )
             mock_level_assigner.assert_called_once()
@@ -117,18 +108,14 @@ class TestCreateCharacter(TestClient):
         response = client.post(
             "/create_character",
             json={
-                "building_blocks": CombinedBlock(blocks=()).model_dump(
-                    mode="json"
-                ),
+                "building_blocks": CombinedBlock(blocks=()).model_dump(mode="json"),
                 "increment_chain": IncrementChain().model_dump(mode="json"),
             },
         )
 
         assert response.status_code == 422
 
-    def test_increment_chain_stored_in_storage(
-        self, client, storage, building_blocks
-    ):
+    def test_increment_chain_stored_in_storage(self, client, storage, building_blocks):
         """Test that increment chains are properly stored."""
 
         response = client.post(
@@ -157,9 +144,7 @@ class TestCreateCharacter(TestClient):
                 "/create_character",
                 json={
                     "building_blocks": building_blocks.model_dump(mode="json"),
-                    "increment_chain": IncrementChain().model_dump(
-                        mode="json"
-                    ),
+                    "increment_chain": IncrementChain().model_dump(mode="json"),
                 },
             )
 

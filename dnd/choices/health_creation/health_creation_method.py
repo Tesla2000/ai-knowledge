@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from enum import Enum
+from enum import StrEnum, auto
 
 
-class HealthCreationMethod(str, Enum):
-    AVERAGE = "average"
-    RANDOM = "random"
+class HealthCreationMethod(StrEnum):
+    AVERAGE = auto()
+    RANDOM = auto()

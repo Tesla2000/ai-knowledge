@@ -21,9 +21,7 @@ class WeaponAdder(BuildingBlock):
         ... ])  # Character will have longsword and 2 daggers
     """
 
-    weapon: WeaponName = Field(
-        description="Weapon to add to character's inventory"
-    )
+    weapon: WeaponName = Field(description="Weapon to add to character's inventory")
 
     def get_change(self, blueprint: Blueprint) -> Blueprint:
         """Add the weapon to the existing weapons tuple.

@@ -26,12 +26,8 @@ from pydantic import Tag
 
 AnyChoiceResolver = Annotated[
     Union[
-        Annotated[
-            AllChoicesResolver, Tag(AllChoicesResolver.get_block_type())
-        ],
-        Annotated[
-            AIAllChoicesResolver, Tag(AIAllChoicesResolver.get_block_type())
-        ],
+        Annotated[AllChoicesResolver, Tag(AllChoicesResolver.get_block_type())],
+        Annotated[AIAllChoicesResolver, Tag(AIAllChoicesResolver.get_block_type())],
     ],
     get_discriminator(),
 ]

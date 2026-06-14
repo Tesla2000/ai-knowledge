@@ -78,8 +78,7 @@ class AILanguageChoiceResolver(LanguageChoiceResolver):
             return ""  # No placeholders to resolve
 
         instructions.append(
-            f"Languages: {count} ANY_OF_YOUR_CHOICE placeholder(s) "
-            f"to replace"
+            f"Languages: {count} ANY_OF_YOUR_CHOICE placeholder(s) to replace"
         )
         instructions.append(
             f"  Available: {', '.join(language.value for language in Language if language != Language.ANY_OF_YOUR_CHOICE)}"
@@ -121,8 +120,7 @@ class AILanguageChoiceResolver(LanguageChoiceResolver):
         count = list(blueprint.languages).count(Language.ANY_OF_YOUR_CHOICE)
         if len(selection.languages) != count:
             raise ValueError(
-                f"AI returned {len(selection.languages)} languages "
-                f"but expected {count}"
+                f"AI returned {len(selection.languages)} languages but expected {count}"
             )
 
         # Replace placeholders

@@ -5,8 +5,6 @@ from collections import defaultdict
 from collections.abc import Mapping
 from itertools import filterfalse
 from typing import Annotated
-from typing import Any
-from typing import Optional
 from typing import Self
 
 from dnd.character.ability import Ability
@@ -17,7 +15,7 @@ from dnd.character.feature.feats import feat_name_to_feat
 from dnd.character.feature.feats import FeatName
 from dnd.character.race.race import Race
 from dnd.character.spells import SPELLCASTING_ABILITY_MAP
-from dnd.choices.abilities.ActionType import ActionType
+from dnd.choices.abilities.action_type import ActionType
 from dnd.choices.class_creation.character_class import Class
 from dnd.choices.class_creation.character_class import (
     FighterSubclass,
@@ -49,7 +47,7 @@ from pydantic import model_validator
 from pydantic import NonNegativeInt
 
 
-def _conv_to_frozendict(value: Any) -> Any:
+def _conv_to_frozendict(value: object) -> object:
     if not isinstance(value, Mapping):
         return value
     return frozendict(value)
@@ -73,19 +71,14 @@ def _skill_not_any(skill: Skill) -> Skill:
 
 def _feat_not_any(feat: FeatName) -> FeatName:
     if feat in FeatName.not_choosables():
-        raise ValueError(
-            "Character feat mustn't be any of your choice. Choose a feat"
-        )
+        raise ValueError("Character feat mustn't be any of your choice. Choose a feat")
     return feat
 
 
 def _tool_proficiency_not_any(
     tool: ToolProficiency | GamingSet | MusicalInstrument,
 ) -> ToolProficiency | GamingSet | MusicalInstrument:
-    if (
-        isinstance(tool, ToolProficiency)
-        and tool == ToolProficiency.ANY_OF_YOUR_CHOICE
-    ):
+    if isinstance(tool, ToolProficiency) and tool == ToolProficiency.ANY_OF_YOUR_CHOICE:
         raise ValueError(
             "Character tool proficiency mustn't be any of your choice. Choose a tool"
         )
@@ -208,17 +201,19 @@ class PresentableCharacter(Character):
 
     @computed_field
     @property
-    def spellcasting_ability(self) -> Optional[Statistic]:
+    def spellcasting_ability(self) -> Statistic | None:
         spellcasting_classes = list(
             filter(
-                lambda class_: class_ in SPELLCASTING_ABILITY_MAP
-                or (
-                    class_ is Class.FIGHTER
-                    and FighterSubclass.ELDRITCH_KNIGHT in self.subclasses
-                )
-                or (
-                    class_ is Class.ROGUE
-                    and RogueSubclass.ARCANE_TRICKSTER in self.subclasses
+                lambda class_: (
+                    class_ in SPELLCASTING_ABILITY_MAP
+                    or (
+                        class_ is Class.FIGHTER
+                        and FighterSubclass.ELDRITCH_KNIGHT in self.subclasses
+                    )
+                    or (
+                        class_ is Class.ROGUE
+                        and RogueSubclass.ARCANE_TRICKSTER in self.subclasses
+                    )
                 ),
                 self.classes,
             )
@@ -232,7 +227,7 @@ class PresentableCharacter(Character):
 
     @computed_field
     @property
-    def spell_save_dc(self) -> Optional[int]:
+    def spell_save_dc(self) -> int | None:
         if self.spellcasting_ability is None:
             return None
         return (
@@ -244,7 +239,7 @@ class PresentableCharacter(Character):
 
     @computed_field
     @property
-    def spell_attack_bonus(self) -> Optional[int]:
+    def spell_attack_bonus(self) -> int | None:
         if self.spellcasting_ability is None:
             return None
         return (
@@ -262,9 +257,7 @@ class PresentableCharacter(Character):
     @property
     def actions(self) -> dict[ActionType, list[Ability]]:
         actions = defaultdict(list)
-        for feat in filterfalse(
-            FeatName.ABILITY_SCORE_IMPROVEMENT.__eq__, self.feats
-        ):
+        for feat in filterfalse(FeatName.ABILITY_SCORE_IMPROVEMENT.__eq__, self.feats):
             ability = feat_name_to_feat(feat).ability
             if ability:
                 actions[ability.action_type].append(ability)
@@ -279,9 +272,7 @@ class PresentableCharacter(Character):
         for class_, class_level in self.classes.items():
             for (
                 main_class_ability_path
-            ) in resource_paths.main_class_abilities_root.joinpath(
-                class_
-            ).iterdir():
+            ) in resource_paths.main_class_abilities_root.joinpath(class_).iterdir():
                 self._add_action(
                     actions,
                     json.loads(main_class_ability_path.read_text()),
@@ -305,7 +296,7 @@ class PresentableCharacter(Character):
     def _add_action(
         self,
         actions: dict[ActionType, list[Ability]],
-        data: dict[str, Any],
+        data: dict[str, object],
         class_level: int,
     ) -> None:
         ability = Ability(**data)
@@ -336,7 +327,5 @@ class PresentableCharacter(Character):
         class_level: int,
     ) -> bool:
         return (
-            ability
-            and ability.combat_related
-            and ability.required_level <= class_level
+            ability and ability.combat_related and ability.required_level <= class_level
         )

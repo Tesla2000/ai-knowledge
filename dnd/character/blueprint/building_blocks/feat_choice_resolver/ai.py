@@ -46,9 +46,7 @@ class AIFeatChoiceResolver(FeatChoiceResolver):
         self, available: list[FeatName], _: Blueprint
     ) -> FeatName:
         """Not used in AI implementation - overrides _get_change instead."""
-        raise NotImplementedError(
-            "AIFeatChoiceResolver overrides _get_change directly"
-        )
+        raise NotImplementedError("AIFeatChoiceResolver overrides _get_change directly")
 
     def _build_prompt(self, blueprint: Blueprint) -> str:
         """Build a prompt for AI feat selection.
@@ -73,9 +71,7 @@ class AIFeatChoiceResolver(FeatChoiceResolver):
         instructions = ["\n## Placeholders to Resolve\n"]
 
         # Count feat placeholders
-        count = sum(
-            map(list(blueprint.feats).count, FeatName.not_choosables())
-        )
+        count = sum(map(list(blueprint.feats).count, FeatName.not_choosables()))
         if count == 0:
             return ""  # No placeholders to resolve
 
@@ -84,9 +80,7 @@ class AIFeatChoiceResolver(FeatChoiceResolver):
         )
 
         # Check if ASI is allowed (level 2+)
-        ability_score_improvement_allowed = (
-            sum(blueprint.classes.values()) != 1
-        )
+        ability_score_improvement_allowed = sum(blueprint.classes.values()) != 1
 
         # Build available feats list
         available_feats = [
@@ -94,16 +88,14 @@ class AIFeatChoiceResolver(FeatChoiceResolver):
             for f in FeatName
             if f not in FeatName.not_choosables()
             and (
-                ability_score_improvement_allowed
-                or f not in FeatName.not_choosables()
+                ability_score_improvement_allowed or f not in FeatName.not_choosables()
             )
         ]
         instructions.append(f"  Available: {', '.join(available_feats)}")
 
         if not ability_score_improvement_allowed:
             instructions.append(
-                "  Note: ABILITY_SCORE_IMPROVEMENT is not available "
-                "at level 1"
+                "  Note: ABILITY_SCORE_IMPROVEMENT is not available at level 1"
             )
 
         instructions.append(
@@ -127,9 +119,7 @@ class AIFeatChoiceResolver(FeatChoiceResolver):
             Blueprint with feat placeholders replaced by AI selections.
         """
         # Check if there are any placeholders
-        if not any(
-            map(blueprint.feats.__contains__, FeatName.not_choosables())
-        ):
+        if not any(map(blueprint.feats.__contains__, FeatName.not_choosables())):
             return Blueprint()
 
         # Build prompt and get AI selection
@@ -141,13 +131,10 @@ class AIFeatChoiceResolver(FeatChoiceResolver):
         selection = structured_llm.invoke(prompt)
 
         # Validate selection count
-        count = sum(
-            map(list(blueprint.feats).count, FeatName.not_choosables())
-        )
+        count = sum(map(list(blueprint.feats).count, FeatName.not_choosables()))
         if len(selection.feats) != count:
             raise ValueError(
-                f"AI returned {len(selection.feats)} feats "
-                f"but expected {count}"
+                f"AI returned {len(selection.feats)} feats but expected {count}"
             )
 
         # Replace placeholders

@@ -21,9 +21,14 @@ class StandardArray(StatsBuilder):
         >>> # Will assign 15 to STR, 14 to CON, etc.
     """
 
-    _standard_array_descending: ClassVar[
-        tuple[int, int, int, int, int, int]
-    ] = (15, 14, 13, 12, 10, 8)
+    _standard_array_descending: ClassVar[tuple[int, int, int, int, int, int]] = (
+        15,
+        14,
+        13,
+        12,
+        10,
+        8,
+    )
 
     def get_change(self, blueprint: Blueprint) -> Blueprint:
         return Blueprint(

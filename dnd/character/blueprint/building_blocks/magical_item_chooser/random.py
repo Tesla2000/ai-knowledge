@@ -63,14 +63,12 @@ class RandomMagicalItemChooser(MagicalItemChooserBase):
         for level, count in level_counts.items():
             if count > 0:
                 # Filter items by rarity level
-                available = [
-                    item for item in MAGICAL_ITEMS if item.level == level
-                ]
+                available = [item for item in MAGICAL_ITEMS if item.level == level]
 
                 if len(available) == 0:
                     raise ValueError(
                         f"No {level.value} magical items available in the "
-                        f"item database."
+                        "item database."
                     )
 
                 # Randomly select items (allows duplicates)

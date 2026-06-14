@@ -36,9 +36,7 @@ class StatAndCapBoostItem(MagicalItem):
         new_value = current_value + self.boost_amount
         new_cap = current_cap + self.boost_amount
 
-        new_stats = Stats(
-            **{**blueprint.stats.model_dump(), stat_name: new_value}
-        )
+        new_stats = Stats(**{**blueprint.stats.model_dump(), stat_name: new_value})
 
         new_stats_cup = Stats(
             **{**blueprint.stats_cup.model_dump(), stat_name: new_cap}

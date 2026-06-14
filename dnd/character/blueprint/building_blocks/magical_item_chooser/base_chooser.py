@@ -36,9 +36,7 @@ class MagicalItemChooserBase(BuildingBlock, ABC):
     n_uncommon: int = Field(
         default=0, description="Number of uncommon magical items to select"
     )
-    n_rare: int = Field(
-        default=0, description="Number of rare magical items to select"
-    )
+    n_rare: int = Field(default=0, description="Number of rare magical items to select")
     n_very_rare: int = Field(
         default=0, description="Number of very rare magical items to select"
     )

@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Any
-
 from dnd.choices.language import Language
 from dnd.other_profficiencies import GamingSet
 from dnd.other_profficiencies import MusicalInstrument
@@ -13,8 +11,7 @@ from pydantic import Field
 
 class BackgroundTemplate(BaseModel):
     skills: list[SkillAndAny] = Field(
-        description="Skill proficiencies gained with background. "
-        "Empty list if None."
+        description="Skill proficiencies gained with background. Empty list if None."
     )
     tools: list[ToolProficiency | GamingSet | MusicalInstrument] = Field(
         description="Tool proficiencies gained with background. "
@@ -30,6 +27,6 @@ class BackgroundTemplate(BaseModel):
         "Empty list if None."
     )
 
-    def __init__(self, /, **data: Any):
+    def __init__(self, /, **data: object):
         data["tools"] = list(map(str.capitalize, data["tools"]))
         super().__init__(**data)

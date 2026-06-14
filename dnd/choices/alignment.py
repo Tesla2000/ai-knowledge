@@ -1,20 +1,20 @@
 from __future__ import annotations
 
-from enum import Enum
+from enum import StrEnum, auto
 
 
-class Alignment(str, Enum):
-    LAWFUL_GOOD = "lawful_good"
-    TRUE_LAWFUL = "true_lawful"
-    LAWFUL_NEUTRAL = "lawful_neutral"
-    LAWFUL_EVIL = "lawful_evil"
-    TRUE_GOOD = "true_good"
-    NEUTRAL_GOOD = "neutral_good"
-    NEUTRAL_EVIL = "neutral_evil"
-    TRUE_NEUTRAL = "true_neutral"
-    NEUTRAL_NEUTRAL = "neutral_neutral"
-    TRUE_EVIL = "true_evil"
-    CHAOTIC_GOOD = "chaotic_good"
-    TRUE_CHAOTIC = "true_chaotic"
-    CHAOTIC_NEUTRAL = "chaotic_neutral"
-    CHAOTIC_EVIL = "chaotic_evil"
+class Alignment(StrEnum):
+    LAWFUL_GOOD = auto()
+    TRUE_LAWFUL = auto()
+    LAWFUL_NEUTRAL = auto()
+    LAWFUL_EVIL = auto()
+    TRUE_GOOD = auto()
+    NEUTRAL_GOOD = auto()
+    NEUTRAL_EVIL = auto()
+    TRUE_NEUTRAL = auto()
+    NEUTRAL_NEUTRAL = auto()
+    TRUE_EVIL = auto()
+    CHAOTIC_GOOD = auto()
+    TRUE_CHAOTIC = auto()
+    CHAOTIC_NEUTRAL = auto()
+    CHAOTIC_EVIL = auto()

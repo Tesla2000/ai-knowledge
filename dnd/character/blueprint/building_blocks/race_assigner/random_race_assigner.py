@@ -1,5 +1,4 @@
 import random
-from typing import Optional
 
 from dnd.character.blueprint.building_blocks.race_assigner.base_race_assigner import (
     BaseRaceAssigner,
@@ -15,7 +14,7 @@ from pydantic import Field
 class RandomRaceAssigner(BaseRaceAssigner):
     """Building block that randomly assigns a race and subrace to a character."""
 
-    seed: Optional[int] = Field(
+    seed: int | None = Field(
         default=None,
         description="Optional seed for reproducible random selection",
     )

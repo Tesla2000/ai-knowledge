@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import random
-from typing import Optional
 
 from dnd.character.blueprint.blueprint import Blueprint
 from dnd.character.blueprint.building_blocks.language_choice_resolver.base import (
@@ -26,7 +25,7 @@ class RandomLanguageChoiceResolver(LanguageChoiceResolver):
 
     model_config = ConfigDict(frozen=True)
 
-    seed: Optional[int] = Field(
+    seed: int | None = Field(
         default=None,
         description="Optional seed for reproducible random selection",
     )

@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from enum import auto
 from enum import StrEnum
-from typing import Type
 
 from dnd.choices.class_creation.character_class import (
     Class,
@@ -2354,7 +2353,5 @@ SPELLS_BY_CLASS = frozendict(
 )
 
 
-def filter_accessible(
-    spell_type: Type[Spell], class_: Class
-) -> frozenset[Spell]:
+def filter_accessible(spell_type: type[Spell], class_: Class) -> frozenset[Spell]:
     return SPELLS_BY_CLASS[class_][spell_type]

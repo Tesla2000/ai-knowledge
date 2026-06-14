@@ -62,9 +62,7 @@ class Subrace(StrEnum):
         "Chromatic (FizbansTreasuryofDragons)"
     )
     DRAGONBORN_GEM_FIZBANSTREASURYOFDRAGONS = "Gem (FizbansTreasuryofDragons)"
-    DRAGONBORN_METALLIC_FIZBANSTREASURYOFDRAGONS = (
-        "Metallic (FizbansTreasuryofDragons)"
-    )
+    DRAGONBORN_METALLIC_FIZBANSTREASURYOFDRAGONS = "Metallic (FizbansTreasuryofDragons)"
     DRAGONBORN_DRAGONBORN_PLAYERSHANDBOOK = "Dragonborn (PlayersHandbook)"
     DRAGONBORN_CHROMATIC_UNEARTHEDARCANA = "Chromatic (UnearthedArcana)"
     DRAGONBORN_GEM_UNEARTHEDARCANA = "Gem (UnearthedArcana)"
@@ -130,9 +128,7 @@ class Subrace(StrEnum):
     )
     GOBLIN_GOBLIN_PLANESHIFTIXALAN = "Goblin (PlaneShiftIxalan)"
     GOBLIN_GOBLIN_VOLOSGUIDETOMONSTERS = "Goblin (VolosGuidetoMonsters)"
-    GOLIATH_GOLIATH_ELEMENTALEVILPLAYERSGUIDE = (
-        "Goliath (ElementalEvilPlayersGuide)"
-    )
+    GOLIATH_GOLIATH_ELEMENTALEVILPLAYERSGUIDE = "Goliath (ElementalEvilPlayersGuide)"
     GOLIATH_GOLIATH_MORDENKAINENPRESENTSMONSTERSOFTHEMULTIVERSE = (
         "Goliath (MordenkainenPresentsMonstersoftheMultiverse)"
     )
@@ -140,15 +136,9 @@ class Subrace(StrEnum):
     HALF_ELF_AQUATIC_ELF_HERITAGE_PLAYERSHANDBOOK = (
         "Aquatic Elf Heritage (PlayersHandbook)"
     )
-    HALF_ELF_DARK_ELF_HERITAGE_PLAYERSHANDBOOK = (
-        "Dark Elf Heritage (PlayersHandbook)"
-    )
-    HALF_ELF_HIGH_ELF_HERITAGE_PLAYERSHANDBOOK = (
-        "High Elf Heritage (PlayersHandbook)"
-    )
-    HALF_ELF_WOOD_ELF_HERITAGE_PLAYERSHANDBOOK = (
-        "Wood Elf Heritage (PlayersHandbook)"
-    )
+    HALF_ELF_DARK_ELF_HERITAGE_PLAYERSHANDBOOK = "Dark Elf Heritage (PlayersHandbook)"
+    HALF_ELF_HIGH_ELF_HERITAGE_PLAYERSHANDBOOK = "High Elf Heritage (PlayersHandbook)"
+    HALF_ELF_WOOD_ELF_HERITAGE_PLAYERSHANDBOOK = "Wood Elf Heritage (PlayersHandbook)"
     HALF_ORC_MARK_OF_FINDING_EBERRONRISINGFROMTHELASTWAR = (
         "Half orc Mark of Finding (EberronRisingfromtheLastWar)"
     )
@@ -171,9 +161,7 @@ class Subrace(StrEnum):
         "Hobgoblin (MordenkainenPresentsMonstersoftheMultiverse)"
     )
     HOBGOBLIN_HOBGOBLIN_UNEARTHEDARCANA = "Hobgoblin (UnearthedArcana)"
-    HOBGOBLIN_HOBGOBLIN_VOLOSGUIDETOMONSTERS = (
-        "Hobgoblin (VolosGuidetoMonsters)"
-    )
+    HOBGOBLIN_HOBGOBLIN_VOLOSGUIDETOMONSTERS = "Hobgoblin (VolosGuidetoMonsters)"
     HUMAN_MARK_OF_FINDING_EBERRONRISINGFROMTHELASTWAR = (
         "Mark of Finding (EberronRisingfromtheLastWar)"
     )
@@ -212,9 +200,7 @@ class Subrace(StrEnum):
     LIZARDFOLK_LIZARDFOLK_MORDENKAINENPRESENTSMONSTERSOFTHEMULTIVERSE = (
         "Lizardfolk (MordenkainenPresentsMonstersoftheMultiverse)"
     )
-    LIZARDFOLK_LIZARDFOLK_VOLOSGUIDETOMONSTERS = (
-        "Lizardfolk (VolosGuidetoMonsters)"
-    )
+    LIZARDFOLK_LIZARDFOLK_VOLOSGUIDETOMONSTERS = "Lizardfolk (VolosGuidetoMonsters)"
     MINOTAUR_MINOTAUR_MORDENKAINENPRESENTSMONSTERSOFTHEMULTIVERSE = (
         "Minotaur (MordenkainenPresentsMonstersoftheMultiverse)"
     )
@@ -228,9 +214,7 @@ class Subrace(StrEnum):
     YUAN_TI_PUREBLOOD_MORDENKAINENPRESENTSMONSTERSOFTHEMULTIVERSE = (
         "Yuan-ti (MordenkainenPresentsMonstersoftheMultiverse)"
     )
-    YUAN_TI_PUREBLOOD_VOLOSGUIDETOMONSTERS = (
-        "Yuan-ti Pureblood (VolosGuidetoMonsters)"
-    )
+    YUAN_TI_PUREBLOOD_VOLOSGUIDETOMONSTERS = "Yuan-ti Pureblood (VolosGuidetoMonsters)"
     SATYR_SATYR_MORDENKAINENPRESENTSMONSTERSOFTHEMULTIVERSE = (
         "Satyr (MordenkainenPresentsMonstersoftheMultiverse)"
     )
@@ -295,18 +279,12 @@ class Subrace(StrEnum):
     TIEFLING_DEVILS_TONGUE_SWORDCOASTADVENTURERSGUIDE = (
         "Devil's Tongue(SwordCoastAdventurersGuide)"
     )
-    TIEFLING_FERAL_SWORDCOASTADVENTURERSGUIDE = (
-        "Feral (SwordCoastAdventurersGuide)"
-    )
+    TIEFLING_FERAL_SWORDCOASTADVENTURERSGUIDE = "Feral (SwordCoastAdventurersGuide)"
     TIEFLING_HELLFIRE_SWORDCOASTADVENTURERSGUIDE = (
         "Hellfire (SwordCoastAdventurersGuide)"
     )
-    TIEFLING_WINGED_SWORDCOASTADVENTURERSGUIDE = (
-        "Winged (SwordCoastAdventurersGuide)"
-    )
-    TIEFLING_ABYSSAL_TIEFLING_UNEARTHEDARCANA = (
-        "Abyssal Tiefling (UnearthedArcana)"
-    )
+    TIEFLING_WINGED_SWORDCOASTADVENTURERSGUIDE = "Winged (SwordCoastAdventurersGuide)"
+    TIEFLING_ABYSSAL_TIEFLING_UNEARTHEDARCANA = "Abyssal Tiefling (UnearthedArcana)"
     TORTLE_TORTLE_MORDENKAINENPRESENTSMONSTERSOFTHEMULTIVERSE = (
         "Tortle (MordenkainenPresentsMonstersoftheMultiverse)"
     )
@@ -443,9 +421,7 @@ RACE_TO_SUBRACES: frozendict[Race, tuple[Subrace, ...]] = frozendict(
             Subrace.LIZARDFOLK_LIZARDFOLK_MORDENKAINENPRESENTSMONSTERSOFTHEMULTIVERSE,
             Subrace.LIZARDFOLK_LIZARDFOLK_VOLOSGUIDETOMONSTERS,
         ),
-        Race.KENKU: (
-            Subrace.KENKU_KENKU_MORDENKAINENPRESENTSMONSTERSOFTHEMULTIVERSE,
-        ),
+        Race.KENKU: (Subrace.KENKU_KENKU_MORDENKAINENPRESENTSMONSTERSOFTHEMULTIVERSE,),
         Race.TORTLE: (
             Subrace.TORTLE_TORTLE_MORDENKAINENPRESENTSMONSTERSOFTHEMULTIVERSE,
         ),

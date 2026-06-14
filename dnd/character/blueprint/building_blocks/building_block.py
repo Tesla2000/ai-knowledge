@@ -3,7 +3,6 @@ from __future__ import annotations
 from abc import ABC
 from abc import abstractmethod
 from collections.abc import Generator
-from typing import Any
 from typing import Self
 from typing import Union
 
@@ -60,11 +59,9 @@ class CombinedBlock(SerializableBlock):
     """Combines multiple building blocks to apply sequentially."""
 
     model_config = ConfigDict(validate_by_alias=True, validate_by_name=True)
-    blocks: Blocks = Field(
-        description="Tuple of building blocks to apply in order"
-    )
+    blocks: Blocks = Field(description="Tuple of building blocks to apply in order")
 
-    def __add__(self, other: Any) -> Self:
+    def __add__(self, other: object) -> Self:
         allowed_types = (BuildingBlock, CombinedBlock)
         if not isinstance(other, allowed_types):
             raise ValueError(
@@ -76,7 +73,7 @@ class CombinedBlock(SerializableBlock):
             return type(self)(blocks=self.blocks + (other,))
         raise ValueError("What?")
 
-    def flatten(self) -> Generator[BuildingBlock, None, None]:
+    def flatten(self) -> Generator[BuildingBlock]:
         for block in self.blocks:
             if not isinstance(block, CombinedBlock):
                 yield block

@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import random
-from typing import Optional
 
 from dnd.character.blueprint.blueprint import Blueprint
 from dnd.character.blueprint.building_blocks.tool_proficiency_choice_resolver.base import (
@@ -28,7 +27,7 @@ class RandomToolProficiencyChoiceResolver(ToolProficiencyChoiceResolver):
 
     model_config = ConfigDict(frozen=True)
 
-    seed: Optional[int] = Field(
+    seed: int | None = Field(
         default=None,
         description="Optional seed for reproducible random selection",
     )
@@ -49,9 +48,7 @@ class RandomToolProficiencyChoiceResolver(ToolProficiencyChoiceResolver):
 
         return random.choice(available)
 
-    def _select_gaming_set(
-        self, available: list[GamingSet], _: Blueprint
-    ) -> GamingSet:
+    def _select_gaming_set(self, available: list[GamingSet], _: Blueprint) -> GamingSet:
         """Randomly select a gaming set from available options.
 
         Args:

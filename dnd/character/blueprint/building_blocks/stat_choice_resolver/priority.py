@@ -44,9 +44,7 @@ class PriorityStatChoiceResolver(StatChoiceResolver):
         description="Ability scores ranked by priority for stat increase allocation"
     )
 
-    def select_stats_to_increase(
-        self, blueprint: Blueprint
-    ) -> dict[Statistic, int]:
+    def select_stats_to_increase(self, blueprint: Blueprint) -> dict[Statistic, int]:
         """Select stats to increase based on priority order.
 
         Simple logic: for each point, add to odd stat if possible (in priority
@@ -79,9 +77,7 @@ class PriorityStatChoiceResolver(StatChoiceResolver):
                 return increases
             is_odd = _get_current_value(stat) % 2 == 1
             if is_odd:
-                point_to_improve_by = (
-                    1 if _get_current_value(stat) % 2 == 1 else 2
-                )
+                point_to_improve_by = 1 if _get_current_value(stat) % 2 == 1 else 2
                 n_stats -= point_to_improve_by
                 increases[stat] += point_to_improve_by
             while n_stats >= 2:

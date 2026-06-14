@@ -1,10 +1,10 @@
 # flake8: noqa E501
 from __future__ import annotations
 
-from enum import Enum
+from enum import StrEnum
 from typing import TYPE_CHECKING
 
-from dnd.choices.abilities.ActionType import ActionType
+from dnd.choices.abilities.action_type import ActionType
 from scripts.wiki_scraper.ability_template import (
     Ability,
 )
@@ -26,7 +26,7 @@ from dnd.choices.class_creation.character_class import (
 from dnd.character.feature.feats import FeatName
 
 
-class FightingStyle(str, Enum):
+class FightingStyle(StrEnum):
     ARCHERY = "Archery"
     BLIND_FIGHTING = "Blind Fighting"
     DEFENSE = "Defense"
@@ -103,32 +103,36 @@ fighting_style2ability = {
 }
 
 
-def n_fighting_styles(character_wrapper: "CharacterWrapper") -> int:
+def n_fighting_styles(character_wrapper: CharacterWrapper) -> int:
     conditions = [
-        lambda character_wrapper: character_wrapper.character.classes
-        == Class.FIGHTER,
-        lambda character_wrapper: character_wrapper.character.classes
-        == Class.FIGHTER
-        and character_wrapper.character.level >= 10,
-        lambda character_wrapper: character_wrapper.character.classes
-        == Class.RANGER
-        and character_wrapper.character.level >= 2,
-        lambda character_wrapper: character_wrapper.character.classes
-        == Class.PALADIN
-        and character_wrapper.character.level >= 2,
-        lambda character_wrapper: character_wrapper.character.classes
-        == Class.ARTIFICER
-        and character_wrapper.character.SUBCLASSES == ArtificerSubclass.ARMORER
-        and character_wrapper.character.level >= 3,
-        lambda character_wrapper: character_wrapper.character.classes
-        == Class.BARBARIAN
-        and character_wrapper.character.SUBCLASSES == BarbarianSubclass.BEAST
-        and character_wrapper.character.level >= 3,
-        lambda character_wrapper: character_wrapper.character.classes
-        == Class.WARLOCK
-        and character_wrapper.character.SUBCLASSES == WarlockSubclass.HEXBLADE
-        and character_wrapper.character.level >= 3,
-        lambda character_wrapper: FeatName.FIGHTING_INITIATE
-        in character_wrapper.feats,
+        lambda character_wrapper: character_wrapper.character.classes == Class.FIGHTER,
+        lambda character_wrapper: (
+            character_wrapper.character.classes == Class.FIGHTER
+            and character_wrapper.character.level >= 10
+        ),
+        lambda character_wrapper: (
+            character_wrapper.character.classes == Class.RANGER
+            and character_wrapper.character.level >= 2
+        ),
+        lambda character_wrapper: (
+            character_wrapper.character.classes == Class.PALADIN
+            and character_wrapper.character.level >= 2
+        ),
+        lambda character_wrapper: (
+            character_wrapper.character.classes == Class.ARTIFICER
+            and character_wrapper.character.SUBCLASSES == ArtificerSubclass.ARMORER
+            and character_wrapper.character.level >= 3
+        ),
+        lambda character_wrapper: (
+            character_wrapper.character.classes == Class.BARBARIAN
+            and character_wrapper.character.SUBCLASSES == BarbarianSubclass.BEAST
+            and character_wrapper.character.level >= 3
+        ),
+        lambda character_wrapper: (
+            character_wrapper.character.classes == Class.WARLOCK
+            and character_wrapper.character.SUBCLASSES == WarlockSubclass.HEXBLADE
+            and character_wrapper.character.level >= 3
+        ),
+        lambda character_wrapper: FeatName.FIGHTING_INITIATE in character_wrapper.feats,
     ]
     return sum(condition(character_wrapper) for condition in conditions)

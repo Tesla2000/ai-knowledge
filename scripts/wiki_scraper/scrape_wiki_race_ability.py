@@ -37,9 +37,7 @@ def scraper_wiki_race(race: Race, output_dir: Path, llm):
 
 
 if __name__ == "__main__":
-    llm = ChatOpenAI(model="gpt-4o-mini").with_structured_output(
-        AbilitiesTemplate
-    )
+    llm = ChatOpenAI(model="gpt-4o-mini").with_structured_output(AbilitiesTemplate)
     for race in Race:
         scraper_wiki_race(
             race,

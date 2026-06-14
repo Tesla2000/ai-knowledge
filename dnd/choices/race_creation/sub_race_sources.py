@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from enum import Enum
+from enum import StrEnum
 
 
-class DNDResource(str, Enum):
+class DNDResource(StrEnum):
     SPELLJAMMER_ADVENTURES_IN_SPACE = "SpelljammerAdventuresinSpace"
     MYTHIC_ODYSSEYS_OF_THEROS = "MythicOdysseysofTheros"
     ELEMENTAL_EVIL_PLAYERS_COMPANION = "ElementalEvilPlayersCompanion"

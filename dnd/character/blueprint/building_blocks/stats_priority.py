@@ -5,9 +5,7 @@ from typing import Annotated
 from dnd.choices.stats_creation.statistic import Statistic
 from pydantic import AfterValidator
 
-_Stats = tuple[
-    Statistic, Statistic, Statistic, Statistic, Statistic, Statistic
-]
+_Stats = tuple[Statistic, Statistic, Statistic, Statistic, Statistic, Statistic]
 
 
 def _validate_uniqueness(stats_priority: _Stats) -> _Stats:

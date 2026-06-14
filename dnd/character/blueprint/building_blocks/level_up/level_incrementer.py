@@ -22,9 +22,7 @@ class LevelIncrementer(BuildingBlock):
     at appropriate levels (4, 8, 12, 16, 19 for wizards/sorcerers).
     """
 
-    class_: Class = Field(
-        description="The character class to increment level for"
-    )
+    class_: Class = Field(description="The character class to increment level for")
 
     def get_change(self, blueprint: Blueprint) -> Blueprint:
         existing_classes = dict(blueprint.classes)
@@ -41,7 +39,7 @@ class LevelIncrementer(BuildingBlock):
             raise ValueError(
                 f"Total class levels ({total_class_levels}) would exceed "
                 f"character level ({character_level}). "
-                f"Set character level first with LevelAssigner."
+                "Set character level first with LevelAssigner."
             )
 
         if total_class_levels == 1:

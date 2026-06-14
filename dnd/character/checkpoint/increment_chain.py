@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from collections.abc import Iterator
-from typing import Optional
 from typing import Self
 
 from dnd.character.blueprint.blueprint import Blueprint
@@ -24,7 +23,7 @@ class IncrementChain(BaseModel):
         description="Ordered sequence of build increments",
     )
 
-    def get_increment(self, index: int) -> Optional[Blueprint]:
+    def get_increment(self, index: int) -> Blueprint | None:
         """Get increment at specific index.
 
         Args:
@@ -37,7 +36,7 @@ class IncrementChain(BaseModel):
             return self.increments[index]
         return None
 
-    def get_latest(self) -> Optional[Blueprint]:
+    def get_latest(self) -> Blueprint | None:
         """Get the most recent increment."""
         if self.increments:
             return self.increments[-1]

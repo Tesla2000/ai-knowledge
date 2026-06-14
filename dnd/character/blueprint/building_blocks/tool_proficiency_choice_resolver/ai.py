@@ -20,9 +20,9 @@ from pydantic import Field
 class ToolProficiencySelection(BaseModel):
     """Schema for AI to select tool proficiency replacements."""
 
-    tool_proficiencies: set[
-        ToolProficiency | GamingSet | MusicalInstrument
-    ] = Field(default_factory=set)
+    tool_proficiencies: set[ToolProficiency | GamingSet | MusicalInstrument] = Field(
+        default_factory=set
+    )
 
 
 class AIToolProficiencyChoiceResolver(ToolProficiencyChoiceResolver):
@@ -54,9 +54,7 @@ class AIToolProficiencyChoiceResolver(ToolProficiencyChoiceResolver):
             "AIToolProficiencyChoiceResolver overrides _get_change directly"
         )
 
-    def _select_gaming_set(
-        self, available: list[GamingSet], _: Blueprint
-    ) -> GamingSet:
+    def _select_gaming_set(self, available: list[GamingSet], _: Blueprint) -> GamingSet:
         """Not used in AI implementation - overrides _get_change instead."""
         raise NotImplementedError(
             "AIToolProficiencyChoiceResolver overrides _get_change directly"
@@ -102,10 +100,7 @@ class AIToolProficiencyChoiceResolver(ToolProficiencyChoiceResolver):
                     isinstance(t, ToolProficiency)
                     and t == ToolProficiency.ANY_OF_YOUR_CHOICE
                 )
-                or (
-                    isinstance(t, GamingSet)
-                    and t == GamingSet.ANY_OF_YOUR_CHOICE
-                )
+                or (isinstance(t, GamingSet) and t == GamingSet.ANY_OF_YOUR_CHOICE)
                 or (
                     isinstance(t, MusicalInstrument)
                     and t == MusicalInstrument.ANY_OF_YOUR_CHOICE
@@ -118,11 +113,10 @@ class AIToolProficiencyChoiceResolver(ToolProficiencyChoiceResolver):
 
         instructions.append(
             f"Tool Proficiencies: {tool_placeholders} ANY_OF_YOUR_CHOICE "
-            f"placeholder(s) to replace"
+            "placeholder(s) to replace"
         )
         instructions.append(
-            "  Available tool types: ToolProficiency, GamingSet, "
-            "MusicalInstrument"
+            "  Available tool types: ToolProficiency, GamingSet, MusicalInstrument"
         )
 
         instructions.append(
@@ -147,10 +141,7 @@ class AIToolProficiencyChoiceResolver(ToolProficiencyChoiceResolver):
         """
         # Check if there are any placeholders
         has_tool_placeholder = any(
-            (
-                isinstance(t, ToolProficiency)
-                and t == ToolProficiency.ANY_OF_YOUR_CHOICE
-            )
+            (isinstance(t, ToolProficiency) and t == ToolProficiency.ANY_OF_YOUR_CHOICE)
             or (isinstance(t, GamingSet) and t == GamingSet.ANY_OF_YOUR_CHOICE)
             or (
                 isinstance(t, MusicalInstrument)
@@ -167,9 +158,7 @@ class AIToolProficiencyChoiceResolver(ToolProficiencyChoiceResolver):
         if not prompt:
             return Blueprint()
 
-        structured_llm = self.llm.with_structured_output(
-            ToolProficiencySelection
-        )
+        structured_llm = self.llm.with_structured_output(ToolProficiencySelection)
         selection = structured_llm.invoke(prompt)
 
         # Remove all tool placeholders and add selections
@@ -181,10 +170,7 @@ class AIToolProficiencyChoiceResolver(ToolProficiencyChoiceResolver):
                     isinstance(t, ToolProficiency)
                     and t == ToolProficiency.ANY_OF_YOUR_CHOICE
                 )
-                or (
-                    isinstance(t, GamingSet)
-                    and t == GamingSet.ANY_OF_YOUR_CHOICE
-                )
+                or (isinstance(t, GamingSet) and t == GamingSet.ANY_OF_YOUR_CHOICE)
                 or (
                     isinstance(t, MusicalInstrument)
                     and t == MusicalInstrument.ANY_OF_YOUR_CHOICE

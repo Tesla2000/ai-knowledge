@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import json
 from operator import attrgetter
-from typing import Type
 
 from dnd.character_base import (
     get_base_character_template,
@@ -46,27 +45,21 @@ class Main:
         else:
             self._generate_characters(character_base_template)
 
-    def _generate_character(self, character_base_template: Type[BaseModel]):
-        description_base = (
-            "Create a D&D e5 " + self.config.base_description.strip()
-        )
+    def _generate_character(self, character_base_template: type[BaseModel]):
+        description_base = "Create a D&D e5 " + self.config.base_description.strip()
         description_base = self._modify_base(description_base)
         base_template = self.character_llm.with_structured_output(
             character_base_template
         )
-        self.character_base_templates = [
-            base_template.invoke(description_base)
-        ]
+        self.character_base_templates = [base_template.invoke(description_base)]
 
-    def _generate_characters(self, character_base_template: Type[BaseModel]):
+    def _generate_characters(self, character_base_template: type[BaseModel]):
         description_base = (
             "Create a D&D e5 characters according to description "
             + self.config.base_description.strip()
         )
         description_base = self._modify_base(description_base)
-        fields = tuple(
-            f"npc_{index + 1}" for index in range(self.config.n_instances)
-        )
+        fields = tuple(f"npc_{index + 1}" for index in range(self.config.n_instances))
         characters_base_template = create_model(
             "GroupOfNPCs",
             **{field: (character_base_template, ...) for field in fields},
@@ -81,12 +74,11 @@ class Main:
     def _modify_base(self, description_base: str) -> str:
         if self.base_pre_defined_fields:
             description_base += (
-                f"\nThe following details about the character are "
+                "\nThe following details about the character are "
                 f"given:\n{json.dumps(self.base_pre_defined_fields, indent=2)}"
             )
         description_base += (
-            "\nBe careful picking size of character some races "
-            "are smaller than others."
+            "\nBe careful picking size of character some races are smaller than others."
         )
         return description_base
 

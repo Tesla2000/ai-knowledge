@@ -26,13 +26,9 @@ AnyFeatChoiceResolver = Annotated[
             RandomFeatChoiceResolver,
             Tag(RandomFeatChoiceResolver.get_block_type()),
         ],
-        Annotated[
-            AIFeatChoiceResolver, Tag(AIFeatChoiceResolver.get_block_type())
-        ],
+        Annotated[AIFeatChoiceResolver, Tag(AIFeatChoiceResolver.get_block_type())],
         Annotated[MaxFirstResolver, Tag(MaxFirstResolver.get_block_type())],
-        Annotated[
-            MaxIfNotMaxedResolver, Tag(MaxIfNotMaxedResolver.get_block_type())
-        ],
+        Annotated[MaxIfNotMaxedResolver, Tag(MaxIfNotMaxedResolver.get_block_type())],
     ],
     get_discriminator(),
 ]

@@ -22,9 +22,7 @@ class StatSettingItem(MagicalItem):
 
     def assign_to(self, blueprint: Blueprint) -> Blueprint:
         """Set the specified stat to the fixed value."""
-        stat_name = (
-            self.stat.value.lower()
-        )  # Convert Statistic.STRENGTH -> 'strength'
+        stat_name = self.stat.value.lower()  # Convert Statistic.STRENGTH -> 'strength'
         new_stats = Stats(
             **{**blueprint.stats.model_dump(), stat_name: self.stat_value}
         )

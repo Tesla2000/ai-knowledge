@@ -11,9 +11,7 @@ from scripts.wiki_scraper import (
 )
 
 
-def background2stats(
-    background: Background, config: Config
-) -> BackgroundTemplate:
+def background2stats(background: Background, config: Config) -> BackgroundTemplate:
     return BackgroundTemplate(
         **json.loads(
             config.background_root.joinpath(background.value)

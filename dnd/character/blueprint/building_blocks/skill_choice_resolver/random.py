@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import random
-from typing import Optional
 
 from dnd.character.blueprint.blueprint import Blueprint
 from dnd.character.blueprint.building_blocks.skill_choice_resolver.base import (
@@ -26,7 +25,7 @@ class RandomSkillChoiceResolver(SkillChoiceResolver):
 
     model_config = ConfigDict(frozen=True)
 
-    seed: Optional[int] = Field(
+    seed: int | None = Field(
         default=None,
         description="Optional seed for reproducible random selection",
     )
@@ -46,9 +45,7 @@ class RandomSkillChoiceResolver(SkillChoiceResolver):
         available_skills = blueprint.skills_to_choose_from
 
         if Skill.ANY_OF_YOUR_CHOICE in available_skills:
-            available_seq = tuple(
-                set(Skill).difference((Skill.ANY_OF_YOUR_CHOICE,))
-            )
+            available_seq = tuple(set(Skill).difference((Skill.ANY_OF_YOUR_CHOICE,)))
         else:
             available_seq = tuple(available_skills)
         selected = random.sample(available_seq, n)

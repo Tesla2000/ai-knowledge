@@ -116,9 +116,7 @@ def example_building_blocks():
                                 then=RandomFeatChoiceResolver(),
                             ),
                             RandomToolProficiencyChoiceResolver(),
-                            PriorityStatChoiceResolver(
-                                priority=stats_priority
-                            ),
+                            PriorityStatChoiceResolver(priority=stats_priority),
                             RandomEquipmentChooser(),
                         ),
                     ),

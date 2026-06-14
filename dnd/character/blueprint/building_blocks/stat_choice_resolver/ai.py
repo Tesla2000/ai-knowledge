@@ -58,7 +58,7 @@ class AIStatChoiceResolver(StatChoiceResolver):
         n = blueprint.n_stat_choices
 
         system_prompt = (
-            f"You are selecting ability score increases for a D&D 5e character.\n"
+            "You are selecting ability score increases for a D&D 5e character.\n"
             f"You have {n} ability score increases to distribute.\n"
             "Choose which ability scores to increase to optimize the character's effectiveness.\n"
         )
@@ -84,9 +84,7 @@ class AIStatChoiceResolver(StatChoiceResolver):
 
         return character_description + "\n".join(instructions)
 
-    def select_stats_to_increase(
-        self, blueprint: Blueprint
-    ) -> dict[Statistic, int]:
+    def select_stats_to_increase(self, blueprint: Blueprint) -> dict[Statistic, int]:
         """Use AI to select which stats to increase.
 
         Args:

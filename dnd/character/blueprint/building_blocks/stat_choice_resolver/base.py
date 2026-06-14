@@ -25,9 +25,7 @@ class StatChoiceResolver(BuildingBlock, ABC):
     model_config = ConfigDict(frozen=True)
 
     @abstractmethod
-    def select_stats_to_increase(
-        self, blueprint: Blueprint
-    ) -> dict[Statistic, int]:
+    def select_stats_to_increase(self, blueprint: Blueprint) -> dict[Statistic, int]:
         """Select which stats to increase based on blueprint context.
 
         Args:
@@ -47,9 +45,7 @@ class StatChoiceResolver(BuildingBlock, ABC):
             return Blueprint()
 
         if not blueprint.stats:
-            raise ValueError(
-                "Stats must be set before stat choices can be resolved"
-            )
+            raise ValueError("Stats must be set before stat choices can be resolved")
 
         # Select which stats to increase
         stat_increases = self.select_stats_to_increase(blueprint)
@@ -64,8 +60,7 @@ class StatChoiceResolver(BuildingBlock, ABC):
             + stat_increases.get(Statistic.CONSTITUTION, 0),
             intelligence=blueprint.stats.intelligence
             + stat_increases.get(Statistic.INTELLIGENCE, 0),
-            wisdom=blueprint.stats.wisdom
-            + stat_increases.get(Statistic.WISDOM, 0),
+            wisdom=blueprint.stats.wisdom + stat_increases.get(Statistic.WISDOM, 0),
             charisma=blueprint.stats.charisma
             + stat_increases.get(Statistic.CHARISMA, 0),
         )

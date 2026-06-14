@@ -40,9 +40,7 @@ class FeatAdder(BuildingBlock):
 
         # Raise if feat already exists
         if self.feat in existing_feats:
-            raise ValueError(
-                f"Feat {self.feat} already exists in character feats"
-            )
+            raise ValueError(f"Feat {self.feat} already exists in character feats")
 
         new_feats = existing_feats + (self.feat,)
         return Blueprint(feats=new_feats)

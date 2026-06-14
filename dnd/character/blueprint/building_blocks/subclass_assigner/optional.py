@@ -1,5 +1,3 @@
-from typing import Union
-
 from dnd.character.blueprint.blueprint import Blueprint
 from dnd.character.blueprint.building_blocks.subclass_assigner.ai import (
     AISubclassAssigner,
@@ -26,7 +24,7 @@ class OptionalSubclassAssigner(SubclassAssigner):
     (e.g., character not high enough level for subclass selection).
     """
 
-    assigner: Union[RandomSubclassAssigner, AISubclassAssigner] = Field(
+    assigner: RandomSubclassAssigner | AISubclassAssigner = Field(
         description="The subclass assigner strategy to use (random or AI)"
     )
 

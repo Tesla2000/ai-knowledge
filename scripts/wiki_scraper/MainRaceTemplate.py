@@ -28,11 +28,11 @@ class SubRaceTemplate(BaseModel):
         default_factory=list,
     )
     n_skills: int = Field(description="Number of skills to choose", default=0)
-    tool_proficiencies: list[
-        ToolProficiency | GamingSet | MusicalInstrument
-    ] = Field(description="List of tool proficiencies.", default_factory=list)
+    tool_proficiencies: list[ToolProficiency | GamingSet | MusicalInstrument] = Field(
+        description="List of tool proficiencies.", default_factory=list
+    )
     additional_feat: bool = Field(
-        "Does sub-race get a feat 'Feat: You gain " "one Feat of your choice.'"
+        "Does sub-race get a feat 'Feat: You gain one Feat of your choice.'"
     )
     statistics: RaceStatistics = Field(
         description="Statistic given by the race and sub-race"

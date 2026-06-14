@@ -89,9 +89,7 @@ class FileIncrementStorage(IncrementStorage):
         """Load an increment chain from a JSON file."""
         file_path = self._get_file_path(chain_id)
         if not file_path.exists():
-            raise ValueError(
-                f"File path corresponding to {chain_id=} not found"
-            )
+            raise ValueError(f"File path corresponding to {chain_id=} not found")
         return IncrementChain.model_validate_json(file_path.read_bytes())
 
     def delete_chain(self, chain_id: UUID) -> bool:
@@ -104,9 +102,7 @@ class FileIncrementStorage(IncrementStorage):
 
     def list_chains(self) -> list[UUID]:
         """List all increment chain IDs in the directory."""
-        return [
-            UUID(p.stem) for p in self._base_path.glob("*.json") if p.is_file()
-        ]
+        return [UUID(p.stem) for p in self._base_path.glob("*.json") if p.is_file()]
 
     def chain_exists(self, chain_id: UUID) -> bool:
         """Check if an increment chain file exists."""

@@ -51,9 +51,7 @@ class TestSimplifiedBuilder:
         assert isinstance(result.character, PresentableCharacter)
 
     def test_default_values_are_derived_from_classes(self):
-        classes = Classes(
-            class_levels=frozendict({Class.SORCERER: 1, Class.WIZARD: 2})
-        )
+        classes = Classes(class_levels=frozendict({Class.SORCERER: 1, Class.WIZARD: 2}))
         blocks = SimplifiedBlocks(classes=classes)
         assert blocks.stats_priority == CLASS_TO_STATS_PRIORITY[Class.WIZARD]
         assert len(blocks.level_incrementers) == classes.get_total_level()
@@ -62,17 +60,13 @@ class TestSimplifiedBuilder:
         assert len(blocks.level_ups) == classes.get_total_level()
 
     def test_classes_main_class_defaults_to_highest(self):
-        classes = Classes(
-            class_levels=frozendict({Class.SORCERER: 3, Class.WIZARD: 5})
-        )
+        classes = Classes(class_levels=frozendict({Class.SORCERER: 3, Class.WIZARD: 5}))
         assert classes.main_class == Class.WIZARD
         assert classes.get_total_level() == 8
 
     def test_classes_total_level_limit_error_message(self):
         with pytest.raises(ValidationError) as exc_info:
-            Classes(
-                class_levels=frozendict({Class.SORCERER: 1, Class.WIZARD: 20})
-            )
+            Classes(class_levels=frozendict({Class.SORCERER: 1, Class.WIZARD: 20}))
         assert "Total level of classes" in str(exc_info.value)
         assert "greater than 20" in str(exc_info.value)
 
@@ -119,9 +113,7 @@ class TestSimplifiedBuilder:
             )
 
     def test_invalid_level_incrementer_classes(self):
-        classes = Classes(
-            class_levels=frozendict({Class.WIZARD: 1, Class.SORCERER: 1})
-        )
+        classes = Classes(class_levels=frozendict({Class.WIZARD: 1, Class.SORCERER: 1}))
         with pytest.raises(ValidationError) as exc_info:
             SimplifiedBlocks(
                 classes=classes,
@@ -142,9 +134,7 @@ class TestSimplifiedBuilder:
             )
 
     def test_invalid_health_increase_classes(self):
-        classes = Classes(
-            class_levels=frozendict({Class.WIZARD: 1, Class.SORCERER: 1})
-        )
+        classes = Classes(class_levels=frozendict({Class.WIZARD: 1, Class.SORCERER: 1}))
         with pytest.raises(ValidationError) as exc_info:
             SimplifiedBlocks(
                 classes=classes,
@@ -165,9 +155,7 @@ class TestSimplifiedBuilder:
             )
 
     def test_invalid_spell_assigner_classes(self):
-        classes = Classes(
-            class_levels=frozendict({Class.WIZARD: 1, Class.SORCERER: 1})
-        )
+        classes = Classes(class_levels=frozendict({Class.WIZARD: 1, Class.SORCERER: 1}))
         with pytest.raises(ValidationError) as exc_info:
             SimplifiedBlocks(
                 classes=classes,
@@ -180,9 +168,7 @@ class TestSimplifiedBuilder:
         assert "don't match class_levels" in str(exc_info.value)
 
     def test_level_up_class_mismatch_validation(self):
-        classes = Classes(
-            class_levels=frozendict({Class.WIZARD: 1, Class.SORCERER: 1})
-        )
+        classes = Classes(class_levels=frozendict({Class.WIZARD: 1, Class.SORCERER: 1}))
         with pytest.raises(ValidationError) as exc_info:
             SimplifiedBlocks(
                 classes=classes,
@@ -199,9 +185,7 @@ class TestSimplifiedBuilder:
                     RandomSpellAssigner(class_=Class.WIZARD),
                 ),
             )
-        assert "Level increment classes don't match for level=1" in str(
-            exc_info.value
-        )
+        assert "Level increment classes don't match for level=1" in str(exc_info.value)
 
     @pytest.mark.parametrize(
         ("race", "subrace"),

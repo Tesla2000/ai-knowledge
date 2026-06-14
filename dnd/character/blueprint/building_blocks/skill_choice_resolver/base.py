@@ -66,9 +66,7 @@ class SkillChoiceResolver(BuildingBlock, ABC):
         selected_skills = self._select_skills(blueprint)
 
         # Add to existing skill proficiencies
-        new_skill_proficiencies = blueprint.skill_proficiencies + tuple(
-            selected_skills
-        )
+        new_skill_proficiencies = blueprint.skill_proficiencies + tuple(selected_skills)
 
         return Blueprint(
             skill_proficiencies=new_skill_proficiencies,

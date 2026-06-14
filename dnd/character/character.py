@@ -2,16 +2,14 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 from typing import Annotated
-from typing import Any
-from typing import Optional
 
+from dnd.character._creature_base import _CreatureBase
 from dnd.character.armor.names import ArmorName
 from dnd.character.feature.feats import FeatName
 from dnd.character.magical_item.item import MagicalItem
 from dnd.character.race.race import Race
 from dnd.character.race.subraces import Subrace
 from dnd.character.spells.spells import Spells
-from dnd.character.stats import Stats
 from dnd.choices.alignment import Alignment
 from dnd.choices.background_creatrion.background import (
     Background,
@@ -23,7 +21,6 @@ from dnd.choices.class_creation.character_class import Class
 from dnd.choices.equipment_creation.weapons import WeaponName
 from dnd.choices.language import Language
 from dnd.choices.sex import Sex
-from dnd.choices.stats_creation.statistic import Statistic
 from dnd.other_profficiencies import ArmorProficiency
 from dnd.other_profficiencies import GamingSet
 from dnd.other_profficiencies import MusicalInstrument
@@ -32,14 +29,11 @@ from dnd.other_profficiencies import WeaponProficiency
 from dnd.skill_proficiency import Skill
 from frozendict import frozendict
 from pydantic import AfterValidator
-from pydantic import BaseModel
-from pydantic import ConfigDict
 from pydantic import Field
-from pydantic import NonNegativeInt
 from pydantic import PositiveInt
 
 
-def _conv_to_frozendict(value: Any) -> Any:
+def _conv_to_frozendict(value: object) -> object:
     if not isinstance(value, Mapping):
         return value
     return frozendict(value)
@@ -63,19 +57,14 @@ def _skill_not_any(skill: Skill) -> Skill:
 
 def _feat_not_any(feat: FeatName) -> FeatName:
     if feat in FeatName.not_choosables():
-        raise ValueError(
-            "Character feat mustn't be any of your choice. Choose a feat"
-        )
+        raise ValueError("Character feat mustn't be any of your choice. Choose a feat")
     return feat
 
 
 def _tool_proficiency_not_any(
     tool: ToolProficiency | GamingSet | MusicalInstrument,
 ) -> ToolProficiency | GamingSet | MusicalInstrument:
-    if (
-        isinstance(tool, ToolProficiency)
-        and tool == ToolProficiency.ANY_OF_YOUR_CHOICE
-    ):
+    if isinstance(tool, ToolProficiency) and tool == ToolProficiency.ANY_OF_YOUR_CHOICE:
         raise ValueError(
             "Character tool proficiency mustn't be any of your choice. Choose a tool"
         )
@@ -128,9 +117,7 @@ NotAnyArmorProficiency = Annotated[
 ClassLevel = Annotated[int, Field(ge=1, le=20)]
 
 
-class Character(BaseModel):
-    model_config = ConfigDict(frozen=True)
-
+class Character(_CreatureBase):
     sex: Sex
     backstory: str
     level: ClassLevel
@@ -140,10 +127,8 @@ class Character(BaseModel):
     ] = frozendict()
     race: Race
     subrace: Subrace
-    name: str
     background: Background
     alignment: Alignment
-    stats: Stats
     health_base: PositiveInt = Field(exclude=True)
     height: PositiveInt
     weight: PositiveInt
@@ -155,8 +140,7 @@ class Character(BaseModel):
     ideals: str
     bonds: str
     weaknesses: str
-    dark_vision_range: NonNegativeInt
-    base_description: Optional[str] = None
+    base_description: str | None = None
     feats: frozenset[NotAnyFeat] = Field(
         description="Feats from a list fitting description of the character if"
         " race is variant human at least one must be different "
@@ -196,32 +180,4 @@ class Character(BaseModel):
     armor_proficiencies: frozenset[NotAnyArmorProficiency] = Field(
         default=frozenset(), description="Armor proficiencies"
     )
-    speed: PositiveInt
     magical_items: tuple[MagicalItem, ...] = ()
-    saving_throw_bonuses: Stats = Field(
-        default=Stats(
-            strength=0,
-            dexterity=0,
-            constitution=0,
-            intelligence=0,
-            wisdom=0,
-            charisma=0,
-        ),
-        exclude=True,
-    )
-    stats_cup: Stats = Field(
-        default=Stats(
-            strength=20,
-            dexterity=20,
-            constitution=20,
-            intelligence=20,
-            wisdom=20,
-            charisma=20,
-        ),
-        exclude=True,
-    )
-    ac_bonus: NonNegativeInt = Field(0, exclude=True)
-    spell_save_dc_bonus: NonNegativeInt = Field(0, exclude=True)
-    spellcasting_ability_bonus: NonNegativeInt = Field(0, exclude=True)
-    saving_throw_proficiencies: tuple[Statistic, ...]
-    other_active_abilities: tuple[str, ...]

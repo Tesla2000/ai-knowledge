@@ -102,9 +102,9 @@ class SpellAssigner(BuildingBlock, ABC):
             Effective caster level for determining max spell level.
         """
         if self.class_ in (Class.SORCERER, Class.WIZARD):
-            return blueprint.classes.get(
-                Class.SORCERER, 0
-            ) + blueprint.classes.get(Class.WIZARD, 0)
+            return blueprint.classes.get(Class.SORCERER, 0) + blueprint.classes.get(
+                Class.WIZARD, 0
+            )
         raise NotImplementedError("To be implemented for other classes")
 
     def _get_max_spell_level(self, blueprint: Blueprint) -> int:
@@ -120,9 +120,7 @@ class SpellAssigner(BuildingBlock, ABC):
         if effective_caster_level == 0:
             return 0
         caster_type = self._class_to_caster[self.class_]
-        return MAX_SPELL_LEVELS[caster_type][
-            min(effective_caster_level, 20) - 1
-        ]
+        return MAX_SPELL_LEVELS[caster_type][min(effective_caster_level, 20) - 1]
 
     @staticmethod
     def _is_first_level(blueprint: Blueprint) -> bool:
@@ -246,9 +244,7 @@ class SpellAssigner(BuildingBlock, ABC):
             existing_spells = set(
                 blueprint.spells.get_spell_level_by_index(spell_level)
             )
-            available_filtered = [
-                s for s in available if s not in existing_spells
-            ]
+            available_filtered = [s for s in available if s not in existing_spells]
 
             if not available_filtered:
                 continue

@@ -36,9 +36,7 @@ def scraper_wiki_background(background: Background, output_dir: Path, llm):
 
 
 if __name__ == "__main__":
-    llm = ChatOpenAI(model="gpt-4o-mini").with_structured_output(
-        BackgroundTemplate
-    )
+    llm = ChatOpenAI(model="gpt-4o-mini").with_structured_output(BackgroundTemplate)
     for background in Background:
         scraper_wiki_background(
             background,

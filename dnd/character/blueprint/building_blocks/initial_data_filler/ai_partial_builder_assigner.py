@@ -40,7 +40,7 @@ class AIPartialBuilderAssigner(AIBuilderBase):
         prompt = (
             f"Create a D&D 5e character based on this description: {self.description}\n"
             f"The following fields are already set and must be respected: {set_fields}\n"
-            f"Only generate values for unset fields."
+            "Only generate values for unset fields."
         )
         result = self._generate_character_template(prompt)
 

@@ -6,15 +6,9 @@ from dnd.character.blueprint.simplified_blocks import (
 from dnd.character.blueprint.simplified_blocks.simplified_blocks import (
     Classes,
 )
-<<<<<<<< HEAD:tests/server/test_simplified_builder.py
-from dnd_character_creator.character.checkpoint import IncrementChain
-from dnd_character_creator.choices.class_creation.character_class import Class
-from tests.server.test_client import TestClient
-========
 from dnd.character.checkpoint import IncrementChain
 from dnd.choices.class_creation.character_class import Class
-from dnd.server.tests.test_client import TestClient
->>>>>>>> 34edfe5 (Rename to dnd):dnd/server/tests/test_simplified_builder.py
+from tests.server.test_client import TestClient
 
 
 class TestSimplifiedBuilder(TestClient):

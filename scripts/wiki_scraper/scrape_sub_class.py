@@ -65,9 +65,7 @@ def scraper_wiki_subclass_class(
 
 
 if __name__ == "__main__":
-    llm = ChatOpenAI(model="gpt-4o-mini").with_structured_output(
-        AbilitiesTemplate
-    )
+    llm = ChatOpenAI(model="gpt-4o-mini").with_structured_output(AbilitiesTemplate)
     for main_class in Class:
         for sub_class in SUBCLASSES[main_class]:
             scraper_wiki_subclass_class(

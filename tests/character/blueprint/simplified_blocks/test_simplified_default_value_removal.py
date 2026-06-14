@@ -45,13 +45,11 @@ class TestSimplifiedBuilder:
             Statistic.STRENGTH,
         )
 
-        assert (
-            custom_priority != default_priority
-        ), "Custom priority should differ from default"
-
-        blocks = SimplifiedBlocks(
-            classes=classes, stats_priority=custom_priority
+        assert custom_priority != default_priority, (
+            "Custom priority should differ from default"
         )
+
+        blocks = SimplifiedBlocks(classes=classes, stats_priority=custom_priority)
         blocks = SimplifiedBlocks.model_validate(blocks.model_dump())
         result = blocks.model_dump(
             context={EXCLUDE_FACTORY_DEFAULTS: True},
@@ -75,9 +73,9 @@ class TestSimplifiedBuilder:
             Statistic.STRENGTH,
         )
 
-        assert (
-            custom_priority != default_priority
-        ), "Custom priority should differ from default"
+        assert custom_priority != default_priority, (
+            "Custom priority should differ from default"
+        )
 
         default_stat_choice_resolver = SimplifiedBlocks(
             classes=classes
@@ -108,16 +106,12 @@ class TestSimplifiedBuilder:
             subrace=Subrace.HUMAN_STANDARD_HUMAN_PLAYERSHANDBOOK,
         )
 
-        blocks = SimplifiedBlocks(
-            classes=classes, race_assigner=custom_race_assigner
-        )
+        blocks = SimplifiedBlocks(classes=classes, race_assigner=custom_race_assigner)
 
         result = blocks.model_dump(context={EXCLUDE_FACTORY_DEFAULTS: True})
 
         # The result should contain race_assigner since it's not the default RandomRaceAssigner
-        assert (
-            "race_assigner" in result
-        ), "Custom race_assigner should be in result"
+        assert "race_assigner" in result, "Custom race_assigner should be in result"
 
     def test_default_values_removal_with_custom_stats_builder(self):
         """Test that custom stats_builder with different priority is preserved."""
@@ -134,16 +128,12 @@ class TestSimplifiedBuilder:
         )
         custom_stats_builder = StandardArray(stats_priority=custom_priority)
 
-        blocks = SimplifiedBlocks(
-            classes=classes, stats_builder=custom_stats_builder
-        )
+        blocks = SimplifiedBlocks(classes=classes, stats_builder=custom_stats_builder)
 
         result = blocks.model_dump(context={EXCLUDE_FACTORY_DEFAULTS: True})
 
         # The result should contain stats_builder since the priority differs
-        assert (
-            "stats_builder" in result
-        ), "Custom stats_builder should be in result"
+        assert "stats_builder" in result, "Custom stats_builder should be in result"
 
     def test_roundtrip_validation(self):
         """Test that difference dict can be used to reconstruct the object."""
@@ -151,9 +141,7 @@ class TestSimplifiedBuilder:
         blocks = SimplifiedBlocks(classes=classes)
 
         # Get the difference (should be empty for all defaults)
-        difference = blocks.model_dump(
-            context={EXCLUDE_FACTORY_DEFAULTS: True}
-        )
+        difference = blocks.model_dump(context={EXCLUDE_FACTORY_DEFAULTS: True})
 
         # Reconstruct from difference
         reconstructed = SimplifiedBlocks.model_validate(

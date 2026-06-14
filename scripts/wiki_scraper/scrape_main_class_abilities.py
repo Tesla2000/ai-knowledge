@@ -40,9 +40,7 @@ def scraper_wiki_class_abilities(main_class: Class, output_dir: Path, llm):
 
 
 if __name__ == "__main__":
-    llm = ChatOpenAI(model="gpt-4o-mini").with_structured_output(
-        AbilitiesTemplate
-    )
+    llm = ChatOpenAI(model="gpt-4o-mini").with_structured_output(AbilitiesTemplate)
     for main_class in Class:
         scraper_wiki_class_abilities(
             main_class,

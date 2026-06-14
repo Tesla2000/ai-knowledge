@@ -1,8 +1,6 @@
 from __future__ import annotations
 
 from itertools import filterfalse
-from typing import Any
-from typing import Optional
 from typing import TYPE_CHECKING
 
 from dnd.character.ability import Ability
@@ -24,28 +22,26 @@ if TYPE_CHECKING:
 
 
 class Feature(BaseModel):
-    source: Optional[str]
-    ability: Optional[Ability]
-    skill_proficiency_gain: Optional[Skill]
-    skill_expertise_gain: Optional[Skill] = Field(
+    source: str | None
+    ability: Ability | None
+    skill_proficiency_gain: Skill | None
+    skill_expertise_gain: Skill | None = Field(
         description="The same as double proficiency."
     )
-    tool_proficiency_gain: Optional[ToolProficiency]
-    instrument_proficiency_gain: Optional[MusicalInstrument]
-    gaming_set_proficiency_gain: Optional[GamingSet]
+    tool_proficiency_gain: ToolProficiency | None
+    instrument_proficiency_gain: MusicalInstrument | None
+    gaming_set_proficiency_gain: GamingSet | None
     weapon_proficiencies_gain: list[WeaponProficiency] = Field(
         description="Must remain empty if nothing is provided."
     )
     armor_proficiencies_gain: list[ArmorProficiency] = Field(
         description="Must remain empty if nothing is provided."
     )
-    attribute_increase: Optional[StatisticAndAny]
+    attribute_increase: StatisticAndAny | None
 
-    def __init__(self, /, **data: Any):
+    def __init__(self, /, **data: object):
         data["weapon_proficiencies_gain"] = list(
-            filterfalse(
-                ArmorProficiency.__contains__, data["armor_proficiencies_gain"]
-            )
+            filterfalse(ArmorProficiency.__contains__, data["armor_proficiencies_gain"])
         )
         if (
             data["skill_proficiency_gain"] not in Skill

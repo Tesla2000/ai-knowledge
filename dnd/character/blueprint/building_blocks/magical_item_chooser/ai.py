@@ -111,9 +111,7 @@ class AIMagicalItemChooser(MagicalItemChooserBase):
             items = [item for item in MAGICAL_ITEMS if item.level == level]
             if items:
                 instructions.append(f"\n### {level.value.title()}\n")
-                instructions.append(
-                    ", ".join(f"'{item.name}'" for item in items)
-                )
+                instructions.append(", ".join(f"'{item.name}'" for item in items))
 
         instructions.extend(
             [
@@ -160,9 +158,7 @@ class AIMagicalItemChooser(MagicalItemChooserBase):
 
         # Map selected names to MagicalItem objects
         item_map = {item.name: item for item in MAGICAL_ITEMS}
-        selected_items = tuple(
-            map(item_map.__getitem__, selection.selected_items)
-        )
+        selected_items = tuple(map(item_map.__getitem__, selection.selected_items))
 
         # Verify counts match requested amounts
         if len(selected_items) != total_requested:

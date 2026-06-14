@@ -32,9 +32,7 @@ class RaceSubracePair(BaseModel):
     def _check_subrace_correctness(self) -> Self:
         if self.subrace in RACE_TO_SUBRACES[self.race]:
             return self
-        raise ValueError(
-            f"Subrace {self.subrace} is not a subrace of {self.race}"
-        )
+        raise ValueError(f"Subrace {self.subrace} is not a subrace of {self.race}")
 
 
 class BaseRaceAssigner(BuildingBlock, ABC):
@@ -48,9 +46,7 @@ class BaseRaceAssigner(BuildingBlock, ABC):
             raise ValueError(f"{blueprint=} already has a race assigned")
         # TODO: add stat assigners for all classes and subclasses
         race_and_subrace = self._get_race_and_subrace()
-        subrace_stats = SUBRACE_STATS[race_and_subrace.subrace].add_to(
-            blueprint
-        )
+        subrace_stats = SUBRACE_STATS[race_and_subrace.subrace].add_to(blueprint)
         return subrace_stats.model_copy(
             update=Blueprint(
                 race=race_and_subrace.race,

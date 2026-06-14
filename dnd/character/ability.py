@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dnd.choices.abilities.ActionType import ActionType
+from dnd.choices.abilities.action_type import ActionType
 from pydantic import BaseModel
 from pydantic import ConfigDict
 from pydantic import Field

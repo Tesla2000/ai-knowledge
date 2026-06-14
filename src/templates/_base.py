@@ -3,11 +3,14 @@ from __future__ import annotations
 from abc import ABC
 from contextlib import ExitStack
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from pydantic import BaseModel, Field
 
 from src.files import (
     CodeOwnersFile,
+    DevcontainerDockerComposeFile,
+    DevcontainerJsonFile,
     File,
     Gitignore,
     MitLicense,
@@ -20,8 +23,68 @@ from src.files import (
     SetupScript,
     TestsWorkflow,
 )
-from src.files._base import FileBase
-from src.templates._type import TemplateType
+
+if TYPE_CHECKING:
+    from src.files._base import FileBase
+    from src.templates._type import TemplateType
+
+_DEVCONTAINER_DOCKERFILE = """\
+FROM python:3.12-slim
+
+RUN apt-get update && apt-get install -y --no-install-recommends \\
+        git \\
+        curl \\
+        ca-certificates \\
+        build-essential \\
+        bubblewrap \\
+        socat \\
+    && rm -rf /var/lib/apt/lists/*
+
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /usr/local/bin/
+
+ENV UV_LINK_MODE=copy
+
+WORKDIR /workspace
+"""
+
+_DEVCONTAINER_CLAUDE_SETTINGS = """\
+{
+  "theme": "dark"
+}
+"""
+
+_DEVCONTAINER_POST_CREATE = """\
+#!/usr/bin/env bash
+set -e
+
+git config --global --add safe.directory /workspace
+
+if [ ! -f /root/.claude/settings.json ]; then
+    cp /workspace/.devcontainer/claude-settings.json /root/.claude/settings.json
+fi
+
+uv sync --dev
+npm install -g @anthropic-ai/claude-code
+"""
+
+_CLAUDE_SETTINGS = """\
+{
+  "sandbox": {
+    "enabled": true,
+    "network": {
+      "allowedDomains": [
+        "api.anthropic.com",
+        "github.com",
+        "*.github.com",
+        "*.githubusercontent.com",
+        "pypi.org",
+        "files.pythonhosted.org",
+        "registry.npmjs.org"
+      ]
+    }
+  }
+}
+"""
 
 
 def _default_readme(data: dict[str, object]) -> ReadmeFile | None:
@@ -30,7 +93,7 @@ def _default_readme(data: dict[str, object]) -> ReadmeFile | None:
         return None
     python_version = data.get("python_version")
     if not isinstance(python_version, PythonVersion):
-        raise ValueError(
+        raise TypeError(
             f"{python_version=} is not an instance of {PythonVersion.__name__}"
         )
     return ReadmeFile(description=description, python_version=python_version)
@@ -41,7 +104,7 @@ def _default_python_version_file(
 ) -> PythonVersionFile:
     python_version = data["python_version"]
     if not isinstance(python_version, PythonVersion):
-        raise ValueError(
+        raise TypeError(
             f"{python_version=} is not an instance of {PythonVersion.__name__}"
         )
     return PythonVersionFile(python_version=python_version)
@@ -52,10 +115,28 @@ def _default_pre_commit_config(
 ) -> PreCommitConfig:
     python_version = data["python_version"]
     if not isinstance(python_version, PythonVersion):
-        raise ValueError(
+        raise TypeError(
             f"{python_version=} is not an instance of {PythonVersion.__name__}"
         )
     return PreCommitConfig(python_version=python_version)
+
+
+def _default_devcontainer_json(
+    data: dict[str, object],
+) -> DevcontainerJsonFile:
+    repo_name = data["repo_name"]
+    if not isinstance(repo_name, str):
+        raise TypeError(f"{repo_name=} is not an instance of str")
+    return DevcontainerJsonFile(repo_name=repo_name)
+
+
+def _default_devcontainer_docker_compose(
+    data: dict[str, object],
+) -> DevcontainerDockerComposeFile:
+    repo_name = data["repo_name"]
+    if not isinstance(repo_name, str):
+        raise TypeError(f"{repo_name=} is not an instance of str")
+    return DevcontainerDockerComposeFile(repo_name=repo_name)
 
 
 class Template(BaseModel, ABC):
@@ -66,7 +147,9 @@ class Template(BaseModel, ABC):
     repo_name: str
     license: MitLicense | None = MitLicense()
     readme: ReadmeFile | None = Field(default_factory=_default_readme)
-    pre_commit_run_workflow: PreCommitRunWorkflow | None = PreCommitRunWorkflow()
+    pre_commit_run_workflow: PreCommitRunWorkflow | None = (
+        PreCommitRunWorkflow()
+    )
     tests_workflow: TestsWorkflow | None = TestsWorkflow()
     code_owners_file: CodeOwnersFile | None = CodeOwnersFile()
     pre_commit_config: PreCommitConfig | None = Field(
@@ -81,6 +164,28 @@ class Template(BaseModel, ABC):
     package_file: PackageFile | None = PackageFile()
     tests_init_file: File | None = File(
         relative_path=Path("tests/__init__.py"), content=""
+    )
+    devcontainer_json: DevcontainerJsonFile = Field(
+        default_factory=_default_devcontainer_json
+    )
+    devcontainer_docker_compose: DevcontainerDockerComposeFile = Field(
+        default_factory=_default_devcontainer_docker_compose
+    )
+    devcontainer_dockerfile: File = File(
+        relative_path=Path(".devcontainer/Dockerfile"),
+        content=_DEVCONTAINER_DOCKERFILE,
+    )
+    devcontainer_claude_settings: File = File(
+        relative_path=Path(".devcontainer/claude-settings.json"),
+        content=_DEVCONTAINER_CLAUDE_SETTINGS,
+    )
+    devcontainer_post_create: File = File(
+        relative_path=Path(".devcontainer/post-create.sh"),
+        content=_DEVCONTAINER_POST_CREATE,
+    )
+    claude_settings: File = File(
+        relative_path=Path(".claude/settings.json"),
+        content=_CLAUDE_SETTINGS,
     )
 
     @property
@@ -101,6 +206,12 @@ class Template(BaseModel, ABC):
                     self.package_file,
                     self.tests_init_file,
                     self.license,
+                    self.devcontainer_json,
+                    self.devcontainer_docker_compose,
+                    self.devcontainer_dockerfile,
+                    self.devcontainer_claude_settings,
+                    self.devcontainer_post_create,
+                    self.claude_settings,
                 ),
             )
         )

@@ -1,4 +1,3 @@
-import os
 from collections.abc import Generator
 from contextlib import contextmanager
 from pathlib import Path
@@ -24,16 +23,18 @@ class FileBase(BaseModel):
         return self.content
 
     @contextmanager
-    def revert_on_fail(self, project_root: Path) -> Generator[None, None, None]:
+    def revert_on_fail(
+        self, project_root: Path
+    ) -> Generator[None, None, None]:
         content = None
         path = self.get_path(project_root)
         if path.exists():
             content = path.read_text()
         try:
             yield
-        except:  # noqa: E722
+        except:
             if content is None:
-                os.remove(path)
+                path.unlink()
             else:
                 path.write_text(content)
             raise

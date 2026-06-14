@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Literal
+from typing import TYPE_CHECKING, Literal
 
 from pydantic import Field
 
@@ -12,9 +12,11 @@ from src.files import (
     PreCommitConfig,
     PythonVersion,
 )
-from src.files._base import FileBase
 from src.templates._base import Template
 from src.templates._type import TemplateType
+
+if TYPE_CHECKING:
+    from src.files._base import FileBase
 
 _CLI_MYPY_DEPS = (
     Dependency(name="pydantic", constraint=">=2.8.2"),
@@ -46,15 +48,17 @@ if __name__ == "__main__":  # pragma: no cover
 def _default_pyproject_toml(data: dict[str, object]) -> PackagePyprojectToml:
     description = data["description"]
     if not isinstance(description, str):
-        raise ValueError(f"{description=} is not an instance of str")
+        raise TypeError(f"{description=} is not an instance of str")
     python_version = data["python_version"]
     if not isinstance(python_version, PythonVersion):
-        raise ValueError(
+        raise TypeError(
             f"{python_version=} is not an instance of {PythonVersion.__name__}"
         )
     return PackagePyprojectToml(
         description=description,
-        dependencies=(Dependency(name="pydantic-settings", constraint=">=2.13.0"),),
+        dependencies=(
+            Dependency(name="pydantic-settings", constraint=">=2.13.0"),
+        ),
         python_version=python_version,
         dependency_groups={},
     )
@@ -65,7 +69,7 @@ def _default_pre_commit_config_cli(
 ) -> PreCommitConfig:
     python_version = data["python_version"]
     if not isinstance(python_version, PythonVersion):
-        raise ValueError(
+        raise TypeError(
             f"{python_version=} is not an instance of {PythonVersion.__name__}"
         )
     return PreCommitConfig(

@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import UTC, datetime
 from pathlib import Path
 from string import Template
 from typing import Literal
@@ -12,7 +12,7 @@ from src.files._types import FileType
 class MitLicense(FileBase):
     type: Literal[FileType.LICENSE] = FileType.LICENSE
     relative_path: Path = Path("LICENSE")
-    year: PositiveInt = datetime.now().year
+    year: PositiveInt = datetime.now(UTC).year
     content: str = """MIT License
 
 Copyright (c) $year Filip Ratajczak

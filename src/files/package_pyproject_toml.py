@@ -23,7 +23,11 @@ class Dependency(BaseModel):
 
 def _default_classifiers(data: dict[str, object]) -> tuple[str, ...]:
     python_version = data.get("python_version")
-    min_minor = python_version.minor if isinstance(python_version, PythonVersion) else 9
+    min_minor = (
+        python_version.minor
+        if isinstance(python_version, PythonVersion)
+        else 9
+    )
     return (
         "Development Status :: 3 - Alpha",
         "Intended Audience :: Developers",
@@ -48,7 +52,9 @@ class PackagePyprojectToml(FileBase):
     author_email: EmailStr = "fratajczak124@gmail.com"
     python_version: PythonVersion = PythonVersion(minor=9)
     dependencies: tuple[Dependency, ...] = ()
-    dependency_groups: dict[str, tuple[Dependency, ...]] = {}
+    dependency_groups: dict[str, tuple[Dependency, ...]] = Field(
+        default_factory=dict
+    )
     classifiers: tuple[str, ...] = Field(default_factory=_default_classifiers)
     content: str = """\
 [project]
@@ -99,6 +105,10 @@ packages = ["$project_name_low"]
 [tool.ruff]
 line-length = 79
 
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = ["D", "E501", "S101", "S603", "S607", "COM812", "EM102", "TRY003"]
+
 [tool.pytest.ini_options]
 markers = [
     "unit: tests that exercise a single component in isolation",
@@ -122,12 +132,16 @@ mypy_path = "stubs"
     def _get_content(self, project_root: Path) -> str:
         project_name_low = self.project_name_low or to_snake(project_root.name)
         deps_str = (
-            "[\n" + "".join(f'    "{dep}",\n' for dep in self.dependencies) + "]"
+            "[\n"
+            + "".join(f'    "{dep}",\n' for dep in self.dependencies)
+            + "]"
             if self.dependencies
             else "[]"
         )
         dependency_groups = "".join(
-            f"{group} = [\n" + "".join(f'    "{dep}",\n' for dep in deps) + "]\n"
+            f"{group} = [\n"
+            + "".join(f'    "{dep}",\n' for dep in deps)
+            + "]\n"
             for group, deps in self.dependency_groups.items()
         )
         classifiers_str = (

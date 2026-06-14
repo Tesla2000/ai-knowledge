@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import os
 import subprocess
-from collections.abc import Mapping
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from github import Github
 from github.AuthenticatedUser import AuthenticatedUser
@@ -12,6 +12,9 @@ from pydantic.alias_generators import to_snake
 
 from src.setup.branch_protection_settings import BranchProtectionSettings
 from src.setup.repo_settings import RepoSettings
+
+if TYPE_CHECKING:
+    from collections.abc import Mapping
 
 
 class GitHubSetup(BaseModel):
@@ -41,17 +44,21 @@ class GitHubSetup(BaseModel):
         )
         if self.github_token is None:
             return
-        repo_name = self.repo_name or to_snake(project_path.name).replace("_", "-")
+        repo_name = self.repo_name or to_snake(project_path.name).replace(
+            "_", "-"
+        )
         g = Github(self.github_token.get_secret_value())
         user = g.get_user()
         if not isinstance(user, AuthenticatedUser):
-            raise ValueError(
+            raise TypeError(
                 f"{user=} is not an instance of {AuthenticatedUser.__name__}"
             )
         repo = user.create_repo(repo_name, **self.repo_settings.model_dump())
         try:
             token = self.github_token.get_secret_value()
-            remote_url = f"https://{token}@github.com/{user.login}/{repo_name}.git"
+            remote_url = (
+                f"https://{token}@github.com/{user.login}/{repo_name}.git"
+            )
             subprocess.run(  # nosec B603 B607
                 ["git", "remote", "add", "origin", remote_url],
                 cwd=project_path,
@@ -68,6 +75,6 @@ class GitHubSetup(BaseModel):
                 )
             for name, secret in self.repo_secrets.items():
                 repo.create_secret(name, secret.get_secret_value())
-        except:  # noqa: E722
+        except:
             repo.delete()
             raise

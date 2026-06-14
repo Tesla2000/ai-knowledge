@@ -10,6 +10,18 @@ dependencies = [
     "pygithub>=2.9.0",
 ]
 
+[dependency-groups]
+dev = [
+    "pre-commit",
+]
+
+
+[tool.ruff]
+line-length = 79
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = ["D", "E501", "S101", "S603", "S607", "COM812", "EM102", "TRY003"]
 
 [tool.mypy]
 plugins = ["pydantic.mypy"]

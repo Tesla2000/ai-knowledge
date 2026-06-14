@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Literal
+from typing import TYPE_CHECKING, Literal
 
 from pydantic import Field
 
@@ -13,30 +13,34 @@ from src.files import (
     TestsWorkflow,
     VersionPatchWorkflow,
 )
-from src.files._base import FileBase
 from src.templates._base import Template
 from src.templates._type import TemplateType
+
+if TYPE_CHECKING:
+    from src.files._base import FileBase
 
 
 def _default_pyproject_toml(data: dict[str, object]) -> PackagePyprojectToml:
     description = data["description"]
     if not isinstance(description, str):
-        raise ValueError(f"{description=} is not an instance of str")
+        raise TypeError(f"{description=} is not an instance of str")
     return PackagePyprojectToml(
         description=description,
-        dependency_groups={"stubs": (Dependency(name="mypy", constraint=">=1.19.1"),)},
+        dependency_groups={
+            "stubs": (Dependency(name="mypy", constraint=">=1.19.1"),)
+        },
     )
 
 
 def _default_readme(data: dict[str, object]) -> ReadmeFile:
     description = data["description"]
     if not isinstance(description, str):
-        raise ValueError(f"{description=} is not an instance of str")
+        raise TypeError(f"{description=} is not an instance of str")
     author = data.get("author")
     repo_name = data.get("repo_name")
     python_version = data.get("python_version", PythonVersion(minor=9))
     if not isinstance(python_version, PythonVersion):
-        raise ValueError(
+        raise TypeError(
             f"{python_version=} is not an instance of {PythonVersion.__name__}"
         )
     return ReadmeFile(
@@ -50,7 +54,7 @@ def _default_readme(data: dict[str, object]) -> ReadmeFile:
 def _default_tests_workflow(data: dict[str, object]) -> TestsWorkflow:
     python_version = data.get("python_version", PythonVersion(minor=9))
     if not isinstance(python_version, PythonVersion):
-        raise ValueError(
+        raise TypeError(
             f"{python_version=} is not an instance of {PythonVersion.__name__}"
         )
     return TestsWorkflow(
@@ -106,7 +110,9 @@ class PythonPackage(Template):
     tests_workflow: TestsWorkflow | None = Field(
         default_factory=_default_tests_workflow
     )
-    version_patch_workflow: VersionPatchWorkflow | None = VersionPatchWorkflow()
+    version_patch_workflow: VersionPatchWorkflow | None = (
+        VersionPatchWorkflow()
+    )
     py_typed_file: PyTypedFile | None = PyTypedFile()
 
     @property

@@ -6,11 +6,15 @@ from pydantic import AfterValidator, BaseModel, Field
 from src.files._base import FileBase
 from src.files._types import FileType
 
-_CodeOwner = Annotated[str, AfterValidator(lambda string: "@" + string.lstrip("@"))]
+_CodeOwner = Annotated[
+    str, AfterValidator(lambda string: "@" + string.lstrip("@"))
+]
 
 
 class _CodeOwnersMixin(BaseModel):
-    codeowners: tuple[_CodeOwner, ...] = Field(default=("@Tesla2000",), min_length=1)
+    codeowners: tuple[_CodeOwner, ...] = Field(
+        default=("@Tesla2000",), min_length=1
+    )
 
 
 class CodeOwnersFile(_CodeOwnersMixin, FileBase):

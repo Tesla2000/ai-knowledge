@@ -11,9 +11,11 @@ from src.files.python_version_file import PythonVersion
 
 
 def _content(validated_data: dict[str, object]) -> str:
-    python_version = validated_data.get("python_version", PythonVersion(minor=12))
+    python_version = validated_data.get(
+        "python_version", PythonVersion(minor=12)
+    )
     if not isinstance(python_version, PythonVersion):
-        raise ValueError(
+        raise TypeError(
             f"{python_version=} is not an instance of {PythonVersion.__name__}"
         )
     matrix_versions = ", ".join(

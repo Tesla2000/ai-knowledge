@@ -107,7 +107,7 @@ line-length = 79
 
 [tool.ruff.lint]
 select = ["ALL"]
-ignore = ["D", "E501", "S101", "S603", "S607", "COM812", "EM102", "TRY003"]
+ignore = ["D", "E501", "S101", "S603", "S607", "COM812", "EM102", "TRY003", "TC001", "TC002", "TC003"]
 
 [tool.pytest.ini_options]
 markers = [

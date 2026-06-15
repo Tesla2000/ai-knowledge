@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Literal
+from typing import Literal
 
 from pydantic import Field
 
@@ -13,11 +13,9 @@ from src.files import (
     TestsWorkflow,
     VersionPatchWorkflow,
 )
+from src.files._base import FileBase
 from src.templates._base import Template
 from src.templates._type import TemplateType
-
-if TYPE_CHECKING:
-    from src.files._base import FileBase
 
 
 def _default_pyproject_toml(data: dict[str, object]) -> PackagePyprojectToml:

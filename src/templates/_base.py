@@ -3,7 +3,6 @@ from __future__ import annotations
 from abc import ABC
 from contextlib import ExitStack
 from pathlib import Path
-from typing import TYPE_CHECKING
 
 from pydantic import BaseModel, Field
 
@@ -23,10 +22,8 @@ from src.files import (
     SetupScript,
     TestsWorkflow,
 )
-
-if TYPE_CHECKING:
-    from src.files._base import FileBase
-    from src.templates._type import TemplateType
+from src.files._base import FileBase
+from src.templates._type import TemplateType
 
 _DEVCONTAINER_DOCKERFILE = """\
 FROM python:3.12-slim

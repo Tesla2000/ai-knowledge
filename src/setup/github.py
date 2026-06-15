@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import os
 import subprocess
+from collections.abc import Mapping
 from pathlib import Path
-from typing import TYPE_CHECKING
 
 from github import Github
 from github.AuthenticatedUser import AuthenticatedUser
@@ -12,9 +12,6 @@ from pydantic.alias_generators import to_snake
 
 from src.setup.branch_protection_settings import BranchProtectionSettings
 from src.setup.repo_settings import RepoSettings
-
-if TYPE_CHECKING:
-    from collections.abc import Mapping
 
 
 class GitHubSetup(BaseModel):

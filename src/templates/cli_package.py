@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import TYPE_CHECKING, Literal
+from typing import Literal
 
 from pydantic import Field
 
@@ -12,11 +12,9 @@ from src.files import (
     PreCommitConfig,
     PythonVersion,
 )
+from src.files._base import FileBase
 from src.templates._base import Template
 from src.templates._type import TemplateType
-
-if TYPE_CHECKING:
-    from src.files._base import FileBase
 
 _CLI_MYPY_DEPS = (
     Dependency(name="pydantic", constraint=">=2.8.2"),

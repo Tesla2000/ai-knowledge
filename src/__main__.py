@@ -4,7 +4,7 @@ import shutil
 from collections.abc import MutableMapping
 from os import PathLike
 from pathlib import Path
-from typing import TYPE_CHECKING, Annotated
+from typing import Annotated
 
 from pydantic import AfterValidator, Field, model_validator
 from pydantic.alias_generators import to_snake
@@ -16,9 +16,7 @@ from pydantic_settings import (
 )
 
 from src.setup import GitHubSetup
-
-if TYPE_CHECKING:
-    from src.templates import AnyTemplate
+from src.templates import AnyTemplate
 
 
 def _ensure_absolute(path: Path) -> Path:

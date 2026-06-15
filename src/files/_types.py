@@ -18,3 +18,5 @@ class FileType(StrEnum):
     PYTHON_VERSION = auto()
     PY_TYPED = auto()
     CODE_OWNERS = auto()
+    DEVCONTAINER_JSON = auto()
+    DEVCONTAINER_DOCKER_COMPOSE = auto()

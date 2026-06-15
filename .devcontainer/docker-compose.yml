@@ -1,0 +1,13 @@
+services:
+  app:
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+    image: projectblueprint-devcontainer
+    volumes:
+      - ..:/workspace:cached
+      - claude-config:/root/.claude
+    command: sleep infinity
+
+volumes:
+  claude-config:

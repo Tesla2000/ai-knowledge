@@ -1,7 +1,11 @@
-from typing import Annotated, Union
+from typing import Annotated
 
 from pydantic import Discriminator
 
+from src.files.devcontainer import (
+    DevcontainerDockerComposeFile,
+    DevcontainerJsonFile,
+)
 from src.files.file import File
 from src.files.github.code_owners_file import CodeOwnersFile
 from src.files.github.workflows.pre_commit_run_workflow import (
@@ -22,41 +26,43 @@ from src.files.setup_script import SetupScript
 from src.files.src.package_init_py import PackageFile
 
 AnyFile = Annotated[
-    Union[
-        File,
-        PackageFile,
-        MitLicense,
-        Gitignore,
-        PackagePyprojectToml,
-        PreCommitConfig,
-        ReadmeFile,
-        TestsWorkflow,
-        SetupScript,
-        VersionPatchWorkflow,
-        PreCommitRunWorkflow,
-        PyTypedFile,
-        CodeOwnersFile,
-        PythonVersionFile,
-    ],
+    File
+    | PackageFile
+    | MitLicense
+    | Gitignore
+    | PackagePyprojectToml
+    | PreCommitConfig
+    | ReadmeFile
+    | TestsWorkflow
+    | SetupScript
+    | VersionPatchWorkflow
+    | PreCommitRunWorkflow
+    | PyTypedFile
+    | CodeOwnersFile
+    | PythonVersionFile
+    | DevcontainerJsonFile
+    | DevcontainerDockerComposeFile,
     Discriminator("type"),
 ]
 
 __all__ = [
+    "AnyFile",
+    "CodeOwnersFile",
+    "Dependency",
+    "DevcontainerDockerComposeFile",
+    "DevcontainerJsonFile",
     "File",
+    "Gitignore",
     "MitLicense",
+    "PackageFile",
     "PackagePyprojectToml",
     "PreCommitConfig",
-    "ReadmeFile",
-    "TestsWorkflow",
-    "SetupScript",
-    "VersionPatchWorkflow",
     "PreCommitRunWorkflow",
-    "PackageFile",
+    "PyTypedFile",
     "PythonVersion",
     "PythonVersionFile",
-    "PyTypedFile",
-    "CodeOwnersFile",
-    "Gitignore",
-    "AnyFile",
-    "Dependency",
+    "ReadmeFile",
+    "SetupScript",
+    "TestsWorkflow",
+    "VersionPatchWorkflow",
 ]

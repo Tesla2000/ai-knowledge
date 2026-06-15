@@ -31,12 +31,6 @@ repos:
       - id: ruff-format
       - id: ruff
         args: [ "--extend-ignore=E501" ]
-  - repo: https://github.com/PyCQA/bandit
-    rev: 1.9.4
-    hooks:
-      - id: bandit
-        args: [ "-c", "pyproject.toml", "--exclude", "README.md,**/*.md", "--skip", "B404" ]
-
   - repo: https://github.com/asottile/pyupgrade
     rev: v3.21.2
     hooks:
@@ -76,12 +70,13 @@ repos:
     hooks:
       - id: any-hook
         args: [--modifiers, '[$package-dependent{"type": "remove-f-prefix"},{"type": "open-to-path"},{"type": "any-to-object"},{"type":"pydantic-config-to-model-config"},{"type":"local-imports"},{"type":"pydantic-v1-to-v2"},{"type":"str-enum-inheritance"},{"type":"forbidden-functions","forbidden_functions":["hasattr","getattr","print"]},{"type":"utcnow-to-datetime-now"},{"type":"len-as-bool"},{"type":"typing-to-builtin"}]']
-"""  # noqa: W605
+"""
 
     def _get_content(self, project_root: Path) -> str:
         if self.mypy_additional_dependencies:
             deps_str = "        additional_dependencies:\n" + "".join(
-                f"          - {dep}\n" for dep in self.mypy_additional_dependencies
+                f"          - {dep}\n"
+                for dep in self.mypy_additional_dependencies
             )
         else:
             deps_str = ""
@@ -107,4 +102,6 @@ repos:
             "$python-target-version",
             f"py{self.python_version.major}{self.python_version.minor}",
         )
-        return content.replace("        # mypy_additional_dependencies\n", deps_str)
+        return content.replace(
+            "        # mypy_additional_dependencies\n", deps_str
+        )

@@ -23,7 +23,7 @@ $badges## Description
 $description
 """
 
-    def _get_content(self, project_root: Path) -> str:
+    def _get_content(self, _: Path) -> str:
         badges = ""
         if self.include_badges and self.github_owner and self.github_repo:
             badge_lines = [

@@ -3,7 +3,7 @@ from src.setup.github import GitHubSetup
 from src.setup.repo_settings import RepoSettings
 
 __all__ = [
+    "BranchProtectionSettings",
     "GitHubSetup",
     "RepoSettings",
-    "BranchProtectionSettings",
 ]

@@ -32,7 +32,9 @@ class Generate(BaseSettings):
         env_nested_delimiter="__",
     )
 
-    project_path: CliPositionalArg[Annotated[Path, AfterValidator(_ensure_absolute)]]
+    project_path: CliPositionalArg[
+        Annotated[Path, AfterValidator(_ensure_absolute)]
+    ]
     template: AnyTemplate
     setup: GitHubSetup = Field(default_factory=GitHubSetup)
 
@@ -57,7 +59,7 @@ class Generate(BaseSettings):
         try:
             self.template.generate(self.project_path)
             self.setup.run(self.project_path)
-        except:  # noqa: E722
+        except:
             shutil.rmtree(self.project_path)
             raise
 

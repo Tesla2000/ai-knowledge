@@ -7,5 +7,3 @@ if [ ! -f /root/.claude/settings.json ]; then
     cp /workspace/.devcontainer/claude-settings.json /root/.claude/settings.json
 fi
 
-uv sync
-npm install -g @anthropic-ai/claude-code

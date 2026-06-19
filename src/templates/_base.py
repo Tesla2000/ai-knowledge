@@ -26,7 +26,7 @@ from src.files._base import FileBase
 from src.templates._type import TemplateType
 
 _DEVCONTAINER_DOCKERFILE = """\
-FROM python:3.12-slim
+FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim
 
 RUN apt-get update && apt-get install -y --no-install-recommends \\
         git \\
@@ -35,13 +35,29 @@ RUN apt-get update && apt-get install -y --no-install-recommends \\
         build-essential \\
         bubblewrap \\
         socat \\
+        nodejs \\
+        npm \\
+        openssh-client \\
+        locales-all \\
     && rm -rf /var/lib/apt/lists/*
 
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /usr/local/bin/
+ENV LANG=en_US.UTF-8
+ENV LC_ALL=en_US.UTF-8
+
+RUN npm install -g @anthropic-ai/claude-code
 
 ENV UV_LINK_MODE=copy
+ENV PATH="/workspace/.venv/bin:${PATH}"
+ENV PRE_COMMIT_HOME="/.jbdevcontainer/pre-commit"
 
 WORKDIR /workspace
+
+COPY pyproject.toml uv.lock .pre-commit-config.yaml README.md ./
+RUN uv sync --group dev --no-install-project
+RUN git config --global user.email "build@example.com" && \\
+    git config --global user.name "Build" && \\
+    git init && git add -A && git commit -m init && \\
+    pre-commit run --all-files; rm -rf .git
 """
 
 _DEVCONTAINER_CLAUDE_SETTINGS = """\
@@ -60,8 +76,8 @@ if [ ! -f /root/.claude/settings.json ]; then
     cp /workspace/.devcontainer/claude-settings.json /root/.claude/settings.json
 fi
 
-uv sync --dev
-npm install -g @anthropic-ai/claude-code
+uv sync --group dev
+pre-commit install --overwrite --hook-type pre-commit --hook-type pre-push
 """
 
 _CLAUDE_SETTINGS = """\

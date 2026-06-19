@@ -50,6 +50,7 @@ __all__ = [
     "CodeOwnersFile",
     "Dependency",
     "DevcontainerDockerComposeFile",
+    "DevcontainerDockerComposeFile",
     "DevcontainerJsonFile",
     "File",
     "Gitignore",

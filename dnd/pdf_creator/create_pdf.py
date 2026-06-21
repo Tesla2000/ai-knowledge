@@ -3,13 +3,13 @@ from __future__ import annotations
 import os
 import shutil
 
-from dnd.character_wrapper import CharacterWrapper  # type: ignore[import-not-found]
+from dnd.character_wrapper import CharacterWrapper
 from dnd.config import Config
 from dnd.pdf_creator.remove_blank_page import (
     remove_blank_page,
 )
 from dnd.pdf_creator.run_lunatex import run_lualatex
-from dnd.pdf_creator.update_prototype import (  # type: ignore[import-not-found]
+from dnd.pdf_creator.update_prototype import (
     update_prototype,
 )
 

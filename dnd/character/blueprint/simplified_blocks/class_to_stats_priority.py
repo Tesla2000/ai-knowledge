@@ -6,7 +6,7 @@ from dnd.choices.stats_creation.statistic import Statistic
 from frozendict import frozendict
 from pydantic import TypeAdapter
 
-_stats_priority_validator = TypeAdapter(StatsPriority)  # type: ignore[var-annotated]
+_stats_priority_validator: TypeAdapter[StatsPriority] = TypeAdapter(StatsPriority)
 CLASS_TO_STATS_PRIORITY: frozendict[Class, StatsPriority] = frozendict(
     {
         Class.WIZARD: _stats_priority_validator.validate_python(

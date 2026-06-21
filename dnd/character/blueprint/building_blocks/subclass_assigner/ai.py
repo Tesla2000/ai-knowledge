@@ -15,7 +15,8 @@ from dnd.choices.class_creation.character_class import (
 from dnd.choices.class_creation.character_class import (
     SUBCLASSES,
 )
-from langchain_openai import ChatOpenAI  # type: ignore[import-not-found]
+from langchain_openai import ChatOpenAI
+from pydantic import BaseModel
 from pydantic import create_model
 from pydantic import Field
 
@@ -105,8 +106,13 @@ class AISubclassAssigner(SubclassAssigner):
 
         # Create dynamic response model for this class's subclasses
         subclass_enum = SUBCLASSES[self.class_]
+
+        class _SubclassSelectionBase(BaseModel):
+            subclass: AnySubclass
+
         SubclassSelection = create_model(
             f"{self.class_.value}SubclassSelection",
+            __base__=_SubclassSelectionBase,
             subclass=(subclass_enum, ...),
         )
 
@@ -119,4 +125,6 @@ class AISubclassAssigner(SubclassAssigner):
                 f"AI failed to select subclass for {self.class_.value}: {e}"
             ) from e
 
-        return result.subclass  # type: ignore[no-any-return]
+        if not isinstance(result, _SubclassSelectionBase):
+            raise TypeError(f"Expected SubclassSelection, got {type(result)}")
+        return result.subclass

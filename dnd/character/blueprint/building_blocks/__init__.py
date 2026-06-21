@@ -160,7 +160,7 @@ from dnd.character.blueprint.building_blocks.weapon_adder import (
     WeaponAdder,
 )
 from pydantic import Tag
-from subclass_getter import get_unique_subclasses  # type: ignore[import-not-found]
+from subclass_getter import get_unique_subclasses
 
 AnyBuildingBlock = Annotated[  # type: ignore[valid-type]
     Union.__getitem__(

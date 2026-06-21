@@ -10,7 +10,7 @@ from scripts.wiki_scraper.ability_template import (  # type: ignore[attr-defined
 )
 
 if TYPE_CHECKING:
-    from dnd.character_wrapper import CharacterWrapper  # type: ignore[import-not-found]
+    from dnd.character_wrapper import CharacterWrapper
 from dnd.choices.class_creation.character_class import (
     ArtificerSubclass,
 )

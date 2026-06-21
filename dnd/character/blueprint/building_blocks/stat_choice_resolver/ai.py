@@ -10,7 +10,7 @@ from dnd.character.blueprint.building_blocks.stat_choice_resolver.base import (
     StatChoiceResolver,
 )
 from dnd.choices.stats_creation.statistic import Statistic
-from langchain_openai import ChatOpenAI  # type: ignore[import-not-found]
+from langchain_openai import ChatOpenAI
 from pydantic import BaseModel
 from pydantic import Field
 
@@ -97,7 +97,10 @@ class AIStatChoiceResolver(StatChoiceResolver):
         prompt = self._build_prompt(blueprint)
 
         structured_llm = self.llm.with_structured_output(StatIncreaseSelection)
-        selection = structured_llm.invoke(prompt)
+        _result = structured_llm.invoke(prompt)
+        if not isinstance(_result, StatIncreaseSelection):
+            raise TypeError(f"Expected StatIncreaseSelection, got {type(_result)}")
+        selection = _result
 
         # Validate total increases
         total_increases = sum(selection.stat_increases.values())
@@ -114,4 +117,4 @@ class AIStatChoiceResolver(StatChoiceResolver):
                     f"AI selected negative increase for {stat.value}: {amount}"
                 )
 
-        return selection.stat_increases  # type: ignore[no-any-return]
+        return selection.stat_increases

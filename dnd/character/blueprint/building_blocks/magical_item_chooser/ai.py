@@ -11,7 +11,7 @@ from dnd.character.blueprint.building_blocks.magical_item_chooser.base_chooser i
 )
 from dnd.character.magical_item.items import MAGICAL_ITEMS
 from dnd.character.magical_item.level import Level
-from langchain_openai import ChatOpenAI  # type: ignore[import-not-found]
+from langchain_openai import ChatOpenAI
 from pydantic import BaseModel
 from pydantic import ConfigDict
 from pydantic import Field
@@ -154,7 +154,10 @@ class AIMagicalItemChooser(MagicalItemChooserBase):
         prompt = self._build_prompt(blueprint)
         # Get AI selections
         structured_llm = self.llm.with_structured_output(MagicalItemSelection)
-        selection: MagicalItemSelection = structured_llm.invoke(prompt)
+        _result = structured_llm.invoke(prompt)
+        if not isinstance(_result, MagicalItemSelection):
+            raise TypeError(f"Expected MagicalItemSelection, got {type(_result)}")
+        selection = _result
 
         # Map selected names to MagicalItem objects
         item_map = {item.name: item for item in MAGICAL_ITEMS}

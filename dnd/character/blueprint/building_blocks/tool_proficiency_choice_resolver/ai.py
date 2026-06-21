@@ -12,7 +12,7 @@ from dnd.character.blueprint.building_blocks.tool_proficiency_choice_resolver.ba
 from dnd.other_profficiencies import GamingSet
 from dnd.other_profficiencies import MusicalInstrument
 from dnd.other_profficiencies import ToolProficiency
-from langchain_openai import ChatOpenAI  # type: ignore[import-not-found]
+from langchain_openai import ChatOpenAI
 from pydantic import BaseModel
 from pydantic import Field
 
@@ -159,10 +159,13 @@ class AIToolProficiencyChoiceResolver(ToolProficiencyChoiceResolver):
             return Blueprint()
 
         structured_llm = self.llm.with_structured_output(ToolProficiencySelection)
-        selection = structured_llm.invoke(prompt)
+        _result = structured_llm.invoke(prompt)
+        if not isinstance(_result, ToolProficiencySelection):
+            raise TypeError(f"Expected ToolProficiencySelection, got {type(_result)}")
+        selection = _result
 
         # Remove all tool placeholders and add selections
-        new_tools = {
+        new_tools: set[ToolProficiency | GamingSet | MusicalInstrument] = {
             t
             for t in blueprint.tool_proficiencies
             if not (

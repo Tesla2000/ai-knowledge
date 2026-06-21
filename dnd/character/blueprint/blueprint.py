@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from typing import Self
-from typing import Union
 
 from dnd.character.armor.names import ArmorName
 from dnd.character.character import Character
@@ -26,7 +25,7 @@ from pydantic import Field
 from pydantic import NonNegativeInt
 from pydantic import PositiveInt
 
-Equipment = Union[WeaponName, ArmorName, str]
+type Equipment = WeaponName | ArmorName | str
 
 
 class Blueprint(Character):

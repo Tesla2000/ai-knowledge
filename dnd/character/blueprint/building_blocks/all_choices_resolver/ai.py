@@ -38,7 +38,7 @@ from dnd.other_profficiencies import GamingSet
 from dnd.other_profficiencies import MusicalInstrument
 from dnd.other_profficiencies import ToolProficiency
 from dnd.skill_proficiency import Skill
-from langchain_openai import ChatOpenAI  # type: ignore[import-not-found]
+from langchain_openai import ChatOpenAI
 from pydantic import ConfigDict
 from pydantic import Field
 
@@ -348,7 +348,10 @@ class AIAllNonStatChoicesResolver(BuildingBlock):
         # Get AI selections
         structured_llm = self.llm.with_structured_output(ChoicePackage)
 
-        choices: ChoicePackage = structured_llm.invoke(prompt)
+        _result = structured_llm.invoke(prompt)
+        if not isinstance(_result, ChoicePackage):
+            raise TypeError(f"Expected ChoicePackage, got {type(_result)}")
+        choices = _result
 
         # Apply language choices
         new_languages = tuple(set(choices.languages))[:n_languages_to_choose]

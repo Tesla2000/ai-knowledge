@@ -7,7 +7,8 @@ from dnd.character.blueprint.building_blocks.level_up.spell_assignment.base impo
 )
 from dnd.character.spells import Spell
 from dnd.choices.class_creation.character_class import Class
-from langchain_openai import ChatOpenAI  # type: ignore[import-not-found]
+from langchain_openai import ChatOpenAI
+from pydantic import BaseModel
 from pydantic import ConfigDict
 from pydantic import create_model
 from pydantic import Field
@@ -88,8 +89,13 @@ Choose spells that tell a story about who this character is."""
 
         # Create dynamic response model for this spell level
         spell_enum = type(available_spells[0])
+
+        class _SpellSelectionBase(BaseModel):
+            spells: tuple[Spell, ...]
+
         SpellSelection = create_model(
             f"Level{spell_level}SpellSelection",
+            __base__=_SpellSelectionBase,
             spells=(tuple[spell_enum, ...], ...),  # type: ignore[valid-type]
         )
 
@@ -97,11 +103,13 @@ Choose spells that tell a story about who this character is."""
         structured = self.llm.with_structured_output(SpellSelection)
 
         try:
-            result = structured.invoke(context)
+            _result = structured.invoke(context)
         except Exception as e:
             raise ValueError(
                 f"LLM failed to select spells for level {spell_level}: {e}"
             )
+        if not isinstance(_result, _SpellSelectionBase):
+            raise TypeError(f"Expected SpellSelection, got {type(_result)}")
 
         # Return exactly count spells
-        return tuple(result.spells[:count])
+        return tuple(_result.spells[:count])

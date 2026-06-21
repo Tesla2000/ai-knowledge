@@ -11,7 +11,7 @@ from dnd.character.blueprint.building_blocks.equipment_chooser.base import (
     EquipmentChooser,
 )
 from dnd.choices.equipment_creation.weapons import WeaponName
-from langchain_openai import ChatOpenAI  # type: ignore[import-not-found]
+from langchain_openai import ChatOpenAI
 from pydantic import BaseModel
 from pydantic import Field
 
@@ -140,7 +140,10 @@ class AIEquipmentChooser(EquipmentChooser):
         # Build prompt and get AI selection
         prompt = self._build_prompt(blueprint)
         structured_llm = self.llm.with_structured_output(EquipmentChoiceSelection)
-        selection = structured_llm.invoke(prompt)
+        _result = structured_llm.invoke(prompt)
+        if not isinstance(_result, EquipmentChoiceSelection):
+            raise TypeError(f"Expected EquipmentChoiceSelection, got {type(_result)}")
+        selection = _result
 
         # Validate selection
         if len(selection.selected_indices) != len(blueprint.equipment_choices):

@@ -10,7 +10,7 @@ from dnd.character.blueprint.building_blocks.skill_choice_resolver.base import (
     SkillChoiceResolver,
 )
 from dnd.skill_proficiency import Skill
-from langchain_openai import ChatOpenAI  # type: ignore[import-not-found]
+from langchain_openai import ChatOpenAI
 from pydantic import BaseModel
 from pydantic import Field
 
@@ -108,7 +108,10 @@ class AISkillChoiceResolver(SkillChoiceResolver):
         prompt = self._build_prompt(blueprint)
 
         structured_llm = self.llm.with_structured_output(SkillSelection)
-        selection = structured_llm.invoke(prompt)
+        _result = structured_llm.invoke(prompt)
+        if not isinstance(_result, SkillSelection):
+            raise TypeError(f"Expected SkillSelection, got {type(_result)}")
+        selection = _result
 
         # Validate selection
         if len(selection.selected_skills) != blueprint.n_skill_choices:

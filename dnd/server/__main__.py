@@ -1,4 +1,4 @@
-import uvicorn  # type: ignore[import-not-found]
+import uvicorn
 from dnd.server.app import app
 
 if __name__ == "__main__":

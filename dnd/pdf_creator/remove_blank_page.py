@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-import PyPDF2  # type: ignore[import-not-found]
+import PyPDF2
 
 
 def remove_blank_page(pdf_path: Path) -> None:

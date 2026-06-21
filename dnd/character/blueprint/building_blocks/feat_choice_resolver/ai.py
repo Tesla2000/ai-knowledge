@@ -10,7 +10,7 @@ from dnd.character.blueprint.building_blocks.feat_choice_resolver.base import (
     FeatChoiceResolver,
 )
 from dnd.character.feature.feats import FeatName
-from langchain_openai import ChatOpenAI  # type: ignore[import-not-found]
+from langchain_openai import ChatOpenAI
 from pydantic import BaseModel
 from pydantic import Field
 
@@ -128,7 +128,10 @@ class AIFeatChoiceResolver(FeatChoiceResolver):
             return Blueprint()
 
         structured_llm = self.llm.with_structured_output(FeatSelection)
-        selection = structured_llm.invoke(prompt)
+        _result = structured_llm.invoke(prompt)
+        if not isinstance(_result, FeatSelection):
+            raise TypeError(f"Expected FeatSelection, got {type(_result)}")
+        selection = _result
 
         # Validate selection count
         count = sum(map(list(blueprint.feats).count, FeatName.not_choosables()))

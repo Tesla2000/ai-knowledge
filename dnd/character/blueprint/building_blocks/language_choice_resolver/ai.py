@@ -10,7 +10,7 @@ from dnd.character.blueprint.building_blocks.language_choice_resolver.base impor
     LanguageChoiceResolver,
 )
 from dnd.choices.language import Language
-from langchain_openai import ChatOpenAI  # type: ignore[import-not-found]
+from langchain_openai import ChatOpenAI
 from pydantic import BaseModel
 from pydantic import Field
 
@@ -114,7 +114,10 @@ class AILanguageChoiceResolver(LanguageChoiceResolver):
             return Blueprint()
 
         structured_llm = self.llm.with_structured_output(LanguageSelection)
-        selection = structured_llm.invoke(prompt)
+        _result = structured_llm.invoke(prompt)
+        if not isinstance(_result, LanguageSelection):
+            raise TypeError(f"Expected LanguageSelection, got {type(_result)}")
+        selection = _result
 
         # Validate selection count
         count = list(blueprint.languages).count(Language.ANY_OF_YOUR_CHOICE)

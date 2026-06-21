@@ -4,10 +4,30 @@ from __future__ import annotations
 
 from typing import Literal
 
+from typing_extensions import TypeIs
+
 from dnd.character.blueprint.blueprint import Blueprint
+from dnd.character.race.race import Race
 from dnd.character.spells.spells import Spells
+from dnd.character.stats import Stats
 from pydantic import BaseModel
 from pydantic import Field
+
+
+class _BlueprintWithStats(Blueprint):
+    stats: Stats
+
+
+def _has_stats(blueprint: Blueprint) -> TypeIs[_BlueprintWithStats]:
+    return blueprint.stats is not None
+
+
+class _BlueprintWithRace(Blueprint):
+    race: Race
+
+
+def _has_race(blueprint: Blueprint) -> TypeIs[_BlueprintWithRace]:
+    return blueprint.race is not None
 
 
 class BlueprintFormatter(BaseModel):
@@ -93,7 +113,7 @@ class BlueprintFormatter(BaseModel):
             sections.extend(self._format_classes(blueprint))
 
         # Race
-        if self.include_race and blueprint.race:
+        if self.include_race and _has_race(blueprint):
             sections.append(self._section_header("Race"))
             sections.extend(self._format_race(blueprint))
 
@@ -113,7 +133,7 @@ class BlueprintFormatter(BaseModel):
             sections.append(self._item(blueprint.backstory))
 
         # Stats
-        if self.include_stats and blueprint.stats:
+        if self.include_stats and _has_stats(blueprint):
             sections.append(self._section_header("Ability Scores"))
             sections.extend(self._format_stats(blueprint))
 
@@ -175,22 +195,22 @@ class BlueprintFormatter(BaseModel):
             lines.append(self._item(f"{cls.value}: Level {level}"))
         return lines
 
-    def _format_race(self, blueprint: Blueprint) -> list[str]:
+    def _format_race(self, blueprint: _BlueprintWithRace) -> list[str]:
         """Format race and subrace information."""
-        lines = [self._item(blueprint.race.value)]  # type: ignore[union-attr]
+        lines = [self._item(blueprint.race.value)]
         if blueprint.subrace:
             lines.append(self._item(f"Subrace: {blueprint.subrace.value}"))
         return lines
 
-    def _format_stats(self, blueprint: Blueprint) -> list[str]:
+    def _format_stats(self, blueprint: _BlueprintWithStats) -> list[str]:
         """Format ability scores."""
         return [
-            self._item(f"Strength: {blueprint.stats.strength}"),  # type: ignore[union-attr]
-            self._item(f"Dexterity: {blueprint.stats.dexterity}"),  # type: ignore[union-attr]
-            self._item(f"Constitution: {blueprint.stats.constitution}"),  # type: ignore[union-attr]
-            self._item(f"Intelligence: {blueprint.stats.intelligence}"),  # type: ignore[union-attr]
-            self._item(f"Wisdom: {blueprint.stats.wisdom}"),  # type: ignore[union-attr]
-            self._item(f"Charisma: {blueprint.stats.charisma}"),  # type: ignore[union-attr]
+            self._item(f"Strength: {blueprint.stats.strength}"),
+            self._item(f"Dexterity: {blueprint.stats.dexterity}"),
+            self._item(f"Constitution: {blueprint.stats.constitution}"),
+            self._item(f"Intelligence: {blueprint.stats.intelligence}"),
+            self._item(f"Wisdom: {blueprint.stats.wisdom}"),
+            self._item(f"Charisma: {blueprint.stats.charisma}"),
         ]
 
     def _format_equipment(self, blueprint: Blueprint) -> list[str]:

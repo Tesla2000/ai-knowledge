@@ -2,7 +2,7 @@ from collections.abc import Mapping
 import os
 import typing
 from contextlib import suppress
-from typing import get_args
+from typing import get_args, TypedDict
 from typing import get_origin
 
 from dnd.character.blueprint.building_blocks import (
@@ -10,6 +10,12 @@ from dnd.character.blueprint.building_blocks import (
 )
 from dnd.character.blueprint.building_blocks.building_block import (
     BLOCK_TYPE_FIELD_NAME,
+)
+from dnd.character.blueprint.building_blocks.building_block import (
+    BuildingBlock,
+)
+from dnd.character.blueprint.building_blocks.building_block import (
+    CombinedBlock,
 )
 from dnd.character.blueprint.building_blocks.building_block import (
     SerializableBlock,
@@ -37,16 +43,16 @@ from dnd.choices.class_creation.character_class import Class
 from dnd.server.example_generators.example_building_blocks import (
     example_building_blocks,
 )
-from fastapi import FastAPI  # type: ignore[import-not-found]
+from fastapi import FastAPI
 from fastapi import HTTPException
-from fastapi.staticfiles import StaticFiles  # type: ignore[import-not-found]
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from pydantic import Field
 from pydantic import TypeAdapter
 from pydantic import ValidationError
-from starlette.responses import RedirectResponse  # type: ignore[import-not-found]
+from starlette.responses import RedirectResponse
 from starlette.responses import Response
-from subclass_getter import get_unique_subclasses  # type: ignore[import-not-found]
+from subclass_getter import get_unique_subclasses
 
 
 class _CreateCharacterResponse(BaseModel):
@@ -71,16 +77,31 @@ class _CreateCharacterRequestSchema(BaseModel):
     increment_chain: dict[str, object] = Field(examples=[IncrementChain()])
 
 
-_building_block_creator = TypeAdapter(AnyBuildingBlock)  # type: ignore[var-annotated]
+_building_block_creator: TypeAdapter[BuildingBlock | CombinedBlock] = TypeAdapter(
+    AnyBuildingBlock
+)
 
 
-def _generate_building_blocks_metadata() -> list[Mapping[str, object]]:  # ignore
+class _Field(TypedDict):
+    type: str
+    description: str
+    default: object
+
+
+class _MetadataDict(TypedDict):
+    block_type: str
+    name: str
+    description: str
+    fields: dict[str, _Field]
+
+
+def _generate_building_blocks_metadata() -> list[_MetadataDict]:
     """Generate metadata for all building blocks.
 
     Returns:
         List of building block metadata dictionaries, sorted alphabetically by name.
     """
-    blocks_metadata = []
+    blocks_metadata: list[_MetadataDict] = []
     for block_class in get_unique_subclasses(SerializableBlock):
         fields = {}
         for field_name, field_info in block_class.model_fields.items():
@@ -104,26 +125,30 @@ def _generate_building_blocks_metadata() -> list[Mapping[str, object]]:  # ignor
                     ):
                         default_value = field_info.default
 
-            fields[field_name] = {
-                "type": field_type,
-                "description": field_info.description or "",
-                "default": default_value,
-            }
+            fields[field_name] = _Field(
+                **{
+                    "type": field_type,
+                    "description": field_info.description or "",
+                    "default": default_value,
+                }
+            )
 
         assert block_class.__doc__, f"{block_class.__name__} is missing a docstring"
 
         blocks_metadata.append(
-            {
-                "block_type": block_class.get_block_type(),
-                "name": block_class.__name__,
-                "description": block_class.__doc__.strip(),
-                "fields": fields,
-            }
+            _MetadataDict(
+                **{
+                    "block_type": block_class.get_block_type(),
+                    "name": block_class.__name__,
+                    "description": block_class.__doc__.strip(),
+                    "fields": fields,
+                }
+            )
         )
 
     blocks_metadata.sort(key=lambda x: x["name"])
 
-    return blocks_metadata  # type: ignore[return-value]
+    return blocks_metadata
 
 
 def create_app(storage: IncrementStorage):  # type: ignore[no-untyped-def]
@@ -132,7 +157,7 @@ def create_app(storage: IncrementStorage):  # type: ignore[no-untyped-def]
     # Generate building blocks metadata once at startup
     blocks_metadata = _generate_building_blocks_metadata()
 
-    @app_.post(  # type: ignore[untyped-decorator]
+    @app_.post(
         "/create_character",
         response_model=_CreateCharacterResponse,
         response_model_exclude_unset=True,
@@ -143,6 +168,7 @@ def create_app(storage: IncrementStorage):  # type: ignore[no-untyped-def]
         blocks = request.building_blocks
 
         errors = []
+        building_blocks: BuildingBlock | CombinedBlock
         try:
             if blocks.get(BLOCK_TYPE_FIELD_NAME) == SimplifiedBlocks.get_block_type():
                 building_blocks = SimplifiedBlocks.model_validate(blocks)
@@ -230,7 +256,7 @@ def create_app(storage: IncrementStorage):  # type: ignore[no-untyped-def]
             ]
         }
 
-    @app_.post("/format_simplified")  # type: ignore[untyped-decorator]
+    @app_.post("/format_simplified")
     def format_simplified(request: Mapping[str, object], show_defaults: bool = True):  # type: ignore[no-untyped-def]  # ignore
         """Validate and reformat SimplifiedBlocks config with or without defaults.
 
@@ -333,7 +359,7 @@ def create_app(storage: IncrementStorage):  # type: ignore[no-untyped-def]
 
         # Generate schemas for non-Union fields
         classes_adapter = TypeAdapter(Classes)
-        stats_priority_adapter = TypeAdapter(StatsPriority)  # type: ignore[var-annotated]
+        stats_priority_adapter: TypeAdapter[StatsPriority] = TypeAdapter(StatsPriority)
 
         classes_schema = classes_adapter.json_schema()
         stats_priority_schema = stats_priority_adapter.json_schema()

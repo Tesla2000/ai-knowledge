@@ -1,15 +1,8 @@
 from __future__ import annotations
 
 from enum import StrEnum
-from typing import TYPE_CHECKING
 
 from pydantic import BaseModel
-
-if TYPE_CHECKING:
-    from dnd.character_wrapper import CharacterWrapper  # type: ignore[import-not-found]
-from dnd.choices.class_creation.character_class import (
-    Class,
-)
 
 
 class WarlockPact(StrEnum):
@@ -364,41 +357,3 @@ invocations: list[EldritchInvocation] = [
         pact=None,
     ),
 ]
-
-
-def n_eldrich_invocations(character_wrapper: CharacterWrapper) -> int:
-    conditions = [
-        lambda character_wrapper: (
-            character_wrapper.character.classes == Class.WARLOCK
-            and character_wrapper.character.level >= 2
-        ),
-        lambda character_wrapper: (
-            character_wrapper.character.classes == Class.WARLOCK
-            and character_wrapper.character.level >= 2
-        ),
-        lambda character_wrapper: (
-            character_wrapper.character.classes == Class.WARLOCK
-            and character_wrapper.character.level >= 5
-        ),
-        lambda character_wrapper: (
-            character_wrapper.character.classes == Class.WARLOCK
-            and character_wrapper.character.level >= 7
-        ),
-        lambda character_wrapper: (
-            character_wrapper.character.classes == Class.WARLOCK
-            and character_wrapper.character.level >= 9
-        ),
-        lambda character_wrapper: (
-            character_wrapper.character.classes == Class.WARLOCK
-            and character_wrapper.character.level >= 12
-        ),
-        lambda character_wrapper: (
-            character_wrapper.character.classes == Class.WARLOCK
-            and character_wrapper.character.level >= 15
-        ),
-        lambda character_wrapper: (
-            character_wrapper.character.classes == Class.WARLOCK
-            and character_wrapper.character.level >= 18
-        ),
-    ]
-    return sum(condition(character_wrapper) for condition in conditions)  # type: ignore[no-untyped-call]

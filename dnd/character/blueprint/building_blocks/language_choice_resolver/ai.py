@@ -10,7 +10,7 @@ from dnd.character.blueprint.building_blocks.language_choice_resolver.base impor
     LanguageChoiceResolver,
 )
 from dnd.choices.language import Language
-from langchain_openai import ChatOpenAI
+from langchain_openai import ChatOpenAI  # type: ignore[import-not-found]
 from pydantic import BaseModel
 from pydantic import Field
 
@@ -128,4 +128,4 @@ class AILanguageChoiceResolver(LanguageChoiceResolver):
         new_languages.discard(Language.ANY_OF_YOUR_CHOICE)
         new_languages.update(selection.languages)
 
-        return Blueprint(languages=new_languages)
+        return Blueprint(languages=new_languages)  # type: ignore[arg-type]

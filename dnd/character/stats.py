@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from collections.abc import Mapping
 from typing import Self
 
 from dnd.choices.stats_creation.statistic import Statistic
@@ -27,7 +26,7 @@ class Stats(BaseModel):
     charisma: NonNegativeInt
 
     @classmethod
-    def from_mapping(cls, mapping: Mapping[Statistic, int]) -> Self:
+    def from_mapping(cls, mapping: dict[Statistic, int]) -> Self:
         return cls(
             strength=mapping[Statistic.STRENGTH],
             dexterity=mapping[Statistic.DEXTERITY],
@@ -38,8 +37,26 @@ class Stats(BaseModel):
         )
 
     def get_stat(self, stat: Statistic) -> int:
-        """Get the value of a specific stat using the Statistic enum."""
-        return getattr(self, stat.value.lower())
+        stat_map = {
+            Statistic.STRENGTH: self.strength,
+            Statistic.DEXTERITY: self.dexterity,
+            Statistic.CONSTITUTION: self.constitution,
+            Statistic.INTELLIGENCE: self.intelligence,
+            Statistic.WISDOM: self.wisdom,
+            Statistic.CHARISMA: self.charisma,
+        }
+        return stat_map[stat]
 
     def get_modifier(self, stat: Statistic) -> int:
-        return getattr(self, stat.value.lower()) // 2 - 5
+        return self.get_stat(stat) // 2 - 5
+
+    def with_stat(self, stat: Statistic, value: int) -> Stats:
+        updates: dict[str, int] = {
+            Statistic.STRENGTH: {"strength": value},
+            Statistic.DEXTERITY: {"dexterity": value},
+            Statistic.CONSTITUTION: {"constitution": value},
+            Statistic.INTELLIGENCE: {"intelligence": value},
+            Statistic.WISDOM: {"wisdom": value},
+            Statistic.CHARISMA: {"charisma": value},
+        }[stat]
+        return self.model_copy(update=updates)

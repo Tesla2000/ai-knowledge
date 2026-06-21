@@ -6,7 +6,6 @@ if TYPE_CHECKING:
     from dnd.character.blueprint.blueprint import Blueprint
 
 from dnd.character.magical_item.item import MagicalItem
-from dnd.character.stats import Stats
 from dnd.choices.stats_creation.statistic import Statistic
 
 
@@ -21,23 +20,20 @@ class StatBoostItem(MagicalItem):
     boost_amount: int  # e.g., 2
     max_value: int | None = None  # e.g., 20 (if None, uses stats_cup)
 
-    def assign_to(self, blueprint: Blueprint) -> Blueprint:
+    def assign_to(self, blueprint: Blueprint) -> Blueprint:  # type: ignore[override]
         """Increase the specified stat by the boost amount, respecting the maximum."""
-        stat_name = self.stat.value.lower()  # Convert Statistic.STRENGTH -> 'strength'
+        if blueprint.stats is None:
+            raise ValueError("Blueprint has no stats assigned yet")
 
-        # Get current stat value and cap
-        current_value = getattr(blueprint.stats, stat_name)
-        stats_cup_value = getattr(blueprint.stats_cup, stat_name)
+        current_value = blueprint.stats.get_stat(self.stat)
+        stats_cup_value = blueprint.stats_cup.get_stat(self.stat)
 
-        # Determine the effective cap
         effective_cap = (
             self.max_value if self.max_value is not None else stats_cup_value
         )
 
-        # Calculate new value: add boost, but don't exceed the cap
         new_value = min(current_value + self.boost_amount, effective_cap)
-
-        new_stats = Stats(**{**blueprint.stats.model_dump(), stat_name: new_value})
+        new_stats = blueprint.stats.with_stat(self.stat, new_value)
 
         return type(blueprint)(
             stats=new_stats, magical_items=blueprint.magical_items + (self,)

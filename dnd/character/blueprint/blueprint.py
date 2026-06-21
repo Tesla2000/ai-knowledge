@@ -37,52 +37,55 @@ class Blueprint(Character):
     """
 
     # Override required fields to be optional
-    sex: Sex | None = None
-    backstory: str | None = None
-    level: ClassLevel | None = None
-    age: PositiveInt | None = None
-    race: Race | None = None
-    subrace: Subrace | None = None
-    name: str | None = None
-    background: Background | None = None
-    alignment: Alignment | None = None
-    height: PositiveInt | None = None
-    weight: PositiveInt | None = None
-    eye_color: str | None = None
-    skin_color: str | None = None
-    hairstyle: str | None = None
-    appearance: str | None = None
-    character_traits: str | None = None
-    ideals: str | None = None
-    bonds: str | None = None
-    weaknesses: str | None = None
+    sex: Sex | None = None  # type: ignore[assignment]
+    backstory: str | None = None  # type: ignore[assignment]
+    level: ClassLevel | None = None  # type: ignore[assignment]
+    age: PositiveInt | None = None  # type: ignore[assignment]
+    race: Race | None = None  # type: ignore[assignment]
+    subrace: Subrace | None = None  # type: ignore[assignment]
+    name: str | None = None  # type: ignore[assignment]
+    background: Background | None = None  # type: ignore[assignment]
+    alignment: Alignment | None = None  # type: ignore[assignment]
+    height: PositiveInt | None = None  # type: ignore[assignment]
+    weight: PositiveInt | None = None  # type: ignore[assignment]
+    eye_color: str | None = None  # type: ignore[assignment]
+    skin_color: str | None = None  # type: ignore[assignment]
+    hairstyle: str | None = None  # type: ignore[assignment]
+    appearance: str | None = None  # type: ignore[assignment]
+    character_traits: str | None = None  # type: ignore[assignment]
+    ideals: str | None = None  # type: ignore[assignment]
+    bonds: str | None = None  # type: ignore[assignment]
+    weaknesses: str | None = None  # type: ignore[assignment]
 
-    stats: Stats | None = None
-    health_base: PositiveInt | None = None
-    dark_vision_range: NonNegativeInt | None = None
-    speed: PositiveInt | None = None
+    stats: Stats | None = None  # type: ignore[assignment]
+    health_base: PositiveInt | None = None  # type: ignore[assignment]
+    dark_vision_range: NonNegativeInt | None = None  # type: ignore[assignment]
+    speed: PositiveInt | None = None  # type: ignore[assignment]
     n_stat_choices: NonNegativeInt = 0
     n_skill_choices: NonNegativeInt = 0
     skills_to_choose_from: frozenset[Skill] = Field(
         default_factory=frozenset,
         description="Skills from which n_skill_choices can be chosen",
     )
-    languages: tuple[Language, ...] = Field(default=())
-    skill_proficiencies: tuple[Skill, ...] = Field(
+    languages: tuple[Language, ...] = Field(default=())  # type: ignore[assignment]
+    skill_proficiencies: tuple[Skill, ...] = Field(  # type: ignore[assignment]
         default=(), description="Skills the character is proficient in"
     )
-    feats: tuple[FeatName, ...] = Field(
+    feats: tuple[FeatName, ...] = Field(  # type: ignore[assignment]
         description="Feats from a list fitting description of the character if"
         " race is variant human at least one must be different "
         "than ability score improvement",
         default=(),
     )
     tool_proficiencies: tuple[ToolProficiency | GamingSet | MusicalInstrument, ...] = (
-        Field(default=(), description="Tool proficiencies")
+        Field(default=(), description="Tool proficiencies")  # type: ignore[assignment]
     )
     saving_throw_proficiencies: tuple[Statistic, ...] = ()
     equipment_choices: tuple[tuple[Equipment, ...], ...] = ()
     other_active_abilities: tuple[str, ...] = ()
+    ac_bonus: NonNegativeInt = 0
+    spell_save_dc_bonus: NonNegativeInt = 0
+    spellcasting_ability_bonus: NonNegativeInt = 0
 
     def add_diff(self, diff: Self) -> Self:
         return self.model_copy(

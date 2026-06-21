@@ -22,21 +22,21 @@ class StatAndCapBoostItem(MagicalItem):
     stat: Statistic  # e.g., Statistic.INTELLIGENCE, Statistic.CHARISMA
     boost_amount: int  # e.g., 2
 
-    def assign_to(self, blueprint: Blueprint) -> Blueprint:
+    def assign_to(self, blueprint: Blueprint) -> Blueprint:  # type: ignore[override]
         """Increase both the stat value and its maximum by the boost amount."""
         stat_name = (
             self.stat.value.lower()
         )  # Convert Statistic.INTELLIGENCE -> 'intelligence'
 
         # Get current stat value and cap
-        current_value = blueprint.stats.get_stat(self.stat)
+        current_value = blueprint.stats.get_stat(self.stat)  # type: ignore[union-attr]
         current_cap = blueprint.stats_cup.get_stat(self.stat)
 
         # Increase both the stat and its maximum
         new_value = current_value + self.boost_amount
         new_cap = current_cap + self.boost_amount
 
-        new_stats = Stats(**{**blueprint.stats.model_dump(), stat_name: new_value})
+        new_stats = Stats(**{**blueprint.stats.model_dump(), stat_name: new_value})  # type: ignore[union-attr]
 
         new_stats_cup = Stats(
             **{**blueprint.stats_cup.model_dump(), stat_name: new_cap}

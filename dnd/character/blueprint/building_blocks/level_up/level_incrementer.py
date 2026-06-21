@@ -63,7 +63,7 @@ class LevelIncrementer(BuildingBlock):
         if self.class_ == Class.WIZARD:
             return Blueprint(
                 classes=frozendict({self.class_: 1}),
-                weapon_proficiencies=(
+                weapon_proficiencies=(  # type: ignore[arg-type]
                     WeaponProficiency.DAGGER,
                     WeaponProficiency.DART,
                     WeaponProficiency.SLING,
@@ -71,7 +71,7 @@ class LevelIncrementer(BuildingBlock):
                     WeaponProficiency.LIGHT_CROSSBOW,
                 ),
                 n_skill_choices=2,
-                skills_to_choose_from=(
+                skills_to_choose_from=(  # type: ignore[arg-type]
                     Skill.ARCANA,
                     Skill.HISTORY,
                     Skill.INSIGHT,
@@ -93,7 +93,7 @@ class LevelIncrementer(BuildingBlock):
         if self.class_ == Class.SORCERER:
             return Blueprint(
                 classes=frozendict({self.class_: 1}),
-                weapon_proficiencies=(
+                weapon_proficiencies=(  # type: ignore[arg-type]
                     WeaponProficiency.DAGGER,
                     WeaponProficiency.DART,
                     WeaponProficiency.SLING,
@@ -101,7 +101,7 @@ class LevelIncrementer(BuildingBlock):
                     WeaponProficiency.LIGHT_CROSSBOW,
                 ),
                 n_skill_choices=2,
-                skills_to_choose_from=(
+                skills_to_choose_from=(  # type: ignore[arg-type]
                     Skill.ARCANA,
                     Skill.DECEPTION,
                     Skill.INSIGHT,

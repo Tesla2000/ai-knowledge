@@ -12,7 +12,7 @@ from dnd.character.blueprint.building_blocks.tool_proficiency_choice_resolver.ba
 from dnd.other_profficiencies import GamingSet
 from dnd.other_profficiencies import MusicalInstrument
 from dnd.other_profficiencies import ToolProficiency
-from langchain_openai import ChatOpenAI
+from langchain_openai import ChatOpenAI  # type: ignore[import-not-found]
 from pydantic import BaseModel
 from pydantic import Field
 
@@ -179,4 +179,4 @@ class AIToolProficiencyChoiceResolver(ToolProficiencyChoiceResolver):
         }
         new_tools.update(selection.tool_proficiencies)
 
-        return Blueprint(tool_proficiencies=new_tools)
+        return Blueprint(tool_proficiencies=new_tools)  # type: ignore[arg-type]

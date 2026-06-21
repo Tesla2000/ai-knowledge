@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import sys
+
 from pathlib import Path
 
 import requests
@@ -19,7 +21,7 @@ def scraper_wiki_background(background: Background, output_dir: Path, llm):
         return
     response = requests.get(url.format(background.value.lower()))
     if response.status_code != 200:
-        print(f"Wrong status code {url.format(background.value.lower())}")
+        sys.stderr.write(f"Wrong status code {url.format(background.value.lower())}\n")
         return
 
     content = response.content.decode()

@@ -11,10 +11,10 @@ from scripts.wiki_scraper import (
 )
 
 
-def background2stats(background: Background, config: Config) -> BackgroundTemplate:
-    return BackgroundTemplate(
+def background2stats(background: Background, config: Config) -> BackgroundTemplate:  # type: ignore[valid-type]
+    return BackgroundTemplate(  # type: ignore[operator,no-any-return]
         **json.loads(
-            config.background_root.joinpath(background.value)
+            config.background_root.joinpath(background.value)  # type: ignore[attr-defined]
             .with_suffix(".json")
             .read_text()
         )

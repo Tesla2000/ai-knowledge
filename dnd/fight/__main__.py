@@ -1,3 +1,4 @@
+import sys
 import json
 from itertools import cycle
 from pathlib import Path
@@ -88,7 +89,9 @@ class _FightCli(BaseSettings):
             input(f"{prefix} moves now...")
             if isinstance(creature, _Creature):
                 for attack in creature.attacks:
-                    print(f"{prefix} attacked with {attack.name}", attack.perform())
+                    sys.stdout.write(
+                        f"{prefix} attacked with {attack.name} {attack.perform()}\n"
+                    )
 
 
 if __name__ == "__main__":  # pragma: no cover

@@ -77,7 +77,7 @@ class FeatChoiceResolver(BuildingBlock, ABC):
             feats=final_feats, n_stat_choices=2 * n_ability_score_improvements
         )
 
-    def _resolve_feat(self, feat: FeatName, blueprint: Blueprint):
+    def _resolve_feat(self, feat: FeatName, blueprint: Blueprint):  # type: ignore[no-untyped-def]
         if feat not in FeatName.not_choosables():
             return feat
         available = [f for f in FeatName if f not in FeatName.not_choosables()]

@@ -5,12 +5,12 @@ from enum import StrEnum
 from typing import TYPE_CHECKING
 
 from dnd.choices.abilities.action_type import ActionType
-from scripts.wiki_scraper.ability_template import (
+from scripts.wiki_scraper.ability_template import (  # type: ignore[attr-defined]
     Ability,
 )
 
 if TYPE_CHECKING:
-    from dnd.character_wrapper import CharacterWrapper
+    from dnd.character_wrapper import CharacterWrapper  # type: ignore[import-not-found]
 from dnd.choices.class_creation.character_class import (
     FighterSubclass,
 )
@@ -255,4 +255,4 @@ def get_n_maneuvers(character_wrapper: CharacterWrapper) -> int:
         lambda character_wrapper: FeatName.MARTIAL_ADEPT in character_wrapper.feats,
         lambda character_wrapper: FeatName.MARTIAL_ADEPT in character_wrapper.feats,
     ]
-    return sum(condition(character_wrapper) for condition in conditions)
+    return sum(condition(character_wrapper) for condition in conditions)  # type: ignore[no-untyped-call]

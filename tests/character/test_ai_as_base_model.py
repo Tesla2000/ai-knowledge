@@ -9,7 +9,7 @@ class TestAIAsBaseModel:
         llm = ChatOpenAI(
             model="gpt-4o-mini",
             temperature=0.3,
-            openai_api_key="test-key-not-real",
+            openai_api_key="test-key-not-real",  # pragma: allowlist secret
         )
         AILanguageChoiceResolver(llm=llm)
         AILanguageChoiceResolver(llm=llm.model_dump())

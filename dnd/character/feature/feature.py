@@ -41,7 +41,7 @@ class Feature(BaseModel):
 
     def __init__(self, /, **data: object):
         data["weapon_proficiencies_gain"] = list(
-            filterfalse(ArmorProficiency.__contains__, data["armor_proficiencies_gain"])
+            filterfalse(ArmorProficiency.__contains__, data["armor_proficiencies_gain"])  # type: ignore[arg-type]
         )
         if (
             data["skill_proficiency_gain"] not in Skill
@@ -68,5 +68,5 @@ class Feature(BaseModel):
         """
         return type(blueprint)(
             other_active_abilities=blueprint.other_active_abilities
-            + (f"{self.name}: {self.description}",)
+            + (f"{self.name}: {self.description}",)  # type: ignore[attr-defined]
         )

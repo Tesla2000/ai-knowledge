@@ -16,7 +16,7 @@ class ACBonusItem(MagicalItem):
 
     ac_bonus: int  # e.g., 1, 2, 3
 
-    def assign_to(self, blueprint: Blueprint) -> Blueprint:
+    def assign_to(self, blueprint: Blueprint) -> Blueprint:  # type: ignore[override]
         """Add AC bonus to character."""
         return type(blueprint)(
             ac_bonus=blueprint.ac_bonus + self.ac_bonus,

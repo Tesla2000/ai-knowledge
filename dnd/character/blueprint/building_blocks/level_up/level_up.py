@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import NamedTuple
 
 from dnd.character.blueprint.blueprint import Blueprint
-from dnd.character.blueprint.building_blocks import (
+from dnd.character.blueprint.building_blocks import (  # type: ignore[attr-defined]
     CombinedBlock,
 )
 from dnd.character.blueprint.building_blocks.all_choices_resolver import (
@@ -54,4 +54,4 @@ class LevelUp(CombinedBlock):
     def _get_change(self, blueprint: Blueprint) -> Blueprint:
         if blueprint.race is None:
             raise ValueError("Race must be chosen before leveling up")
-        return super().get_change(blueprint)
+        return super().get_change(blueprint)  # type: ignore[no-any-return,misc]

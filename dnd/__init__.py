@@ -1,10 +1,11 @@
 from __future__ import annotations
 
+from collections.abc import Iterator
 from importlib import import_module
 from pathlib import Path
 
 
-def import_python(root: Path):
+def import_python(root: Path) -> Iterator[str]:
     for module_path in root.glob("*.py"):
         if module_path.name in ("__init__.py", "pycache", "__pycache__"):
             continue

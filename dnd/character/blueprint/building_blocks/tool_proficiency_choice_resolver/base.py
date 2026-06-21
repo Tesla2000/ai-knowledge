@@ -86,20 +86,20 @@ class ToolProficiencyChoiceResolver(BuildingBlock, ABC):
                     for t in ToolProficiency
                     if t != ToolProficiency.ANY_OF_YOUR_CHOICE
                 ]
-                resolved.add(self._select_tool_proficiency(available, blueprint))
+                resolved.add(self._select_tool_proficiency(available, blueprint))  # type: ignore[arg-type]
             elif isinstance(tool, GamingSet) and tool == GamingSet.ANY_OF_YOUR_CHOICE:
-                available = [g for g in GamingSet if g != GamingSet.ANY_OF_YOUR_CHOICE]
-                resolved.add(self._select_gaming_set(available, blueprint))
+                available = [g for g in GamingSet if g != GamingSet.ANY_OF_YOUR_CHOICE]  # type: ignore[misc]
+                resolved.add(self._select_gaming_set(available, blueprint))  # type: ignore[arg-type]
             elif (
                 isinstance(tool, MusicalInstrument)
                 and tool == MusicalInstrument.ANY_OF_YOUR_CHOICE
             ):
                 available = [
-                    m
+                    m  # type: ignore[misc]
                     for m in MusicalInstrument
                     if m != MusicalInstrument.ANY_OF_YOUR_CHOICE
                 ]
-                resolved.add(self._select_musical_instrument(available, blueprint))
+                resolved.add(self._select_musical_instrument(available, blueprint))  # type: ignore[arg-type]
             else:
-                resolved.add(tool)
-        return Blueprint(tool_proficiencies=resolved)
+                resolved.add(tool)  # type: ignore[arg-type]
+        return Blueprint(tool_proficiencies=resolved)  # type: ignore[arg-type]

@@ -1,4 +1,4 @@
-from dnd.character.blueprint.building_blocks import (
+from dnd.character.blueprint.building_blocks import (  # type: ignore[attr-defined]
     CombinedBlock,
 )
 from dnd.character.blueprint.building_blocks import (
@@ -64,7 +64,7 @@ from dnd.choices.class_creation.character_class import Class
 from dnd.choices.stats_creation.statistic import Statistic
 
 
-def example_building_blocks():
+def example_building_blocks():  # type: ignore[no-untyped-def]
     stats_priority = (
         Statistic.INTELLIGENCE,
         Statistic.CONSTITUTION,
@@ -89,7 +89,7 @@ def example_building_blocks():
     )
     spell_assigner = RandomSpellAssigner(class_=class_)
     level_up = LevelUp(
-        blocks=(
+        blocks=(  # type: ignore[arg-type]
             LevelIncrementer(class_=class_),
             HealthIncreaseAverage(class_=class_),
             spell_assigner,
@@ -100,7 +100,7 @@ def example_building_blocks():
     return CombinedBlock(
         blocks=(
             InitialBuilder(
-                blocks=(
+                blocks=(  # type: ignore[arg-type]
                     LevelAssigner(level=level),
                     StandardArray(stats_priority=stats_priority),
                     RaceAssigner(

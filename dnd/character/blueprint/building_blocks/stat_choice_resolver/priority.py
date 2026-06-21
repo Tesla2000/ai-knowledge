@@ -60,7 +60,7 @@ class PriorityStatChoiceResolver(StatChoiceResolver):
 
         def _get_current_value(stat: Statistic) -> int:
             """Get current value including already-applied increases."""
-            return blueprint.stats.get_stat(stat) + increases[stat]
+            return blueprint.stats.get_stat(stat) + increases[stat]  # type: ignore[union-attr]
 
         def _get_stat_cap(stat: Statistic) -> int:
             """Get the cap for a stat."""

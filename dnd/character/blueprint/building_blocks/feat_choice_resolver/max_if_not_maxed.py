@@ -35,7 +35,7 @@ class MaxIfNotMaxedResolver(FeatChoiceResolver):
         self, available: list[FeatName], blueprint: Blueprint
     ) -> FeatName:
         highest_priority_stat = self.priority[0]
-        if blueprint.stats.get_stat(
+        if blueprint.stats.get_stat(  # type: ignore[union-attr]
             highest_priority_stat
         ) < blueprint.stats_cup.get_stat(highest_priority_stat):
             return FeatName.ABILITY_SCORE_IMPROVEMENT

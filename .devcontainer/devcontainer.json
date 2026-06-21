@@ -4,12 +4,13 @@
     "dockerfile": "Dockerfile",
     "context": ".."
   },
-"workspaceFolder": "/workspace",
+  "workspaceFolder": "/workspace",
   "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
+  "remoteUser": "dev",
   "mounts": [
     {
       "source": "claude-config",
-      "target": "/root/.claude",
+      "target": "/home/dev/.claude",
       "type": "volume"
     },
     {

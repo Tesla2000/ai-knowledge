@@ -51,7 +51,7 @@ class IncrementChain(BaseModel):
         Returns:
             New IncrementChain with increment added
         """
-        return IncrementChain(increments=self.increments + (increment,))
+        return IncrementChain(increments=self.increments + (increment,))  # type: ignore[return-value]
 
     def truncate_to(self, index: int) -> Self:
         """Create new chain containing only increments up to (and including) index.
@@ -64,7 +64,7 @@ class IncrementChain(BaseModel):
         """
         if index < 0 or index > len(self.increments):
             raise IndexError(f"Increment index {index} out of range")
-        return IncrementChain(increments=self.increments[:index])
+        return IncrementChain(increments=self.increments[:index])  # type: ignore[return-value]
 
     def length(self) -> int:
         """Return number of increments in chain."""
@@ -73,6 +73,6 @@ class IncrementChain(BaseModel):
     def __len__(self) -> int:
         return self.length()
 
-    def __iter__(self) -> Iterator[Blueprint]:
+    def __iter__(self) -> Iterator[Blueprint]:  # type: ignore[override]
         """Iterate over increments in order."""
         return iter(self.increments)

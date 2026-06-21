@@ -112,7 +112,7 @@ class FileIncrementStorage(IncrementStorage):
 class MemoryStorage(IncrementStorage):
     """In-memory increment storage for testing and temporary use."""
 
-    def __init__(self):
+    def __init__(self):  # type: ignore[no-untyped-def]
         """Initialize in-memory storage."""
         self._chains: dict[UUID, IncrementChain] = {}
 

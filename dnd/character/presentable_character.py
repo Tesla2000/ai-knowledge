@@ -147,7 +147,7 @@ class PresentableCharacter(Character):
                     )
         return self
 
-    @computed_field
+    @computed_field  # type: ignore[prop-decorator]
     @property
     def abilities(self) -> dict[Skill, int]:
         return {
@@ -157,24 +157,24 @@ class PresentableCharacter(Character):
             if s != Skill.ANY_OF_YOUR_CHOICE
         }
 
-    @computed_field
+    @computed_field  # type: ignore[prop-decorator]
     @property
     def initiative(self) -> int:
         return self._get_modifier(Statistic.DEXTERITY) + 5 * (
             FeatName.ALERT in self.feats
         )
 
-    @computed_field
+    @computed_field  # type: ignore[prop-decorator]
     @property
     def passive_perception(self) -> int:
         return self.abilities[Skill.PERCEPTION] + 10
 
-    @computed_field
+    @computed_field  # type: ignore[prop-decorator]
     @property
     def proficiency_bonus(self) -> int:
         return (self.level - 1) // 4 + 2
 
-    @computed_field
+    @computed_field  # type: ignore[prop-decorator]
     @property
     def saving_throw_modifiers(self) -> dict[Statistic, int]:
         return {
@@ -183,7 +183,7 @@ class PresentableCharacter(Character):
             for s in Statistic
         }
 
-    @computed_field
+    @computed_field  # type: ignore[prop-decorator]
     @property
     def ac(self) -> int:
         return (
@@ -194,12 +194,12 @@ class PresentableCharacter(Character):
             + self.ac_bonus
         )
 
-    @computed_field
+    @computed_field  # type: ignore[prop-decorator]
     @property
     def capacity(self) -> int:
         return 15 * self.stats.get_stat(Statistic.STRENGTH)
 
-    @computed_field
+    @computed_field  # type: ignore[prop-decorator]
     @property
     def spellcasting_ability(self) -> Statistic | None:
         spellcasting_classes = list(
@@ -225,7 +225,7 @@ class PresentableCharacter(Character):
             Statistic.INTELLIGENCE,
         )
 
-    @computed_field
+    @computed_field  # type: ignore[prop-decorator]
     @property
     def spell_save_dc(self) -> int | None:
         if self.spellcasting_ability is None:
@@ -237,7 +237,7 @@ class PresentableCharacter(Character):
             + self.spell_save_dc_bonus
         )
 
-    @computed_field
+    @computed_field  # type: ignore[prop-decorator]
     @property
     def spell_attack_bonus(self) -> int | None:
         if self.spellcasting_ability is None:
@@ -248,12 +248,12 @@ class PresentableCharacter(Character):
             + self.spellcasting_ability_bonus
         )
 
-    @computed_field
+    @computed_field  # type: ignore[prop-decorator]
     @property
     def n_prepared_spells(self) -> NonNegativeInt:
         return self.level + max(0, self._get_spellcasting_modifier())
 
-    @computed_field
+    @computed_field  # type: ignore[prop-decorator]
     @property
     def actions(self) -> dict[ActionType, list[Ability]]:
         actions = defaultdict(list)
@@ -296,15 +296,15 @@ class PresentableCharacter(Character):
     def _add_action(
         self,
         actions: dict[ActionType, list[Ability]],
-        data: dict[str, object],
+        data: Mapping[str, object],  # ignore
         class_level: int,
     ) -> None:
-        ability = Ability(**data)
+        ability = Ability(**data)  # type: ignore[arg-type]
         if not self._is_ability_accessible(ability, class_level):
             return
         actions[ability.action_type].append(ability)
 
-    @computed_field
+    @computed_field  # type: ignore[prop-decorator]
     @property
     def health(self) -> int:
         constitution_modifier = self._get_modifier(Statistic.CONSTITUTION)
@@ -316,7 +316,7 @@ class PresentableCharacter(Character):
         return self.health_base + self.level * health_increase_per_level
 
     def _get_spellcasting_modifier(self) -> int:
-        return self._get_modifier(self.spellcasting_ability)
+        return self._get_modifier(self.spellcasting_ability)  # type: ignore[arg-type]
 
     def _get_modifier(self, statistic: Statistic) -> int:
         return self.stats.get_modifier(statistic)
@@ -327,5 +327,5 @@ class PresentableCharacter(Character):
         class_level: int,
     ) -> bool:
         return (
-            ability and ability.combat_related and ability.required_level <= class_level
+            ability and ability.combat_related and ability.required_level <= class_level  # type: ignore[return-value]
         )

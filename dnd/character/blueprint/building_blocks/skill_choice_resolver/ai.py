@@ -10,7 +10,7 @@ from dnd.character.blueprint.building_blocks.skill_choice_resolver.base import (
     SkillChoiceResolver,
 )
 from dnd.skill_proficiency import Skill
-from langchain_openai import ChatOpenAI
+from langchain_openai import ChatOpenAI  # type: ignore[import-not-found]
 from pydantic import BaseModel
 from pydantic import Field
 

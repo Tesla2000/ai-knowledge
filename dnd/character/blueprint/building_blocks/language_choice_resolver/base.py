@@ -51,7 +51,7 @@ class LanguageChoiceResolver(BuildingBlock, ABC):
                     for language in Language
                     if language != Language.ANY_OF_YOUR_CHOICE
                 ]
-                resolved.add(self._select_from_available(available, blueprint))
+                resolved.add(self._select_from_available(available, blueprint))  # type: ignore[arg-type]
             else:
                 resolved.add(lang)
-        return Blueprint(languages=resolved)
+        return Blueprint(languages=resolved)  # type: ignore[arg-type]

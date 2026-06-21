@@ -11,7 +11,7 @@ from dnd.character.blueprint.building_blocks.equipment_chooser.base import (
     EquipmentChooser,
 )
 from dnd.choices.equipment_creation.weapons import WeaponName
-from langchain_openai import ChatOpenAI
+from langchain_openai import ChatOpenAI  # type: ignore[import-not-found]
 from pydantic import BaseModel
 from pydantic import Field
 
@@ -171,9 +171,9 @@ class AIEquipmentChooser(EquipmentChooser):
 
         # Return blueprint with resolved equipment
         # Note: armor is a single field, so we take the last armor selection
-        return Blueprint(
+        return Blueprint(  # type: ignore[call-arg]
             equipment_choices=(),
             weapons=blueprint.weapons + tuple(weapons),
-            armor=armors[-1] if armors else blueprint.armor,
+            armor=armors[-1] if armors else blueprint.armor,  # type: ignore[attr-defined]
             other_equipment=blueprint.other_equipment + tuple(others),
         )

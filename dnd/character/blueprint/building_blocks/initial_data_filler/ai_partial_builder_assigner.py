@@ -51,7 +51,7 @@ class AIPartialBuilderAssigner(AIBuilderBase):
         if "sex" not in set_fields:
             updates["sex"] = result.sex
         if "age" not in set_fields:
-            updates["age"] = result.age
+            updates["age"] = result.age  # type: ignore[assignment]
         if "race" not in set_fields:
             updates["race"] = result.race
         if "background" not in set_fields:
@@ -61,9 +61,9 @@ class AIPartialBuilderAssigner(AIBuilderBase):
         if "backstory" not in set_fields:
             updates["backstory"] = result.backstory
         if "height" not in set_fields:
-            updates["height"] = result.height
+            updates["height"] = result.height  # type: ignore[assignment]
         if "weight" not in set_fields:
-            updates["weight"] = result.weight
+            updates["weight"] = result.weight  # type: ignore[assignment]
         if "eye_color" not in set_fields:
             updates["eye_color"] = result.eye_color
         if "skin_color" not in set_fields:
@@ -81,4 +81,4 @@ class AIPartialBuilderAssigner(AIBuilderBase):
         if "weaknesses" not in set_fields:
             updates["weaknesses"] = result.weaknesses
 
-        return Blueprint(**updates)
+        return Blueprint(**updates)  # type: ignore[arg-type]

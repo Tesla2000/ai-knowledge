@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+
 from abc import ABC
 from abc import abstractmethod
 
@@ -46,17 +47,20 @@ class SubclassAssigner(BuildingBlock, ABC):
         description="The character class for which to assign a subclass"
     )
     available_subclasses: tuple[AnySubclass, ...] = Field(
-        default=None,
+        default=None,  # type: ignore[arg-type]
         description="Tuple of subclasses available for selection (defaults to all valid subclasses)",
     )
 
     @model_validator(mode="before")
     @classmethod
-    def _add_available_subclasses(cls, data: dict[str, object]) -> dict[str, object]:
-        class_ = Class(data.get("class_"))
+    def _add_available_subclasses(
+        cls,
+        data: dict[str, object],  # ignore
+    ) -> dict[str, object]:  # ignore
+        class_ = Class(data.get("class_"))  # type: ignore[arg-type]
         subclass_enum = SUBCLASSES[class_]
         available_subclasses = data.get("available_subclasses", tuple(subclass_enum))
-        if any(subclass not in subclass_enum for subclass in available_subclasses):
+        if any(subclass not in subclass_enum for subclass in available_subclasses):  # type: ignore[attr-defined]
             raise ValueError(
                 f"Not all subclasses of {available_subclasses} are available to {class_}"
             )

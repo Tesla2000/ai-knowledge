@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import Literal
 
 from dnd.character.blueprint.blueprint import Blueprint
+from dnd.character.spells.spells import Spells
 from pydantic import BaseModel
 from pydantic import Field
 
@@ -134,7 +135,7 @@ class BlueprintFormatter(BaseModel):
         # Spells
         if self.include_spells and blueprint.spells:
             sections.append(self._section_header("Spells"))
-            sections.extend(self._format_spells(blueprint))
+            sections.extend(self._format_spells(blueprint.spells))
 
         # Feats
         if self.include_feats and blueprint.feats:
@@ -176,7 +177,7 @@ class BlueprintFormatter(BaseModel):
 
     def _format_race(self, blueprint: Blueprint) -> list[str]:
         """Format race and subrace information."""
-        lines = [self._item(blueprint.race.value)]
+        lines = [self._item(blueprint.race.value)]  # type: ignore[union-attr]
         if blueprint.subrace:
             lines.append(self._item(f"Subrace: {blueprint.subrace.value}"))
         return lines
@@ -184,12 +185,12 @@ class BlueprintFormatter(BaseModel):
     def _format_stats(self, blueprint: Blueprint) -> list[str]:
         """Format ability scores."""
         return [
-            self._item(f"Strength: {blueprint.stats.strength}"),
-            self._item(f"Dexterity: {blueprint.stats.dexterity}"),
-            self._item(f"Constitution: {blueprint.stats.constitution}"),
-            self._item(f"Intelligence: {blueprint.stats.intelligence}"),
-            self._item(f"Wisdom: {blueprint.stats.wisdom}"),
-            self._item(f"Charisma: {blueprint.stats.charisma}"),
+            self._item(f"Strength: {blueprint.stats.strength}"),  # type: ignore[union-attr]
+            self._item(f"Dexterity: {blueprint.stats.dexterity}"),  # type: ignore[union-attr]
+            self._item(f"Constitution: {blueprint.stats.constitution}"),  # type: ignore[union-attr]
+            self._item(f"Intelligence: {blueprint.stats.intelligence}"),  # type: ignore[union-attr]
+            self._item(f"Wisdom: {blueprint.stats.wisdom}"),  # type: ignore[union-attr]
+            self._item(f"Charisma: {blueprint.stats.charisma}"),  # type: ignore[union-attr]
         ]
 
     def _format_equipment(self, blueprint: Blueprint) -> list[str]:
@@ -209,16 +210,15 @@ class BlueprintFormatter(BaseModel):
             lines.append(self._item(f"Magical Items: {items_str}"))
         return lines
 
-    def _format_spells(self, blueprint: Blueprint) -> list[str]:
+    def _format_spells(self, spells: Spells) -> list[str]:
         """Format spell information."""
         lines = []
-        if blueprint.spells.cantrips:
-            cantrips = ", ".join(c.value for c in blueprint.spells.cantrips)
+        if spells.cantrips:
+            cantrips = ", ".join(c.value for c in spells.cantrips)
             lines.append(self._item(f"Cantrips: {cantrips}"))
 
         for level in range(1, 10):
-            spell_attr = f"level_{level}_spells"
-            spells_at_level = getattr(blueprint.spells, spell_attr, ())
+            spells_at_level = spells.get_spell_level_by_index(level)  # type: ignore[arg-type]
             if spells_at_level:
                 spells_str = ", ".join(s.value for s in spells_at_level)
                 lines.append(self._item(f"Level {level}: {spells_str}"))

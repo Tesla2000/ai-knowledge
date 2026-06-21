@@ -1,3 +1,7 @@
+import json
+from pathlib import Path
+
+import pytest
 from dnd.character.blueprint.building_blocks.building_block import (
     BLOCK_TYPE_FIELD_NAME,
 )
@@ -124,8 +128,6 @@ class TestSimplifiedBlocksSchema(TestClient):
 
     def test_static_schema_matches_runtime_schema(self, client):
         """Verify pre-generated static schema matches runtime endpoint."""
-        import json
-        from pathlib import Path
 
         # Get runtime schema from endpoint
         runtime_response = client.get("/schema/simplified-blocks")
@@ -136,8 +138,6 @@ class TestSimplifiedBlocksSchema(TestClient):
         static_file = static_dir / "simplified-blocks-schema.json"
 
         if not static_file.exists():
-            import pytest
-
             pytest.skip(
                 "Static schema not generated yet (run scripts/generate_schema.py)"
             )

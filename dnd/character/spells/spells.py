@@ -51,14 +51,21 @@ class Spells(BaseModel):
         default_factory=tuple, json_schema_extra={_INDEX: 9}
     )
 
-    def get_spells_by_level(self) -> tuple[tuple[Spell, ...]]:
-        return Spells.model_dump(self).values()
+    def get_spells_by_level(self) -> tuple[tuple[Spell, ...], ...]:
+        return (
+            self.cantrips,
+            self.first_level_spells,
+            self.second_level_spells,
+            self.third_level_spells,
+            self.fourth_level_spells,
+            self.fifth_level_spells,
+            self.sixth_level_spells,
+            self.seventh_level_spells,
+            self.eighth_level_spells,
+            self.ninth_level_spells,
+        )
 
     def get_spell_level_by_index(
         self, index: Literal[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
     ) -> tuple[Spell, ...]:
-        return next(
-            getattr(self, field_name)
-            for field_name, field_info in type(self).model_fields.items()
-            if field_info.json_schema_extra[_INDEX] == index
-        )
+        return self.get_spells_by_level()[index]

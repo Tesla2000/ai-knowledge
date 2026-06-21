@@ -7,7 +7,7 @@ from dnd.character.blueprint.building_blocks.level_up.spell_assignment.base impo
 )
 from dnd.character.spells import Spell
 from dnd.choices.class_creation.character_class import Class
-from langchain_openai import ChatOpenAI
+from langchain_openai import ChatOpenAI  # type: ignore[import-not-found]
 from pydantic import ConfigDict
 from pydantic import create_model
 from pydantic import Field
@@ -90,7 +90,7 @@ Choose spells that tell a story about who this character is."""
         spell_enum = type(available_spells[0])
         SpellSelection = create_model(
             f"Level{spell_level}SpellSelection",
-            spells=(tuple[spell_enum, ...], ...),
+            spells=(tuple[spell_enum, ...], ...),  # type: ignore[valid-type]
         )
 
         # Get LLM selection

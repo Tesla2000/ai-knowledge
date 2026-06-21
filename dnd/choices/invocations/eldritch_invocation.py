@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 from pydantic import BaseModel
 
 if TYPE_CHECKING:
-    from dnd.character_wrapper import CharacterWrapper
+    from dnd.character_wrapper import CharacterWrapper  # type: ignore[import-not-found]
 from dnd.choices.class_creation.character_class import (
     Class,
 )
@@ -401,4 +401,4 @@ def n_eldrich_invocations(character_wrapper: CharacterWrapper) -> int:
             and character_wrapper.character.level >= 18
         ),
     ]
-    return sum(condition(character_wrapper) for condition in conditions)
+    return sum(condition(character_wrapper) for condition in conditions)  # type: ignore[no-untyped-call]

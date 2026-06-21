@@ -20,11 +20,11 @@ class StatSettingItem(MagicalItem):
     stat: Statistic  # e.g., Statistic.STRENGTH, Statistic.CONSTITUTION
     stat_value: int  # e.g., 19, 21, 23, etc.
 
-    def assign_to(self, blueprint: Blueprint) -> Blueprint:
+    def assign_to(self, blueprint: Blueprint) -> Blueprint:  # type: ignore[override]
         """Set the specified stat to the fixed value."""
         stat_name = self.stat.value.lower()  # Convert Statistic.STRENGTH -> 'strength'
         new_stats = Stats(
-            **{**blueprint.stats.model_dump(), stat_name: self.stat_value}
+            **{**blueprint.stats.model_dump(), stat_name: self.stat_value}  # type: ignore[union-attr]
         )
         return type(blueprint)(
             stats=new_stats, magical_items=blueprint.magical_items + (self,)

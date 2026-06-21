@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import sys
+
 from collections.abc import Callable
 
 import pytest
@@ -254,7 +256,7 @@ class TestBuildMulticlass:
         assert (
             len(wizard.magical_items) == 5
         )  # 1 uncommon + 2 rare + 1 very_rare + 1 legendary
-        print(
+        sys.stdout.write(
             wizard.model_dump_json(
                 indent=2,
                 exclude_defaults=True,
@@ -315,7 +317,7 @@ class TestBuildMulticlass:
         assert wizard.weapons
         assert wizard.other_equipment
         assert wizard.magical_items
-        print(
+        sys.stdout.write(
             wizard.model_dump_json(
                 indent=2,
                 exclude_defaults=True,

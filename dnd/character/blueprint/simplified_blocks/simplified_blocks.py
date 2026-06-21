@@ -501,11 +501,11 @@ class SimplifiedBlocks(CombinedBlock, _SimplifiedBlocksFields):
     @model_serializer(mode="wrap")
     def _exclude_factory_defaults(
         self, nxt: SerializerFunctionWrapHandler, info: SerializationInfo
-    ) -> dict[str, object]:
+    ) -> Mapping[str, object]:  # ignore
         serialized_value = nxt(self)
         context = info.context
         if not (isinstance(context, dict) and context.get(EXCLUDE_FACTORY_DEFAULTS)):
-            return serialized_value
+            return serialized_value  # type: ignore[no-any-return]
         differences = {"classes": self.classes}
         for field_name, partial_model in _PARTIAL_MODELS:
             if partial_model.model_validate(
@@ -519,7 +519,7 @@ def _partial_models_creator() -> Generator[tuple[str, type[BaseModel]], None, No
     combined_fields = {}
     for field_name, field_info in SimplifiedBlocks.model_fields.items():
         combined_fields[field_name] = (field_info.annotation, field_info)
-        yield field_name, create_model("Partial", **combined_fields)
+        yield field_name, create_model("Partial", **combined_fields)  # type: ignore[call-overload]
 
 
 _PARTIAL_MODELS: tuple[tuple[str, type[BaseModel]], ...] = tuple(

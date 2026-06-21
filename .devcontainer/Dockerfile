@@ -19,14 +19,21 @@ ENV LC_ALL=en_US.UTF-8
 
 RUN npm install -g @anthropic-ai/claude-code
 
+RUN groupadd --gid 1000 dev && useradd --uid 1000 --gid 1000 --shell /bin/bash --create-home dev
+
 ENV UV_LINK_MODE=copy
 ENV PATH="/workspace/.venv/bin:${PATH}"
 ENV PRE_COMMIT_HOME="/.jbdevcontainer/pre-commit"
 ENV EDITOR=micro
 
-WORKDIR /workspace
+RUN mkdir -p /.jbdevcontainer/pre-commit && chown -R dev:dev /.jbdevcontainer
 
-COPY pyproject.toml uv.lock .pre-commit-config.yaml README.md ./
+WORKDIR /workspace
+RUN chown dev:dev /workspace
+
+USER dev
+
+COPY --chown=dev:dev pyproject.toml uv.lock .pre-commit-config.yaml README.md ./
 RUN uv sync --group dev --no-install-project
 RUN git config --global user.email "build@example.com" && \
     git config --global user.name "Build" && \

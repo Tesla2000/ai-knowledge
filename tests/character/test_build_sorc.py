@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import sys
+
 from collections.abc import Callable
 
 import pytest
@@ -233,7 +235,7 @@ class TestBuildSorcerer:
         assert (
             len(sorcerer.magical_items) == 5
         )  # 1 uncommon + 2 rare + 1 very_rare + 1 legendary
-        print(
+        sys.stdout.write(
             sorcerer.model_dump_json(
                 indent=2,
                 exclude_defaults=True,
@@ -290,7 +292,7 @@ class TestBuildSorcerer:
         assert sorcerer.weapons
         assert sorcerer.other_equipment
         assert sorcerer.magical_items
-        print(
+        sys.stdout.write(
             sorcerer.model_dump_json(
                 indent=2,
                 exclude_defaults=True,

@@ -10,7 +10,7 @@ from dnd.character.blueprint.building_blocks.stat_choice_resolver.base import (
     StatChoiceResolver,
 )
 from dnd.choices.stats_creation.statistic import Statistic
-from langchain_openai import ChatOpenAI
+from langchain_openai import ChatOpenAI  # type: ignore[import-not-found]
 from pydantic import BaseModel
 from pydantic import Field
 
@@ -114,4 +114,4 @@ class AIStatChoiceResolver(StatChoiceResolver):
                     f"AI selected negative increase for {stat.value}: {amount}"
                 )
 
-        return selection.stat_increases
+        return selection.stat_increases  # type: ignore[no-any-return]

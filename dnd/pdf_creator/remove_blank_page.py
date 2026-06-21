@@ -2,10 +2,10 @@ from __future__ import annotations
 
 from pathlib import Path
 
-import PyPDF2
+import PyPDF2  # type: ignore[import-not-found]
 
 
-def remove_blank_page(pdf_path: Path):
+def remove_blank_page(pdf_path: Path) -> None:
     with pdf_path.open("rb") as file:
         reader = PyPDF2.PdfReader(file)
         writer = PyPDF2.PdfWriter()

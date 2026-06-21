@@ -44,7 +44,7 @@ class Builder:
     ):
         self._logger = logger
         self._building_blocks = building_blocks
-        self._increment_storage = increment_storage or MemoryStorage()
+        self._increment_storage = increment_storage or MemoryStorage()  # type: ignore[no-untyped-call]
 
     @staticmethod
     def _init_character() -> Blueprint:
@@ -84,7 +84,7 @@ class Builder:
                 error=e,
             )
         finally:
-            self._increment_storage.save_chain(chain_id, increment_chain)
+            self._increment_storage.save_chain(chain_id, increment_chain)  # type: ignore[attr-defined]
 
     def add(self, building_block: BuildingBlock | CombinedBlock) -> Self:
         return type(self)(

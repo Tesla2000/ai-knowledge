@@ -38,7 +38,7 @@ class SubraceStats(BaseModel):
     tool_proficiencies: tuple[ToolProficiency | GamingSet | MusicalInstrument, ...] = (
         Field(description="List of tool proficiencies.", default=())
     )
-    additional_feat: bool = Field(
+    additional_feat: bool = Field(  # type: ignore[assignment]
         "Does sub-race get a feat 'Feat: You gain one Feat of your choice.'"
     )
     statistics: RaceStatistics = Field(

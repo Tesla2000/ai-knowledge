@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import sys
+
 from pathlib import Path
 
 import requests
@@ -30,7 +32,7 @@ def scraper_wiki_spell(spell: Spell, output_dir: Path):
     )
     response = requests.get(formatted_url)
     if response.status_code != 200:
-        print(ValueError(f"Wrong status code {formatted_url}"))
+        sys.stderr.write(f"Wrong status code {formatted_url}\n")
         return
 
     content = response.content.decode()

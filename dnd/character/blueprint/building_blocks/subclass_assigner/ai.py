@@ -15,7 +15,7 @@ from dnd.choices.class_creation.character_class import (
 from dnd.choices.class_creation.character_class import (
     SUBCLASSES,
 )
-from langchain_openai import ChatOpenAI
+from langchain_openai import ChatOpenAI  # type: ignore[import-not-found]
 from pydantic import create_model
 from pydantic import Field
 
@@ -119,4 +119,4 @@ class AISubclassAssigner(SubclassAssigner):
                 f"AI failed to select subclass for {self.class_.value}: {e}"
             ) from e
 
-        return result.subclass
+        return result.subclass  # type: ignore[no-any-return]

@@ -8,7 +8,7 @@ from dnd.character.blueprint.building_blocks.character_base_template import (
 from dnd.character.blueprint.building_blocks.initial_data_filler.base_filler import (
     InitialDataFiller,
 )
-from langchain_openai import ChatOpenAI
+from langchain_openai import ChatOpenAI  # type: ignore[import-not-found]
 from pydantic import Field
 
 
@@ -37,4 +37,4 @@ class AIBuilderBase(InitialDataFiller, ABC):
             CharacterBaseTemplate with AI-generated values.
         """
         template = self.llm.with_structured_output(CharacterBaseTemplate)
-        return template.invoke(prompt)
+        return template.invoke(prompt)  # type: ignore[no-any-return]

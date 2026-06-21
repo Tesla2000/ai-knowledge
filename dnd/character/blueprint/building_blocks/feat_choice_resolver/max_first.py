@@ -40,13 +40,13 @@ class MaxFirstResolver(FeatChoiceResolver):
         self, available: list[FeatName], blueprint: Blueprint
     ) -> FeatName:
         highest_priority_stat = self.priority[0]
-        if blueprint.stats.get_stat(
+        if blueprint.stats.get_stat(  # type: ignore[union-attr]
             highest_priority_stat
         ) < blueprint.stats_cup.get_stat(highest_priority_stat):
             return FeatName.ABILITY_SCORE_IMPROVEMENT
         return self.then.select_from_available(available, blueprint)
 
-    def _resolve_feat(self, feat: FeatName, blueprint: Blueprint):
+    def _resolve_feat(self, feat: FeatName, blueprint: Blueprint):  # type: ignore[no-untyped-def]
         if feat not in FeatName.not_choosables():
             return feat
         available = [f for f in FeatName if f not in FeatName.not_choosables()]

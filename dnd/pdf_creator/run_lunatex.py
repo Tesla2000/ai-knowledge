@@ -2,10 +2,11 @@ from __future__ import annotations
 
 import os
 import subprocess
+import sys
 from pathlib import Path
 
 
-def run_lualatex(temp_file_name: str, directory: Path):
+def run_lualatex(temp_file_name: str, directory: Path) -> None:
     try:
         os.chdir(directory)
         result = subprocess.run(
@@ -14,10 +15,10 @@ def run_lualatex(temp_file_name: str, directory: Path):
             capture_output=True,
             text=True,
         )
-        print(result.stdout)
+        sys.stdout.write(result.stdout)
     except subprocess.CalledProcessError as e:
-        print(f"Error occurred while running lualatex: {e.stderr}")
+        sys.stderr.write(f"Error occurred while running lualatex: {e.stderr}\n")
     except FileNotFoundError:
-        print(f"The directory '{directory}' does not exist.")
+        sys.stderr.write(f"The directory '{directory}' does not exist.\n")
     except Exception as e:
-        print(f"An error occurred: {e}")
+        sys.stderr.write(f"An error occurred: {e}\n")

@@ -11,7 +11,7 @@ from dnd.character.blueprint.building_blocks.magical_item_chooser.base_chooser i
 )
 from dnd.character.magical_item.items import MAGICAL_ITEMS
 from dnd.character.magical_item.level import Level
-from langchain_openai import ChatOpenAI
+from langchain_openai import ChatOpenAI  # type: ignore[import-not-found]
 from pydantic import BaseModel
 from pydantic import ConfigDict
 from pydantic import Field

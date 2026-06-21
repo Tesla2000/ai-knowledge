@@ -3,6 +3,7 @@
 import unittest
 
 from dnd.character.blueprint.building_blocks.building_block import (
+    BLOCK_TYPE_FIELD_NAME,
     SerializableBlock,
 )
 from dnd.server.app import app
@@ -29,10 +30,6 @@ class TestBuildingBlocksDocumentation(unittest.TestCase):
 
     def test_all_building_blocks_have_field_descriptions(self):
         """Ensure all fields in building blocks have descriptions."""
-        from dnd.character.blueprint.building_blocks.building_block import (
-            BLOCK_TYPE_FIELD_NAME,
-        )
-
         missing_descriptions = []
 
         for block_class in get_unique_subclasses(SerializableBlock):

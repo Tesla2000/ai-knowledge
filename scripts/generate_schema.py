@@ -12,6 +12,7 @@ from dnd.character.checkpoint import (  # noqa: E402
     MemoryStorage,
 )
 from dnd.server.app import create_app  # noqa: E402
+from starlette.testclient import TestClient  # noqa: E402
 
 
 def generate_schema():
@@ -20,8 +21,6 @@ def generate_schema():
     app = create_app(MemoryStorage())
 
     # Call the schema endpoint to get the schema
-    from starlette.testclient import TestClient
-
     client = TestClient(app)
     response = client.get("/schema/simplified-blocks")
 
@@ -38,14 +37,14 @@ def generate_schema():
     with output_file.open("w") as f:
         json.dump(schema, f, indent=2)
 
-    print(f"✓ Generated schema: {output_file}")
-    print(f"  - {len(schema['properties'])} top-level properties")
+    sys.stdout.write(f"✓ Generated schema: {output_file}\\n")
+    sys.stdout.write(f"  - {len(schema['properties'])} top-level properties\\n")
     union_fields = [
         p
         for p in schema["properties"].values()
         if "block_type" in p.get("properties", {})
     ]
-    print(f"  - {len(union_fields)} Union type fields")
+    sys.stdout.write(f"  - {len(union_fields)} Union type fields\\n")
 
 
 if __name__ == "__main__":

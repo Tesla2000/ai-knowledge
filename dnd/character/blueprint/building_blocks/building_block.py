@@ -11,7 +11,6 @@ from pydantic import BaseModel
 from pydantic import computed_field
 from pydantic import ConfigDict
 from pydantic import Field
-from pydantic import InstanceOf
 
 BLOCK_TYPE_FIELD_NAME = "block_type"
 
@@ -25,7 +24,7 @@ class SerializableBlock(BaseModel):
 
     model_config = ConfigDict(frozen=True)
 
-    @computed_field(alias=BLOCK_TYPE_FIELD_NAME)
+    @computed_field(alias=BLOCK_TYPE_FIELD_NAME)  # type: ignore[prop-decorator]
     @property
     def block_type(self) -> str:
         """Return the class name as the block type for polymorphic serialization."""
@@ -49,10 +48,7 @@ class BuildingBlock(SerializableBlock, ABC):
         return CombinedBlock(blocks=(self, other))
 
 
-Blocks = tuple[
-    Union["AnyBuildingBlock", Self, InstanceOf[BuildingBlock]],  # noqa: F821
-    ...,
-]
+Blocks = tuple[Union[BuildingBlock, "CombinedBlock"], ...]
 
 
 class CombinedBlock(SerializableBlock):

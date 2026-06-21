@@ -17,7 +17,7 @@ class SavingThrowBonusItem(MagicalItem):
 
     saving_throw_bonus: int  # e.g., 1, 2, 3
 
-    def assign_to(self, blueprint: Blueprint) -> Blueprint:
+    def assign_to(self, blueprint: Blueprint) -> Blueprint:  # type: ignore[override]
         """Add bonus to all saving throws."""
         new_saving_throws = Stats(
             **{

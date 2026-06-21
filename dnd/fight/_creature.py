@@ -1,3 +1,4 @@
+from collections.abc import Mapping
 from random import randint
 from typing import Annotated
 
@@ -7,14 +8,14 @@ from dnd.character._creature_base import _CreatureBase
 from dnd.fight._action_group import _And, _Or, _Action
 
 
-def _roll_initiative(data: dict[str, object]) -> int:
+def _roll_initiative(data: Mapping[str, object]) -> int:  # ignore
     initiative_bonus = data.get("initiative_bonus", 0)
     if not isinstance(initiative_bonus, int):
         raise ValueError(f"initiative_bonus must be int, got {type(initiative_bonus)}")
     return randint(1, 20) + initiative_bonus
 
 
-def _default_type(data: dict[str, object]) -> str:
+def _default_type(data: Mapping[str, object]) -> str:  # ignore
     name = data["name"]
     if not isinstance(name, str):
         raise ValueError(f"name must be str, got {type(name)}")

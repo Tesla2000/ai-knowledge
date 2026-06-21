@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 
 
 def get_sub_races(main_race: Race, config: Config) -> type[Enum]:
-    return Enum(
+    return Enum(  # type: ignore[return-value]
         f"{main_race.value}SubRace",
         {
             (name := path.with_suffix("").name).upper().replace(" ", "_"): name
@@ -19,9 +19,9 @@ def get_sub_races(main_race: Race, config: Config) -> type[Enum]:
     )
 
 
-def _get_sub_races(main_race: Race, config: Config):
-    for path in filter(
-        lambda path: path.name in config.subclass_sources,
-        config.sub_races_root.joinpath(main_race.value).iterdir(),
+def _get_sub_races(main_race: Race, config: Config) -> object:
+    for path in filter(  # type: ignore[var-annotated]
+        lambda path: path.name in config.subclass_sources,  # type: ignore[arg-type]
+        config.sub_races_root.joinpath(main_race.value).iterdir(),  # type: ignore[attr-defined]
     ):
         yield from path.iterdir()

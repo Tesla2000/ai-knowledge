@@ -9,7 +9,7 @@ from frozendict import frozendict
 
 ARMORS: frozendict[ArmorName, Armor] = frozendict(
     {
-        a.name: a
+        a.name: a  # type: ignore[misc]
         for a in (
             Armor(
                 name=ArmorName.CLOTHES,

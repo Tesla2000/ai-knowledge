@@ -14,7 +14,7 @@ from scripts.wiki_scraper.MainClassTemplate import (
 def main_class2proficiencies(main_class: Class, config: Config) -> MainClassTemplate:
     return MainClassTemplate(
         **json.loads(
-            config.main_class_root.joinpath(main_class.value)
+            config.main_class_root.joinpath(main_class.value)  # type: ignore[attr-defined]
             .with_suffix(".json")
             .read_text()
         )

@@ -38,7 +38,7 @@ from dnd.other_profficiencies import GamingSet
 from dnd.other_profficiencies import MusicalInstrument
 from dnd.other_profficiencies import ToolProficiency
 from dnd.skill_proficiency import Skill
-from langchain_openai import ChatOpenAI
+from langchain_openai import ChatOpenAI  # type: ignore[import-not-found]
 from pydantic import ConfigDict
 from pydantic import Field
 
@@ -365,25 +365,25 @@ class AIAllNonStatChoicesResolver(BuildingBlock):
         new_tools = tuple(set(choices.tool_proficiencies))[:n_tools_to_choose]
 
         return Blueprint(
-            languages=set(
+            languages=set(  # type: ignore[arg-type]
                 filterfalse(
                     Language.ANY_OF_YOUR_CHOICE.__eq__,
                     blueprint.languages + new_languages,
                 )
             ),
-            skill_proficiencies=set(
+            skill_proficiencies=set(  # type: ignore[arg-type]
                 filterfalse(
                     Skill.ANY_OF_YOUR_CHOICE.__eq__,
                     blueprint.skill_proficiencies + new_skill_profs,
                 )
             ),
-            feats=set(
+            feats=set(  # type: ignore[arg-type]
                 filterfalse(
                     FeatName.not_choosables().__contains__,
                     blueprint.feats + new_feats,
                 )
             ),
-            tool_proficiencies={
+            tool_proficiencies={  # type: ignore[arg-type]
                 prof
                 for prof in (blueprint.tool_proficiencies + new_tools)
                 if prof

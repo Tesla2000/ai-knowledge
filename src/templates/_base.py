@@ -39,6 +39,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \\
         npm \\
         openssh-client \\
         locales-all \\
+        micro \\
     && rm -rf /var/lib/apt/lists/*
 
 ENV LANG=en_US.UTF-8
@@ -49,6 +50,7 @@ RUN npm install -g @anthropic-ai/claude-code
 ENV UV_LINK_MODE=copy
 ENV PATH="/workspace/.venv/bin:${PATH}"
 ENV PRE_COMMIT_HOME="/.jbdevcontainer/pre-commit"
+ENV EDITOR=micro
 
 WORKDIR /workspace
 
@@ -77,7 +79,8 @@ if [ ! -f /root/.claude/settings.json ]; then
 fi
 
 uv sync --group dev
-pre-commit install --overwrite --hook-type pre-commit --hook-type pre-push
+echo 'source /workspace/.venv/bin/activate' >> /root/.bashrc
+uv run pre-commit install --overwrite --hook-type pre-commit --hook-type pre-push
 """
 
 _CLAUDE_SETTINGS = """\

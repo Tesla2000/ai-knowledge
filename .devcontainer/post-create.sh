@@ -8,5 +8,6 @@ if [ ! -f /root/.claude/settings.json ]; then
 fi
 
 uv sync --group dev
-pre-commit install --overwrite --hook-type pre-commit --hook-type pre-push
+echo 'source /workspace/.venv/bin/activate' >> /root/.bashrc
+uv run pre-commit install --overwrite --hook-type pre-commit --hook-type pre-push
 

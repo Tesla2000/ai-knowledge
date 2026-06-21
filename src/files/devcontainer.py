@@ -68,6 +68,9 @@ services:
     volumes:
       - ..:/workspace:cached
       - claude-config:/root/.claude
+      - ${SSH_AUTH_SOCK}:/ssh-agent
+    environment:
+      - SSH_AUTH_SOCK=/ssh-agent
     command: sleep infinity
 
 volumes:

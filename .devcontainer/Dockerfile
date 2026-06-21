@@ -11,6 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         npm \
         openssh-client \
         locales-all \
+        micro \
     && rm -rf /var/lib/apt/lists/*
 
 ENV LANG=en_US.UTF-8
@@ -21,6 +22,7 @@ RUN npm install -g @anthropic-ai/claude-code
 ENV UV_LINK_MODE=copy
 ENV PATH="/workspace/.venv/bin:${PATH}"
 ENV PRE_COMMIT_HOME="/.jbdevcontainer/pre-commit"
+ENV EDITOR=micro
 
 WORKDIR /workspace
 

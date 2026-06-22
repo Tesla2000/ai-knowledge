@@ -3,11 +3,7 @@
   "dockerComposeFile": "docker-compose.yml",
   "service": "app",
   "workspaceFolder": "/workspace",
-  "features": {
-    "ghcr.io/devcontainers/features/node:1": {
-      "version": "lts"
-    }
-  },
+  "remoteUser": "dev",
   "postCreateCommand": "bash .devcontainer/post-create.sh",
   "customizations": {
     "vscode": {
@@ -23,6 +19,7 @@
     }
   },
   "containerEnv": {
-    "IS_SANDBOX": "1"
+    "IS_SANDBOX": "1",
+    "SSH_AUTH_SOCK": "/ssh-agent"
   }
 }

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections.abc import Mapping
 from typing import Literal
 
 from pydantic import Field
@@ -18,10 +19,13 @@ from src.templates._base import Template
 from src.templates._type import TemplateType
 
 
-def _default_pyproject_toml(data: dict[str, object]) -> PackagePyprojectToml:
+def _default_pyproject_toml(
+    data: Mapping[str, object],  # ignore
+) -> PackagePyprojectToml:
     description = data["description"]
     if not isinstance(description, str):
-        raise TypeError(f"{description=} is not an instance of str")
+        msg = f"{description=} is not an instance of str"
+        raise TypeError(msg)
     return PackagePyprojectToml(
         description=description,
         dependency_groups={
@@ -30,17 +34,21 @@ def _default_pyproject_toml(data: dict[str, object]) -> PackagePyprojectToml:
     )
 
 
-def _default_readme(data: dict[str, object]) -> ReadmeFile:
+def _default_readme(
+    data: Mapping[str, object],  # ignore
+) -> ReadmeFile:
     description = data["description"]
     if not isinstance(description, str):
-        raise TypeError(f"{description=} is not an instance of str")
+        msg = f"{description=} is not an instance of str"
+        raise TypeError(msg)
     author = data.get("author")
     repo_name = data.get("repo_name")
     python_version = data.get("python_version", PythonVersion(minor=9))
     if not isinstance(python_version, PythonVersion):
-        raise TypeError(
+        msg = (
             f"{python_version=} is not an instance of {PythonVersion.__name__}"
         )
+        raise TypeError(msg)
     return ReadmeFile(
         description=description,
         github_owner=author,
@@ -49,12 +57,15 @@ def _default_readme(data: dict[str, object]) -> ReadmeFile:
     )
 
 
-def _default_tests_workflow(data: dict[str, object]) -> TestsWorkflow:
+def _default_tests_workflow(
+    data: Mapping[str, object],  # ignore
+) -> TestsWorkflow:
     python_version = data.get("python_version", PythonVersion(minor=9))
     if not isinstance(python_version, PythonVersion):
-        raise TypeError(
+        msg = (
             f"{python_version=} is not an instance of {PythonVersion.__name__}"
         )
+        raise TypeError(msg)
     return TestsWorkflow(
         python_version=python_version,
         content=f"""\

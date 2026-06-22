@@ -3,11 +3,10 @@ set -e
 
 git config --global --add safe.directory /workspace
 
-if [ ! -f /root/.claude/settings.json ]; then
-    cp /workspace/.devcontainer/claude-settings.json /root/.claude/settings.json
+if [ ! -f /home/dev/.claude/settings.json ]; then
+    cp /workspace/.devcontainer/claude-settings.json /home/dev/.claude/settings.json
 fi
 
 uv sync --group dev
-echo 'source /workspace/.venv/bin/activate' >> /root/.bashrc
+echo 'source /workspace/.venv/bin/activate' >> /home/dev/.bashrc
 uv run pre-commit install --overwrite --hook-type pre-commit --hook-type pre-push
-

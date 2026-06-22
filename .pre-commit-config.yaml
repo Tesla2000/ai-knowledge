@@ -44,8 +44,8 @@ repos:
           - pygithub
         args: [ --strict, --config-file, pyproject.toml ]
   - repo: https://github.com/Tesla2000/any-hook
-    rev: v3.11.0
+    rev: v3.18.0
     hooks:
       - id: any-hook
-        args: [--modifiers, '[{"type": "remove-f-prefix"},{"type": "open-to-path"},{"type": "any-to-object"},{"type": "check-untracked", "directories": ["src","tests"]},{"type":"pydantic-config-to-model-config"},{"type":"local-imports"},{"type":"pydantic-v1-to-v2"},{"type":"str-enum-inheritance"},{"type":"forbidden-functions","forbidden_functions":["hasattr","getattr","print"]},{"type":"utcnow-to-datetime-now"},{"type":"len-as-bool"},{"type":"typing-to-builtin"}]']
+        args: [--modifiers, '[{"type": "remove-f-prefix"},{"type": "open-to-path"},{"type": "any-to-object"},{"type": "check-untracked", "directories": ["src","tests"]},{"type":"pydantic-config-to-model-config"},{"type":"local-imports"},{"type":"pydantic-v1-to-v2"},{"type":"str-enum-inheritance"},{"type":"forbidden-functions","forbidden_functions":["hasattr","getattr","print"]},{"type":"utcnow-to-datetime-now"},{"type":"len-as-bool"},{"type": "leaky-mapping-typing"},{"type":"arbitrary-types-allowed-check"},{"type":"instance-of-pydantic-model-detector"},{"type":"comment-detector","patterns":["type:\\s*ignore"]}]']
 

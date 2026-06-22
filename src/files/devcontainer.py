@@ -18,11 +18,7 @@ class DevcontainerJsonFile(FileBase):
   "dockerComposeFile": "docker-compose.yml",
   "service": "app",
   "workspaceFolder": "/workspace",
-  "features": {
-    "ghcr.io/devcontainers/features/node:1": {
-      "version": "lts"
-    }
-  },
+  "remoteUser": "dev",
   "postCreateCommand": "bash .devcontainer/post-create.sh",
   "customizations": {
     "vscode": {
@@ -38,7 +34,8 @@ class DevcontainerJsonFile(FileBase):
     }
   },
   "containerEnv": {
-    "IS_SANDBOX": "1"
+    "IS_SANDBOX": "1",
+    "SSH_AUTH_SOCK": "/ssh-agent"
   }
 }
 """
@@ -65,9 +62,10 @@ services:
       context: ..
       dockerfile: .devcontainer/Dockerfile
     image: $image_name
+    user: dev
     volumes:
       - ..:/workspace:cached
-      - claude-config:/root/.claude
+      - claude-config:/home/dev/.claude
       - ${SSH_AUTH_SOCK}:/ssh-agent
     environment:
       - SSH_AUTH_SOCK=/ssh-agent

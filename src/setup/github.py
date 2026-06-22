@@ -47,9 +47,8 @@ class GitHubSetup(BaseModel):
         g = Github(self.github_token.get_secret_value())
         user = g.get_user()
         if not isinstance(user, AuthenticatedUser):
-            raise TypeError(
-                f"{user=} is not an instance of {AuthenticatedUser.__name__}"
-            )
+            msg = f"{user=} is not an instance of {AuthenticatedUser.__name__}"
+            raise TypeError(msg)
         repo = user.create_repo(repo_name, **self.repo_settings.model_dump())
         try:
             token = self.github_token.get_secret_value()

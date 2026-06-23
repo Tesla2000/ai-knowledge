@@ -8,6 +8,9 @@ from src.files.devcontainer import (
 )
 from src.files.file import File
 from src.files.github.code_owners_file import CodeOwnersFile
+from src.files.github.workflows.claude_review_workflow import (
+    ClaudeReviewWorkflow,
+)
 from src.files.github.workflows.pre_commit_run_workflow import (
     PreCommitRunWorkflow,
 )
@@ -41,12 +44,14 @@ AnyFile = Annotated[
     | CodeOwnersFile
     | PythonVersionFile
     | DevcontainerJsonFile
-    | DevcontainerDockerComposeFile,
+    | DevcontainerDockerComposeFile
+    | ClaudeReviewWorkflow,
     Discriminator("type"),
 ]
 
 __all__ = [
     "AnyFile",
+    "ClaudeReviewWorkflow",
     "CodeOwnersFile",
     "Dependency",
     "DevcontainerDockerComposeFile",

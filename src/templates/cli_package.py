@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections.abc import Mapping
 from pathlib import Path
 from typing import Literal
 
@@ -43,15 +44,19 @@ if __name__ == "__main__":  # pragma: no cover
 """
 
 
-def _default_pyproject_toml(data: dict[str, object]) -> PackagePyprojectToml:
+def _default_pyproject_toml(
+    data: Mapping[str, object],  # ignore
+) -> PackagePyprojectToml:
     description = data["description"]
     if not isinstance(description, str):
-        raise TypeError(f"{description=} is not an instance of str")
+        msg = f"{description=} is not an instance of str"
+        raise TypeError(msg)
     python_version = data["python_version"]
     if not isinstance(python_version, PythonVersion):
-        raise TypeError(
+        msg = (
             f"{python_version=} is not an instance of {PythonVersion.__name__}"
         )
+        raise TypeError(msg)
     return PackagePyprojectToml(
         description=description,
         dependencies=(
@@ -63,13 +68,14 @@ def _default_pyproject_toml(data: dict[str, object]) -> PackagePyprojectToml:
 
 
 def _default_pre_commit_config_cli(
-    data: dict[str, object],
+    data: Mapping[str, object],  # ignore
 ) -> PreCommitConfig:
     python_version = data["python_version"]
     if not isinstance(python_version, PythonVersion):
-        raise TypeError(
+        msg = (
             f"{python_version=} is not an instance of {PythonVersion.__name__}"
         )
+        raise TypeError(msg)
     return PreCommitConfig(
         python_version=python_version,
         mypy_additional_dependencies=_CLI_MYPY_DEPS,

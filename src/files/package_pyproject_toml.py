@@ -21,7 +21,9 @@ class Dependency(BaseModel):
         return f"{self.name}{self.constraint}"
 
 
-def _default_classifiers(data: dict[str, object]) -> tuple[str, ...]:
+def _default_classifiers(
+    data: dict[str, object],  # ignore
+) -> tuple[str, ...]:
     python_version = data.get("python_version")
     min_minor = (
         python_version.minor

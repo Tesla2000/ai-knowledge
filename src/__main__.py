@@ -21,7 +21,8 @@ from src.templates import AnyTemplate
 
 def _ensure_absolute(path: Path) -> Path:
     if not path.is_absolute():
-        raise ValueError(f"{path} is not absolute")
+        msg = f"{path} is not absolute"
+        raise ValueError(msg)
     return path
 
 
@@ -41,8 +42,8 @@ class Generate(BaseSettings):
     @model_validator(mode="before")
     @staticmethod
     def _assign_repo_name(
-        data: MutableMapping[str, object],
-    ) -> MutableMapping[str, object]:
+        data: MutableMapping[str, object],  # ignore
+    ) -> MutableMapping[str, object]:  # ignore
         template = data.setdefault("template", {})
         if not isinstance(template, MutableMapping):
             return data

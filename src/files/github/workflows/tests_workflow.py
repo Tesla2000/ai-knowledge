@@ -10,14 +10,17 @@ from src.files._types import FileType
 from src.files.python_version_file import PythonVersion
 
 
-def _content(validated_data: dict[str, object]) -> str:
+def _content(
+    validated_data: dict[str, object],  # ignore
+) -> str:
     python_version = validated_data.get(
         "python_version", PythonVersion(minor=12)
     )
     if not isinstance(python_version, PythonVersion):
-        raise TypeError(
+        msg = (
             f"{python_version=} is not an instance of {PythonVersion.__name__}"
         )
+        raise TypeError(msg)
     matrix_versions = ", ".join(
         f'"3.{minor}"' for minor in range(python_version.minor, 15)
     )

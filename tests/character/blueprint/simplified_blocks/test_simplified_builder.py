@@ -6,7 +6,8 @@ from dnd.character.blueprint.building_blocks.level_up.level_incrementer import (
     LevelIncrementer,
 )
 from dnd.character.blueprint.building_blocks.level_up.spell_assignment import (
-    RandomSpellAssigner,
+    SorcererRandomSpellAssigner,
+    WizardRandomSpellAssigner,
 )
 from dnd.character.blueprint.building_blocks.race_assigner import (
     RaceAssigner,
@@ -95,8 +96,8 @@ class TestSimplifiedBuilder:
                 HealthIncreaseAverage(class_=Class.WIZARD),
             ),
             spell_assigners=(
-                RandomSpellAssigner(class_=Class.WIZARD),
-                RandomSpellAssigner(class_=Class.WIZARD),
+                WizardRandomSpellAssigner(),
+                WizardRandomSpellAssigner(),
             ),
         )
         builder = Builder(building_blocks=(blocks,))
@@ -151,7 +152,7 @@ class TestSimplifiedBuilder:
         with pytest.raises(ValidationError):
             SimplifiedBlocks(
                 classes=classes,
-                spell_assigners=(RandomSpellAssigner(class_=Class.WIZARD),),
+                spell_assigners=(WizardRandomSpellAssigner(),),
             )
 
     def test_invalid_spell_assigner_classes(self):
@@ -160,8 +161,8 @@ class TestSimplifiedBuilder:
             SimplifiedBlocks(
                 classes=classes,
                 spell_assigners=(
-                    RandomSpellAssigner(class_=Class.WIZARD),
-                    RandomSpellAssigner(class_=Class.WIZARD),
+                    WizardRandomSpellAssigner(),
+                    WizardRandomSpellAssigner(),
                 ),
             )
         assert "spell_assignment_classes" in str(exc_info.value)
@@ -181,8 +182,8 @@ class TestSimplifiedBuilder:
                     HealthIncreaseAverage(class_=Class.WIZARD),
                 ),
                 spell_assigners=(
-                    RandomSpellAssigner(class_=Class.SORCERER),
-                    RandomSpellAssigner(class_=Class.WIZARD),
+                    SorcererRandomSpellAssigner(),
+                    WizardRandomSpellAssigner(),
                 ),
             )
         assert "Level increment classes don't match for level=1" in str(exc_info.value)

@@ -19,6 +19,8 @@ class TestBuildingBlocksDocumentation(unittest.TestCase):
         missing_docstrings = []
 
         for block_class in get_unique_subclasses(SerializableBlock):
+            if "[" in block_class.__name__:
+                continue  # skip PEP 695 parameterized generic stubs
             if not block_class.__doc__:
                 missing_docstrings.append(block_class.__name__)
 
@@ -33,6 +35,8 @@ class TestBuildingBlocksDocumentation(unittest.TestCase):
         missing_descriptions = []
 
         for block_class in get_unique_subclasses(SerializableBlock):
+            if "[" in block_class.__name__:
+                continue  # skip PEP 695 parameterized generic stubs
             for field_name, field_info in block_class.model_fields.items():
                 if field_name == BLOCK_TYPE_FIELD_NAME:
                     continue  # Skip discriminator field

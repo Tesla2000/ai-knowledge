@@ -6,6 +6,7 @@ from collections.abc import Mapping
 from itertools import filterfalse
 from typing import Annotated
 from typing import Self
+from typing import TYPE_CHECKING
 
 from dnd.character.ability import Ability
 from dnd.character.armor.armors import ARMORS
@@ -147,151 +148,341 @@ class PresentableCharacter(Character):
                     )
         return self
 
-    @computed_field  # type: ignore[prop-decorator]
-    @property
-    def abilities(self) -> dict[Skill, int]:
-        return {
-            s: self._get_modifier(skill2ability[s])
-            + (s in self.skill_proficiencies) * self.proficiency_bonus
-            for s in Skill
-            if s != Skill.ANY_OF_YOUR_CHOICE
-        }
+    if TYPE_CHECKING:
 
-    @computed_field  # type: ignore[prop-decorator]
-    @property
-    def initiative(self) -> int:
-        return self._get_modifier(Statistic.DEXTERITY) + 5 * (
-            FeatName.ALERT in self.feats
-        )
+        @property
+        def abilities(self) -> dict[Skill, int]:
+            return {
+                s: self._get_modifier(skill2ability[s])
+                + (s in self.skill_proficiencies) * self.proficiency_bonus
+                for s in Skill
+                if s != Skill.ANY_OF_YOUR_CHOICE
+            }
 
-    @computed_field  # type: ignore[prop-decorator]
-    @property
-    def passive_perception(self) -> int:
-        return self.abilities[Skill.PERCEPTION] + 10
+    else:
 
-    @computed_field  # type: ignore[prop-decorator]
-    @property
-    def proficiency_bonus(self) -> int:
-        return (self.level - 1) // 4 + 2
+        @computed_field
+        @property
+        def abilities(self) -> dict[Skill, int]:
+            return {
+                s: self._get_modifier(skill2ability[s])
+                + (s in self.skill_proficiencies) * self.proficiency_bonus
+                for s in Skill
+                if s != Skill.ANY_OF_YOUR_CHOICE
+            }
 
-    @computed_field  # type: ignore[prop-decorator]
-    @property
-    def saving_throw_modifiers(self) -> dict[Statistic, int]:
-        return {
-            s: self._get_modifier(s)
-            + self.proficiency_bonus * (s in self.saving_throw_proficiencies)
-            for s in Statistic
-        }
+    if TYPE_CHECKING:
 
-    @computed_field  # type: ignore[prop-decorator]
-    @property
-    def ac(self) -> int:
-        return (
-            max(
-                ARMORS[armor].calc_ac(self)
-                for armor in (self.armors + (ArmorName.CLOTHES,))
+        @property
+        def initiative(self) -> int:
+            return self._get_modifier(Statistic.DEXTERITY) + 5 * (
+                FeatName.ALERT in self.feats
             )
-            + self.ac_bonus
-        )
 
-    @computed_field  # type: ignore[prop-decorator]
-    @property
-    def capacity(self) -> int:
-        return 15 * self.stats.get_stat(Statistic.STRENGTH)
+    else:
 
-    @computed_field  # type: ignore[prop-decorator]
-    @property
-    def spellcasting_ability(self) -> Statistic | None:
-        spellcasting_classes = list(
-            filter(
-                lambda class_: (
-                    class_ in SPELLCASTING_ABILITY_MAP
-                    or (
-                        class_ is Class.FIGHTER
-                        and FighterSubclass.ELDRITCH_KNIGHT in self.subclasses
-                    )
-                    or (
-                        class_ is Class.ROGUE
-                        and RogueSubclass.ARCANE_TRICKSTER in self.subclasses
-                    )
-                ),
-                self.classes,
+        @computed_field
+        @property
+        def initiative(self) -> int:
+            return self._get_modifier(Statistic.DEXTERITY) + 5 * (
+                FeatName.ALERT in self.feats
             )
-        )
-        if not spellcasting_classes:
-            return None
-        return SPELLCASTING_ABILITY_MAP.get(
-            max(spellcasting_classes, key=self.classes.__getitem__),
-            Statistic.INTELLIGENCE,
-        )
 
-    @computed_field  # type: ignore[prop-decorator]
-    @property
-    def spell_save_dc(self) -> int | None:
-        if self.spellcasting_ability is None:
-            return None
-        return (
-            8
-            + self.proficiency_bonus
-            + self._get_modifier(self.spellcasting_ability)
-            + self.spell_save_dc_bonus
-        )
+    if TYPE_CHECKING:
 
-    @computed_field  # type: ignore[prop-decorator]
-    @property
-    def spell_attack_bonus(self) -> int | None:
-        if self.spellcasting_ability is None:
-            return None
-        return (
-            self._get_spellcasting_modifier()
-            + self.proficiency_bonus
-            + self.spellcasting_ability_bonus
-        )
+        @property
+        def passive_perception(self) -> int:
+            return self.abilities[Skill.PERCEPTION] + 10
 
-    @computed_field  # type: ignore[prop-decorator]
-    @property
-    def n_prepared_spells(self) -> NonNegativeInt:
-        return self.level + max(0, self._get_spellcasting_modifier())
+    else:
 
-    @computed_field  # type: ignore[prop-decorator]
-    @property
-    def actions(self) -> dict[ActionType, list[Ability]]:
-        actions = defaultdict(list)
-        for feat in filterfalse(FeatName.ABILITY_SCORE_IMPROVEMENT.__eq__, self.feats):
-            ability = feat_name_to_feat(feat).ability
-            if ability:
-                actions[ability.action_type].append(ability)
-        for ability_name in self.other_active_abilities:
-            ability_name = ability_name.split(":")[0]
-            ability = Ability.model_validate_json(
-                resource_paths.race_abilities_root.joinpath(self.race.value)
-                .joinpath(f"{ability_name}.json")
-                .read_text()
-            )
-            actions[ability.action_type].append(ability)
-        for class_, class_level in self.classes.items():
-            for (
-                main_class_ability_path
-            ) in resource_paths.main_class_abilities_root.joinpath(class_).iterdir():
-                self._add_action(
-                    actions,
-                    json.loads(main_class_ability_path.read_text()),
-                    class_level,
+        @computed_field
+        @property
+        def passive_perception(self) -> int:
+            return self.abilities[Skill.PERCEPTION] + 10
+
+    if TYPE_CHECKING:
+
+        @property
+        def proficiency_bonus(self) -> int:
+            return (self.level - 1) // 4 + 2
+
+    else:
+
+        @computed_field
+        @property
+        def proficiency_bonus(self) -> int:
+            return (self.level - 1) // 4 + 2
+
+    if TYPE_CHECKING:
+
+        @property
+        def saving_throw_modifiers(self) -> dict[Statistic, int]:
+            return {
+                s: self._get_modifier(s)
+                + self.proficiency_bonus * (s in self.saving_throw_proficiencies)
+                for s in Statistic
+            }
+
+    else:
+
+        @computed_field
+        @property
+        def saving_throw_modifiers(self) -> dict[Statistic, int]:
+            return {
+                s: self._get_modifier(s)
+                + self.proficiency_bonus * (s in self.saving_throw_proficiencies)
+                for s in Statistic
+            }
+
+    if TYPE_CHECKING:
+
+        @property
+        def ac(self) -> int:
+            return (
+                max(
+                    ARMORS[armor].calc_ac(self)
+                    for armor in (self.armors + (ArmorName.CLOTHES,))
                 )
-            for subclass_name in self.subclasses:
-                if subclass_name not in SUBCLASSES[class_]:
-                    continue
-                for sub_class_ability_path in (
-                    resource_paths.sub_class_abilities_root.joinpath(class_)
-                    .joinpath(subclass_name)
-                    .iterdir()
-                ):
+                + self.ac_bonus
+            )
+
+    else:
+
+        @computed_field
+        @property
+        def ac(self) -> int:
+            return (
+                max(
+                    ARMORS[armor].calc_ac(self)
+                    for armor in (self.armors + (ArmorName.CLOTHES,))
+                )
+                + self.ac_bonus
+            )
+
+    if TYPE_CHECKING:
+
+        @property
+        def capacity(self) -> int:
+            return 15 * self.stats.get_stat(Statistic.STRENGTH)
+
+    else:
+
+        @computed_field
+        @property
+        def capacity(self) -> int:
+            return 15 * self.stats.get_stat(Statistic.STRENGTH)
+
+    if TYPE_CHECKING:
+
+        @property
+        def spellcasting_ability(self) -> Statistic | None:
+            spellcasting_classes = list(
+                filter(
+                    lambda class_: (
+                        class_ in SPELLCASTING_ABILITY_MAP
+                        or (
+                            class_ is Class.FIGHTER
+                            and FighterSubclass.ELDRITCH_KNIGHT in self.subclasses
+                        )
+                        or (
+                            class_ is Class.ROGUE
+                            and RogueSubclass.ARCANE_TRICKSTER in self.subclasses
+                        )
+                    ),
+                    self.classes,
+                )
+            )
+            if not spellcasting_classes:
+                return None
+            return SPELLCASTING_ABILITY_MAP.get(
+                max(spellcasting_classes, key=self.classes.__getitem__),
+                Statistic.INTELLIGENCE,
+            )
+
+    else:
+
+        @computed_field
+        @property
+        def spellcasting_ability(self) -> Statistic | None:
+            spellcasting_classes = list(
+                filter(
+                    lambda class_: (
+                        class_ in SPELLCASTING_ABILITY_MAP
+                        or (
+                            class_ is Class.FIGHTER
+                            and FighterSubclass.ELDRITCH_KNIGHT in self.subclasses
+                        )
+                        or (
+                            class_ is Class.ROGUE
+                            and RogueSubclass.ARCANE_TRICKSTER in self.subclasses
+                        )
+                    ),
+                    self.classes,
+                )
+            )
+            if not spellcasting_classes:
+                return None
+            return SPELLCASTING_ABILITY_MAP.get(
+                max(spellcasting_classes, key=self.classes.__getitem__),
+                Statistic.INTELLIGENCE,
+            )
+
+    if TYPE_CHECKING:
+
+        @property
+        def spell_save_dc(self) -> int | None:
+            if self.spellcasting_ability is None:
+                return None
+            return (
+                8
+                + self.proficiency_bonus
+                + self._get_modifier(self.spellcasting_ability)
+                + self.spell_save_dc_bonus
+            )
+
+    else:
+
+        @computed_field
+        @property
+        def spell_save_dc(self) -> int | None:
+            if self.spellcasting_ability is None:
+                return None
+            return (
+                8
+                + self.proficiency_bonus
+                + self._get_modifier(self.spellcasting_ability)
+                + self.spell_save_dc_bonus
+            )
+
+    if TYPE_CHECKING:
+
+        @property
+        def spell_attack_bonus(self) -> int | None:
+            if self.spellcasting_ability is None:
+                return None
+            return (
+                self._get_spellcasting_modifier()
+                + self.proficiency_bonus
+                + self.spellcasting_ability_bonus
+            )
+
+    else:
+
+        @computed_field
+        @property
+        def spell_attack_bonus(self) -> int | None:
+            if self.spellcasting_ability is None:
+                return None
+            return (
+                self._get_spellcasting_modifier()
+                + self.proficiency_bonus
+                + self.spellcasting_ability_bonus
+            )
+
+    if TYPE_CHECKING:
+
+        @property
+        def n_prepared_spells(self) -> NonNegativeInt:
+            return self.level + max(0, self._get_spellcasting_modifier())
+
+    else:
+
+        @computed_field
+        @property
+        def n_prepared_spells(self) -> NonNegativeInt:
+            return self.level + max(0, self._get_spellcasting_modifier())
+
+    if TYPE_CHECKING:
+
+        @property
+        def actions(self) -> dict[ActionType, list[Ability]]:
+            actions = defaultdict(list)
+            for feat in filterfalse(
+                FeatName.ABILITY_SCORE_IMPROVEMENT.__eq__, self.feats
+            ):
+                ability = feat_name_to_feat(feat).ability
+                if ability:
+                    actions[ability.action_type].append(ability)
+            for ability_name in self.other_active_abilities:
+                ability_name = ability_name.split(":")[0]
+                ability = Ability.model_validate_json(
+                    resource_paths.race_abilities_root.joinpath(self.race.value)
+                    .joinpath(f"{ability_name}.json")
+                    .read_text()
+                )
+                actions[ability.action_type].append(ability)
+            for class_, class_level in self.classes.items():
+                for (
+                    main_class_ability_path
+                ) in resource_paths.main_class_abilities_root.joinpath(
+                    class_
+                ).iterdir():
                     self._add_action(
                         actions,
-                        json.loads(sub_class_ability_path.read_text()),
+                        json.loads(main_class_ability_path.read_text()),
                         class_level,
                     )
-        return actions
+                for subclass_name in self.subclasses:
+                    if subclass_name not in SUBCLASSES[class_]:
+                        continue
+                    for sub_class_ability_path in (
+                        resource_paths.sub_class_abilities_root.joinpath(class_)
+                        .joinpath(subclass_name)
+                        .iterdir()
+                    ):
+                        self._add_action(
+                            actions,
+                            json.loads(sub_class_ability_path.read_text()),
+                            class_level,
+                        )
+            return actions
+
+    else:
+
+        @computed_field
+        @property
+        def actions(self) -> dict[ActionType, list[Ability]]:
+            actions = defaultdict(list)
+            for feat in filterfalse(
+                FeatName.ABILITY_SCORE_IMPROVEMENT.__eq__, self.feats
+            ):
+                ability = feat_name_to_feat(feat).ability
+                if ability:
+                    actions[ability.action_type].append(ability)
+            for ability_name in self.other_active_abilities:
+                ability_name = ability_name.split(":")[0]
+                ability = Ability.model_validate_json(
+                    resource_paths.race_abilities_root.joinpath(self.race.value)
+                    .joinpath(f"{ability_name}.json")
+                    .read_text()
+                )
+                actions[ability.action_type].append(ability)
+            for class_, class_level in self.classes.items():
+                for (
+                    main_class_ability_path
+                ) in resource_paths.main_class_abilities_root.joinpath(
+                    class_
+                ).iterdir():
+                    self._add_action(
+                        actions,
+                        json.loads(main_class_ability_path.read_text()),
+                        class_level,
+                    )
+                for subclass_name in self.subclasses:
+                    if subclass_name not in SUBCLASSES[class_]:
+                        continue
+                    for sub_class_ability_path in (
+                        resource_paths.sub_class_abilities_root.joinpath(class_)
+                        .joinpath(subclass_name)
+                        .iterdir()
+                    ):
+                        self._add_action(
+                            actions,
+                            json.loads(sub_class_ability_path.read_text()),
+                            class_level,
+                        )
+            return actions
 
     def _add_action(
         self,
@@ -299,24 +490,40 @@ class PresentableCharacter(Character):
         data: Mapping[str, object],  # ignore
         class_level: int,
     ) -> None:
-        ability = Ability(**data)  # type: ignore[arg-type]
+        ability = Ability(**data)
         if not self._is_ability_accessible(ability, class_level):
             return
         actions[ability.action_type].append(ability)
 
-    @computed_field  # type: ignore[prop-decorator]
-    @property
-    def health(self) -> int:
-        constitution_modifier = self._get_modifier(Statistic.CONSTITUTION)
-        health_increase_per_level = constitution_modifier
-        if FeatName.TOUGH in self.feats:
-            health_increase_per_level += 2
-        if self.race == Race.DWARF:
-            health_increase_per_level += 1
-        return self.health_base + self.level * health_increase_per_level
+    if TYPE_CHECKING:
+
+        @property
+        def health(self) -> int:
+            constitution_modifier = self._get_modifier(Statistic.CONSTITUTION)
+            health_increase_per_level = constitution_modifier
+            if FeatName.TOUGH in self.feats:
+                health_increase_per_level += 2
+            if self.race == Race.DWARF:
+                health_increase_per_level += 1
+            return self.health_base + self.level * health_increase_per_level
+
+    else:
+
+        @computed_field
+        @property
+        def health(self) -> int:
+            constitution_modifier = self._get_modifier(Statistic.CONSTITUTION)
+            health_increase_per_level = constitution_modifier
+            if FeatName.TOUGH in self.feats:
+                health_increase_per_level += 2
+            if self.race == Race.DWARF:
+                health_increase_per_level += 1
+            return self.health_base + self.level * health_increase_per_level
 
     def _get_spellcasting_modifier(self) -> int:
-        return self._get_modifier(self.spellcasting_ability)  # type: ignore[arg-type]
+        if self.spellcasting_ability is None:
+            return 0
+        return self._get_modifier(self.spellcasting_ability)
 
     def _get_modifier(self, statistic: Statistic) -> int:
         return self.stats.get_modifier(statistic)
@@ -326,6 +533,6 @@ class PresentableCharacter(Character):
         ability: Ability,
         class_level: int,
     ) -> bool:
-        return (
-            ability and ability.combat_related and ability.required_level <= class_level  # type: ignore[return-value]
+        return bool(
+            ability and ability.combat_related and ability.required_level <= class_level
         )

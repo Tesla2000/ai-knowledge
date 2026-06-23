@@ -2,13 +2,15 @@
 
 from __future__ import annotations
 
-from dnd.character.blueprint.blueprint import Blueprint
-from dnd.character.blueprint.blueprint_formatter import (
-    BlueprintFormatter,
-)
+from typing_protocol_intersection import ProtocolIntersection
+
+from dnd.character.blueprint.blueprint_formatter import BlueprintFormatter
 from dnd.character.blueprint.building_blocks.skill_choice_resolver.base import (
     SkillChoiceResolver,
 )
+from dnd.character.blueprint.state import HasNSkillChoices
+from dnd.character.blueprint.state import HasSkillProficiencies
+from dnd.character.blueprint.state import HasSkillsToChooseFrom
 from dnd.skill_proficiency import Skill
 from langchain_openai import ChatOpenAI
 from pydantic import BaseModel
@@ -23,7 +25,12 @@ class SkillSelection(BaseModel):
     )
 
 
-class AISkillChoiceResolver(SkillChoiceResolver):
+class AISkillChoiceResolver[
+    T: ProtocolIntersection[
+        ProtocolIntersection[HasNSkillChoices, HasSkillsToChooseFrom],
+        HasSkillProficiencies,
+    ]
+](SkillChoiceResolver[T]):
     """AI-powered skill choice resolver that selects skills based on character context.
 
     Uses an LLM to make intelligent skill selections based on the character's
@@ -47,17 +54,9 @@ class AISkillChoiceResolver(SkillChoiceResolver):
         description="Blueprint formatter for creating AI prompts",
     )
 
-    def _build_prompt(self, blueprint: Blueprint) -> str:
-        """Build a prompt for AI skill selection.
-
-        Args:
-            blueprint: Current character blueprint.
-
-        Returns:
-            Formatted prompt string.
-        """
-        n = blueprint.n_skill_choices
-        available_skills = blueprint.skills_to_choose_from
+    def _build_prompt(self, state: T) -> str:
+        n = state.n_skill_choices
+        available_skills = state.skills_to_choose_from
 
         parts = [
             f"You are selecting {n} skill proficiencies for a D&D 5e character.",
@@ -65,16 +64,13 @@ class AISkillChoiceResolver(SkillChoiceResolver):
             "ability scores, and overall concept.",
         ]
 
-        # Use formatter to add character details
-        character_description = self.formatter.format(blueprint)
+        character_description = self.formatter.format(state)
         if character_description:
             parts.append(character_description)
 
-        # Add available skills
         parts.append("\n## Available Skills")
         parts.append(f"Select exactly {n} skills from the following options:\n")
 
-        # Filter out ANY_OF_YOUR_CHOICE placeholder
         actual_skills = [
             skill for skill in available_skills if skill != Skill.ANY_OF_YOUR_CHOICE
         ]
@@ -82,7 +78,6 @@ class AISkillChoiceResolver(SkillChoiceResolver):
         for skill in sorted(actual_skills, key=lambda s: s.value):
             parts.append(f"  - {skill.value}")
 
-        # Add selection instructions
         parts.append("\n## Selection Instructions")
         parts.append(f"Return exactly {n} skills from the available options above.")
         parts.append(
@@ -95,17 +90,8 @@ class AISkillChoiceResolver(SkillChoiceResolver):
 
         return "\n".join(parts)
 
-    def _select_skills(self, blueprint: Blueprint) -> frozenset[Skill]:
-        """Use AI to select skills from available options.
-
-        Args:
-            blueprint: Current character blueprint.
-
-        Returns:
-            Frozenset of AI-selected skills.
-        """
-        # Build prompt and get AI selection
-        prompt = self._build_prompt(blueprint)
+    def _select_skills(self, state: T) -> frozenset[Skill]:
+        prompt = self._build_prompt(state)
 
         structured_llm = self.llm.with_structured_output(SkillSelection)
         _result = structured_llm.invoke(prompt)
@@ -113,21 +99,18 @@ class AISkillChoiceResolver(SkillChoiceResolver):
             raise TypeError(f"Expected SkillSelection, got {type(_result)}")
         selection = _result
 
-        # Validate selection
-        if len(selection.selected_skills) != blueprint.n_skill_choices:
+        if len(selection.selected_skills) != state.n_skill_choices:
             raise ValueError(
                 f"AI returned {len(selection.selected_skills)} skills "
-                f"but expected {blueprint.n_skill_choices}"
+                f"but expected {state.n_skill_choices}"
             )
 
-        # Filter out ANY_OF_YOUR_CHOICE if present
         actual_available = frozenset(
             skill
-            for skill in blueprint.skills_to_choose_from
+            for skill in state.skills_to_choose_from
             if skill != Skill.ANY_OF_YOUR_CHOICE
         )
 
-        # Validate all selected skills are available
         for skill in selection.selected_skills:
             if skill not in actual_available:
                 raise ValueError(

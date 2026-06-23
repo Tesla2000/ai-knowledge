@@ -7,26 +7,41 @@ from dnd.character.blueprint.building_blocks.get_discriminator import (
     get_discriminator,
 )
 from dnd.character.blueprint.building_blocks.level_up.spell_assignment.llm import (
-    LLMSpellAssigner,
+    SorcererLLMSpellAssigner,
+    WizardLLMSpellAssigner,
 )
 from dnd.character.blueprint.building_blocks.level_up.spell_assignment.random import (
-    RandomSpellAssigner,
+    SorcererRandomSpellAssigner,
+    WizardRandomSpellAssigner,
 )
 from pydantic import Tag
 
 AnySpellAssigner = Annotated[
     Union[
         Annotated[
-            RandomSpellAssigner,
-            Tag(RandomSpellAssigner.get_block_type()),
+            WizardRandomSpellAssigner,
+            Tag(WizardRandomSpellAssigner.get_block_type()),
         ],
-        Annotated[LLMSpellAssigner, Tag(LLMSpellAssigner.get_block_type())],
+        Annotated[
+            SorcererRandomSpellAssigner,
+            Tag(SorcererRandomSpellAssigner.get_block_type()),
+        ],
+        Annotated[
+            WizardLLMSpellAssigner,
+            Tag(WizardLLMSpellAssigner.get_block_type()),
+        ],
+        Annotated[
+            SorcererLLMSpellAssigner,
+            Tag(SorcererLLMSpellAssigner.get_block_type()),
+        ],
     ],
     get_discriminator(),
 ]
 
 __all__ = [
-    "RandomSpellAssigner",
-    "LLMSpellAssigner",
+    "WizardRandomSpellAssigner",
+    "SorcererRandomSpellAssigner",
+    "WizardLLMSpellAssigner",
+    "SorcererLLMSpellAssigner",
     "AnySpellAssigner",
 ]

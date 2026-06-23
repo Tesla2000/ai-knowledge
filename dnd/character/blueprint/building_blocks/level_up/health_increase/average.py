@@ -1,12 +1,13 @@
 from __future__ import annotations
 
+from dnd.character.blueprint.state import HasClasses
 from dnd.character.blueprint.building_blocks.level_up.health_increase.base import (
     HealthIncrease,
 )
 from dnd.choices.equipment_creation.weapons import HitDieSize
 
 
-class HealthIncreaseAverage(HealthIncrease):
+class HealthIncreaseAverage(HealthIncrease[HasClasses]):
     """Fixed health increase strategy.
 
     Uses the average value of the hit die (hit_die // 2 + 1) for non-first levels.

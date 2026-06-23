@@ -2,17 +2,19 @@
 
 from __future__ import annotations
 
-from dnd.character.blueprint.blueprint import Blueprint
-from dnd.character.blueprint.blueprint_formatter import (
-    BlueprintFormatter,
-)
+from collections.abc import Generator
+
+from dnd.character.blueprint.blueprint_formatter import BlueprintFormatter
 from dnd.character.blueprint.building_blocks.language_choice_resolver.base import (
     LanguageChoiceResolver,
+    LanguagesDelta,
 )
+from dnd.character.blueprint.state import HasLanguages
 from dnd.choices.language import Language
 from langchain_openai import ChatOpenAI
 from pydantic import BaseModel
 from pydantic import Field
+from typing_protocol_intersection import ProtocolIntersection
 
 
 class LanguageSelection(BaseModel):
@@ -21,7 +23,7 @@ class LanguageSelection(BaseModel):
     languages: set[Language] = Field(default_factory=set)
 
 
-class AILanguageChoiceResolver(LanguageChoiceResolver):
+class AILanguageChoiceResolver[T: HasLanguages](LanguageChoiceResolver[T]):
     """AI-powered resolver for Language.ANY_OF_YOUR_CHOICE placeholders.
 
     Uses an LLM to make intelligent language selections based on
@@ -42,23 +44,11 @@ class AILanguageChoiceResolver(LanguageChoiceResolver):
         description="Blueprint formatter for creating AI prompts",
     )
 
-    def _select_from_available(
-        self, available: list[Language], blueprint: Blueprint
-    ) -> Language:
-        """Not used in AI implementation - overrides _get_change instead."""
-        raise NotImplementedError(
-            "AILanguageChoiceResolver overrides _get_change directly"
-        )
+    def _select_from_available(self, available: list[Language], state: T) -> Language:
+        """Not used — this class overrides get_change directly."""
+        raise NotImplementedError("AILanguageChoiceResolver overrides get_change")
 
-    def _build_prompt(self, blueprint: Blueprint) -> str:
-        """Build a prompt for AI language selection.
-
-        Args:
-            blueprint: Current character blueprint.
-
-        Returns:
-            Formatted prompt string.
-        """
+    def _build_prompt(self, state: T) -> str:
         system_prompt = (
             "You are resolving Language.ANY_OF_YOUR_CHOICE placeholders "
             "for a D&D 5e character.\n"
@@ -67,15 +57,14 @@ class AILanguageChoiceResolver(LanguageChoiceResolver):
         )
 
         character_description = self.formatter.format(
-            blueprint, system_prompt=system_prompt
+            state, system_prompt=system_prompt
         )
 
         instructions = ["\n## Placeholders to Resolve\n"]
 
-        # Count language placeholders
-        count = list(blueprint.languages).count(Language.ANY_OF_YOUR_CHOICE)
+        count = list(state.languages).count(Language.ANY_OF_YOUR_CHOICE)
         if count == 0:
-            return ""  # No placeholders to resolve
+            return ""
 
         instructions.append(
             f"Languages: {count} ANY_OF_YOUR_CHOICE placeholder(s) to replace"
@@ -83,7 +72,6 @@ class AILanguageChoiceResolver(LanguageChoiceResolver):
         instructions.append(
             f"  Available: {', '.join(language.value for language in Language if language != Language.ANY_OF_YOUR_CHOICE)}"
         )
-
         instructions.append(
             "\n## Selection Instructions\n"
             "Return the complete language set with placeholders replaced "
@@ -95,23 +83,19 @@ class AILanguageChoiceResolver(LanguageChoiceResolver):
 
         return character_description + "\n".join(instructions)
 
-    def get_change(self, blueprint: Blueprint) -> Blueprint:
-        """Replace Language.ANY_OF_YOUR_CHOICE placeholders using AI.
+    def get_change(
+        self, state: T
+    ) -> Generator[LanguagesDelta, None, ProtocolIntersection[T, HasLanguages]]:
+        if Language.ANY_OF_YOUR_CHOICE not in state.languages:
+            delta = LanguagesDelta(languages=frozenset(state.languages))
+            yield delta
+            return delta.apply(state)
 
-        Args:
-            blueprint: Current character blueprint.
-
-        Returns:
-            Blueprint with language placeholders replaced by AI selections.
-        """
-        # Check if there are any placeholders
-        if Language.ANY_OF_YOUR_CHOICE not in blueprint.languages:
-            return Blueprint()
-
-        # Build prompt and get AI selection
-        prompt = self._build_prompt(blueprint)
+        prompt = self._build_prompt(state)
         if not prompt:
-            return Blueprint()
+            delta = LanguagesDelta(languages=frozenset(state.languages))
+            yield delta
+            return delta.apply(state)
 
         structured_llm = self.llm.with_structured_output(LanguageSelection)
         _result = structured_llm.invoke(prompt)
@@ -119,16 +103,16 @@ class AILanguageChoiceResolver(LanguageChoiceResolver):
             raise TypeError(f"Expected LanguageSelection, got {type(_result)}")
         selection = _result
 
-        # Validate selection count
-        count = list(blueprint.languages).count(Language.ANY_OF_YOUR_CHOICE)
+        count = list(state.languages).count(Language.ANY_OF_YOUR_CHOICE)
         if len(selection.languages) != count:
             raise ValueError(
                 f"AI returned {len(selection.languages)} languages but expected {count}"
             )
 
-        # Replace placeholders
-        new_languages = set(blueprint.languages)
+        new_languages = set(state.languages)
         new_languages.discard(Language.ANY_OF_YOUR_CHOICE)
         new_languages.update(selection.languages)
 
-        return Blueprint(languages=new_languages)  # type: ignore[arg-type]
+        delta = LanguagesDelta(languages=frozenset(new_languages))
+        yield delta
+        return delta.apply(state)

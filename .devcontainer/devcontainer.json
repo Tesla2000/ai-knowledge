@@ -19,6 +19,7 @@
       "type": "bind"
     }
   ],
+  "postStartCommand": "chown -R dev:dev /home/dev/.claude",
   "postCreateCommand": "bash .devcontainer/post-create.sh",
   "customizations": {
     "vscode": {

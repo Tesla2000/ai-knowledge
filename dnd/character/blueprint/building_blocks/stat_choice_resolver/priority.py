@@ -1,18 +1,23 @@
 from __future__ import annotations
 
-from dnd.character.blueprint.blueprint import Blueprint
+from typing_protocol_intersection import ProtocolIntersection
+
 from dnd.character.blueprint.building_blocks.stat_choice_resolver.base import (
     StatChoiceResolver,
 )
-from dnd.character.blueprint.building_blocks.stats_priority import (
-    StatsPriority,
-)
+from dnd.character.blueprint.building_blocks.stats_priority import StatsPriority
+from dnd.character.blueprint.state import HasNStatChoices
+from dnd.character.blueprint.state import HasStats
+from dnd.character.blueprint.state import HasStatsCup
+from dnd.character.stats import Stats
 from dnd.choices.stats_creation.statistic import Statistic
 from pydantic import ConfigDict
 from pydantic import Field
 
 
-class PriorityStatChoiceResolver(StatChoiceResolver):
+class PriorityStatChoiceResolver[T: ProtocolIntersection[HasStats, HasNStatChoices]](
+    StatChoiceResolver[T]
+):
     """Resolves stat choices based on a priority order.
 
     Uses logic similar to ability score improvements: prioritizes making odd
@@ -34,8 +39,6 @@ class PriorityStatChoiceResolver(StatChoiceResolver):
         ...         Statistic.CHARISMA,
         ...     )
         ... )
-        >>> # Distributes points intelligently based on current stat values
-        >>> # Prioritizes odd stats to maximize modifier improvements
     """
 
     model_config = ConfigDict(frozen=True)
@@ -44,29 +47,31 @@ class PriorityStatChoiceResolver(StatChoiceResolver):
         description="Ability scores ranked by priority for stat increase allocation"
     )
 
-    def select_stats_to_increase(self, blueprint: Blueprint) -> dict[Statistic, int]:
-        """Select stats to increase based on priority order.
+    _default_stat_cap: Stats = Stats(
+        strength=20,
+        dexterity=20,
+        constitution=20,
+        intelligence=20,
+        wisdom=20,
+        charisma=20,
+    )
 
-        Simple logic: for each point, add to odd stat if possible (in priority
-        order), otherwise add to highest priority stat below cap.
-
-        Args:
-            blueprint: Current character blueprint.
-
-        Returns:
-            Dictionary mapping statistics to their increases.
-        """
+    def select_stats_to_increase(self, state: T) -> dict[Statistic, int]:
+        """Select stats to increase based on priority order."""
         increases = {stat: 0 for stat in self.priority}
+        stats_cup = (
+            state.stats_cup
+            if isinstance(state, HasStatsCup)
+            else self._default_stat_cap
+        )
 
         def _get_current_value(stat: Statistic) -> int:
-            """Get current value including already-applied increases."""
-            return blueprint.stats.get_stat(stat) + increases[stat]  # type: ignore[union-attr]
+            return state.stats.get_stat(stat) + increases[stat]
 
         def _get_stat_cap(stat: Statistic) -> int:
-            """Get the cap for a stat."""
-            return blueprint.stats_cup.get_stat(stat)
+            return stats_cup.get_stat(stat)
 
-        n_stats = blueprint.n_stat_choices
+        n_stats = state.n_stat_choices
         improvable_stats = tuple(
             stat
             for stat in self.priority

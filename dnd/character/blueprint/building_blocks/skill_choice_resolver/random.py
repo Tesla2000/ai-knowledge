@@ -2,16 +2,25 @@ from __future__ import annotations
 
 import random
 
-from dnd.character.blueprint.blueprint import Blueprint
+from typing_protocol_intersection import ProtocolIntersection
+
 from dnd.character.blueprint.building_blocks.skill_choice_resolver.base import (
     SkillChoiceResolver,
 )
+from dnd.character.blueprint.state import HasNSkillChoices
+from dnd.character.blueprint.state import HasSkillProficiencies
+from dnd.character.blueprint.state import HasSkillsToChooseFrom
 from dnd.skill_proficiency import Skill
 from pydantic import ConfigDict
 from pydantic import Field
 
 
-class RandomSkillChoiceResolver(SkillChoiceResolver):
+class RandomSkillChoiceResolver[
+    T: ProtocolIntersection[
+        ProtocolIntersection[HasNSkillChoices, HasSkillsToChooseFrom],
+        HasSkillProficiencies,
+    ]
+](SkillChoiceResolver[T]):
     """Randomly selects skills from available options.
 
     Provides deterministic randomness when seed is set, useful for
@@ -30,19 +39,10 @@ class RandomSkillChoiceResolver(SkillChoiceResolver):
         description="Optional seed for reproducible random selection",
     )
 
-    def _select_skills(self, blueprint: Blueprint) -> frozenset[Skill]:
-        """Randomly select skills from available options.
-
-        Args:
-            blueprint: Current character blueprint.
-
-        Returns:
-            Frozenset of randomly selected skills.
-        """
+    def _select_skills(self, state: T) -> frozenset[Skill]:
         random.seed(self.seed)
-
-        n = blueprint.n_skill_choices
-        available_skills = blueprint.skills_to_choose_from
+        n = state.n_skill_choices
+        available_skills = state.skills_to_choose_from
 
         if Skill.ANY_OF_YOUR_CHOICE in available_skills:
             available_seq = tuple(set(Skill).difference((Skill.ANY_OF_YOUR_CHOICE,)))

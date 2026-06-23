@@ -2,6 +2,7 @@ from collections import Counter
 from collections.abc import Generator
 from collections.abc import Mapping
 from itertools import chain
+from typing import cast
 from typing import Self
 
 from dnd.character.blueprint.building_blocks import Blocks
@@ -69,7 +70,8 @@ from dnd.character.blueprint.building_blocks.level_up.health_increase import (
     HealthIncreaseAverage,
 )
 from dnd.character.blueprint.building_blocks.level_up.level_incrementer import (
-    LevelIncrementer,
+    SorcererLevelIncrementer,
+    WizardLevelIncrementer,
 )
 from dnd.character.blueprint.building_blocks.level_up.level_up import (
     LevelUp,
@@ -81,7 +83,10 @@ from dnd.character.blueprint.building_blocks.level_up.spell_assignment import (
     AnySpellAssigner,
 )
 from dnd.character.blueprint.building_blocks.level_up.spell_assignment import (
-    RandomSpellAssigner,
+    SorcererRandomSpellAssigner,
+)
+from dnd.character.blueprint.building_blocks.level_up.spell_assignment import (
+    WizardRandomSpellAssigner,
 )
 from dnd.character.blueprint.building_blocks.magical_item_chooser import (
     AnyMagicalItemChooser,
@@ -132,6 +137,28 @@ from pydantic import model_serializer
 from pydantic import model_validator
 from pydantic_core.core_schema import SerializationInfo
 from pydantic_core.core_schema import SerializerFunctionWrapHandler
+
+
+_CLASS_TO_INCREMENTER: dict[
+    Class, type[WizardLevelIncrementer] | type[SorcererLevelIncrementer]
+] = {
+    Class.WIZARD: WizardLevelIncrementer,
+    Class.SORCERER: SorcererLevelIncrementer,
+}
+
+
+def _make_random_spell_assigner(
+    class_: Class,
+) -> WizardRandomSpellAssigner | SorcererRandomSpellAssigner:
+    match class_:
+        case Class.WIZARD:
+            return WizardRandomSpellAssigner()
+        case Class.SORCERER:
+            return SorcererRandomSpellAssigner()
+        case _:
+            raise NotImplementedError(
+                f"Class {class_} not yet supported for random spell assignment"
+            )
 
 
 class Classes(BaseModel):
@@ -229,12 +256,14 @@ class _SimplifiedBlocksFields(BaseModel):
         ),
         description="Combined resolver that handles all character choice decisions",
     )
-    level_incrementers: tuple[LevelIncrementer, ...] = Field(
+    level_incrementers: tuple[
+        WizardLevelIncrementer | SorcererLevelIncrementer, ...
+    ] = Field(
         default_factory=lambda validated_data: (
             tuple(
                 chain.from_iterable(
                     (
-                        level * (LevelIncrementer(class_=class_),)
+                        level * (_CLASS_TO_INCREMENTER[class_](),)
                         for class_, level in validated_data[
                             "classes"
                         ].class_levels.items()
@@ -308,7 +337,7 @@ class _SimplifiedBlocksFields(BaseModel):
             tuple(
                 chain.from_iterable(
                     (
-                        level * (RandomSpellAssigner(class_=class_),)
+                        level * (_make_random_spell_assigner(class_),)
                         for class_, level in validated_data[
                             "classes"
                         ].class_levels.items()
@@ -505,7 +534,7 @@ class SimplifiedBlocks(CombinedBlock, _SimplifiedBlocksFields):
         serialized_value = nxt(self)
         context = info.context
         if not (isinstance(context, dict) and context.get(EXCLUDE_FACTORY_DEFAULTS)):
-            return serialized_value  # type: ignore[no-any-return]
+            return cast(Mapping[str, object], serialized_value)
         differences = {"classes": self.classes}
         for field_name, partial_model in _PARTIAL_MODELS:
             if partial_model.model_validate(
@@ -519,7 +548,10 @@ def _partial_models_creator() -> Generator[tuple[str, type[BaseModel]], None, No
     combined_fields = {}
     for field_name, field_info in SimplifiedBlocks.model_fields.items():
         combined_fields[field_name] = (field_info.annotation, field_info)
-        yield field_name, create_model("Partial", **combined_fields)  # type: ignore[call-overload]
+        yield (
+            field_name,
+            cast(type[BaseModel], create_model("Partial", **combined_fields)),
+        )
 
 
 _PARTIAL_MODELS: tuple[tuple[str, type[BaseModel]], ...] = tuple(

@@ -2,43 +2,80 @@
 
 from __future__ import annotations
 
+from collections.abc import Generator
+from typing import cast
+from typing import TYPE_CHECKING
 
-from abc import ABC
-from abc import abstractmethod
+from typing_protocol_intersection import ProtocolIntersection
 
-from dnd.character.blueprint.blueprint import Blueprint
-from dnd.character.blueprint.building_blocks.building_block import (
-    BuildingBlock,
-)
-from dnd.choices.class_creation.character_class import (
-    AnySubclass,
-)
+from dnd.character.blueprint.building_blocks.building_block import BuildingBlock
+from dnd.character.blueprint.state import Blueprint
+from dnd.character.blueprint.state import BlueprintProtocol
+from dnd.character.blueprint.state import HasClasses
+from dnd.character.blueprint.state import HasSubclasses
+from dnd.character.delta.delta import Delta
+from dnd.choices.class_creation.character_class import AnySubclass
 from dnd.choices.class_creation.character_class import Class
-from dnd.choices.class_creation.character_class import (
-    subclass_level,
-)
-from dnd.choices.class_creation.character_class import (
-    SUBCLASSES,
-)
+from dnd.choices.class_creation.character_class import subclass_level
+from dnd.choices.class_creation.character_class import SUBCLASSES
 from pydantic import ConfigDict
 from pydantic import Field
-from pydantic import model_validator
 
 
 class CanNotAssign(ValueError):
     pass
 
 
-class SubclassAssigner(BuildingBlock, ABC):
-    """Abstract base class for assigning subclasses to characters.
+class SubclassDelta(Delta):
+    """Delta produced when SubclassAssigner assigns a subclass."""
 
-    Subclasses must implement _select_subclass to determine which subclass
-    to assign based on the character's class and context.
+    subclasses: tuple[AnySubclass, ...]
 
-    Example:
-        >>> from dnd.choices.class_creation.character_class import Class
-        >>> assigner = SomeSubclassAssigner(class_=Class.WIZARD)
-        >>> builder = Builder().add(assigner)
+    def apply[T: BlueprintProtocol](
+        self, state: T
+    ) -> ProtocolIntersection[T, HasSubclasses]:
+
+        if TYPE_CHECKING:
+
+            class BlueprintWithSubclasses(Blueprint):
+                subclasses: tuple[AnySubclass, ...]
+
+        else:
+
+            class BlueprintWithSubclasses(type(state)):
+                subclasses: tuple[AnySubclass, ...]
+
+        return cast(
+            ProtocolIntersection[T, HasSubclasses],
+            BlueprintWithSubclasses.model_validate(
+                {**dict(state), "subclasses": self.subclasses}
+            ),
+        )
+
+
+def _check_can_assign(class_: Class, state: HasClasses) -> None:
+    current_level = state.classes.get_level(class_)
+    if current_level == 0:
+        raise CanNotAssign(
+            f"Cannot assign {class_.value} subclass: "
+            f"character does not have {class_.value} class"
+        )
+    required_level = subclass_level[class_]
+    if current_level < required_level:
+        raise CanNotAssign(
+            f"Cannot assign {class_.value} subclass: "
+            f"character level {current_level} "
+            f"is below required level {required_level}"
+        )
+
+
+class SubclassAssigner[T: ProtocolIntersection[HasClasses, HasSubclasses]](
+    BuildingBlock[T, SubclassDelta, HasSubclasses]
+):
+    """Base class for assigning a specific subclass to a character.
+
+    Concrete subclasses narrow `class_` to a `Literal[Class.X]` default and
+    `subclass` to a `Literal[XxxSubclass.A, ...]` — no method override needed.
     """
 
     model_config = ConfigDict(frozen=True)
@@ -46,91 +83,18 @@ class SubclassAssigner(BuildingBlock, ABC):
     class_: Class = Field(
         description="The character class for which to assign a subclass"
     )
-    available_subclasses: tuple[AnySubclass, ...] = Field(
-        default=None,  # type: ignore[arg-type]
-        description="Tuple of subclasses available for selection (defaults to all valid subclasses)",
-    )
+    subclass: AnySubclass = Field(description="The subclass to assign")
 
-    @model_validator(mode="before")
-    @classmethod
-    def _add_available_subclasses(
-        cls,
-        data: dict[str, object],  # ignore
-    ) -> dict[str, object]:  # ignore
-        class_ = Class(data.get("class_"))  # type: ignore[arg-type]
-        subclass_enum = SUBCLASSES[class_]
-        available_subclasses = data.get("available_subclasses", tuple(subclass_enum))
-        if any(subclass not in subclass_enum for subclass in available_subclasses):  # type: ignore[attr-defined]
-            raise ValueError(
-                f"Not all subclasses of {available_subclasses} are available to {class_}"
-            )
-        data["available_subclasses"] = available_subclasses
-        return data
-
-    @abstractmethod
-    def _select_subclass(self, blueprint: Blueprint) -> AnySubclass:
-        """Select a subclass for the character's class.
-
-        Args:
-            blueprint: Current character blueprint containing:
-                - classes: The character's classes and levels
-                - Other character context for informed selection
-
-        Returns:
-            Selected subclass appropriate for the character's class.
-        """
-
-    def get_change(self, blueprint: Blueprint) -> Blueprint:
-        """Assign a subclass to the character.
-
-        Args:
-            blueprint: Current character blueprint.
-
-        Returns:
-            Blueprint with subclass added.
-
-        Raises:
-            CanNotAssign: If class is not in character's classes or level is too low.
-        """
-        # Validate class exists in character
-        if self.class_ not in blueprint.classes:
-            raise CanNotAssign(
-                f"Cannot assign {self.class_.value} subclass: "
-                f"character does not have {self.class_.value} class"
-            )
-
-        # Check if character level is high enough for subclass
-        required_level = subclass_level[self.class_]
-        if blueprint.classes[self.class_] < required_level:
-            raise CanNotAssign(
-                f"Cannot assign {self.class_.value} subclass: "
-                f"character level {blueprint.classes[self.class_]} "
-                f"is below required level {required_level}"
-            )
-
-        # Check if character already has a subclass for this class
+    def get_change(
+        self, state: T
+    ) -> Generator[SubclassDelta, None, ProtocolIntersection[T, HasSubclasses]]:
+        _check_can_assign(self.class_, state)
         subclass_enum = SUBCLASSES[self.class_]
-        existing_subclass = None
-        for existing in blueprint.subclasses:
+        for existing in state.subclasses:
             if isinstance(existing, subclass_enum):
-                existing_subclass = existing
-                break
-
-        if existing_subclass:
-            # Already has a subclass for this class
-            return Blueprint()
-
-        # Select subclass
-        selected_subclass = self._select_subclass(blueprint)
-
-        # Validate selected subclass matches class
-        if not isinstance(selected_subclass, subclass_enum):
-            raise ValueError(
-                f"Selected subclass {selected_subclass} "
-                f"is not valid for {self.class_.value}"
-            )
-
-        # Add subclass to character
-        new_subclasses = blueprint.subclasses + (selected_subclass,)
-
-        return Blueprint(subclasses=new_subclasses)
+                delta = SubclassDelta(subclasses=state.subclasses)
+                yield delta
+                return delta.apply(state)
+        delta = SubclassDelta(subclasses=state.subclasses + (self.subclass,))
+        yield delta
+        return delta.apply(state)

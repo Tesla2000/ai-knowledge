@@ -18,11 +18,16 @@ class _Attack(BaseModel):
     def perform(self) -> _AttackResult:
         roll1 = randint(1, 20)
         roll2 = randint(1, 20)
+        damage = (
+            sum(randint(1, self.dice_size) for _ in range(self.n_dice))
+            + self.damage_bonus
+        )
+        crit_damage = damage + sum(
+            randint(1, self.dice_size) for _ in range(self.n_dice)
+        )
         return _AttackResult(
             first_roll=roll1 + self.attack_bonus if roll1 != 20 else "critical",
             second_roll=roll2 + self.attack_bonus if roll2 != 20 else "critical",
-            damage=sum(randint(1, self.dice_size) for _ in range(self.n_dice))
-            + self.damage_bonus,
-            crit_damage=sum(randint(1, self.dice_size) for _ in range(2 * self.n_dice))
-            + self.damage_bonus,
+            damage=damage,
+            crit_damage=crit_damage,
         )

@@ -4,10 +4,11 @@ from __future__ import annotations
 
 import random
 
-from dnd.character.blueprint.blueprint import Blueprint
 from dnd.character.blueprint.building_blocks.magical_item_chooser.base_chooser import (
     MagicalItemChooserBase,
 )
+from dnd.character.blueprint.state import BlueprintProtocol
+from dnd.character.magical_item.item import MagicalItem
 from dnd.character.magical_item.items import MAGICAL_ITEMS
 from dnd.character.magical_item.level import Level
 from pydantic import ConfigDict
@@ -36,16 +37,7 @@ class RandomMagicalItemChooser(MagicalItemChooserBase):
         description="Optional seed for reproducible random selection",
     )
 
-    def get_change(self, blueprint: Blueprint) -> Blueprint:
-        """Select magical items by rarity level using random selection.
-
-        Args:
-            blueprint: Current character blueprint.
-
-        Returns:
-            Blueprint with magical items added.
-        """
-        # Map level enum to count
+    def _select_items(self, state: BlueprintProtocol) -> tuple[MagicalItem, ...]:
         level_counts = {
             Level.COMMON: self.n_common,
             Level.UNCOMMON: self.n_uncommon,
@@ -57,24 +49,19 @@ class RandomMagicalItemChooser(MagicalItemChooserBase):
             Level.MISTERY: self.n_mistery,
         }
 
-        selected_items = []
+        selected_items: list[MagicalItem] = []
 
-        # Select items for each rarity level
         for level, count in level_counts.items():
             if count > 0:
-                # Filter items by rarity level
                 available = [item for item in MAGICAL_ITEMS if item.level == level]
 
-                if len(available) == 0:
+                if not available:
                     raise ValueError(
-                        f"No {level.value} magical items available in the "
-                        "item database."
+                        f"No {level.value} magical items available in the item database."
                     )
 
-                # Randomly select items (allows duplicates)
                 random.seed(self.seed)
-
                 selected = random.choices(available, k=count)
                 selected_items.extend(selected)
 
-        return self._add_items(blueprint, tuple(selected_items))
+        return tuple(selected_items)

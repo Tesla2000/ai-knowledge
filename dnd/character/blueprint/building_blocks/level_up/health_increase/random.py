@@ -2,13 +2,14 @@ from __future__ import annotations
 
 import random
 
+from dnd.character.blueprint.state import HasClasses
 from dnd.character.blueprint.building_blocks.level_up.health_increase.base import (
     HealthIncrease,
 )
 from dnd.choices.equipment_creation.weapons import HitDieSize
 
 
-class HealthIncreaseRandom(HealthIncrease):
+class HealthIncreaseRandom(HealthIncrease[HasClasses]):
     """Random health increase strategy.
 
     Rolls a random value between 1 and the hit die size for non-first levels.

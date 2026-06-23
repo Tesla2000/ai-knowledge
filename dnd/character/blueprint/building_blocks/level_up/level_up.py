@@ -1,11 +1,18 @@
 from __future__ import annotations
 
+from collections.abc import Generator
 from typing import NamedTuple
+from typing import Never
+from typing import overload
 
-from dnd.character.blueprint.blueprint import Blueprint
-from dnd.character.blueprint.building_blocks import (  # type: ignore[attr-defined]
+from typing_extensions import deprecated
+
+from dnd.character.blueprint.building_blocks import (
     CombinedBlock,
 )
+from dnd.character.blueprint.state import Blueprint
+from dnd.character.blueprint.state import BlueprintProtocol
+from dnd.character.blueprint.state import HasRace
 from dnd.character.blueprint.building_blocks.all_choices_resolver import (
     AnyChoiceResolver,
 )
@@ -13,16 +20,18 @@ from dnd.character.blueprint.building_blocks.level_up.health_increase import (
     AnyHealthIncrease,
 )
 from dnd.character.blueprint.building_blocks.level_up.level_incrementer import (
-    LevelIncrementer,
+    SorcererLevelIncrementer,
+    WizardLevelIncrementer,
 )
 from dnd.character.blueprint.building_blocks.level_up.spell_assignment import (
     AnySpellAssigner,
 )
+from dnd.character.delta.delta import Delta
 from pydantic import Field
 
 
 class LevelUpBlocks(NamedTuple):
-    level_increment: LevelIncrementer
+    level_increment: WizardLevelIncrementer | SorcererLevelIncrementer
     health_increase: AnyHealthIncrease
     spell_assigner: AnySpellAssigner
     all_choice_resolver: AnyChoiceResolver
@@ -51,7 +60,23 @@ class LevelUp(CombinedBlock):
         description="Level increment, health increase, spell assignment, and choice resolution",
     )
 
-    def _get_change(self, blueprint: Blueprint) -> Blueprint:
-        if blueprint.race is None:
+    @overload
+    @deprecated("Race must be chosen before leveling up")
+    def get_change(self, state: Blueprint) -> Never: ...
+
+    @overload
+    def get_change(
+        self, state: HasRace
+    ) -> Generator[Delta, None, BlueprintProtocol]: ...
+
+    @overload
+    def get_change(
+        self, state: BlueprintProtocol
+    ) -> Generator[Delta, None, BlueprintProtocol]: ...
+
+    def get_change(
+        self, state: BlueprintProtocol
+    ) -> Generator[Delta, None, BlueprintProtocol]:
+        if not isinstance(state, HasRace):
             raise ValueError("Race must be chosen before leveling up")
-        return super().get_change(blueprint)  # type: ignore[no-any-return,misc]
+        return (yield from super().get_change(state))

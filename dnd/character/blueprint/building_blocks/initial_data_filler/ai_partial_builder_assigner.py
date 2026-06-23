@@ -1,17 +1,37 @@
 from __future__ import annotations
 
-from dnd.character.blueprint.blueprint import Blueprint
+from collections.abc import Generator
+
 from dnd.character.blueprint.building_blocks.initial_data_filler.ai_builder_base import (
     AIBuilderBase,
 )
+from dnd.character.blueprint.state import BlueprintProtocol
+from dnd.character.blueprint.state import HasAge
+from dnd.character.blueprint.state import HasAlignment
+from dnd.character.blueprint.state import HasAppearance
+from dnd.character.blueprint.state import HasBackground
+from dnd.character.blueprint.state import HasBackstory
+from dnd.character.blueprint.state import HasBonds
+from dnd.character.blueprint.state import HasCharacterTraits
+from dnd.character.blueprint.state import HasEyeColor
+from dnd.character.blueprint.state import HasHairstyle
+from dnd.character.blueprint.state import HasHeight
+from dnd.character.blueprint.state import HasIdeals
+from dnd.character.blueprint.state import HasInitialData
+from dnd.character.blueprint.state import HasName
+from dnd.character.blueprint.state import HasSex
+from dnd.character.blueprint.state import HasSkinColor
+from dnd.character.blueprint.state import HasWeaknesses
+from dnd.character.blueprint.state import HasWeight
+from dnd.character.delta.initial_data_delta import InitialDataDelta
 
 
 class AIPartialBuilderAssigner(AIBuilderBase):
     """Uses AI to fill only unset basic character parameters.
 
-    This building block leverages LLM structured output to generate values
-    only for fields that are currently unset in the blueprint. Already set
-    fields are preserved and passed to the AI as context.
+    Leverages LLM structured output to generate values only for fields that are
+    currently unset in the blueprint. Already set fields are preserved and
+    passed to the AI as context.
 
     Example:
         >>> from langchain_openai import ChatOpenAI
@@ -25,60 +45,51 @@ class AIPartialBuilderAssigner(AIBuilderBase):
         >>> character = builder.build()
     """
 
-    def get_change(self, blueprint: Blueprint) -> Blueprint:
-        """Generate only unset character parameters using AI.
-
-        Args:
-            blueprint: The current blueprint state.
-
-        Yields:
-            Blueprint with AI-generated values for unset fields only.
-        """
-        # Get currently set fields
-        set_fields = blueprint.model_dump(exclude_unset=True)
-
+    def get_change(
+        self, state: BlueprintProtocol
+    ) -> Generator[InitialDataDelta, None, HasInitialData]:
         prompt = (
             f"Create a D&D 5e character based on this description: {self.description}\n"
-            f"The following fields are already set and must be respected: {set_fields}\n"
+            f"The following fields are already set and must be respected: {dict(state)}\n"
             "Only generate values for unset fields."
         )
         result = self._generate_character_template(prompt)
 
-        # Only yield fields that aren't already set
-        updates = {}
-        if "name" not in set_fields:
-            updates["name"] = result.name
-        if "sex" not in set_fields:
-            updates["sex"] = result.sex
-        if "age" not in set_fields:
-            updates["age"] = result.age  # type: ignore[assignment]
-        if "race" not in set_fields:
-            updates["race"] = result.race
-        if "background" not in set_fields:
-            updates["background"] = result.background
-        if "alignment" not in set_fields:
-            updates["alignment"] = result.alignment
-        if "backstory" not in set_fields:
-            updates["backstory"] = result.backstory
-        if "height" not in set_fields:
-            updates["height"] = result.height  # type: ignore[assignment]
-        if "weight" not in set_fields:
-            updates["weight"] = result.weight  # type: ignore[assignment]
-        if "eye_color" not in set_fields:
-            updates["eye_color"] = result.eye_color
-        if "skin_color" not in set_fields:
-            updates["skin_color"] = result.skin_color
-        if "hairstyle" not in set_fields:
-            updates["hairstyle"] = result.hairstyle
-        if "appearance" not in set_fields:
-            updates["appearance"] = result.appearance
-        if "character_traits" not in set_fields:
-            updates["character_traits"] = result.character_traits
-        if "ideals" not in set_fields:
-            updates["ideals"] = result.ideals
-        if "bonds" not in set_fields:
-            updates["bonds"] = result.bonds
-        if "weaknesses" not in set_fields:
-            updates["weaknesses"] = result.weaknesses
-
-        return Blueprint(**updates)  # type: ignore[arg-type]
+        delta = InitialDataDelta(
+            name=state.name if isinstance(state, HasName) else result.name,
+            sex=state.sex if isinstance(state, HasSex) else result.sex,
+            age=state.age if isinstance(state, HasAge) else result.age,
+            background=state.background
+            if isinstance(state, HasBackground)
+            else result.background,
+            alignment=state.alignment
+            if isinstance(state, HasAlignment)
+            else result.alignment,
+            backstory=state.backstory
+            if isinstance(state, HasBackstory)
+            else result.backstory,
+            height=state.height if isinstance(state, HasHeight) else result.height,
+            weight=state.weight if isinstance(state, HasWeight) else result.weight,
+            eye_color=state.eye_color
+            if isinstance(state, HasEyeColor)
+            else result.eye_color,
+            skin_color=state.skin_color
+            if isinstance(state, HasSkinColor)
+            else result.skin_color,
+            hairstyle=state.hairstyle
+            if isinstance(state, HasHairstyle)
+            else result.hairstyle,
+            appearance=state.appearance
+            if isinstance(state, HasAppearance)
+            else result.appearance,
+            character_traits=state.character_traits
+            if isinstance(state, HasCharacterTraits)
+            else result.character_traits,
+            ideals=state.ideals if isinstance(state, HasIdeals) else result.ideals,
+            bonds=state.bonds if isinstance(state, HasBonds) else result.bonds,
+            weaknesses=state.weaknesses
+            if isinstance(state, HasWeaknesses)
+            else result.weaknesses,
+        )
+        yield delta
+        return delta.apply(state)

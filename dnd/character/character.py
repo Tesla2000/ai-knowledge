@@ -27,8 +27,10 @@ from dnd.other_profficiencies import MusicalInstrument
 from dnd.other_profficiencies import ToolProficiency
 from dnd.other_profficiencies import WeaponProficiency
 from dnd.skill_proficiency import Skill
+from dnd.character.class_levels import ClassLevels
 from frozendict import frozendict
 from pydantic import AfterValidator
+from pydantic import BeforeValidator
 from pydantic import Field
 from pydantic import PositiveInt
 
@@ -37,6 +39,12 @@ def _conv_to_frozendict(value: object) -> object:
     if not isinstance(value, Mapping):
         return value
     return frozendict(value)
+
+
+def _class_levels_to_dict(value: object) -> object:
+    if isinstance(value, ClassLevels):
+        return dict(value.all_levels())
+    return value
 
 
 def _language_not_any(language: Language) -> Language:
@@ -123,7 +131,9 @@ class Character(_CreatureBase):
     level: ClassLevel
     age: PositiveInt
     classes: Annotated[
-        Mapping[Class, PositiveInt], AfterValidator(_conv_to_frozendict)
+        Mapping[Class, PositiveInt],
+        BeforeValidator(_class_levels_to_dict),
+        AfterValidator(_conv_to_frozendict),
     ] = frozendict()
     race: Race
     subrace: Subrace

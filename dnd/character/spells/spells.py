@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from typing import Literal
 
 from dnd.character.spells.spell_slots import Cantrip
 from dnd.character.spells.spell_slots import EighthLevel
@@ -64,8 +63,3 @@ class Spells(BaseModel):
             self.eighth_level_spells,
             self.ninth_level_spells,
         )
-
-    def get_spell_level_by_index(
-        self, index: Literal[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-    ) -> tuple[Spell, ...]:
-        return self.get_spells_by_level()[index]

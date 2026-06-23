@@ -1,17 +1,50 @@
 from __future__ import annotations
 
-from dnd.character.blueprint.blueprint import Blueprint
-from dnd.character.blueprint.building_blocks.building_block import (
-    BuildingBlock,
-)
+from collections.abc import Generator
+from typing import cast
+from typing import TYPE_CHECKING
+
+from typing_protocol_intersection import ProtocolIntersection
+
+from dnd.character.blueprint.building_blocks.building_block import BuildingBlock
+from dnd.character.blueprint.state import Blueprint
+from dnd.character.blueprint.state import BlueprintProtocol
+from dnd.character.blueprint.state import HasName
+from dnd.character.delta.delta import Delta
 from pydantic import Field
 
 
-class NameAssigner(BuildingBlock):
+class NameDelta(Delta):
+    """Delta produced when NameAssigner sets the character name."""
+
+    name: str
+
+    def apply[T: BlueprintProtocol](self, state: T) -> ProtocolIntersection[T, HasName]:
+
+        if TYPE_CHECKING:
+
+            class BlueprintWithName(Blueprint):
+                name: str
+
+        else:
+
+            class BlueprintWithName(type(state)):
+                name: str
+
+        return cast(
+            ProtocolIntersection[T, HasName],
+            BlueprintWithName.model_validate({**dict(state), "name": self.name}),
+        )
+
+
+class NameAssigner[T: BlueprintProtocol](BuildingBlock[T, NameDelta, HasName]):
     """Assigns a name to the character."""
 
     name: str = Field(description="Character's full name")
 
-    def get_change(self, blueprint: Blueprint) -> Blueprint:
-        """Yield the name difference."""
-        return Blueprint(name=self.name)
+    def get_change(
+        self, state: T
+    ) -> Generator[NameDelta, None, ProtocolIntersection[T, HasName]]:
+        delta = NameDelta(name=self.name)
+        yield delta
+        return delta.apply(state)

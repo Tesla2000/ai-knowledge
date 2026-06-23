@@ -2,13 +2,19 @@
 
 from __future__ import annotations
 
-from dnd.character.blueprint.blueprint import Blueprint
-from dnd.character.blueprint.blueprint_formatter import (
-    BlueprintFormatter,
-)
+from collections.abc import Generator
+
+from typing_protocol_intersection import ProtocolIntersection
+
+from dnd.character.blueprint.blueprint_formatter import BlueprintFormatter
+from dnd.character.blueprint.building_blocks.building_block import BuildingBlock
 from dnd.character.blueprint.building_blocks.feat_choice_resolver.base import (
-    FeatChoiceResolver,
+    FeatResolutionDelta,
 )
+from dnd.character.blueprint.state import HasClasses
+from dnd.character.blueprint.state import HasFeats
+from dnd.character.blueprint.state import HasNStatChoices
+from dnd.character.blueprint.state import HasStats
 from dnd.character.feature.feats import FeatName
 from langchain_openai import ChatOpenAI
 from pydantic import BaseModel
@@ -21,7 +27,9 @@ class FeatSelection(BaseModel):
     feats: set[FeatName] = Field(default_factory=set)
 
 
-class AIFeatChoiceResolver(FeatChoiceResolver):
+class AIFeatChoiceResolver[
+    T: ProtocolIntersection[ProtocolIntersection[HasFeats, HasStats], HasClasses]
+](BuildingBlock[T, FeatResolutionDelta, HasNStatChoices]):
     """AI-powered resolver for FeatName.ANY_OF_YOUR_CHOICE placeholders.
 
     Uses an LLM to make intelligent feat selections based on
@@ -42,21 +50,7 @@ class AIFeatChoiceResolver(FeatChoiceResolver):
         description="Blueprint formatter for creating AI prompts",
     )
 
-    def select_from_available(
-        self, available: list[FeatName], _: Blueprint
-    ) -> FeatName:
-        """Not used in AI implementation - overrides _get_change instead."""
-        raise NotImplementedError("AIFeatChoiceResolver overrides _get_change directly")
-
-    def _build_prompt(self, blueprint: Blueprint) -> str:
-        """Build a prompt for AI feat selection.
-
-        Args:
-            blueprint: Current character blueprint.
-
-        Returns:
-            Formatted prompt string.
-        """
+    def _build_prompt(self, state: T) -> str:
         system_prompt = (
             "You are resolving FeatName.ANY_OF_YOUR_CHOICE placeholders "
             "for a D&D 5e character.\n"
@@ -65,30 +59,29 @@ class AIFeatChoiceResolver(FeatChoiceResolver):
         )
 
         character_description = self.formatter.format(
-            blueprint, system_prompt=system_prompt
+            state, system_prompt=system_prompt
         )
 
         instructions = ["\n## Placeholders to Resolve\n"]
 
-        # Count feat placeholders
-        count = sum(map(list(blueprint.feats).count, FeatName.not_choosables()))
+        feat_list = list(state.feats)
+        count = sum(feat_list.count(fc) for fc in FeatName.not_choosables())
         if count == 0:
-            return ""  # No placeholders to resolve
+            return ""
 
         instructions.append(
             f"Feats: {count} ANY_OF_YOUR_CHOICE placeholder(s) to replace"
         )
 
-        # Check if ASI is allowed (level 2+)
-        ability_score_improvement_allowed = sum(blueprint.classes.values()) != 1
+        ability_score_improvement_allowed = state.classes.total_level() != 1
 
-        # Build available feats list
         available_feats = [
             f.value
             for f in FeatName
             if f not in FeatName.not_choosables()
             and (
-                ability_score_improvement_allowed or f not in FeatName.not_choosables()
+                ability_score_improvement_allowed
+                or f != FeatName.ABILITY_SCORE_IMPROVEMENT
             )
         ]
         instructions.append(f"  Available: {', '.join(available_feats)}")
@@ -109,23 +102,19 @@ class AIFeatChoiceResolver(FeatChoiceResolver):
 
         return character_description + "\n".join(instructions)
 
-    def get_change(self, blueprint: Blueprint) -> Blueprint:
-        """Replace FeatName.ANY_OF_YOUR_CHOICE placeholders using AI.
+    def get_change(
+        self, state: T
+    ) -> Generator[FeatResolutionDelta, None, ProtocolIntersection[T, HasNStatChoices]]:
+        if not any(map(state.feats.__contains__, FeatName.not_choosables())):
+            delta = FeatResolutionDelta(feats=state.feats, n_stat_choices=0)
+            yield delta
+            return delta.apply(state)
 
-        Args:
-            blueprint: Current character blueprint.
-
-        Returns:
-            Blueprint with feat placeholders replaced by AI selections.
-        """
-        # Check if there are any placeholders
-        if not any(map(blueprint.feats.__contains__, FeatName.not_choosables())):
-            return Blueprint()
-
-        # Build prompt and get AI selection
-        prompt = self._build_prompt(blueprint)
+        prompt = self._build_prompt(state)
         if not prompt:
-            return Blueprint()
+            delta = FeatResolutionDelta(feats=state.feats, n_stat_choices=0)
+            yield delta
+            return delta.apply(state)
 
         structured_llm = self.llm.with_structured_output(FeatSelection)
         _result = structured_llm.invoke(prompt)
@@ -133,28 +122,22 @@ class AIFeatChoiceResolver(FeatChoiceResolver):
             raise TypeError(f"Expected FeatSelection, got {type(_result)}")
         selection = _result
 
-        # Validate selection count
-        count = sum(map(list(blueprint.feats).count, FeatName.not_choosables()))
+        feat_list = list(state.feats)
+        count = sum(feat_list.count(fc) for fc in FeatName.not_choosables())
         if len(selection.feats) != count:
             raise ValueError(
                 f"AI returned {len(selection.feats)} feats but expected {count}"
             )
 
-        # Replace placeholders
-        new_feats = set(blueprint.feats)
+        new_feats = set(state.feats)
         new_feats.difference_update(FeatName.not_choosables())
         new_feats.update(selection.feats)
 
-        # Count ASI selections and convert to stat choices
-        n_ability_score_improvements = sum(
-            1 for f in new_feats if f == FeatName.ABILITY_SCORE_IMPROVEMENT
-        )
-
-        # Filter out ASI from final feats
+        n_asi = sum(1 for f in new_feats if f == FeatName.ABILITY_SCORE_IMPROVEMENT)
         final_feats = tuple(
             f for f in new_feats if f != FeatName.ABILITY_SCORE_IMPROVEMENT
         )
 
-        return Blueprint(
-            feats=final_feats, n_stat_choices=2 * n_ability_score_improvements
-        )
+        delta = FeatResolutionDelta(feats=final_feats, n_stat_choices=2 * n_asi)
+        yield delta
+        return delta.apply(state)

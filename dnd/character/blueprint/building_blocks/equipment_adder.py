@@ -1,37 +1,60 @@
 from __future__ import annotations
 
-from dnd.character.blueprint.blueprint import Blueprint
-from dnd.character.blueprint.building_blocks.building_block import (
-    BuildingBlock,
-)
+from collections.abc import Generator
+from typing import cast
+from typing import TYPE_CHECKING
+
+from typing_protocol_intersection import ProtocolIntersection
+
+from dnd.character.blueprint.building_blocks.building_block import BuildingBlock
+from dnd.character.blueprint.state import Blueprint
+from dnd.character.blueprint.state import BlueprintProtocol
+from dnd.character.blueprint.state import HasOtherEquipment
+from dnd.character.delta.delta import Delta
 from pydantic import Field
 
 
-class EquipmentAdder(BuildingBlock):
-    """Adds an item to the character's other equipment list.
+class OtherEquipmentDelta(Delta):
+    """Delta produced when EquipmentAdder appends an item."""
 
-    Appends to existing equipment. Allows duplicates.
+    other_equipment: tuple[str, ...]
 
-    Example:
-        >>> builder = Builder([
-        ...     EquipmentAdder(item="Rope, hempen (50 feet)"),
-        ...     EquipmentAdder(item="Torch"),
-        ...     EquipmentAdder(item="Torch"),  # Second torch
-        ...     EquipmentAdder(item="Healing potion"),
-        ... ])
-    """
+    def apply[T: BlueprintProtocol](
+        self, state: T
+    ) -> ProtocolIntersection[T, HasOtherEquipment]:
+
+        if TYPE_CHECKING:
+
+            class BlueprintWithOtherEquipment(Blueprint):
+                other_equipment: tuple[str, ...]
+
+        else:
+
+            class BlueprintWithOtherEquipment(type(state)):
+                other_equipment: tuple[str, ...]
+
+        return cast(
+            ProtocolIntersection[T, HasOtherEquipment],
+            BlueprintWithOtherEquipment.model_validate(
+                {**dict(state), "other_equipment": self.other_equipment}
+            ),
+        )
+
+
+class EquipmentAdder[T: HasOtherEquipment](
+    BuildingBlock[T, OtherEquipmentDelta, HasOtherEquipment]
+):
+    """Adds an item to the character's other equipment list."""
 
     item: str = Field(description="Equipment item to add to character's inventory")
 
-    def get_change(self, blueprint: Blueprint) -> Blueprint:
-        """Add the item to the existing equipment tuple.
-
-        Args:
-            blueprint: The current blueprint state.
-
-        Yields:
-            Blueprint with the item added.
-        """
-        existing_equipment = blueprint.other_equipment
-        new_equipment = existing_equipment + (self.item,)
-        return Blueprint(other_equipment=new_equipment)
+    def get_change(
+        self, state: T
+    ) -> Generator[
+        OtherEquipmentDelta, None, ProtocolIntersection[T, HasOtherEquipment]
+    ]:
+        delta = OtherEquipmentDelta(
+            other_equipment=state.other_equipment + (self.item,)
+        )
+        yield delta
+        return delta.apply(state)

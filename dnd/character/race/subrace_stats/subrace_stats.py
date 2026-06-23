@@ -1,13 +1,9 @@
 from __future__ import annotations
-
 from typing import Self
 
-from dnd.character.blueprint.blueprint import Blueprint
-from dnd.character.feature.feats import FeatName
 from dnd.character.race.subrace_stats.race_statistics import (
     RaceStatistics,
 )
-from dnd.character.stats import Stats
 from dnd.choices.language import Language
 from dnd.other_profficiencies import GamingSet
 from dnd.other_profficiencies import MusicalInstrument
@@ -38,8 +34,9 @@ class SubraceStats(BaseModel):
     tool_proficiencies: tuple[ToolProficiency | GamingSet | MusicalInstrument, ...] = (
         Field(description="List of tool proficiencies.", default=())
     )
-    additional_feat: bool = Field(  # type: ignore[assignment]
-        "Does sub-race get a feat 'Feat: You gain one Feat of your choice.'"
+    additional_feat: bool = Field(
+        description="Does sub-race get a feat 'Feat: You gain one Feat of your choice.'",
+        default=False,
     )
     statistics: RaceStatistics = Field(
         description="Statistic given by the race and sub-race"
@@ -63,38 +60,3 @@ class SubraceStats(BaseModel):
                 "Skills to choose from present but no skill choices available"
             )
         return self
-
-    def add_to(self, blueprint: Blueprint) -> Blueprint:
-        """Apply subrace statistics to the blueprint.
-
-        Updates blueprint with subrace-specific values including speed,
-        dark vision, languages, skill proficiencies, tool proficiencies,
-        and ability score bonuses from race/subrace.
-        """
-        if not blueprint.stats:
-            raise ValueError("Stats must be set before race can be assigned")
-        new_stats = Stats(
-            strength=blueprint.stats.strength + self.statistics.strength,
-            dexterity=blueprint.stats.dexterity + self.statistics.dexterity,
-            constitution=blueprint.stats.constitution + self.statistics.constitution,
-            intelligence=blueprint.stats.intelligence + self.statistics.intelligence,
-            wisdom=blueprint.stats.wisdom + self.statistics.wisdom,
-            charisma=blueprint.stats.charisma + self.statistics.charisma,
-        )
-
-        return Blueprint(
-            speed=self.speed,
-            dark_vision_range=max(
-                blueprint.dark_vision_range or 0, self.dark_vision_range
-            ),
-            languages=blueprint.languages + self.languages,
-            skill_proficiencies=blueprint.skill_proficiencies + self.obligatory_skills,
-            tool_proficiencies=blueprint.tool_proficiencies + self.tool_proficiencies,
-            stats=new_stats,
-            feats=blueprint.feats
-            + self.additional_feat * (FeatName.ANY_EXCEPT_ABILITY_SCORE_IMPROVEMENT,),
-            n_stat_choices=self.statistics.any_of_your_choice,
-            n_skill_choices=self.n_skills,
-            skills_to_choose_from=frozenset(self.skills_to_choose_from),
-            other_active_abilities=self.other_active_abilities,
-        )

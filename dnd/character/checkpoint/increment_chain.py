@@ -3,14 +3,15 @@ from __future__ import annotations
 from collections.abc import Iterator
 from typing import Self
 
-from dnd.character.blueprint.blueprint import Blueprint
+from dnd.character.delta import AnyDelta
+from dnd.character.delta.delta import Delta
 from pydantic import BaseModel
 from pydantic import ConfigDict
 from pydantic import Field
 
 
 class IncrementChain(BaseModel):
-    """Ordered sequence of increments representing a build process.
+    """Ordered sequence of deltas representing a build process.
 
     Maintains a linear history of the character build, enabling
     restoration to any point and branching from increments.
@@ -18,53 +19,32 @@ class IncrementChain(BaseModel):
 
     model_config = ConfigDict(frozen=True)
 
-    increments: tuple[Blueprint, ...] = Field(
+    increments: tuple[AnyDelta, ...] = Field(
         default_factory=tuple,
-        description="Ordered sequence of build increments",
+        description="Ordered sequence of build deltas",
     )
 
-    def get_increment(self, index: int) -> Blueprint | None:
-        """Get increment at specific index.
-
-        Args:
-            index: Increment index (0-based)
-
-        Returns:
-            Increment or None if index out of range
-        """
+    def get_increment(self, index: int) -> Delta | None:
+        """Get increment at specific index."""
         if 0 <= index < len(self.increments):
             return self.increments[index]
         return None
 
-    def get_latest(self) -> Blueprint | None:
+    def get_latest(self) -> Delta | None:
         """Get the most recent increment."""
         if self.increments:
             return self.increments[-1]
         return None
 
-    def add_increment(self, increment: Blueprint) -> Self:
-        """Add a new increment to the chain (returns new instance).
-
-        Args:
-            increment: New increment to append
-
-        Returns:
-            New IncrementChain with increment added
-        """
-        return IncrementChain(increments=self.increments + (increment,))  # type: ignore[return-value]
+    def add_increment(self, increment: Delta) -> Self:
+        """Add a new delta to the chain (returns new instance)."""
+        return self.model_copy(update={"increments": self.increments + (increment,)})
 
     def truncate_to(self, index: int) -> Self:
-        """Create new chain containing only increments up to (and including) index.
-
-        Args:
-            index: Last increment index to keep (inclusive)
-
-        Returns:
-            New IncrementChain with truncated history
-        """
+        """Create new chain containing only increments up to (and including) index."""
         if index < 0 or index > len(self.increments):
             raise IndexError(f"Increment index {index} out of range")
-        return IncrementChain(increments=self.increments[:index])  # type: ignore[return-value]
+        return self.model_copy(update={"increments": self.increments[:index]})
 
     def length(self) -> int:
         """Return number of increments in chain."""
@@ -73,6 +53,6 @@ class IncrementChain(BaseModel):
     def __len__(self) -> int:
         return self.length()
 
-    def __iter__(self) -> Iterator[Blueprint]:  # type: ignore[override]
-        """Iterate over increments in order."""
+    def iter_deltas(self) -> Iterator[Delta]:
+        """Iterate over deltas in order."""
         return iter(self.increments)

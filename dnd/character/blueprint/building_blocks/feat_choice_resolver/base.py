@@ -2,16 +2,62 @@ from __future__ import annotations
 
 from abc import ABC
 from abc import abstractmethod
+from collections.abc import Generator
+from typing import cast
+from typing import TYPE_CHECKING
 
-from dnd.character.blueprint.blueprint import Blueprint
-from dnd.character.blueprint.building_blocks.building_block import (
-    BuildingBlock,
-)
+from typing_protocol_intersection import ProtocolIntersection
+
+from dnd.character.blueprint.building_blocks.building_block import BuildingBlock
+from dnd.character.blueprint.state import Blueprint
+from dnd.character.blueprint.state import BlueprintProtocol
+from dnd.character.blueprint.state import HasClasses
+from dnd.character.blueprint.state import HasFeats
+from dnd.character.blueprint.state import HasNStatChoices
+from dnd.character.blueprint.state import HasStats
+from dnd.character.class_levels import ClassLevels
+from dnd.character.delta.delta import Delta
 from dnd.character.feature.feats import FeatName
 from pydantic import ConfigDict
 
 
-class FeatChoiceResolver(BuildingBlock, ABC):
+class FeatResolutionDelta(Delta):
+    """Delta produced when FeatChoiceResolver resolves feat placeholders."""
+
+    feats: tuple[FeatName, ...]
+    n_stat_choices: int
+
+    def apply[T: BlueprintProtocol](
+        self, state: T
+    ) -> ProtocolIntersection[T, HasNStatChoices]:
+
+        if TYPE_CHECKING:
+
+            class BlueprintWithFeatsResolved(Blueprint):
+                feats: tuple[FeatName, ...]
+                n_stat_choices: int
+
+        else:
+
+            class BlueprintWithFeatsResolved(type(state)):
+                feats: tuple[FeatName, ...]
+                n_stat_choices: int
+
+        return cast(
+            ProtocolIntersection[T, HasNStatChoices],
+            BlueprintWithFeatsResolved.model_validate(
+                {
+                    **dict(state),
+                    "feats": self.feats,
+                    "n_stat_choices": self.n_stat_choices,
+                }
+            ),
+        )
+
+
+class FeatChoiceResolver[T: ProtocolIntersection[HasFeats, HasStats]](
+    BuildingBlock[T, FeatResolutionDelta, HasNStatChoices], ABC
+):
     """Resolves FeatName.ANY_OF_YOUR_CHOICE placeholders.
 
     This resolver replaces ANY_OF_YOUR_CHOICE placeholders in the
@@ -26,59 +72,40 @@ class FeatChoiceResolver(BuildingBlock, ABC):
     model_config = ConfigDict(frozen=True)
 
     @abstractmethod
-    def select_from_available(
-        self, available: list[FeatName], blueprint: Blueprint
-    ) -> FeatName:
-        """Select a feat from available options.
+    def _select_from_available(
+        self, available: list[FeatName], state: T
+    ) -> FeatName | None:
+        """Select a feat from available options, or None if this resolver cannot choose."""
 
-        Args:
-            available: List of FeatName options excluding ANY_OF_YOUR_CHOICE
-                      (and possibly ABILITY_SCORE_IMPROVEMENT if level 1).
-            blueprint: Current character blueprint for context.
-
-        Returns:
-            Selected FeatName.
-        """
-
-    def get_change(self, blueprint: Blueprint) -> Blueprint:
-        """Replace FeatName.ANY_OF_YOUR_CHOICE placeholders.
-
-        Args:
-            blueprint: Current character blueprint.
-
-        Returns:
-            Blueprint with feat placeholders replaced and ASI converted
-            to n_stat_choices.
-        """
-        resolved = set()
-
-        # Check if ASI is allowed (level 2+, i.e., total level != 1)
-        ability_score_improvement_allowed = sum(blueprint.classes.values()) != 1
-
-        # Build excluded values list
-        excluded_values = list(FeatName.not_choosables())
-        if not ability_score_improvement_allowed:
-            excluded_values.append(FeatName.ABILITY_SCORE_IMPROVEMENT)
-
-        for feat in blueprint.feats:
-            resolved.add(self._resolve_feat(feat, blueprint))
-
-        # Count ASI selections and convert to stat choices
-        n_ability_score_improvements = sum(
-            1 for f in resolved if f == FeatName.ABILITY_SCORE_IMPROVEMENT
+    def get_change(
+        self, state: T
+    ) -> Generator[FeatResolutionDelta, None, ProtocolIntersection[T, HasNStatChoices]]:
+        existing_classes = (
+            state.classes if isinstance(state, HasClasses) else ClassLevels()
         )
+        ability_score_improvement_allowed = existing_classes.total_level() != 1
 
-        # Filter out ASI from final feats
+        resolved = set()
+        for feat in state.feats:
+            result = self._resolve_feat(feat, state, ability_score_improvement_allowed)
+            resolved.add(result if result is not None else feat)
+
+        n_asi = sum(1 for f in resolved if f == FeatName.ABILITY_SCORE_IMPROVEMENT)
         final_feats = tuple(
             f for f in resolved if f != FeatName.ABILITY_SCORE_IMPROVEMENT
         )
 
-        return Blueprint(
-            feats=final_feats, n_stat_choices=2 * n_ability_score_improvements
-        )
+        delta = FeatResolutionDelta(feats=final_feats, n_stat_choices=2 * n_asi)
+        yield delta
+        return delta.apply(state)
 
-    def _resolve_feat(self, feat: FeatName, blueprint: Blueprint):  # type: ignore[no-untyped-def]
+    def _resolve_feat(
+        self, feat: FeatName, state: T, ability_score_improvement_allowed: bool
+    ) -> FeatName | None:
         if feat not in FeatName.not_choosables():
             return feat
-        available = [f for f in FeatName if f not in FeatName.not_choosables()]
-        return self.select_from_available(available, blueprint)
+        excluded = list(FeatName.not_choosables())
+        if not ability_score_improvement_allowed:
+            excluded.append(FeatName.ABILITY_SCORE_IMPROVEMENT)
+        available = [f for f in FeatName if f not in excluded]
+        return self._select_from_available(available, state)

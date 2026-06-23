@@ -48,6 +48,8 @@ _BASE_DATA: dict[str, object] = {
 
 _CREATURE_DATA: dict[str, object] = {
     **_BASE_DATA,
+    "n_hit_dice": 1,
+    "hit_die_size": 8,
     "attacks": [
         {
             "n_dice": 1,
@@ -203,11 +205,11 @@ class TestSpellAttack:
 
 
 class _FloatBonusCreature(_Creature):
-    initiative_bonus: float = 21.37  # type: ignore[assignment]
+    initiative_bonus: float = 21.37
 
 
 class _IntNameCreature(_Creature):
-    name: int = 0  # type: ignore[assignment]
+    name: int = 0
 
 
 class TestCreatureInit:
@@ -239,7 +241,7 @@ class TestCreatureInit:
 
     def test_creature_requires_attacks(self) -> None:
         with pytest.raises(ValueError, match="creature must have at least one attack"):
-            _Creature.model_validate({**_BASE_DATA, "attacks": [], "initiative": 1})
+            _Creature.model_validate({**_CREATURE_DATA, "attacks": [], "initiative": 1})
 
 
 class TestPlayerFightCreature:
@@ -339,7 +341,7 @@ class TestRunFight:
                 ],
             )
         with (
-            patch("builtins.input"),
+            patch("builtins.input", side_effect=["", "", "", ""]),
             patch("builtins.print") as mock_print,
             patch("dnd.fight.__main__.cycle", side_effect=lambda it: islice(it, 2)),
         ):
@@ -354,7 +356,7 @@ class TestRunFight:
             n_dice=1, dice_size=6, attack_bonus=2, damage_bonus=1, name="claw"
         )
         creature_data = {
-            **_BASE_DATA,
+            **_CREATURE_DATA,
             "name": "wolf",
             "initiative": 5,
             "attacks": [attack.model_dump()],
@@ -372,16 +374,17 @@ class TestRunFight:
         mock_result = _AttackResult(
             first_roll=12, second_roll=8, damage=5, crit_damage=9
         )
+        written: list[str] = []
         with (
-            patch("builtins.input") as mock_input,
-            patch("builtins.print") as mock_print,
+            patch("builtins.input", side_effect=["", ""]) as mock_input,
+            patch("sys.stdout.write", side_effect=written.append),
             patch("dnd.fight.__main__.cycle", side_effect=lambda it: islice(it, 1)),
             patch.object(_Attack, _Attack.perform.__name__, return_value=mock_result),
         ):
             cli.cli_cmd()
-        assert mock_input.call_args[0][0] == "wolf moves now..."
-        first_call_args = mock_print.call_args_list[0][0]
-        assert first_call_args[0] == "wolf attacked with claw"
+        all_prompts = [call[0][0] for call in mock_input.call_args_list]
+        assert any("wolf" in p and "moves now" in p for p in all_prompts)
+        assert any("wolf [claw]" in line for line in written)
 
     def test_multi_entity_index_in_prefix(self, tmp_path: Path) -> None:
         creatures_dir = tmp_path / "creatures"
@@ -390,7 +393,7 @@ class TestRunFight:
             n_dice=1, dice_size=6, attack_bonus=2, damage_bonus=1, name="claw"
         )
         creature_data = {
-            **_BASE_DATA,
+            **_CREATURE_DATA,
             "name": "wolf",
             "initiative": 5,
             "attacks": [attack.model_dump()],
@@ -409,15 +412,18 @@ class TestRunFight:
             first_roll=12, second_roll=8, damage=5, crit_damage=9
         )
         with (
-            patch("builtins.input") as mock_input,
+            patch("builtins.input", side_effect=["", "", "", "", "", ""]) as mock_input,
             patch("builtins.print"),
             patch("dnd.fight.__main__.cycle", side_effect=lambda it: islice(it, 3)),
             patch.object(_Attack, _Attack.perform.__name__, return_value=mock_result),
         ):
             cli.cli_cmd()
-        prompts = [call[0][0] for call in mock_input.call_args_list]
-        assert prompts == [
-            "wolf 1 moves now...",
-            "wolf 2 moves now...",
-            "wolf 3 moves now...",
+        move_prompts = [
+            call[0][0]
+            for call in mock_input.call_args_list
+            if "moves now" in call[0][0]
         ]
+        assert len(move_prompts) == 3
+        assert "wolf 1" in move_prompts[0]
+        assert "wolf 2" in move_prompts[1]
+        assert "wolf 3" in move_prompts[2]

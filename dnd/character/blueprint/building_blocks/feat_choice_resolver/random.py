@@ -2,16 +2,22 @@ from __future__ import annotations
 
 import random
 
-from dnd.character.blueprint.blueprint import Blueprint
+from typing_protocol_intersection import ProtocolIntersection
+
 from dnd.character.blueprint.building_blocks.feat_choice_resolver.base import (
     FeatChoiceResolver,
 )
+from dnd.character.blueprint.state import HasClasses
+from dnd.character.blueprint.state import HasFeats
+from dnd.character.blueprint.state import HasStats
 from dnd.character.feature.feats import FeatName
 from pydantic import ConfigDict
 from pydantic import Field
 
 
-class RandomFeatChoiceResolver(FeatChoiceResolver):
+class RandomFeatChoiceResolver[
+    T: ProtocolIntersection[ProtocolIntersection[HasFeats, HasStats], HasClasses]
+](FeatChoiceResolver[T]):
     """Randomly selects feats for ANY_OF_YOUR_CHOICE placeholders.
 
     Provides deterministic randomness when seed is set, useful for
@@ -30,18 +36,6 @@ class RandomFeatChoiceResolver(FeatChoiceResolver):
         description="Optional seed for reproducible random selection",
     )
 
-    def select_from_available(
-        self, available: list[FeatName], _: Blueprint
-    ) -> FeatName:
-        """Randomly select a feat from available options.
-
-        Args:
-            available: List of FeatName options to choose from.
-            blueprint: Current character blueprint (unused in random selection).
-
-        Returns:
-            Randomly selected FeatName.
-        """
+    def _select_from_available(self, available: list[FeatName], state: T) -> FeatName:
         random.seed(self.seed)
-
         return random.choice(available)

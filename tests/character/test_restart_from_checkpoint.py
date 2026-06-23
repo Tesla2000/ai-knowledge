@@ -1,7 +1,7 @@
 from unittest.mock import patch
 
 import pytest
-from dnd.character.blueprint.blueprint import Blueprint
+from dnd.character.blueprint.state import Blueprint
 from dnd.character.blueprint.building_blocks import (
     SexAssigner,
 )

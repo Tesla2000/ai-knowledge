@@ -1,12 +1,7 @@
 from __future__ import annotations
 
-from itertools import filterfalse
-from typing import TYPE_CHECKING
-
 from dnd.character.ability import Ability
-from dnd.choices.stats_creation.statistic import (
-    StatisticAndAny,
-)
+from dnd.choices.stats_creation.statistic import StatisticAndAny
 from dnd.other_profficiencies import ArmorProficiency
 from dnd.other_profficiencies import GamingSet
 from dnd.other_profficiencies import MusicalInstrument
@@ -15,10 +10,6 @@ from dnd.other_profficiencies import WeaponProficiency
 from dnd.skill_proficiency import Skill
 from pydantic import BaseModel
 from pydantic import Field
-
-
-if TYPE_CHECKING:
-    from dnd.character.blueprint.blueprint import Blueprint
 
 
 class Feature(BaseModel):
@@ -40,9 +31,11 @@ class Feature(BaseModel):
     attribute_increase: StatisticAndAny | None
 
     def __init__(self, /, **data: object):
-        data["weapon_proficiencies_gain"] = list(
-            filterfalse(ArmorProficiency.__contains__, data["armor_proficiencies_gain"])  # type: ignore[arg-type]
-        )
+        armor_raw = data.get("armor_proficiencies_gain")
+        armor_list = list(armor_raw) if isinstance(armor_raw, list) else []
+        data["weapon_proficiencies_gain"] = [
+            x for x in armor_list if x not in ArmorProficiency
+        ]
         if (
             data["skill_proficiency_gain"] not in Skill
             and data["skill_proficiency_gain"] in ToolProficiency
@@ -53,20 +46,3 @@ class Feature(BaseModel):
             super().__init__(**data)
         except Exception as e:
             raise e
-
-    def assign_to(self, blueprint: Blueprint) -> Blueprint:
-        """Assign this feature to a blueprint.
-
-        The base implementation adds the feature to other_active_abilities.
-        Subclasses can override this to modify other blueprint fields.
-
-        Args:
-            blueprint: The character blueprint to modify
-
-        Returns:
-            A new blueprint with this feature applied
-        """
-        return type(blueprint)(
-            other_active_abilities=blueprint.other_active_abilities
-            + (f"{self.name}: {self.description}",)  # type: ignore[attr-defined]
-        )

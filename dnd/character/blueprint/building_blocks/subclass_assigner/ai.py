@@ -2,31 +2,36 @@
 
 from __future__ import annotations
 
-from dnd.character.blueprint.blueprint import Blueprint
-from dnd.character.blueprint.blueprint_formatter import (
-    BlueprintFormatter,
+from collections.abc import Generator
+
+from typing_protocol_intersection import ProtocolIntersection
+
+from dnd.character.blueprint.blueprint_formatter import BlueprintFormatter
+from dnd.character.blueprint.building_blocks.building_block import BuildingBlock
+from dnd.character.blueprint.building_blocks.subclass_assigner.base import (
+    SubclassDelta,
 )
 from dnd.character.blueprint.building_blocks.subclass_assigner.base import (
-    SubclassAssigner,
+    _check_can_assign,
 )
-from dnd.choices.class_creation.character_class import (
-    AnySubclass,
-)
-from dnd.choices.class_creation.character_class import (
-    SUBCLASSES,
-)
+from dnd.character.blueprint.state import HasClasses
+from dnd.character.blueprint.state import HasSubclasses
+from dnd.choices.class_creation.character_class import AnySubclass
+from dnd.choices.class_creation.character_class import Class
+from dnd.choices.class_creation.character_class import SUBCLASSES
 from langchain_openai import ChatOpenAI
 from pydantic import BaseModel
-from pydantic import create_model
 from pydantic import Field
+from pydantic import create_model
 
 
-class AISubclassAssigner(SubclassAssigner):
+class AISubclassAssigner[T: ProtocolIntersection[HasClasses, HasSubclasses]](
+    BuildingBlock[T, SubclassDelta, HasSubclasses]
+):
     """AI-powered subclass assigner that selects subclasses based on character context.
 
     Uses an LLM to make intelligent subclass selections based on the character's
-    background, stats, personality, and overall concept. The AI considers which
-    subclass best fits the character's thematic and mechanical direction.
+    background, stats, personality, and overall concept.
 
     Example:
         >>> from dnd.choices.class_creation.character_class import Class
@@ -38,6 +43,9 @@ class AISubclassAssigner(SubclassAssigner):
         >>> builder = Builder().add(assigner)
     """
 
+    class_: Class = Field(
+        description="The character class for which to assign a subclass"
+    )
     llm: ChatOpenAI = Field(
         description="Language model for making AI-powered decisions"
     )
@@ -47,15 +55,7 @@ class AISubclassAssigner(SubclassAssigner):
         description="Blueprint formatter for creating AI prompts",
     )
 
-    def _build_prompt(self, blueprint: Blueprint) -> str:
-        """Build a prompt for AI subclass selection.
-
-        Args:
-            blueprint: Current character blueprint.
-
-        Returns:
-            Formatted prompt string.
-        """
+    def _build_prompt(self, state: T) -> str:
         system_prompt = (
             f"You are selecting a subclass for a D&D 5e {self.class_.value}.\n"
             "Choose the subclass that best fits the character's:\n"
@@ -66,18 +66,17 @@ class AISubclassAssigner(SubclassAssigner):
             "\nThe subclass should feel like a natural extension of who this character is.\n"
         )
 
-        # Use formatter with custom system prompt
         character_description = self.formatter.format(
-            blueprint, system_prompt=system_prompt
+            state, system_prompt=system_prompt
         )
 
-        # Add subclass options section
+        available_subclasses = tuple(SUBCLASSES[self.class_])
         subclass_instructions = [
             f"\n## Available {self.class_.value} Subclasses",
             "Select ONE subclass from the following options:\n",
         ]
 
-        for subclass_option in self.available_subclasses:
+        for subclass_option in available_subclasses:
             subclass_instructions.append(f"  - {subclass_option.value}")
 
         subclass_instructions.append(
@@ -92,20 +91,18 @@ class AISubclassAssigner(SubclassAssigner):
 
         return character_description + "\n".join(subclass_instructions)
 
-    def _select_subclass(self, blueprint: Blueprint) -> AnySubclass:
-        """Use AI to select a subclass for the character.
-
-        Args:
-            blueprint: Current character blueprint.
-
-        Returns:
-            AI-selected subclass.
-        """
-        # Build prompt and get AI selection
-        prompt = self._build_prompt(blueprint)
-
-        # Create dynamic response model for this class's subclasses
+    def get_change(
+        self, state: T
+    ) -> Generator[SubclassDelta, None, ProtocolIntersection[T, HasSubclasses]]:
+        _check_can_assign(self.class_, state)
         subclass_enum = SUBCLASSES[self.class_]
+        for existing in state.subclasses:
+            if isinstance(existing, subclass_enum):
+                delta = SubclassDelta(subclasses=state.subclasses)
+                yield delta
+                return delta.apply(state)
+
+        prompt = self._build_prompt(state)
 
         class _SubclassSelectionBase(BaseModel):
             subclass: AnySubclass
@@ -127,4 +124,8 @@ class AISubclassAssigner(SubclassAssigner):
 
         if not isinstance(result, _SubclassSelectionBase):
             raise TypeError(f"Expected SubclassSelection, got {type(result)}")
-        return result.subclass
+
+        selected: AnySubclass = result.subclass
+        delta = SubclassDelta(subclasses=state.subclasses + (selected,))
+        yield delta
+        return delta.apply(state)

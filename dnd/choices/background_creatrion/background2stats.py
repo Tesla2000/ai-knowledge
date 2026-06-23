@@ -2,19 +2,17 @@ from __future__ import annotations
 
 import json
 
-from dnd.choices.background_creatrion.background import (
-    Background,
-)
-from dnd.config import Config
-from scripts.wiki_scraper import (
-    BackgroundTemplate,
-)
+from dnd.choices.background_creatrion.background import Background
+from dnd.config import ResourcePaths
+from scripts.wiki_scraper.BackgroundTemplate import BackgroundTemplate
 
 
-def background2stats(background: Background, config: Config) -> BackgroundTemplate:  # type: ignore[valid-type]
-    return BackgroundTemplate(  # type: ignore[operator,no-any-return]
+def background2stats(
+    background: Background, config: ResourcePaths
+) -> BackgroundTemplate:
+    return BackgroundTemplate(
         **json.loads(
-            config.background_root.joinpath(background.value)  # type: ignore[attr-defined]
+            config.background_root.joinpath(background.value)
             .with_suffix(".json")
             .read_text()
         )

@@ -2,19 +2,21 @@
 
 from __future__ import annotations
 
-from dnd.character.blueprint.blueprint import Blueprint
-from dnd.character.blueprint.blueprint_formatter import (
-    BlueprintFormatter,
-)
+from collections.abc import Generator
+
+from dnd.character.blueprint.blueprint_formatter import BlueprintFormatter
 from dnd.character.blueprint.building_blocks.tool_proficiency_choice_resolver.base import (
     ToolProficiencyChoiceResolver,
+    ToolProficienciesDelta,
 )
+from dnd.character.blueprint.state import HasToolProficiencies
 from dnd.other_profficiencies import GamingSet
 from dnd.other_profficiencies import MusicalInstrument
 from dnd.other_profficiencies import ToolProficiency
 from langchain_openai import ChatOpenAI
 from pydantic import BaseModel
 from pydantic import Field
+from typing_protocol_intersection import ProtocolIntersection
 
 
 class ToolProficiencySelection(BaseModel):
@@ -25,7 +27,9 @@ class ToolProficiencySelection(BaseModel):
     )
 
 
-class AIToolProficiencyChoiceResolver(ToolProficiencyChoiceResolver):
+class AIToolProficiencyChoiceResolver[T: HasToolProficiencies](
+    ToolProficiencyChoiceResolver[T]
+):
     """AI-powered resolver for tool proficiency ANY_OF_YOUR_CHOICE placeholders.
 
     Uses an LLM to make intelligent tool selections based on
@@ -47,36 +51,28 @@ class AIToolProficiencyChoiceResolver(ToolProficiencyChoiceResolver):
     )
 
     def _select_tool_proficiency(
-        self, available: list[ToolProficiency], _: Blueprint
+        self, available: list[ToolProficiency], state: T
     ) -> ToolProficiency:
-        """Not used in AI implementation - overrides _get_change instead."""
+        """Not used — this class overrides get_change directly."""
         raise NotImplementedError(
-            "AIToolProficiencyChoiceResolver overrides _get_change directly"
+            "AIToolProficiencyChoiceResolver overrides get_change"
         )
 
-    def _select_gaming_set(self, available: list[GamingSet], _: Blueprint) -> GamingSet:
-        """Not used in AI implementation - overrides _get_change instead."""
+    def _select_gaming_set(self, available: list[GamingSet], state: T) -> GamingSet:
+        """Not used — this class overrides get_change directly."""
         raise NotImplementedError(
-            "AIToolProficiencyChoiceResolver overrides _get_change directly"
+            "AIToolProficiencyChoiceResolver overrides get_change"
         )
 
     def _select_musical_instrument(
-        self, available: list[MusicalInstrument], _: Blueprint
+        self, available: list[MusicalInstrument], state: T
     ) -> MusicalInstrument:
-        """Not used in AI implementation - overrides _get_change instead."""
+        """Not used — this class overrides get_change directly."""
         raise NotImplementedError(
-            "AIToolProficiencyChoiceResolver overrides _get_change directly"
+            "AIToolProficiencyChoiceResolver overrides get_change"
         )
 
-    def _build_prompt(self, blueprint: Blueprint) -> str:
-        """Build a prompt for AI tool proficiency selection.
-
-        Args:
-            blueprint: Current character blueprint.
-
-        Returns:
-            Formatted prompt string.
-        """
+    def _build_prompt(self, state: T) -> str:
         system_prompt = (
             "You are resolving tool proficiency ANY_OF_YOUR_CHOICE "
             "placeholders for a D&D 5e character.\n"
@@ -86,15 +82,14 @@ class AIToolProficiencyChoiceResolver(ToolProficiencyChoiceResolver):
         )
 
         character_description = self.formatter.format(
-            blueprint, system_prompt=system_prompt
+            state, system_prompt=system_prompt
         )
 
         instructions = ["\n## Placeholders to Resolve\n"]
 
-        # Count tool placeholders
         tool_placeholders = sum(
             1
-            for t in blueprint.tool_proficiencies
+            for t in state.tool_proficiencies
             if (
                 (
                     isinstance(t, ToolProficiency)
@@ -109,7 +104,7 @@ class AIToolProficiencyChoiceResolver(ToolProficiencyChoiceResolver):
         )
 
         if tool_placeholders == 0:
-            return ""  # No placeholders to resolve
+            return ""
 
         instructions.append(
             f"Tool Proficiencies: {tool_placeholders} ANY_OF_YOUR_CHOICE "
@@ -118,7 +113,6 @@ class AIToolProficiencyChoiceResolver(ToolProficiencyChoiceResolver):
         instructions.append(
             "  Available tool types: ToolProficiency, GamingSet, MusicalInstrument"
         )
-
         instructions.append(
             "\n## Selection Instructions\n"
             "Return the complete tool proficiency set with placeholders "
@@ -130,33 +124,35 @@ class AIToolProficiencyChoiceResolver(ToolProficiencyChoiceResolver):
 
         return character_description + "\n".join(instructions)
 
-    def get_change(self, blueprint: Blueprint) -> Blueprint:
-        """Replace tool proficiency ANY_OF_YOUR_CHOICE placeholders using AI.
-
-        Args:
-            blueprint: Current character blueprint.
-
-        Returns:
-            Blueprint with tool placeholders replaced by AI selections.
-        """
-        # Check if there are any placeholders
-        has_tool_placeholder = any(
+    def get_change(
+        self, state: T
+    ) -> Generator[
+        ToolProficienciesDelta, None, ProtocolIntersection[T, HasToolProficiencies]
+    ]:
+        has_placeholder = any(
             (isinstance(t, ToolProficiency) and t == ToolProficiency.ANY_OF_YOUR_CHOICE)
             or (isinstance(t, GamingSet) and t == GamingSet.ANY_OF_YOUR_CHOICE)
             or (
                 isinstance(t, MusicalInstrument)
                 and t == MusicalInstrument.ANY_OF_YOUR_CHOICE
             )
-            for t in blueprint.tool_proficiencies
+            for t in state.tool_proficiencies
         )
 
-        if not has_tool_placeholder:
-            return Blueprint()
+        if not has_placeholder:
+            delta = ToolProficienciesDelta(
+                tool_proficiencies=tuple(state.tool_proficiencies)
+            )
+            yield delta
+            return delta.apply(state)
 
-        # Build prompt and get AI selection
-        prompt = self._build_prompt(blueprint)
+        prompt = self._build_prompt(state)
         if not prompt:
-            return Blueprint()
+            delta = ToolProficienciesDelta(
+                tool_proficiencies=tuple(state.tool_proficiencies)
+            )
+            yield delta
+            return delta.apply(state)
 
         structured_llm = self.llm.with_structured_output(ToolProficiencySelection)
         _result = structured_llm.invoke(prompt)
@@ -164,10 +160,9 @@ class AIToolProficiencyChoiceResolver(ToolProficiencyChoiceResolver):
             raise TypeError(f"Expected ToolProficiencySelection, got {type(_result)}")
         selection = _result
 
-        # Remove all tool placeholders and add selections
         new_tools: set[ToolProficiency | GamingSet | MusicalInstrument] = {
             t
-            for t in blueprint.tool_proficiencies
+            for t in state.tool_proficiencies
             if not (
                 (
                     isinstance(t, ToolProficiency)
@@ -182,4 +177,6 @@ class AIToolProficiencyChoiceResolver(ToolProficiencyChoiceResolver):
         }
         new_tools.update(selection.tool_proficiencies)
 
-        return Blueprint(tool_proficiencies=new_tools)  # type: ignore[arg-type]
+        delta = ToolProficienciesDelta(tool_proficiencies=tuple(new_tools))
+        yield delta
+        return delta.apply(state)

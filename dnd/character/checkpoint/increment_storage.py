@@ -50,6 +50,10 @@ class IncrementStorage(ABC):
         """
 
     @abstractmethod
+    def save_chain(self, chain_id: UUID, chain: IncrementChain) -> None:
+        """Save an increment chain by ID."""
+
+    @abstractmethod
     def chain_exists(self, chain_id: UUID) -> bool:
         """Check if an increment chain exists.
 
@@ -112,7 +116,7 @@ class FileIncrementStorage(IncrementStorage):
 class MemoryStorage(IncrementStorage):
     """In-memory increment storage for testing and temporary use."""
 
-    def __init__(self):  # type: ignore[no-untyped-def]
+    def __init__(self) -> None:
         """Initialize in-memory storage."""
         self._chains: dict[UUID, IncrementChain] = {}
 

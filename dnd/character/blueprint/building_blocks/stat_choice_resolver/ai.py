@@ -2,13 +2,14 @@
 
 from __future__ import annotations
 
-from dnd.character.blueprint.blueprint import Blueprint
-from dnd.character.blueprint.blueprint_formatter import (
-    BlueprintFormatter,
-)
+from typing_protocol_intersection import ProtocolIntersection
+
+from dnd.character.blueprint.blueprint_formatter import BlueprintFormatter
 from dnd.character.blueprint.building_blocks.stat_choice_resolver.base import (
     StatChoiceResolver,
 )
+from dnd.character.blueprint.state import HasNStatChoices
+from dnd.character.blueprint.state import HasStats
 from dnd.choices.stats_creation.statistic import Statistic
 from langchain_openai import ChatOpenAI
 from pydantic import BaseModel
@@ -23,7 +24,9 @@ class StatIncreaseSelection(BaseModel):
     )
 
 
-class AIStatChoiceResolver(StatChoiceResolver):
+class AIStatChoiceResolver[T: ProtocolIntersection[HasStats, HasNStatChoices]](
+    StatChoiceResolver[T]
+):
     """AI-powered stat choice resolver that selects stat increases based on character context.
 
     Uses an LLM to make intelligent decisions about which ability scores to increase
@@ -46,16 +49,8 @@ class AIStatChoiceResolver(StatChoiceResolver):
         description="Blueprint formatter for creating AI prompts",
     )
 
-    def _build_prompt(self, blueprint: Blueprint) -> str:
-        """Build a prompt for AI stat increase selection.
-
-        Args:
-            blueprint: Current character blueprint.
-
-        Returns:
-            Formatted prompt string.
-        """
-        n = blueprint.n_stat_choices
+    def _build_prompt(self, state: T) -> str:
+        n = state.n_stat_choices
 
         system_prompt = (
             "You are selecting ability score increases for a D&D 5e character.\n"
@@ -63,12 +58,10 @@ class AIStatChoiceResolver(StatChoiceResolver):
             "Choose which ability scores to increase to optimize the character's effectiveness.\n"
         )
 
-        # Use formatter with custom system prompt
         character_description = self.formatter.format(
-            blueprint, system_prompt=system_prompt
+            state, system_prompt=system_prompt
         )
 
-        # Add selection instructions
         instructions = [
             "\n## Selection Instructions",
             f"Distribute exactly {n} ability score increases across the six ability scores.",
@@ -84,17 +77,8 @@ class AIStatChoiceResolver(StatChoiceResolver):
 
         return character_description + "\n".join(instructions)
 
-    def select_stats_to_increase(self, blueprint: Blueprint) -> dict[Statistic, int]:
-        """Use AI to select which stats to increase.
-
-        Args:
-            blueprint: Current character blueprint.
-
-        Returns:
-            Dictionary mapping statistics to increase amounts.
-        """
-        # Build prompt and get AI selection
-        prompt = self._build_prompt(blueprint)
+    def select_stats_to_increase(self, state: T) -> dict[Statistic, int]:
+        prompt = self._build_prompt(state)
 
         structured_llm = self.llm.with_structured_output(StatIncreaseSelection)
         _result = structured_llm.invoke(prompt)
@@ -102,15 +86,13 @@ class AIStatChoiceResolver(StatChoiceResolver):
             raise TypeError(f"Expected StatIncreaseSelection, got {type(_result)}")
         selection = _result
 
-        # Validate total increases
         total_increases = sum(selection.stat_increases.values())
-        if total_increases != blueprint.n_stat_choices:
+        if total_increases != state.n_stat_choices:
             raise ValueError(
                 f"AI distributed {total_increases} increases "
-                f"but expected {blueprint.n_stat_choices}"
+                f"but expected {state.n_stat_choices}"
             )
 
-        # Validate no negative increases
         for stat, amount in selection.stat_increases.items():
             if amount < 0:
                 raise ValueError(

@@ -49,14 +49,3 @@ class Stats(BaseModel):
 
     def get_modifier(self, stat: Statistic) -> int:
         return self.get_stat(stat) // 2 - 5
-
-    def with_stat(self, stat: Statistic, value: int) -> Stats:
-        updates: dict[str, int] = {
-            Statistic.STRENGTH: {"strength": value},
-            Statistic.DEXTERITY: {"dexterity": value},
-            Statistic.CONSTITUTION: {"constitution": value},
-            Statistic.INTELLIGENCE: {"intelligence": value},
-            Statistic.WISDOM: {"wisdom": value},
-            Statistic.CHARISMA: {"charisma": value},
-        }[stat]
-        return self.model_copy(update=updates)

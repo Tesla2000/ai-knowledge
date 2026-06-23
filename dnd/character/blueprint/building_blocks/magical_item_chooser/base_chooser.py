@@ -3,62 +3,64 @@
 from __future__ import annotations
 
 from abc import ABC
+from abc import abstractmethod
+from collections.abc import Generator
 
-from dnd.character.blueprint.blueprint import Blueprint
-from dnd.character.blueprint.building_blocks.building_block import (
-    BuildingBlock,
-)
+from dnd.character.blueprint.building_blocks.building_block import BuildingBlock
+from dnd.character.blueprint.state import BlueprintProtocol
+from dnd.character.blueprint.state import HasMagicalItems
+from dnd.character.delta.magical_items_delta import MagicalItemsDelta
 from dnd.character.magical_item.item import MagicalItem
 from pydantic import ConfigDict
 from pydantic import Field
+from pydantic import NonNegativeInt
 
 
-class MagicalItemChooserBase(BuildingBlock, ABC):
+class MagicalItemChooserBase(
+    BuildingBlock[BlueprintProtocol, MagicalItemsDelta, HasMagicalItems], ABC
+):
     """Abstract base class for choosers that select magical items.
 
     Implementations must select magical items based on rarity counts:
     - n_common, n_uncommon, n_rare, etc.
-
-    This base class provides a common type for both random choosers
-    (RandomMagicalItemChooser) and holistic AI choosers (AIMagicalItemChooser).
-
-    - RandomMagicalItemChooser: Selects items level-by-level
-    - AIMagicalItemChooser: Selects all items in a single holistic LLM call
-
-    Subclasses implement _get_change() to define selection logic.
     """
 
     model_config = ConfigDict(frozen=True)
 
-    n_common: int = Field(
+    n_common: NonNegativeInt = Field(
         default=0, description="Number of common magical items to select"
     )
-    n_uncommon: int = Field(
+    n_uncommon: NonNegativeInt = Field(
         default=0, description="Number of uncommon magical items to select"
     )
-    n_rare: int = Field(default=0, description="Number of rare magical items to select")
-    n_very_rare: int = Field(
+    n_rare: NonNegativeInt = Field(
+        default=0, description="Number of rare magical items to select"
+    )
+    n_very_rare: NonNegativeInt = Field(
         default=0, description="Number of very rare magical items to select"
     )
-    n_legendary: int = Field(
+    n_legendary: NonNegativeInt = Field(
         default=0, description="Number of legendary magical items to select"
     )
-    n_artifact: int = Field(
+    n_artifact: NonNegativeInt = Field(
         default=0, description="Number of artifact magical items to select"
     )
-    n_unique: int = Field(
+    n_unique: NonNegativeInt = Field(
         default=0, description="Number of unique magical items to select"
     )
-    n_mistery: int = Field(
+    n_mistery: NonNegativeInt = Field(
         default=0, description="Number of mystery magical items to select"
     )
 
-    @staticmethod
-    def _add_items(
-        blueprint: Blueprint, selected_items: tuple[MagicalItem, ...]
-    ) -> Blueprint:
-        new_magical_items = blueprint.magical_items + tuple(selected_items)
-        for magical_item in new_magical_items:
-            diff = magical_item.assign_to(blueprint)
-            blueprint = blueprint.add_diff(diff)
-        return blueprint
+    @abstractmethod
+    def _select_items(self, state: BlueprintProtocol) -> tuple[MagicalItem, ...]:
+        """Select magical items based on rarity counts."""
+
+    def get_change(
+        self, state: BlueprintProtocol
+    ) -> Generator[MagicalItemsDelta, None, HasMagicalItems]:
+        selected_items = self._select_items(state)
+        existing = state.magical_items if isinstance(state, HasMagicalItems) else ()
+        delta = MagicalItemsDelta(magical_items=existing + selected_items)
+        yield delta
+        return delta.apply(state)

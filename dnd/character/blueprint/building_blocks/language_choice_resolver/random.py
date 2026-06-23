@@ -2,16 +2,16 @@ from __future__ import annotations
 
 import random
 
-from dnd.character.blueprint.blueprint import Blueprint
 from dnd.character.blueprint.building_blocks.language_choice_resolver.base import (
     LanguageChoiceResolver,
 )
+from dnd.character.blueprint.state import HasLanguages
 from dnd.choices.language import Language
 from pydantic import ConfigDict
 from pydantic import Field
 
 
-class RandomLanguageChoiceResolver(LanguageChoiceResolver):
+class RandomLanguageChoiceResolver[T: HasLanguages](LanguageChoiceResolver[T]):
     """Randomly selects languages for ANY_OF_YOUR_CHOICE placeholders.
 
     Provides deterministic randomness when seed is set, useful for
@@ -30,18 +30,6 @@ class RandomLanguageChoiceResolver(LanguageChoiceResolver):
         description="Optional seed for reproducible random selection",
     )
 
-    def _select_from_available(
-        self, available: list[Language], _: Blueprint
-    ) -> Language:
-        """Randomly select a language from available options.
-
-        Args:
-            available: List of Language options to choose from.
-            blueprint: Current character blueprint (unused in random selection).
-
-        Returns:
-            Randomly selected Language.
-        """
+    def _select_from_available(self, available: list[Language], state: T) -> Language:
         random.seed(self.seed)
-
         return random.choice(available)

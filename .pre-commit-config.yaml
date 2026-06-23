@@ -5,7 +5,7 @@ repos:
       - id: autoflake
         args: [ --remove-all-unused-imports, --in-place ]
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.15.18
+    rev: v0.15.20
     hooks:
       - id: ruff-format
       - id: ruff
@@ -27,10 +27,10 @@ repos:
           [
             ".",
             "--exclude",
-            ".venv,venv,tests",
+            ".venv,venv,tests,.claude",
             "--ignore-attributes-for-classes=.*",
             "--ignore-decorators=@app*,@pytest.fixture,@property,@model_validator*,@field_serializer*,@field_validator*",
-            "--ignore-names=Meta,__dict__,cli_cmd,_get_change,_is_first_level,MagicalItemAssigner,_exclude_factory_defaults,get_increment,get_latest,truncate_to,delete_chain,list_chains,chain_exists,main_class2spell_slots,get_spells_by_level,background2stats,maneuver2ability,get_n_maneuvers,weapon_list,main_class2ability_score_improvements,fighting_style2ability,n_fighting_styles,HealthCreationMethod,class2hit_die,invocations,n_eldrich_invocations,main_class2proficiencies,sub_race2stats,get_sub_races,StatsCreationMethod,SignedInt,handler",
+            "--ignore-names=Meta,__dict__,__getattr__,cli_cmd,_get_change,_is_first_level,MagicalItemAssigner,_exclude_factory_defaults,get_increment,get_latest,truncate_to,delete_chain,list_chains,chain_exists,main_class2spell_slots,get_spells_by_level,background2stats,maneuver2ability,get_n_maneuvers,weapon_list,main_class2ability_score_improvements,fighting_style2ability,n_fighting_styles,HealthCreationMethod,class2hit_die,invocations,n_eldrich_invocations,main_class2proficiencies,sub_race2stats,get_sub_races,StatsCreationMethod,SignedInt,handler",
              "--extra-sys-path=.venv/lib/python3.12/site-packages,.",
           ]
         stages: [ pre-commit ]
@@ -52,9 +52,10 @@ repos:
           - fastapi
           - starlette
           - langchain-openai
+          - typing_protocol_intersection
         args: [ --strict, --config-file, pyproject.toml ]
   - repo: https://github.com/Tesla2000/any-hook
     rev: v3.18.0
     hooks:
       - id: any-hook
-        args: [--modifiers, '[{"type": "remove-f-prefix"},{"type": "open-to-path"},{"type": "any-to-object"},{"type": "check-untracked", "directories": ["src","tests"]},{"type":"pydantic-config-to-model-config"},{"type":"local-imports"},{"type":"pydantic-v1-to-v2"},{"type":"str-enum-inheritance"},{"type":"forbidden-functions","forbidden_functions":["hasattr","getattr","print"]},{"type":"utcnow-to-datetime-now"},{"type":"len-as-bool"},{"type": "leaky-mapping-typing"},{"type":"arbitrary-types-allowed-check"},{"type":"instance-of-pydantic-model-detector"},{"type":"comment-detector","patterns":["type:\\s*ignore\\[import-not-found\\]"]}]']
+        args: [--modifiers, '[{"type": "remove-f-prefix"},{"type": "open-to-path"},{"type": "any-to-object"},{"type": "check-untracked", "directories": ["src","tests"]},{"type":"pydantic-config-to-model-config"},{"type":"local-imports"},{"type":"pydantic-v1-to-v2"},{"type":"str-enum-inheritance"},{"type":"forbidden-functions","forbidden_functions":["hasattr","getattr","print"]},{"type":"utcnow-to-datetime-now"},{"type":"len-as-bool"},{"type": "leaky-mapping-typing"},{"type":"arbitrary-types-allowed-check"},{"type":"instance-of-pydantic-model-detector"},{"type":"comment-detector","patterns":["type:\\s*ignore"]}]']

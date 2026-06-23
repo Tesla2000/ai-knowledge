@@ -52,7 +52,6 @@ from pydantic import TypeAdapter
 from pydantic import ValidationError
 from starlette.responses import RedirectResponse
 from starlette.responses import Response
-from subclass_getter import get_unique_subclasses
 
 
 class _CreateCharacterResponse(BaseModel):
@@ -68,7 +67,7 @@ EXAMPLES = (
     SimplifiedBlocks(classes=Classes(class_levels={Class.WIZARD: 1})).model_dump(
         exclude={"blocks"}, mode="json"
     ),
-    example_building_blocks().model_dump(mode="json"),  # type: ignore[no-untyped-call]
+    example_building_blocks().model_dump(mode="json"),
 )
 
 
@@ -95,6 +94,16 @@ class _MetadataDict(TypedDict):
     fields: dict[str, _Field]
 
 
+def _get_concrete_block_classes() -> list[type[SerializableBlock]]:
+    any_union = typing.get_args(AnyBuildingBlock)[0]
+    result: list[type[SerializableBlock]] = []
+    for annotated in typing.get_args(any_union):
+        concrete = typing.get_args(annotated)[0]
+        if isinstance(concrete, type) and issubclass(concrete, SerializableBlock):
+            result.append(concrete)
+    return result
+
+
 def _generate_building_blocks_metadata() -> list[_MetadataDict]:
     """Generate metadata for all building blocks.
 
@@ -102,7 +111,7 @@ def _generate_building_blocks_metadata() -> list[_MetadataDict]:
         List of building block metadata dictionaries, sorted alphabetically by name.
     """
     blocks_metadata: list[_MetadataDict] = []
-    for block_class in get_unique_subclasses(SerializableBlock):
+    for block_class in _get_concrete_block_classes():
         fields = {}
         for field_name, field_info in block_class.model_fields.items():
             if field_name == BLOCK_TYPE_FIELD_NAME:
@@ -151,7 +160,7 @@ def _generate_building_blocks_metadata() -> list[_MetadataDict]:
     return blocks_metadata
 
 
-def create_app(storage: IncrementStorage):  # type: ignore[no-untyped-def]
+def create_app(storage: IncrementStorage) -> FastAPI:
     app_ = FastAPI()
 
     # Generate building blocks metadata once at startup
@@ -196,12 +205,12 @@ def create_app(storage: IncrementStorage):  # type: ignore[no-untyped-def]
         )
 
     @app_.get("/building_blocks")
-    def get_building_blocks():  # type: ignore[no-untyped-def]
+    def get_building_blocks() -> dict[str, list[_MetadataDict]]:
         """Return metadata about all available building blocks (cached at startup)."""
         return {"building_blocks": blocks_metadata}
 
     @app_.get("/simplified_templates")
-    def get_simplified_templates():  # type: ignore[no-untyped-def]
+    def get_simplified_templates() -> Mapping[str, object]:
         """Return example SimplifiedBlocks configurations."""
 
         # Template 1: Level 1 Wizard (minimal config)
@@ -257,7 +266,9 @@ def create_app(storage: IncrementStorage):  # type: ignore[no-untyped-def]
         }
 
     @app_.post("/format_simplified")
-    def format_simplified(request: Mapping[str, object], show_defaults: bool = True):  # type: ignore[no-untyped-def]  # ignore
+    def format_simplified(
+        request: Mapping[str, object], show_defaults: bool = True
+    ) -> Mapping[str, object]:
         """Validate and reformat SimplifiedBlocks config with or without defaults.
 
         This endpoint preserves user changes while toggling default value display.
@@ -280,7 +291,7 @@ def create_app(storage: IncrementStorage):  # type: ignore[no-untyped-def]
             raise HTTPException(status_code=422, detail=str(e))
 
     @app_.get("/schema/simplified-blocks")
-    def get_simplified_blocks_schema():  # type: ignore[no-untyped-def]
+    def get_simplified_blocks_schema() -> Mapping[str, object]:
         """Return JSON schema for SimplifiedBlocks editor validation.
 
         Recursively generates validation for:
@@ -398,11 +409,11 @@ def create_app(storage: IncrementStorage):  # type: ignore[no-untyped-def]
         return schema
 
     @app_.get("/health")
-    def health():  # type: ignore[no-untyped-def]
+    def health() -> dict[str, str]:
         return {"status": "ok"}
 
     @app_.get("/")
-    def redirect_doc():  # type: ignore[no-untyped-def]
+    def redirect_doc() -> RedirectResponse:
         return RedirectResponse("/docs")
 
     # Serve static files
@@ -412,15 +423,15 @@ def create_app(storage: IncrementStorage):  # type: ignore[no-untyped-def]
 
     # Redirect to building blocks page
     @app_.get("/blocks")
-    def blocks_page():  # type: ignore[no-untyped-def]
+    def blocks_page() -> RedirectResponse:
         return RedirectResponse("/static/building_blocks.html")
 
     # Redirect to builder page
     @app_.get("/builder")
-    def builder_page():  # type: ignore[no-untyped-def]
+    def builder_page() -> RedirectResponse:
         return RedirectResponse("/static/builder.html")
 
     return app_
 
 
-app = create_app(MemoryStorage())  # type: ignore[no-untyped-call]
+app = create_app(MemoryStorage())

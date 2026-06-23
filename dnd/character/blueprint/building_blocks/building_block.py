@@ -1,18 +1,25 @@
 from __future__ import annotations
 
-from abc import ABC
-from abc import abstractmethod
+
 from collections.abc import Generator
 from typing import Self
+from typing import TYPE_CHECKING
+from typing import TypeAlias
 from typing import Union
 
-from dnd.character.blueprint.blueprint import Blueprint
+from typing_protocol_intersection import ProtocolIntersection
+
+from dnd.character.blueprint.state import BlueprintProtocol
+from dnd.character.delta.delta import Delta
 from pydantic import BaseModel
 from pydantic import computed_field
 from pydantic import ConfigDict
 from pydantic import Field
 
 BLOCK_TYPE_FIELD_NAME = "block_type"
+
+if TYPE_CHECKING:
+    AnyBlocks: TypeAlias = tuple["SerializableBlock", ...]
 
 
 class SerializableBlock(BaseModel):
@@ -24,38 +31,58 @@ class SerializableBlock(BaseModel):
 
     model_config = ConfigDict(frozen=True)
 
-    @computed_field(alias=BLOCK_TYPE_FIELD_NAME)  # type: ignore[prop-decorator]
-    @property
-    def block_type(self) -> str:
-        """Return the class name as the block type for polymorphic serialization."""
-        return self.get_block_type()
+    if TYPE_CHECKING:
+
+        @property
+        def block_type(self) -> str:
+            """Return the class name as the block type for polymorphic serialization."""
+            return self.get_block_type()
+
+    else:
+
+        @computed_field(alias=BLOCK_TYPE_FIELD_NAME)
+        @property
+        def block_type(self) -> str:
+            """Return the class name as the block type for polymorphic serialization."""
+            return self.get_block_type()
 
     @classmethod
     def get_block_type(cls) -> str:
         return cls.__name__
 
 
-class BuildingBlock(SerializableBlock, ABC):
-    @abstractmethod
-    def get_change(self, blueprint: Blueprint) -> Blueprint:
-        """Returns Blueprint differences to apply.
+class BuildingBlock[T: BlueprintProtocol, DeltaT: Delta, Added: BlueprintProtocol](
+    SerializableBlock
+):
+    """Abstract base for a single pipeline step that yields deltas and returns new state."""
 
-        Receives the current blueprint state from yield returns,
-        allowing decisions based on current state.
-        """
+    def get_change(
+        self, state: T
+    ) -> Generator[DeltaT, None, ProtocolIntersection[T, Added]]:
+        """Yield deltas and return the new state."""
+        raise NotImplementedError(f"{type(self).__name__} must implement get_change")
 
-    def __add__(self, other: BuildingBlock) -> CombinedBlock:
+    def __add__(
+        self,
+        other: BuildingBlock[BlueprintProtocol, Delta, BlueprintProtocol]
+        | CombinedBlock,
+    ) -> CombinedBlock:
         return CombinedBlock(blocks=(self, other))
 
 
-Blocks = tuple[Union[BuildingBlock, "CombinedBlock"], ...]
+Blocks = tuple[
+    Union[
+        "BuildingBlock[BlueprintProtocol, Delta, BlueprintProtocol]", "CombinedBlock"
+    ],
+    ...,
+]
 
 
 class CombinedBlock(SerializableBlock):
     """Combines multiple building blocks to apply sequentially."""
 
     model_config = ConfigDict(validate_by_alias=True, validate_by_name=True)
-    blocks: Blocks = Field(description="Tuple of building blocks to apply in order")
+    blocks: AnyBlocks = Field(description="Tuple of building blocks to apply in order")  # noqa: F821
 
     def __add__(self, other: object) -> Self:
         allowed_types = (BuildingBlock, CombinedBlock)
@@ -69,9 +96,19 @@ class CombinedBlock(SerializableBlock):
             return type(self)(blocks=self.blocks + (other,))
         raise ValueError("What?")
 
-    def flatten(self) -> Generator[BuildingBlock]:
+    def get_change(
+        self, state: BlueprintProtocol
+    ) -> Generator[Delta, None, BlueprintProtocol]:
+        current: BlueprintProtocol = state
+        for block in self.flatten():
+            current = yield from block.get_change(current)
+        return current
+
+    def flatten(
+        self,
+    ) -> Generator[BuildingBlock[BlueprintProtocol, Delta, BlueprintProtocol]]:
         for block in self.blocks:
-            if not isinstance(block, CombinedBlock):
+            if isinstance(block, BuildingBlock):
                 yield block
-            else:
+            elif isinstance(block, CombinedBlock):
                 yield from block.flatten()

@@ -2,13 +2,12 @@
 
 from __future__ import annotations
 
-from dnd.character.blueprint.blueprint import Blueprint
-from dnd.character.blueprint.blueprint_formatter import (
-    BlueprintFormatter,
-)
+from dnd.character.blueprint.blueprint_formatter import BlueprintFormatter
 from dnd.character.blueprint.building_blocks.magical_item_chooser.base_chooser import (
     MagicalItemChooserBase,
 )
+from dnd.character.blueprint.state import BlueprintProtocol
+from dnd.character.magical_item.item import MagicalItem
 from dnd.character.magical_item.items import MAGICAL_ITEMS
 from dnd.character.magical_item.level import Level
 from langchain_openai import ChatOpenAI
@@ -31,8 +30,6 @@ class AIMagicalItemChooser(MagicalItemChooserBase):
 
     Unlike the standard MagicalItemChooser which selects items per rarity level,
     this chooser uses a single LLM call to select all items simultaneously.
-    This allows the AI to consider the full character concept and make
-    coherent, synergistic decisions across all item selections.
 
     Example:
         >>> llm = ChatOpenAI(model="gpt-4o", temperature=0.7)
@@ -55,15 +52,7 @@ class AIMagicalItemChooser(MagicalItemChooserBase):
         description="Blueprint formatter for creating AI prompts",
     )
 
-    def _build_prompt(self, blueprint: Blueprint) -> str:
-        """Build comprehensive prompt for magical item selection.
-
-        Args:
-            blueprint: Current character blueprint.
-
-        Returns:
-            Formatted prompt string.
-        """
+    def _build_prompt(self, state: BlueprintProtocol) -> str:
         system_prompt = (
             "You are selecting magical items for a D&D 5e character in a "
             "single, holistic decision.\n"
@@ -74,10 +63,9 @@ class AIMagicalItemChooser(MagicalItemChooserBase):
         )
 
         character_description = self.formatter.format(
-            blueprint, system_prompt=system_prompt
+            state, system_prompt=system_prompt
         )
 
-        # Build item counts by rarity
         counts = []
         if self.n_common > 0:
             counts.append(f"- {self.n_common} Common item(s)")
@@ -97,7 +85,7 @@ class AIMagicalItemChooser(MagicalItemChooserBase):
             counts.append(f"- {self.n_mistery} Mystery item(s)")
 
         if not counts:
-            return ""  # No items to select
+            return ""
 
         instructions = [
             "\n## Magical Item Selection\n",
@@ -106,7 +94,6 @@ class AIMagicalItemChooser(MagicalItemChooserBase):
             "\n## Available Items by Rarity\n",
         ]
 
-        # Group items by rarity for reference
         for level in Level:
             items = [item for item in MAGICAL_ITEMS if item.level == level]
             if items:
@@ -122,22 +109,18 @@ class AIMagicalItemChooser(MagicalItemChooserBase):
                 "4. Duplicates are allowed if strategically valuable",
                 "5. Choose items that enhance the character's role/concept",
                 "6. Return EXACTLY the item names as they appear in the available lists",
-                "7. Make sure to make most of this items. Headband of Intellect sounds good but not for a mage with intelligence higher than one provided by the artifact",
-                "8. Make sure that thi number of items is correct",
+                "7. Avoid items that set a stat to a fixed value the character already meets or"
+                " exceeds (e.g. skip Headband of Intellect if the character's Intelligence is"
+                " already at or above the value it would provide)",
+                "8. Return EXACTLY"
+                f" {self.n_common + self.n_uncommon + self.n_rare + self.n_very_rare + self.n_legendary + self.n_artifact + self.n_unique + self.n_mistery}"
+                " item(s) in total — no more, no less",
             ]
         )
 
         return character_description + "\n".join(instructions)
 
-    def get_change(self, blueprint: Blueprint) -> Blueprint:
-        """Select magical items using AI in a single call.
-
-        Args:
-            blueprint: Current character blueprint.
-
-        Returns:
-            Blueprint with magical items added.
-        """
+    def _select_items(self, state: BlueprintProtocol) -> tuple[MagicalItem, ...]:
         total_requested = (
             self.n_common
             + self.n_uncommon
@@ -149,25 +132,22 @@ class AIMagicalItemChooser(MagicalItemChooserBase):
             + self.n_mistery
         )
         if not total_requested:
-            return Blueprint()
-        # Build prompt
-        prompt = self._build_prompt(blueprint)
-        # Get AI selections
+            return ()
+
+        prompt = self._build_prompt(state)
         structured_llm = self.llm.with_structured_output(MagicalItemSelection)
         _result = structured_llm.invoke(prompt)
         if not isinstance(_result, MagicalItemSelection):
             raise TypeError(f"Expected MagicalItemSelection, got {type(_result)}")
         selection = _result
 
-        # Map selected names to MagicalItem objects
         item_map = {item.name: item for item in MAGICAL_ITEMS}
         selected_items = tuple(map(item_map.__getitem__, selection.selected_items))
 
-        # Verify counts match requested amounts
         if len(selected_items) != total_requested:
             raise ValueError(
                 f"AI selected {len(selected_items)} items but "
                 f"{total_requested} were requested"
             )
 
-        return self._add_items(blueprint, selected_items)
+        return selected_items

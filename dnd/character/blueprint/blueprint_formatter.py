@@ -1,40 +1,32 @@
-"""Component for formatting Blueprint data into structured text for AI prompts."""
+"""Component for formatting blueprint data into structured text for AI prompts."""
 
 from __future__ import annotations
-
 from typing import Literal
 
-from typing_extensions import TypeIs
-
-from dnd.character.blueprint.blueprint import Blueprint
-from dnd.character.race.race import Race
+from dnd.character.blueprint.state import BlueprintProtocol
+from dnd.character.blueprint.state import HasAge
+from dnd.character.blueprint.state import HasAlignment
+from dnd.character.blueprint.state import HasBackground
+from dnd.character.blueprint.state import HasBackstory
+from dnd.character.blueprint.state import HasClasses
+from dnd.character.blueprint.state import HasArmors
+from dnd.character.blueprint.state import HasFeats
+from dnd.character.blueprint.state import HasMagicalItems
+from dnd.character.blueprint.state import HasName
+from dnd.character.blueprint.state import HasOtherEquipment
+from dnd.character.blueprint.state import HasRace
+from dnd.character.blueprint.state import HasSex
+from dnd.character.blueprint.state import HasSkillProficiencies
+from dnd.character.blueprint.state import HasSpells
+from dnd.character.blueprint.state import HasStats
+from dnd.character.blueprint.state import HasWeapons
 from dnd.character.spells.spells import Spells
-from dnd.character.stats import Stats
 from pydantic import BaseModel
 from pydantic import Field
 
 
-class _BlueprintWithStats(Blueprint):
-    stats: Stats
-
-
-def _has_stats(blueprint: Blueprint) -> TypeIs[_BlueprintWithStats]:
-    return blueprint.stats is not None
-
-
-class _BlueprintWithRace(Blueprint):
-    race: Race
-
-
-def _has_race(blueprint: Blueprint) -> TypeIs[_BlueprintWithRace]:
-    return blueprint.race is not None
-
-
 class BlueprintFormatter(BaseModel):
-    """Formats Blueprint data into structured text suitable for AI prompts.
-
-    This component provides a standardized way to present character information
-    to AI models, with configurable sections and formatting options.
+    """Formats blueprint data into structured text suitable for AI prompts.
 
     Example:
         >>> formatter = BlueprintFormatter(
@@ -42,7 +34,7 @@ class BlueprintFormatter(BaseModel):
         ...     include_stats=True,
         ...     format_style="markdown"
         ... )
-        >>> prompt_text = formatter.format(blueprint)
+        >>> prompt_text = formatter.format(state)
     """
 
     include_name: bool = Field(default=True, description="Include character name")
@@ -81,166 +73,122 @@ class BlueprintFormatter(BaseModel):
         description="Optional custom system prompt to prepend to the formatted output",
     )
 
-    def format(self, blueprint: Blueprint, system_prompt: str | None = None) -> str:
-        """Format a Blueprint into structured text.
-
-        Args:
-            blueprint: The character blueprint to format.
-            system_prompt: Optional system prompt to prepend. If not provided,
-                uses the instance's system_prompt field.
-
-        Returns:
-            Formatted string representation of the blueprint.
-        """
+    def format(self, state: BlueprintProtocol, system_prompt: str | None = None) -> str:
+        """Format a blueprint state into structured text."""
         sections = []
 
-        # Add system prompt if provided
         prompt_to_use = (
             system_prompt if system_prompt is not None else self.system_prompt
         )
         if prompt_to_use:
             sections.append(prompt_to_use)
 
-        # Identity
-        identity_lines = self._format_identity(blueprint)
+        identity_lines = self._format_identity(state)
         if identity_lines:
             sections.append(self._section_header("Character Identity"))
             sections.extend(identity_lines)
 
-        # Classes
-        if self.include_classes and blueprint.classes:
+        if self.include_classes and isinstance(state, HasClasses):
             sections.append(self._section_header("Classes & Levels"))
-            sections.extend(self._format_classes(blueprint))
+            for cls, level in state.classes.all_levels():
+                sections.append(self._item(f"{cls.value}: Level {level}"))
 
-        # Race
-        if self.include_race and _has_race(blueprint):
+        if self.include_race and isinstance(state, HasRace):
             sections.append(self._section_header("Race"))
-            sections.extend(self._format_race(blueprint))
+            sections.append(self._item(state.race.value))
+            sections.append(self._item(f"Subrace: {state.subrace.value}"))
 
-        # Background
-        if self.include_background and blueprint.background:
+        if self.include_background and isinstance(state, HasBackground):
             sections.append(self._section_header("Background"))
-            sections.append(self._item(blueprint.background.value))
+            sections.append(self._item(state.background.value))
 
-        # Alignment
-        if self.include_alignment and blueprint.alignment:
+        if self.include_alignment and isinstance(state, HasAlignment):
             sections.append(self._section_header("Alignment"))
-            sections.append(self._item(blueprint.alignment.value))
+            sections.append(self._item(state.alignment.value))
 
-        # Backstory
-        if self.include_backstory and blueprint.backstory:
+        if self.include_backstory and isinstance(state, HasBackstory):
             sections.append(self._section_header("Backstory"))
-            sections.append(self._item(blueprint.backstory))
+            sections.append(self._item(state.backstory))
 
-        # Stats
-        if self.include_stats and _has_stats(blueprint):
+        if self.include_stats and isinstance(state, HasStats):
+            stats = state.stats
             sections.append(self._section_header("Ability Scores"))
-            sections.extend(self._format_stats(blueprint))
-
-        # Skills
-        if self.include_skills and blueprint.skill_proficiencies:
-            sections.append(self._section_header("Skill Proficiencies"))
-            skills_str = ", ".join(
-                skill.value for skill in blueprint.skill_proficiencies
+            sections.extend(
+                [
+                    self._item(f"Strength: {stats.strength}"),
+                    self._item(f"Dexterity: {stats.dexterity}"),
+                    self._item(f"Constitution: {stats.constitution}"),
+                    self._item(f"Intelligence: {stats.intelligence}"),
+                    self._item(f"Wisdom: {stats.wisdom}"),
+                    self._item(f"Charisma: {stats.charisma}"),
+                ]
             )
+
+        if self.include_skills and isinstance(state, HasSkillProficiencies):
+            sections.append(self._section_header("Skill Proficiencies"))
+            skills_str = ", ".join(skill.value for skill in state.skill_proficiencies)
             sections.append(self._item(skills_str))
 
-        # Equipment
         if self.include_equipment:
-            equipment_lines = self._format_equipment(blueprint)
+            equipment_lines = self._format_equipment(state)
             if equipment_lines:
                 sections.append(self._section_header("Current Equipment"))
                 sections.extend(equipment_lines)
 
-        # Spells
-        if self.include_spells and blueprint.spells:
+        if self.include_spells and isinstance(state, HasSpells):
             sections.append(self._section_header("Spells"))
-            sections.extend(self._format_spells(blueprint.spells))
+            sections.extend(self._format_spells(state.spells))
 
-        # Feats
-        if self.include_feats and blueprint.feats:
+        if self.include_feats and isinstance(state, HasFeats) and state.feats:
             sections.append(self._section_header("Feats"))
-            feats_str = ", ".join(feat.value for feat in blueprint.feats)
+            feats_str = ", ".join(feat.value for feat in state.feats)
             sections.append(self._item(feats_str))
 
         return "\n".join(sections)
 
     def _section_header(self, title: str) -> str:
-        """Format a section header based on format style."""
         if self.format_style == "markdown":
             return f"\n## {title}"
-        else:
-            return f"\n{title.upper()}"
+        return f"\n{title.upper()}"
 
     def _item(self, text: str, indent: int = 1) -> str:
-        """Format an item with appropriate indentation."""
         prefix = "  " * indent
         return f"{prefix}{text}"
 
-    def _format_identity(self, blueprint: Blueprint) -> list[str]:
-        """Format identity information (name, sex, age)."""
+    def _format_identity(self, state: BlueprintProtocol) -> list[str]:
         lines = []
-        if self.include_name and blueprint.name:
-            lines.append(self._item(f"Name: {blueprint.name}"))
-        if self.include_sex and blueprint.sex:
-            lines.append(self._item(f"Sex: {blueprint.sex.value}"))
-        if self.include_age and blueprint.age:
-            lines.append(self._item(f"Age: {blueprint.age}"))
+        if self.include_name and isinstance(state, HasName):
+            lines.append(self._item(f"Name: {state.name}"))
+        if self.include_sex and isinstance(state, HasSex):
+            lines.append(self._item(f"Sex: {state.sex.value}"))
+        if self.include_age and isinstance(state, HasAge):
+            lines.append(self._item(f"Age: {state.age}"))
         return lines
 
-    def _format_classes(self, blueprint: Blueprint) -> list[str]:
-        """Format class and level information."""
+    def _format_equipment(self, state: BlueprintProtocol) -> list[str]:
         lines = []
-        for cls, level in blueprint.classes.items():
-            lines.append(self._item(f"{cls.value}: Level {level}"))
-        return lines
-
-    def _format_race(self, blueprint: _BlueprintWithRace) -> list[str]:
-        """Format race and subrace information."""
-        lines = [self._item(blueprint.race.value)]
-        if blueprint.subrace:
-            lines.append(self._item(f"Subrace: {blueprint.subrace.value}"))
-        return lines
-
-    def _format_stats(self, blueprint: _BlueprintWithStats) -> list[str]:
-        """Format ability scores."""
-        return [
-            self._item(f"Strength: {blueprint.stats.strength}"),
-            self._item(f"Dexterity: {blueprint.stats.dexterity}"),
-            self._item(f"Constitution: {blueprint.stats.constitution}"),
-            self._item(f"Intelligence: {blueprint.stats.intelligence}"),
-            self._item(f"Wisdom: {blueprint.stats.wisdom}"),
-            self._item(f"Charisma: {blueprint.stats.charisma}"),
-        ]
-
-    def _format_equipment(self, blueprint: Blueprint) -> list[str]:
-        """Format equipment information."""
-        lines = []
-        if blueprint.armors:
-            armors_str = ", ".join(w.value for w in blueprint.armors)
+        if isinstance(state, HasArmors) and state.armors:
+            armors_str = ", ".join(w.value for w in state.armors)
             lines.append(self._item(f"Armors: {armors_str}"))
-        if blueprint.weapons:
-            weapons_str = ", ".join(w.value for w in blueprint.weapons)
+        if isinstance(state, HasWeapons) and state.weapons:
+            weapons_str = ", ".join(w.value for w in state.weapons)
             lines.append(self._item(f"Weapons: {weapons_str}"))
-        if blueprint.other_equipment:
-            others_str = ", ".join(str(item) for item in blueprint.other_equipment)
+        if isinstance(state, HasOtherEquipment) and state.other_equipment:
+            others_str = ", ".join(str(item) for item in state.other_equipment)
             lines.append(self._item(f"Other: {others_str}"))
-        if blueprint.magical_items:
-            items_str = ", ".join(item.name for item in blueprint.magical_items)
+        if isinstance(state, HasMagicalItems) and state.magical_items:
+            items_str = ", ".join(item.name for item in state.magical_items)
             lines.append(self._item(f"Magical Items: {items_str}"))
         return lines
 
     def _format_spells(self, spells: Spells) -> list[str]:
-        """Format spell information."""
         lines = []
-        if spells.cantrips:
-            cantrips = ", ".join(c.value for c in spells.cantrips)
-            lines.append(self._item(f"Cantrips: {cantrips}"))
-
-        for level in range(1, 10):
-            spells_at_level = spells.get_spell_level_by_index(level)  # type: ignore[arg-type]
-            if spells_at_level:
+        for level, spells_at_level in enumerate(spells.get_spells_by_level()):
+            if level == 0:
+                if spells_at_level:
+                    cantrips = ", ".join(c.value for c in spells_at_level)
+                    lines.append(self._item(f"Cantrips: {cantrips}"))
+            elif spells_at_level:
                 spells_str = ", ".join(s.value for s in spells_at_level)
                 lines.append(self._item(f"Level {level}: {spells_str}"))
-
         return lines

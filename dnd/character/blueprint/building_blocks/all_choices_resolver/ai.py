@@ -2,36 +2,41 @@
 
 from __future__ import annotations
 
+from collections.abc import Generator
 from itertools import filterfalse
 
-from dnd.character.blueprint.blueprint import Blueprint
-from dnd.character.blueprint.blueprint_formatter import (
-    BlueprintFormatter,
-)
+
+from dnd.character.blueprint.blueprint_formatter import BlueprintFormatter
 from dnd.character.blueprint.building_blocks.all_choices_resolver.base_resolver import (
     AllChoicesResolverBase,
 )
 from dnd.character.blueprint.building_blocks.all_choices_resolver.choice_package import (
     ChoicePackage,
 )
-from dnd.character.blueprint.building_blocks.building_block import (
-    BuildingBlock,
-)
-from dnd.character.blueprint.building_blocks.building_block import (
-    CombinedBlock,
-)
+from dnd.character.blueprint.building_blocks.building_block import BuildingBlock
+from dnd.character.blueprint.building_blocks.building_block import CombinedBlock
 from dnd.character.blueprint.building_blocks.equipment_chooser import (
     AnyEquipmentChooser,
 )
 from dnd.character.blueprint.building_blocks.feat_choice_resolver.max_if_not_maxed import (
     MaxIfNotMaxedResolver,
 )
-from dnd.character.blueprint.building_blocks.null_block import (
-    NullBlock,
-)
+from dnd.character.blueprint.building_blocks.null_block import NullBlock
 from dnd.character.blueprint.building_blocks.stat_choice_resolver import (
     AnyStatChoiceResolver,
 )
+from dnd.character.blueprint.state import BlueprintProtocol
+from dnd.character.blueprint.state import HasClasses
+from dnd.character.blueprint.state import HasFeats
+from dnd.character.blueprint.state import HasLanguages
+from dnd.character.blueprint.state import HasNSkillChoices
+from dnd.character.blueprint.state import HasNStatChoices
+from dnd.character.blueprint.state import HasSkillProficiencies
+from dnd.character.blueprint.state import HasSkillsToChooseFrom
+from dnd.character.blueprint.state import HasStats
+from dnd.character.blueprint.state import HasStatsCup
+from dnd.character.blueprint.state import HasToolProficiencies
+from dnd.character.delta.ai_choices_resolution_delta import AIChoicesResolutionDelta
 from dnd.character.feature.feats import FeatName
 from dnd.choices.language import Language
 from dnd.other_profficiencies import GamingSet
@@ -59,9 +64,6 @@ class AIAllChoicesResolver(AllChoicesResolverBase, CombinedBlock):
     - Stat choices (n_stat_choices distribution)
     - Skill choices (n_skill_choices from available pool)
 
-    Note: Initial data (name, backstory) and equipment choices should be
-    handled separately before or after this resolver.
-
     Example:
         >>> llm = ChatOpenAI(model="gpt-4o", temperature=0.7)
         >>> resolver = AIAllChoicesResolver(llm=llm)
@@ -78,7 +80,9 @@ class AIAllChoicesResolver(AllChoicesResolverBase, CombinedBlock):
     )
 
 
-class AIAllNonStatChoicesResolver(BuildingBlock):
+class AIAllNonStatChoicesResolver(
+    BuildingBlock[BlueprintProtocol, AIChoicesResolutionDelta, BlueprintProtocol]
+):
     """AI-powered resolver for non-stat character choices (languages, skills, feats, tools).
 
     Handles all non-stat character choices in a single AI call, making coherent
@@ -103,24 +107,12 @@ class AIAllNonStatChoicesResolver(BuildingBlock):
 
     def _build_prompt(
         self,
-        blueprint: Blueprint,
+        state: BlueprintProtocol,
         n_languages_to_choose: int,
         n_skill_profs_to_choose: int,
         n_feats_to_choose: int,
         n_tools_to_choose: int,
     ) -> str:
-        """Build comprehensive prompt for all choice resolution.
-
-        Args:
-            blueprint: Current character blueprint.
-            n_languages_to_choose: Number of languages to select.
-            n_skill_profs_to_choose: Number of skill proficiencies to select.
-            n_feats_to_choose: Number of feats to select.
-            n_tools_to_choose: Number of tool proficiencies to select.
-
-        Returns:
-            Formatted prompt string.
-        """
         system_prompt = (
             "You are making ALL choices for a D&D 5e character in a single, "
             "holistic decision.\n"
@@ -131,64 +123,78 @@ class AIAllNonStatChoicesResolver(BuildingBlock):
         )
 
         character_description = self.formatter.format(
-            blueprint, system_prompt=system_prompt
+            state, system_prompt=system_prompt
+        )
+
+        languages = state.languages if isinstance(state, HasLanguages) else ()
+        skill_proficiencies = (
+            state.skill_proficiencies
+            if isinstance(state, HasSkillProficiencies)
+            else ()
+        )
+        feats = state.feats if isinstance(state, HasFeats) else ()
+        tool_proficiencies = (
+            state.tool_proficiencies if isinstance(state, HasToolProficiencies) else ()
+        )
+        n_stat_choices = (
+            state.n_stat_choices if isinstance(state, HasNStatChoices) else 0
+        )
+        n_skill_choices = (
+            state.n_skill_choices if isinstance(state, HasNSkillChoices) else 0
+        )
+        skills_to_choose_from = (
+            state.skills_to_choose_from
+            if isinstance(state, HasSkillsToChooseFrom)
+            else frozenset()
+        )
+        stats = state.stats if isinstance(state, HasStats) else None
+        stats_cup = state.stats_cup if isinstance(state, HasStatsCup) else None
+        classes = (
+            dict(state.classes.all_levels()) if isinstance(state, HasClasses) else {}
         )
 
         instructions = ["\n## All Choices to Make\n"]
-
-        # Track if there are any choices to make
         has_choices = False
 
-        # Language choices
         if n_languages_to_choose > 0:
             has_choices = True
-            already_known_languages = {
-                lang
-                for lang in blueprint.languages
-                if lang != Language.ANY_OF_YOUR_CHOICE
+            already_known = {
+                lang for lang in languages if lang != Language.ANY_OF_YOUR_CHOICE
             }
-            available_languages = [
+            available = [
                 lang.value
                 for lang in Language
-                if lang not in already_known_languages
-                and lang != Language.ANY_OF_YOUR_CHOICE
+                if lang not in already_known and lang != Language.ANY_OF_YOUR_CHOICE
             ]
             instructions.append(
                 f"\n### Languages ({n_languages_to_choose} to select)\n"
                 f"Select EXACTLY {n_languages_to_choose} language(s)\n"
-                f"Available: {', '.join(available_languages)}\n"
-                f"Already known: {', '.join(lang.value for lang in already_known_languages)}"
+                f"Available: {', '.join(available)}\n"
+                f"Already known: {', '.join(lang.value for lang in already_known)}"
             )
 
-        # Skill proficiency choices
         if n_skill_profs_to_choose > 0:
             has_choices = True
             already_known_skills = {
-                skill
-                for skill in blueprint.skill_proficiencies
-                if skill != Skill.ANY_OF_YOUR_CHOICE
+                s for s in skill_proficiencies if s != Skill.ANY_OF_YOUR_CHOICE
             }
             available_skills = [
-                skill.value
-                for skill in Skill
-                if skill not in already_known_skills
-                and skill != Skill.ANY_OF_YOUR_CHOICE
+                s.value
+                for s in Skill
+                if s not in already_known_skills and s != Skill.ANY_OF_YOUR_CHOICE
             ]
             instructions.append(
                 f"\n### Skill Proficiencies ({n_skill_profs_to_choose} to select)\n"
                 f"Select EXACTLY {n_skill_profs_to_choose} skill proficiency(ies)\n"
                 f"Available: {', '.join(available_skills)}\n"
-                f"Already known: {', '.join(skill.value for skill in already_known_skills)}"
+                f"Already known: {', '.join(s.value for s in already_known_skills)}"
             )
 
-        # Feat choices
         if n_feats_to_choose > 0:
             has_choices = True
-            ability_score_improvement_allowed = sum(blueprint.classes.values()) != 1
+            ability_score_improvement_allowed = sum(classes.values()) != 1
             already_known_feats = {
-                feat
-                for feat in blueprint.feats
-                if feat not in FeatName.not_choosables()
+                f for f in feats if f not in FeatName.not_choosables()
             }
             available_feats = [
                 f.value
@@ -211,47 +217,34 @@ class AIAllNonStatChoicesResolver(BuildingBlock):
                     "\nNote: ABILITY_SCORE_IMPROVEMENT not available at level 1"
                 )
 
-        # Tool proficiency choices
         if n_tools_to_choose > 0:
             has_choices = True
-            already_known_tools = {
-                tool
-                for tool in blueprint.tool_proficiencies
-                if not (
-                    (
-                        isinstance(tool, ToolProficiency)
-                        and tool == ToolProficiency.ANY_OF_YOUR_CHOICE
-                    )
-                    or (
-                        isinstance(tool, GamingSet)
-                        and tool == GamingSet.ANY_OF_YOUR_CHOICE
-                    )
-                    or (
-                        isinstance(tool, MusicalInstrument)
-                        and tool == MusicalInstrument.ANY_OF_YOUR_CHOICE
-                    )
-                )
+            not_choice = {
+                ToolProficiency.ANY_OF_YOUR_CHOICE,
+                GamingSet.ANY_OF_YOUR_CHOICE,
+                MusicalInstrument.ANY_OF_YOUR_CHOICE,
             }
-            available_tools = []
-            for tool in ToolProficiency:
-                if (
-                    tool not in already_known_tools
-                    and tool != ToolProficiency.ANY_OF_YOUR_CHOICE
-                ):
-                    available_tools.append(f"ToolProficiency.{tool.value}")
-            for gaming in GamingSet:
-                if (
-                    gaming not in already_known_tools
-                    and gaming != GamingSet.ANY_OF_YOUR_CHOICE
-                ):
-                    available_tools.append(f"GamingSet.{gaming.value}")
-            for instrument in MusicalInstrument:
-                if (
-                    instrument not in already_known_tools
-                    and instrument != MusicalInstrument.ANY_OF_YOUR_CHOICE
-                ):
-                    available_tools.append(f"MusicalInstrument.{instrument.value}")
-
+            already_known_tools = {t for t in tool_proficiencies if t not in not_choice}
+            available_tools = (
+                [
+                    f"ToolProficiency.{t.value}"
+                    for t in ToolProficiency
+                    if t not in already_known_tools
+                    and t != ToolProficiency.ANY_OF_YOUR_CHOICE
+                ]
+                + [
+                    f"GamingSet.{g.value}"
+                    for g in GamingSet
+                    if g not in already_known_tools
+                    and g != GamingSet.ANY_OF_YOUR_CHOICE
+                ]
+                + [
+                    f"MusicalInstrument.{m.value}"
+                    for m in MusicalInstrument
+                    if m not in already_known_tools
+                    and m != MusicalInstrument.ANY_OF_YOUR_CHOICE
+                ]
+            )
             instructions.append(
                 f"\n### Tool Proficiencies ({n_tools_to_choose} to select)\n"
                 f"Select EXACTLY {n_tools_to_choose} tool proficiency(ies)\n"
@@ -259,30 +252,26 @@ class AIAllNonStatChoicesResolver(BuildingBlock):
                 f"Already known: {', '.join(str(t) for t in already_known_tools)}"
             )
 
-        # Stat choices
-        if blueprint.n_stat_choices > 0:
+        if n_stat_choices > 0:
             has_choices = True
             instructions.append(
-                f"\n### Stat Increases ({blueprint.n_stat_choices} points)\n"
-                f"Distribute {blueprint.n_stat_choices} stat increase "
-                "points\n"
-                f"Current stats: {blueprint.stats}\n"
-                f"Stat cap: {blueprint.stats_cup}"
+                f"\n### Stat Increases ({n_stat_choices} points)\n"
+                f"Distribute {n_stat_choices} stat increase points\n"
+                f"Current stats: {stats}\n"
+                f"Stat cap: {stats_cup}"
             )
 
-        # Skill selection from pool
-        if blueprint.n_skill_choices > 0:
+        if n_skill_choices > 0:
             has_choices = True
             instructions.append(
-                f"\n### Skill Selection ({blueprint.n_skill_choices} to select)\n"
-                f"Select {blueprint.n_skill_choices} skill(s) from "
-                "available pool\n"
-                f"Available: {', '.join(s.value for s in blueprint.skills_to_choose_from)}\n"
-                f"Already have: {', '.join(s.value for s in blueprint.skill_proficiencies)}"
+                f"\n### Skill Selection ({n_skill_choices} to select)\n"
+                f"Select {n_skill_choices} skill(s) from available pool\n"
+                f"Available: {', '.join(s.value for s in skills_to_choose_from)}\n"
+                f"Already have: {', '.join(s.value for s in skill_proficiencies)}"
             )
 
         if not has_choices:
-            return ""  # No choices to make
+            return ""
 
         instructions.append(
             "\n## Selection Guidelines\n"
@@ -295,107 +284,102 @@ class AIAllNonStatChoicesResolver(BuildingBlock):
 
         return character_description + "\n".join(instructions)
 
-    def get_change(self, blueprint: Blueprint) -> Blueprint:
-        """Make all character choices using AI in a single call.
-
-        Args:
-            blueprint: Current character blueprint.
-
-        Returns:
-            Blueprint with all choices resolved.
-        """
-        # Build prompt
-        n_languages_to_choose = list(blueprint.languages).count(
-            Language.ANY_OF_YOUR_CHOICE
+    def get_change(
+        self, state: BlueprintProtocol
+    ) -> Generator[AIChoicesResolutionDelta, None, BlueprintProtocol]:
+        languages = state.languages if isinstance(state, HasLanguages) else ()
+        skill_proficiencies = (
+            state.skill_proficiencies
+            if isinstance(state, HasSkillProficiencies)
+            else ()
         )
-        n_skill_profs_to_choose = list(blueprint.skill_proficiencies).count(
+        feats = state.feats if isinstance(state, HasFeats) else ()
+        tool_proficiencies = (
+            state.tool_proficiencies if isinstance(state, HasToolProficiencies) else ()
+        )
+        n_skill_choices = (
+            state.n_skill_choices if isinstance(state, HasNSkillChoices) else 0
+        )
+
+        n_languages_to_choose = list(languages).count(Language.ANY_OF_YOUR_CHOICE)
+        n_skill_profs_to_choose = list(skill_proficiencies).count(
             Skill.ANY_OF_YOUR_CHOICE
         )
-        n_feats_to_choose = sum(
-            map(list(blueprint.feats).count, FeatName.not_choosables())
-        )
-        n_tools_to_choose = sum(
-            1
-            for t in blueprint.tool_proficiencies
-            if (
-                (
-                    isinstance(t, ToolProficiency)
-                    and t == ToolProficiency.ANY_OF_YOUR_CHOICE
-                )
-                or (isinstance(t, GamingSet) and t == GamingSet.ANY_OF_YOUR_CHOICE)
-                or (
-                    isinstance(t, MusicalInstrument)
-                    and t == MusicalInstrument.ANY_OF_YOUR_CHOICE
-                )
-            )
-        )
+        n_feats_to_choose = sum(map(list(feats).count, FeatName.not_choosables()))
+        not_choice = {
+            ToolProficiency.ANY_OF_YOUR_CHOICE,
+            GamingSet.ANY_OF_YOUR_CHOICE,
+            MusicalInstrument.ANY_OF_YOUR_CHOICE,
+        }
+        n_tools_to_choose = sum(1 for t in tool_proficiencies if t in not_choice)
+
         if not (
             n_tools_to_choose
             or n_languages_to_choose
             or n_feats_to_choose
             or n_skill_profs_to_choose
-            or blueprint.n_skill_choices
+            or n_skill_choices
         ):
-            return Blueprint()  # No choices to make
+            delta = AIChoicesResolutionDelta(
+                languages=tuple(
+                    lang for lang in languages if lang != Language.ANY_OF_YOUR_CHOICE
+                ),
+                skill_proficiencies=tuple(
+                    s for s in skill_proficiencies if s != Skill.ANY_OF_YOUR_CHOICE
+                ),
+                feats=tuple(f for f in feats if f not in FeatName.not_choosables()),
+                tool_proficiencies=tuple(
+                    t for t in tool_proficiencies if t not in not_choice
+                ),
+                n_skill_choices=0,
+                skills_to_choose_from=frozenset(),
+            )
+            yield delta
+            return delta.apply(state)
+
         prompt = self._build_prompt(
-            blueprint,
+            state,
             n_languages_to_choose,
             n_skill_profs_to_choose,
             n_feats_to_choose,
             n_tools_to_choose,
         )
 
-        # Get AI selections
         structured_llm = self.llm.with_structured_output(ChoicePackage)
-
         _result = structured_llm.invoke(prompt)
         if not isinstance(_result, ChoicePackage):
             raise TypeError(f"Expected ChoicePackage, got {type(_result)}")
         choices = _result
 
-        # Apply language choices
         new_languages = tuple(set(choices.languages))[:n_languages_to_choose]
-
-        # Apply skill proficiency choices
         new_skill_profs = tuple(set(choices.skill_proficiencies))[
             :n_skill_profs_to_choose
         ]
-
-        # Apply feat choices and convert ASI
         new_feats = tuple(set(choices.feats))[:n_feats_to_choose]
-
-        # Apply tool proficiency choices
         new_tools = tuple(set(choices.tool_proficiencies))[:n_tools_to_choose]
 
-        return Blueprint(
-            languages=set(  # type: ignore[arg-type]
+        delta = AIChoicesResolutionDelta(
+            languages=tuple(
                 filterfalse(
-                    Language.ANY_OF_YOUR_CHOICE.__eq__,
-                    blueprint.languages + new_languages,
+                    Language.ANY_OF_YOUR_CHOICE.__eq__, languages + new_languages
                 )
             ),
-            skill_proficiencies=set(  # type: ignore[arg-type]
+            skill_proficiencies=tuple(
                 filterfalse(
                     Skill.ANY_OF_YOUR_CHOICE.__eq__,
-                    blueprint.skill_proficiencies + new_skill_profs,
+                    skill_proficiencies + new_skill_profs,
                 )
             ),
-            feats=set(  # type: ignore[arg-type]
-                filterfalse(
-                    FeatName.not_choosables().__contains__,
-                    blueprint.feats + new_feats,
-                )
+            feats=tuple(
+                filterfalse(FeatName.not_choosables().__contains__, feats + new_feats)
             ),
-            tool_proficiencies={  # type: ignore[arg-type]
+            tool_proficiencies=tuple(
                 prof
-                for prof in (blueprint.tool_proficiencies + new_tools)
-                if prof
-                in (
-                    ToolProficiency.ANY_OF_YOUR_CHOICE,
-                    GamingSet.ANY_OF_YOUR_CHOICE,
-                    MusicalInstrument.ANY_OF_YOUR_CHOICE,
-                )
-            },
-            n_skill_choices=0,  # All skill choices consumed
+                for prof in (tool_proficiencies + new_tools)
+                if prof not in not_choice
+            ),
+            n_skill_choices=0,
             skills_to_choose_from=frozenset(),
         )
+        yield delta
+        return delta.apply(state)

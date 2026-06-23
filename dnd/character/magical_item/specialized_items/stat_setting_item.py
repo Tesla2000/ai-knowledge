@@ -1,12 +1,4 @@
-from __future__ import annotations
-
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from dnd.character.blueprint.blueprint import Blueprint
-
 from dnd.character.magical_item.item import MagicalItem
-from dnd.character.stats import Stats
 from dnd.choices.stats_creation.statistic import Statistic
 
 
@@ -17,15 +9,5 @@ class StatSettingItem(MagicalItem):
               Belt of Giant Strength variants (STR=21/23/25/27/29)
     """
 
-    stat: Statistic  # e.g., Statistic.STRENGTH, Statistic.CONSTITUTION
-    stat_value: int  # e.g., 19, 21, 23, etc.
-
-    def assign_to(self, blueprint: Blueprint) -> Blueprint:  # type: ignore[override]
-        """Set the specified stat to the fixed value."""
-        stat_name = self.stat.value.lower()  # Convert Statistic.STRENGTH -> 'strength'
-        new_stats = Stats(
-            **{**blueprint.stats.model_dump(), stat_name: self.stat_value}  # type: ignore[union-attr]
-        )
-        return type(blueprint)(
-            stats=new_stats, magical_items=blueprint.magical_items + (self,)
-        )
+    stat: Statistic
+    stat_value: int

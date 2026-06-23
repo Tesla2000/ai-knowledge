@@ -4,9 +4,7 @@ from __future__ import annotations
 from enum import StrEnum
 
 from dnd.choices.abilities.action_type import ActionType
-from scripts.wiki_scraper.ability_template import (  # type: ignore[attr-defined]
-    Ability,
-)
+from dnd.character.ability import Ability
 
 
 class FightingStyle(StrEnum):

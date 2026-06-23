@@ -1,31 +1,42 @@
 from __future__ import annotations
 
 import random
+from typing import Literal
 
-from dnd.character.blueprint.blueprint import Blueprint
 from dnd.character.blueprint.building_blocks.level_up.spell_assignment.base import (
-    SpellAssigner,
+    SorcererSpellAssigner,
+    WizardSpellAssigner,
 )
+from dnd.character.blueprint.state import HasSorcererLevel
+from dnd.character.blueprint.state import HasWizardLevel
 from dnd.character.spells import Spell
+from dnd.choices.class_creation.character_class import Class
 from pydantic import ConfigDict
 from pydantic import Field
 
 
-class RandomSpellAssigner(SpellAssigner):
-    """Randomly selects spells from available class spell list.
+def _random_select(
+    seed: int | None, count: int, available: list[Spell]
+) -> tuple[Spell, ...]:
+    random.seed(seed)
+    return tuple(random.sample(available, min(count, len(available))))
+
+
+class WizardRandomSpellAssigner[T: HasWizardLevel](WizardSpellAssigner[T]):
+    """Randomly selects wizard spells from the wizard spell list.
 
     Provides deterministic randomness when seed is set, useful for
     reproducible character generation.
 
     Example:
-        >>> assigner = RandomSpellAssigner(
-        ...     class_=Class.WIZARD,
-        ...     seed=42,  # Reproducible
-        ... )
+        >>> assigner = WizardRandomSpellAssigner(seed=42)
     """
 
     model_config = ConfigDict(frozen=True)
 
+    class_: Literal[Class.WIZARD] = Field(
+        default=Class.WIZARD, description="Character class this assigner handles"
+    )
     seed: int | None = Field(
         default=None,
         description="Optional seed for reproducible random selection",
@@ -36,22 +47,36 @@ class RandomSpellAssigner(SpellAssigner):
         spell_level: int,
         count: int,
         available_spells: list[Spell],
-        blueprint: Blueprint,
+        _state: T,
     ) -> tuple[Spell, ...]:
-        """Randomly select N unique spells from available list.
+        return _random_select(self.seed, count, available_spells)
 
-        Args:
-            spell_level: The spell level (0-9).
-            count: Number of spells to select.
-            available_spells: Filtered list of available spells.
-            blueprint: Current character blueprint (unused for random).
 
-        Returns:
-            Tuple of randomly selected spells.
-        """
-        # Set random seed if provided (for reproducibility)
-        random.seed(self.seed)
+class SorcererRandomSpellAssigner[T: HasSorcererLevel](SorcererSpellAssigner[T]):
+    """Randomly selects sorcerer spells from the sorcerer spell list.
 
-        # Random selection - take min of count and available
-        n = min(count, len(available_spells))
-        return tuple(random.sample(available_spells, n))
+    Provides deterministic randomness when seed is set, useful for
+    reproducible character generation.
+
+    Example:
+        >>> assigner = SorcererRandomSpellAssigner(seed=42)
+    """
+
+    model_config = ConfigDict(frozen=True)
+
+    class_: Literal[Class.SORCERER] = Field(
+        default=Class.SORCERER, description="Character class this assigner handles"
+    )
+    seed: int | None = Field(
+        default=None,
+        description="Optional seed for reproducible random selection",
+    )
+
+    def _select_spells(
+        self,
+        spell_level: int,
+        count: int,
+        available_spells: list[Spell],
+        _state: T,
+    ) -> tuple[Spell, ...]:
+        return _random_select(self.seed, count, available_spells)

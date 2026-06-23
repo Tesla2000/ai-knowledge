@@ -1,4 +1,4 @@
-from dnd.character.blueprint.building_blocks import (  # type: ignore[attr-defined]
+from dnd.character.blueprint.building_blocks import (
     CombinedBlock,
 )
 from dnd.character.blueprint.building_blocks import (
@@ -8,7 +8,7 @@ from dnd.character.blueprint.building_blocks import (
     PriorityStatChoiceResolver,
 )
 from dnd.character.blueprint.building_blocks import (
-    RaceAssigner,
+    HumanRaceAssigner,
 )
 from dnd.character.blueprint.building_blocks import (
     RandomFeatChoiceResolver,
@@ -41,7 +41,7 @@ from dnd.character.blueprint.building_blocks.level_up.health_increase import (
     HealthIncreaseAverage,
 )
 from dnd.character.blueprint.building_blocks.level_up.level_incrementer import (
-    LevelIncrementer,
+    WizardLevelIncrementer,
 )
 from dnd.character.blueprint.building_blocks.level_up.level_up import (
     LevelUp,
@@ -50,7 +50,7 @@ from dnd.character.blueprint.building_blocks.level_up.level_up_multiple import (
     LevelUpMultiple,
 )
 from dnd.character.blueprint.building_blocks.level_up.spell_assignment import (
-    RandomSpellAssigner,
+    WizardRandomSpellAssigner,
 )
 from dnd.character.blueprint.building_blocks.stats_builder.standard_array import (
     StandardArray,
@@ -58,13 +58,13 @@ from dnd.character.blueprint.building_blocks.stats_builder.standard_array import
 from dnd.character.blueprint.building_blocks.subclass_assigner import (
     RandomSubclassAssigner,
 )
-from dnd.character.race.race import Race
+from dnd.character.blueprint.state import HasWizardLevel
 from dnd.character.race.subraces import Subrace
 from dnd.choices.class_creation.character_class import Class
 from dnd.choices.stats_creation.statistic import Statistic
 
 
-def example_building_blocks():  # type: ignore[no-untyped-def]
+def example_building_blocks() -> CombinedBlock:
     stats_priority = (
         Statistic.INTELLIGENCE,
         Statistic.CONSTITUTION,
@@ -87,10 +87,12 @@ def example_building_blocks():  # type: ignore[no-untyped-def]
             RandomEquipmentChooser(),
         ),
     )
-    spell_assigner = RandomSpellAssigner(class_=class_)
+    spell_assigner: WizardRandomSpellAssigner[HasWizardLevel] = (
+        WizardRandomSpellAssigner()
+    )
     level_up = LevelUp(
-        blocks=(  # type: ignore[arg-type]
-            LevelIncrementer(class_=class_),
+        blocks=(
+            WizardLevelIncrementer(),
             HealthIncreaseAverage(class_=class_),
             spell_assigner,
             all_choices_resolver,
@@ -100,11 +102,10 @@ def example_building_blocks():  # type: ignore[no-untyped-def]
     return CombinedBlock(
         blocks=(
             InitialBuilder(
-                blocks=(  # type: ignore[arg-type]
+                blocks=(
                     LevelAssigner(level=level),
                     StandardArray(stats_priority=stats_priority),
-                    RaceAssigner(
-                        race=Race.HUMAN,
+                    HumanRaceAssigner(
                         subrace=Subrace.HUMAN_VARIANT_HUMAN_PLAYERSHANDBOOK,
                     ),
                     AllChoicesResolver(

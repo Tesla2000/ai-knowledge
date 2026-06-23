@@ -8,7 +8,16 @@ from dnd.character.blueprint.building_blocks import (
     CombinedBlock,
 )
 from dnd.character.blueprint.building_blocks import (
-    RaceAssigner,
+    ElfRaceAssigner,
+)
+from dnd.character.blueprint.building_blocks import (
+    GnomeRaceAssigner,
+)
+from dnd.character.blueprint.building_blocks import (
+    HalflingRaceAssigner,
+)
+from dnd.character.blueprint.building_blocks import (
+    HumanRaceAssigner,
 )
 from dnd.character.blueprint.building_blocks import (
     RandomMagicalItemChooser,
@@ -16,10 +25,12 @@ from dnd.character.blueprint.building_blocks import (
 from dnd.character.blueprint.building_blocks import (
     SexAssigner,
 )
+from dnd.character.blueprint.building_blocks import (
+    TieflingRaceAssigner,
+)
 from dnd.character.blueprint.building_blocks.building_block import (
     BuildingBlock,
 )
-from dnd.character.race.race import Race
 from dnd.character.race.subraces import Subrace
 from dnd.choices.sex import Sex
 from pydantic import TypeAdapter
@@ -59,40 +70,29 @@ class TestBuildingBlockSerialization:
 
     def test_serialize_complex_block(self):
         """Test serializing a more complex building block."""
-        block = RaceAssigner(
-            race=Race.ELF,
-            subrace=Subrace.HALF_ELF_HIGH_ELF_HERITAGE_PLAYERSHANDBOOK,
-        )
+        block = ElfRaceAssigner(subrace=Subrace.ELF_HIGH_ELF_PLAYERSHANDBOOK)
         serialized = block.model_dump()
 
-        assert serialized["block_type"] == "RaceAssigner"
-        assert serialized["race"] == Race.ELF
-        assert (
-            serialized["subrace"] == Subrace.HALF_ELF_HIGH_ELF_HERITAGE_PLAYERSHANDBOOK
-        )
+        assert serialized["block_type"] == "ElfRaceAssigner"
+        assert serialized["subrace"] == Subrace.ELF_HIGH_ELF_PLAYERSHANDBOOK
 
     def test_roundtrip_complex_block(self):
         """Test serialize-deserialize roundtrip for complex block."""
-        original = RaceAssigner(
-            race=Race.HALFLING,
-            subrace=Subrace.HALFLING_LIGHTFOOT_PLAYERSHANDBOOK,
+        original = HalflingRaceAssigner(
+            subrace=Subrace.HALFLING_LIGHTFOOT_PLAYERSHANDBOOK
         )
         serialized = original.model_dump()
 
         deserialized = TypeAdapter(AnyBuildingBlock).validate_python(serialized)
 
-        assert isinstance(deserialized, RaceAssigner)
-        assert deserialized.race == original.race
+        assert isinstance(deserialized, HalflingRaceAssigner)
         assert deserialized.subrace == original.subrace
         assert deserialized == original
 
     def test_serialize_combined_block(self):
         """Test serializing a CombinedBlock containing multiple blocks."""
         block1 = SexAssigner(sex=Sex.MALE)
-        block2 = RaceAssigner(
-            race=Race.HUMAN,
-            subrace=Subrace.HUMAN_STANDARD_HUMAN_PLAYERSHANDBOOK,
-        )
+        block2 = HumanRaceAssigner(subrace=Subrace.HUMAN_STANDARD_HUMAN_PLAYERSHANDBOOK)
         combined = CombinedBlock(blocks=(block1, block2))
 
         serialized = combined.model_dump()
@@ -100,7 +100,7 @@ class TestBuildingBlockSerialization:
         assert serialized["block_type"] == "CombinedBlock"
         assert len(serialized["blocks"]) == 2
         assert serialized["blocks"][0]["block_type"] == "SexAssigner"
-        assert serialized["blocks"][1]["block_type"] == "RaceAssigner"
+        assert serialized["blocks"][1]["block_type"] == "HumanRaceAssigner"
 
     def test_serialize_and_deserialize_base_block_json(self, building_blocks):
         """Test serializing a CombinedBlock containing multiple blocks."""
@@ -116,8 +116,7 @@ class TestBuildingBlockSerialization:
             "blocks": [
                 {"block_type": "SexAssigner", "sex": Sex.FEMALE},
                 {
-                    "block_type": "RaceAssigner",
-                    "race": Race.ELF,
+                    "block_type": "ElfRaceAssigner",
                     "subrace": Subrace.ELF_WOOD_ELF_PLAYERSHANDBOOK,
                 },
             ],
@@ -128,16 +127,15 @@ class TestBuildingBlockSerialization:
         assert isinstance(block, CombinedBlock)
         assert len(block.blocks) == 2
         assert isinstance(block.blocks[0], SexAssigner)
-        assert isinstance(block.blocks[1], RaceAssigner)
+        assert isinstance(block.blocks[1], ElfRaceAssigner)
         assert block.blocks[0].sex == Sex.FEMALE
-        assert block.blocks[1].race == Race.ELF
+        assert block.blocks[1].subrace == Subrace.ELF_WOOD_ELF_PLAYERSHANDBOOK
 
     def test_roundtrip_combined_block(self):
         """Test serialize-deserialize roundtrip for CombinedBlock."""
         block1 = SexAssigner(sex=Sex.MALE)
-        block2 = RaceAssigner(
-            race=Race.TIEFLING,
-            subrace=Subrace.TIEFLING_BLOODLINE_OF_ASMODEUS_PLAYERSHANDBOOK,
+        block2 = TieflingRaceAssigner(
+            subrace=Subrace.TIEFLING_BLOODLINE_OF_ASMODEUS_PLAYERSHANDBOOK
         )
         original = CombinedBlock(blocks=(block1, block2))
 
@@ -164,9 +162,8 @@ class TestBuildingBlockSerialization:
     def test_roundtrip_incomplete_data(self):
         """Test serialize-deserialize roundtrip for CombinedBlock."""
         block1 = SexAssigner(sex=Sex.MALE)
-        block2 = RaceAssigner(
-            race=Race.TIEFLING,
-            subrace=Subrace.TIEFLING_BLOODLINE_OF_ASMODEUS_PLAYERSHANDBOOK,
+        block2 = TieflingRaceAssigner(
+            subrace=Subrace.TIEFLING_BLOODLINE_OF_ASMODEUS_PLAYERSHANDBOOK
         )
         original = CombinedBlock(blocks=(block1, block2))
 
@@ -180,18 +177,15 @@ class TestBuildingBlockSerialization:
         block = SexAssigner(sex=Sex.MALE)
         assert block.block_type == "SexAssigner"
 
-        race_block = RaceAssigner(
-            race=Race.GNOME, subrace=Subrace.GNOME_FOREST_GNOME_PLAYERSHANDBOOK
+        race_block = GnomeRaceAssigner(
+            subrace=Subrace.GNOME_FOREST_GNOME_PLAYERSHANDBOOK
         )
-        assert race_block.block_type == "RaceAssigner"
+        assert race_block.block_type == "GnomeRaceAssigner"
 
     def test_combined_block_with_nested_combined(self):
         """Test CombinedBlock can contain other CombinedBlocks."""
         block1 = SexAssigner(sex=Sex.MALE)
-        block2 = RaceAssigner(
-            race=Race.HUMAN,
-            subrace=Subrace.HUMAN_STANDARD_HUMAN_PLAYERSHANDBOOK,
-        )
+        block2 = HumanRaceAssigner(subrace=Subrace.HUMAN_STANDARD_HUMAN_PLAYERSHANDBOOK)
         inner_combined = CombinedBlock(blocks=(block1, block2))
 
         block3 = SexAssigner(sex=Sex.FEMALE)

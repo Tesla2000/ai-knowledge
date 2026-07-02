@@ -2,10 +2,7 @@ from typing import Annotated
 
 from pydantic import Discriminator
 
-from src.files.devcontainer import (
-    DevcontainerDockerComposeFile,
-    DevcontainerJsonFile,
-)
+from src.files.devcontainer import DevcontainerJsonFile
 from src.files.file import File
 from src.files.github.code_owners_file import CodeOwnersFile
 from src.files.github.workflows.claude_review_workflow import (
@@ -44,7 +41,6 @@ AnyFile = Annotated[
     | CodeOwnersFile
     | PythonVersionFile
     | DevcontainerJsonFile
-    | DevcontainerDockerComposeFile
     | ClaudeReviewWorkflow,
     Discriminator("type"),
 ]
@@ -54,8 +50,6 @@ __all__ = [
     "ClaudeReviewWorkflow",
     "CodeOwnersFile",
     "Dependency",
-    "DevcontainerDockerComposeFile",
-    "DevcontainerDockerComposeFile",
     "DevcontainerJsonFile",
     "File",
     "Gitignore",

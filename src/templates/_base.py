@@ -10,7 +10,6 @@ from pydantic import BaseModel, Field
 from src.files import (
     ClaudeReviewWorkflow,
     CodeOwnersFile,
-    DevcontainerDockerComposeFile,
     DevcontainerJsonFile,
     File,
     Gitignore,
@@ -42,6 +41,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \\
         openssh-client \\
         locales-all \\
         micro \\
+        fzf \\
     && rm -rf /var/lib/apt/lists/*
 
 ENV LANG=en_US.UTF-8
@@ -62,6 +62,8 @@ WORKDIR /workspace
 RUN chown dev:dev /workspace
 
 USER dev
+
+RUN mkdir -p /home/dev/.claude
 
 COPY --chown=dev:dev pyproject.toml uv.lock .pre-commit-config.yaml README.md ./
 RUN uv sync --group dev --no-install-project
@@ -89,6 +91,7 @@ fi
 
 uv sync --group dev
 echo 'source /workspace/.venv/bin/activate' >> /home/dev/.bashrc
+echo 'eval "$(fzf --bash)"' >> /home/dev/.bashrc
 uv run pre-commit install --overwrite --hook-type pre-commit --hook-type pre-push
 """
 
@@ -159,16 +162,6 @@ def _default_devcontainer_json(
     return DevcontainerJsonFile(repo_name=repo_name)
 
 
-def _default_devcontainer_docker_compose(
-    data: Mapping[str, object],  # ignore
-) -> DevcontainerDockerComposeFile:
-    repo_name = data["repo_name"]
-    if not isinstance(repo_name, str):
-        msg = f"{repo_name=} is not an instance of str"
-        raise TypeError(msg)
-    return DevcontainerDockerComposeFile(repo_name=repo_name)
-
-
 class Template(BaseModel, ABC):
     type: TemplateType
     description: str | None = None
@@ -197,9 +190,6 @@ class Template(BaseModel, ABC):
     )
     devcontainer_json: DevcontainerJsonFile = Field(
         default_factory=_default_devcontainer_json
-    )
-    devcontainer_docker_compose: DevcontainerDockerComposeFile = Field(
-        default_factory=_default_devcontainer_docker_compose
     )
     devcontainer_dockerfile: File = File(
         relative_path=Path(".devcontainer/Dockerfile"),
@@ -240,7 +230,6 @@ class Template(BaseModel, ABC):
                     self.tests_init_file,
                     self.license,
                     self.devcontainer_json,
-                    self.devcontainer_docker_compose,
                     self.devcontainer_dockerfile,
                     self.devcontainer_claude_settings,
                     self.devcontainer_post_create,

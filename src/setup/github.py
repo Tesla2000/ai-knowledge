@@ -19,9 +19,7 @@ class GitHubSetup(BaseModel):
     repo_name: str | None = None
     main_branch: str = "main"
     repo_settings: RepoSettings = RepoSettings()
-    branch_protection_settings: BranchProtectionSettings | None = (
-        BranchProtectionSettings()
-    )
+    branch_protection_settings: BranchProtectionSettings | None = None
     repo_secrets: Mapping[str, SecretStr] = Field(default_factory=dict)
 
     def run(self, project_path: Path) -> None:

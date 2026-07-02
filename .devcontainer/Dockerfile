@@ -12,6 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         openssh-client \
         locales-all \
         micro \
+        fzf \
     && rm -rf /var/lib/apt/lists/*
 
 ENV LANG=en_US.UTF-8
@@ -32,6 +33,8 @@ WORKDIR /workspace
 RUN chown dev:dev /workspace
 
 USER dev
+
+RUN mkdir -p /home/dev/.claude
 
 COPY --chown=dev:dev pyproject.toml uv.lock .pre-commit-config.yaml README.md ./
 RUN uv sync --group dev --no-install-project

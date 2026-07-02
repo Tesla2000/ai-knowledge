@@ -38,7 +38,7 @@ You will write, modify, and refactor Python code following these principles:
    - Use type hints consistently
    - Organize code logically with proper module structure
    - Follow existing naming conventions (snake_case for functions/variables)
-   - Keep classes single purpouse with one public method, 2 tops
+   - Keep classes single purpose with one public method, 2 tops
 
 4. **Before Writing Code**:
    - Review the existing implementation thoroughly

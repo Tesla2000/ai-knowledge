@@ -15,10 +15,26 @@ class DevcontainerJsonFile(FileBase):
     content: str = """\
 {
   "name": "$display_name",
-  "dockerComposeFile": "docker-compose.yml",
-  "service": "app",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".."
+  },
   "workspaceFolder": "/workspace",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
   "remoteUser": "dev",
+  "mounts": [
+    {
+      "source": "claude-config",
+      "target": "/home/dev/.claude",
+      "type": "volume"
+    },
+    {
+      "source": "${localEnv:SSH_AUTH_SOCK}",
+      "target": "/ssh-agent",
+      "type": "bind"
+    }
+  ],
+  "postStartCommand": "chown -R dev:dev /home/dev/.claude",
   "postCreateCommand": "bash .devcontainer/post-create.sh",
   "customizations": {
     "vscode": {
@@ -46,36 +62,4 @@ class DevcontainerJsonFile(FileBase):
         )
         return Template(self.content).safe_substitute(
             display_name=display_name
-        )
-
-
-class DevcontainerDockerComposeFile(FileBase):
-    type: Literal[FileType.DEVCONTAINER_DOCKER_COMPOSE] = (
-        FileType.DEVCONTAINER_DOCKER_COMPOSE
-    )
-    relative_path: Path = Path(".devcontainer/docker-compose.yml")
-    repo_name: str
-    content: str = """\
-services:
-  app:
-    build:
-      context: ..
-      dockerfile: .devcontainer/Dockerfile
-    image: $image_name
-    user: dev
-    volumes:
-      - ..:/workspace:cached
-      - claude-config:/home/dev/.claude
-      - ${SSH_AUTH_SOCK}:/ssh-agent
-    environment:
-      - SSH_AUTH_SOCK=/ssh-agent
-    command: sleep infinity
-
-volumes:
-  claude-config:
-"""
-
-    def _get_content(self, _: Path) -> str:
-        return Template(self.content).safe_substitute(
-            image_name=f"{self.repo_name}-devcontainer"
         )

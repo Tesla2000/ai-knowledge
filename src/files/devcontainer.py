@@ -19,8 +19,8 @@ class DevcontainerJsonFile(FileBase):
     "dockerfile": "Dockerfile",
     "context": ".."
   },
-  "workspaceFolder": "/workspace",
-  "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
+  "workspaceFolder": "/$repo_name",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/$repo_name,type=bind,consistency=cached",
   "remoteUser": "dev",
   "mounts": [
     {
@@ -61,5 +61,5 @@ class DevcontainerJsonFile(FileBase):
             part.capitalize() for part in self.repo_name.split("-")
         )
         return Template(self.content).safe_substitute(
-            display_name=display_name
+            display_name=display_name, repo_name=self.repo_name
         )

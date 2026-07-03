@@ -69,7 +69,7 @@ repos:
     rev: v3.11.0
     hooks:
       - id: any-hook
-        args: [--modifiers, '[$package-dependent{"type": "remove-f-prefix"},{"type": "open-to-path"},{"type": "any-to-object"},{"type":"pydantic-config-to-model-config"},{"type":"local-imports"},{"type":"pydantic-v1-to-v2"},{"type":"str-enum-inheritance"},{"type":"forbidden-functions","forbidden_functions":["hasattr","getattr","print"]},{"type":"utcnow-to-datetime-now"},{"type":"len-as-bool"},{"type":"typing-to-builtin"}]']
+        args: [--modifiers, '[$package-dependent{"type": "remove-f-prefix"},{"type": "open-to-path"},{"type": "any-to-object"},{"type":"pydantic-config-to-model-config"},{"type":"local-imports"},{"type":"pydantic-v1-to-v2"},{"type":"str-enum-inheritance"},{"type":"forbidden-functions","forbidden_functions":["hasattr","getattr","print"]},{"type":"utcnow-to-datetime-now"},{"type":"len-as-bool"},{"type":"typing-to-builtin"},{"type":"comment-detector","patterns":["type: ignore"]}]']
 """
 
     def _get_content(self, project_root: Path) -> str:

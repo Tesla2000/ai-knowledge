@@ -129,6 +129,7 @@ python_version = "$python_version"
 strict = true
 $mypy_plugins
 mypy_path = "stubs"
+exclude = ["^tests/"]
 """
 
     def _get_content(self, project_root: Path) -> str:

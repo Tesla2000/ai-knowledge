@@ -83,7 +83,7 @@ def _default_pre_commit_config_cli(
 
 
 class CliPackage(Template):
-    type: Literal[TemplateType.CLI_PACKAGE] = TemplateType.CLI_PACKAGE
+    type: Literal[TemplateType.CLI_SCRIPT] = TemplateType.CLI_SCRIPT
     description: str
     pyproject_toml: PackagePyprojectToml | None = Field(
         default_factory=_default_pyproject_toml

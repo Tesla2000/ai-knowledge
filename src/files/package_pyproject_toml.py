@@ -127,6 +127,7 @@ log_date_format = "%Y-%m-%d %H:%M:%S"
 [tool.coverage.report]
 exclude_lines = [
     "if TYPE_CHECKING:",
+    "assert_never",
 ]
 
 [tool.mypy]

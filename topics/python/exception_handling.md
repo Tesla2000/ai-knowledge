@@ -4,79 +4,69 @@
 
 Raised exceptions are invisible to the type system -- callers have no static guarantee
 an exception won't surface. The fewer `raise` expressions, the better.
-Prefer making invalid states unrepresentable through strict types, or surface errors
-as explicit return values.
+Operate on return values. Errors must appear in the return type so the caller is
+forced by the type checker to handle them.
 
 ## Internal logic
 
-If a function can only be called incorrectly due to a type violation, fix the types.
-A `raise` inside internal logic is a signal that the type contract is too loose.
+If a raise is needed to guard against bad input, the type signature is too loose.
+Make the invalid state unrepresentable through stricter types.
 
 ```python
-# bad -- raise used to guard against a type the signature already allows
+# bad -- raise used to guard a type the signature already allows
 def process(value: int | None) -> str:
     if value is None:
         raise ValueError("value must not be None")
     return str(value)
 
-# good -- tighten the type so the invalid call is impossible
+# good -- tighten the type, the invalid call is impossible
 def process(value: int) -> str:
     return str(value)
 ```
 
 ## External APIs and IO
 
-When an external call can legitimately fail (network, parsing, missing resource),
-return `None` for simple cases or a typed error object for richer context.
-Do not raise.
+Catch the exception inside the function and return it as a value with a specific type,
+or wrap success and failure in a typed `NamedTuple` result. The error is then part of
+the signature and mypy enforces handling at every call site.
+Never use bare `Exception` in the return type -- always name the specific exception class.
 
 ```python
-# good -- None signals absence
-def fetch_price(url: str) -> float | None:
+# simple -- return specific exception type as value
+def fetch_price(url: str) -> float | RequestException:
     try:
-        response = requests.get(url, timeout=5)
-        return float(response.json()["price"])
-    except (RequestException, KeyError, ValueError):
-        return None
-
-# good -- typed error object for richer context
-class FetchResult(NamedTuple):
-    price: float | None
-    error: str | None
-
-def fetch_price(url: str) -> FetchResult:
-    try:
-        response = requests.get(url, timeout=5)
-        return FetchResult(price=float(response.json()["price"]), error=None)
+        return float(requests.get(url, timeout=5).json()["price"])
     except RequestException as exc:
-        return FetchResult(price=None, error=str(exc))
+        return exc
+
+price = fetch_price(url)
+if isinstance(price, RequestException):
+    ...  # mypy forces this check before using price as float
+
+# richer -- typed result object with specific error type
+class PriceResult(NamedTuple):
+    value: float | None
+    error: RequestException | None
+
+def fetch_price(url: str) -> PriceResult:
+    try:
+        return PriceResult(value=float(requests.get(url, timeout=5).json()["price"]), error=None)
+    except RequestException as exc:
+        return PriceResult(value=None, error=exc)
 ```
 
-## When raising is still acceptable
-
-Only raise when the call site has already violated an invariant that cannot be
-expressed in the type system (e.g., a validated-data dict missing a field that
-should have been set by earlier pydantic validation). This is rare.
+## What not to do
 
 ```python
-def _make_conn(data: dict[str, object]) -> Connection:
-    dsn = data.get("dsn")
-    if not isinstance(dsn, str):
-        raise ValueError("dsn missing -- prior pydantic validation must have failed")
-    return connect(dsn)
-```
+# bad -- error is invisible to callers
+def fetch_price(url: str) -> float:
+    response = requests.get(url, timeout=5)
+    if not response.ok:
+        raise RuntimeError("fetch failed")
+    return float(response.json()["price"])
 
-## Catching external exceptions (EAFP)
-
-When an external library raises on an expected absence, catch it and return a fallback.
-Do not re-raise.
-
-```python
-# good
-try:
-    return soup.select_one(".price").text
-except AttributeError:
-    return None
+# bad -- let it propagate is not a valid strategy
+result = client.fetch(url)  # raises silently on failure
 ```
 
 ## Logging rule (web services only)
@@ -86,5 +76,5 @@ so it appears in the service log. Does not apply to library or CLI code.
 
 ## Related
 
-- [typing.md](typing.md) -- NamedTuple for typed error objects
-- [testing.md](testing.md) -- testing None-returning paths
+- [typing.md](typing.md) -- NamedTuple for typed result objects
+- [testing.md](testing.md) -- testing error return paths

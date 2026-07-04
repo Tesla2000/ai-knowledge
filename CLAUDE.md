@@ -50,37 +50,42 @@ with patch("shopping_planner.meal.getter._gui.tk.Tk") as mock_tk:
                     with patch("shopping_planner.meal.getter._gui.ttk.Button"):
 
 # Exception Handling
-Distinguish two cases:
- 1. EAFP — expected absence ("better to ask forgiveness")
-The exception is a normal, anticipated outcome (file not found, no GitHub
-releases, package not installed, regex no match). Handle it inline and return
-a fallback value (e.g. `None`, `False`). Do not re-raise. Use it if you are absolutely sure that that the exception is not a result of external service.
+Raised exceptions are invisible to the type system -- callers have no static guarantee
+an exception won't surface. The fewer `raise` expressions, the better.
+Operate on return values. Errors should appear in the return type so the caller is
+forced by the type checker to handle them.
 
- 2. Invalid input or misconfiguration
-The exception means the caller passed bad data or the environment is set up
-wrong (bad credentials, non-existent repository, checkout of a fetched tag
-failing). **Let it propagate — do not catch it at all.** Only wrap it in a
-new exception if you can add meaningful context that the original lacks;
-otherwise bare propagation is preferred.
+ 1. Internal logic -- tighten the types instead of raising.
+If a raise is needed to guard against bad input, the type signature is too loose. Make
+the invalid state unrepresentable.
+
+ 2. External APIs and IO -- return the specific exception type or a typed result object.
+When an external call can legitimately fail, catch the exception inside the function
+and return it as a value with a specific type (e.g. `float | RequestException`) or
+wrap success and failure in a NamedTuple result type. The error is then part of the
+signature and mypy enforces handling. Never use bare `Exception` in the return type.
 
   ## Logging rule (web services only)
-  In web-service request handlers, log the exception before re-raising or
-  returning an error response so it appears in the service log. This rule does
-  not apply to library or CLI code.
+  In web-service request handlers, log the exception before returning an error response
+  so it appears in the service log. This rule does not apply to library or CLI code.
 
 This one sparks joy:
-for tile in soup.select("li[class*='product-container']"):
-    name_el = tile.select_one("[class*='product-name']")
-    price_el = tile.select_one("[class*='product-price']")
-    if not name_el or not price_el:
-        raise ValueError("name or price couldn't be extracted")
+def fetch_price(url: str) -> float | RequestException:
+    try:
+        return float(requests.get(url, timeout=5).json()["price"])
+    except RequestException as exc:
+        return exc
+
+price = fetch_price(url)
+if isinstance(price, RequestException):
+    ...  # mypy forces this check before using price as float
 
 This one does not spark joy:
-for tile in soup.select("li[class*='product-container']"):
-    name_el = tile.select_one("[class*='product-name']")
-    price_el = tile.select_one("[class*='product-price']")
-    if not name_el or not price_el:
-        continue
+def fetch_price(url: str) -> float | Exception:  # too broad
+    try:
+        return float(requests.get(url, timeout=5).json()["price"])
+    except Exception as exc:
+        return exc
 
 # Pydantic
 All pydantic models should be frozen. allow_arbitrary values is never allowed. Creating instance of pydantic services (Service creation) is never allowed they should be defined as fields of another service or script. 

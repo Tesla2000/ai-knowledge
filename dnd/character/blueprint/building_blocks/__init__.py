@@ -215,6 +215,9 @@ from dnd.character.blueprint.building_blocks.race_assigner import (
     RandomRaceAssigner,
 )
 from dnd.character.blueprint.building_blocks.race_assigner import (
+    RaceAssigner,
+)
+from dnd.character.blueprint.building_blocks.race_assigner import (
     SatyrRaceAssigner,
 )
 from dnd.character.blueprint.building_blocks.race_assigner import (
@@ -415,6 +418,7 @@ AnyBuildingBlock = Annotated[
         Annotated[RandomLanguageChoiceResolver, Tag("RandomLanguageChoiceResolver")],
         Annotated[RandomMagicalItemChooser, Tag("RandomMagicalItemChooser")],
         Annotated[RandomRaceAssigner, Tag("RandomRaceAssigner")],
+        Annotated[RaceAssigner, Tag("RaceAssigner")],
         Annotated[RandomSkillChoiceResolver, Tag("RandomSkillChoiceResolver")],
         Annotated[WizardRandomSpellAssigner, Tag("WizardRandomSpellAssigner")],
         Annotated[SorcererRandomSpellAssigner, Tag("SorcererRandomSpellAssigner")],
@@ -511,6 +515,7 @@ __all__ = [
     "RandomLanguageChoiceResolver",
     "RandomMagicalItemChooser",
     "RandomRaceAssigner",
+    "RaceAssigner",
     "RandomSkillChoiceResolver",
     "WizardRandomSpellAssigner",
     "SorcererRandomSpellAssigner",

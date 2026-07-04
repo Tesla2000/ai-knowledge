@@ -29,8 +29,8 @@ repos:
             "--exclude",
             ".venv,venv,tests,.claude",
             "--ignore-attributes-for-classes=.*",
-            "--ignore-decorators=@app*,@pytest.fixture,@property,@model_validator*,@field_serializer*,@field_validator*",
-            "--ignore-names=Meta,__dict__,__getattr__,cli_cmd,_get_change,_is_first_level,MagicalItemAssigner,_exclude_factory_defaults,get_increment,get_latest,truncate_to,delete_chain,list_chains,chain_exists,main_class2spell_slots,get_spells_by_level,background2stats,maneuver2ability,get_n_maneuvers,weapon_list,main_class2ability_score_improvements,fighting_style2ability,n_fighting_styles,HealthCreationMethod,class2hit_die,invocations,n_eldrich_invocations,main_class2proficiencies,sub_race2stats,get_sub_races,StatsCreationMethod,SignedInt,handler",
+            "--ignore-decorators=@app*,@pytest.fixture,@property,@model_validator*,@field_serializer*,@field_validator*,@model_serializer*",
+            "--ignore-names=Meta,__dict__,cli_cmd,truncate_to,delete_chain,list_chains,chain_exists,handler",
              "--extra-sys-path=.venv/lib/python3.12/site-packages,.",
           ]
         stages: [ pre-commit ]

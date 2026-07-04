@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import random
 from collections.abc import Generator
+from typing import cast
 
 from typing_protocol_intersection import ProtocolIntersection
 
@@ -62,7 +63,7 @@ class RandomSubclassAssigner[T: ProtocolIntersection[HasClasses, HasSubclasses]]
                 yield delta
                 return delta.apply(state)
         random.seed(self.seed)
-        selected: AnySubclass = random.choice(tuple(subclass_enum))
+        selected = cast(AnySubclass, random.choice(tuple(subclass_enum)))
         delta = SubclassDelta(subclasses=state.subclasses + (selected,))
         yield delta
         return delta.apply(state)

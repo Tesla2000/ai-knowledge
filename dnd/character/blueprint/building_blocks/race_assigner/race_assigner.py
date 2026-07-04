@@ -520,3 +520,13 @@ class YuanTiPurebloodRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
 
     def _get_race_and_subrace(self) -> RaceSubracePair:
         return RaceSubracePair(race=Race.YUAN_TI_PUREBLOOD, subrace=self.subrace)
+
+
+class RaceAssigner[T: HasStats](BaseRaceAssigner[T]):
+    """Assigns any race and subrace combination to the character."""
+
+    race: Race = Field(description="The race to assign")
+    subrace: Subrace = Field(description="The subrace to assign")
+
+    def _get_race_and_subrace(self) -> RaceSubracePair:
+        return RaceSubracePair(race=self.race, subrace=self.subrace)

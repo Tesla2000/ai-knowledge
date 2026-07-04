@@ -113,6 +113,9 @@ from dnd.character.blueprint.building_blocks.race_assigner.race_assigner import 
     WarforgedRaceAssigner,
 )
 from dnd.character.blueprint.building_blocks.race_assigner.race_assigner import (
+    RaceAssigner,
+)
+from dnd.character.blueprint.building_blocks.race_assigner.race_assigner import (
     YuanTiPurebloodRaceAssigner,
 )
 from dnd.character.blueprint.building_blocks.race_assigner.random_race_assigner import (
@@ -167,6 +170,7 @@ AnyRaceAssigner = Annotated[
             Tag(YuanTiPurebloodRaceAssigner.get_block_type()),
         ],
         Annotated[RandomRaceAssigner, Tag(RandomRaceAssigner.get_block_type())],
+        Annotated[RaceAssigner, Tag(RaceAssigner.get_block_type())],
     ],
     get_discriminator(),
 ]
@@ -210,5 +214,6 @@ __all__ = [
     "WarforgedRaceAssigner",
     "YuanTiPurebloodRaceAssigner",
     "RandomRaceAssigner",
+    "RaceAssigner",
     "AnyRaceAssigner",
 ]

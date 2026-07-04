@@ -124,6 +124,11 @@ log_cli_level = "DEBUG"
 log_format = "%(asctime)s [%(levelname)8s] %(message)s"
 log_date_format = "%Y-%m-%d %H:%M:%S"
 
+[tool.coverage.report]
+exclude_lines = [
+    "if TYPE_CHECKING:",
+]
+
 [tool.mypy]
 python_version = "$python_version"
 strict = true

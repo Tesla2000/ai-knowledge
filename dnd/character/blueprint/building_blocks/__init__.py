@@ -435,7 +435,6 @@ AnyBuildingBlock = Annotated[
 ]
 AnyBlocks = tuple[AnyBuildingBlock, ...]
 CombinedBlock.model_rebuild(force=True, _types_namespace={"AnyBlocks": AnyBlocks})
-Blocks = AnyBlocks
 __all__ = [
     "AgeAssigner",
     "AIBaseBuilderAssigner",
@@ -539,6 +538,6 @@ __all__ = [
     "StandardArray",
     "WeaponAdder",
     "AnyBuildingBlock",
-    "Blocks",
+    "AnyBlocks",
     "CombinedBlock",
 ]

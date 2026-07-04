@@ -5,7 +5,6 @@ from collections.abc import Generator
 from typing import Self
 from typing import TYPE_CHECKING
 from typing import TypeAlias
-from typing import Union
 
 from typing_protocol_intersection import ProtocolIntersection
 
@@ -68,14 +67,6 @@ class BuildingBlock[T: BlueprintProtocol, DeltaT: Delta, Added: BlueprintProtoco
         | CombinedBlock,
     ) -> CombinedBlock:
         return CombinedBlock(blocks=(self, other))
-
-
-Blocks = tuple[
-    Union[
-        "BuildingBlock[BlueprintProtocol, Delta, BlueprintProtocol]", "CombinedBlock"
-    ],
-    ...,
-]
 
 
 class CombinedBlock(SerializableBlock):

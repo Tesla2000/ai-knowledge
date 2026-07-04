@@ -5,7 +5,7 @@ from itertools import chain
 from typing import cast
 from typing import Self
 
-from dnd.character.blueprint.building_blocks import Blocks
+from dnd.character.blueprint.building_blocks import AnyBlocks
 from dnd.character.blueprint.building_blocks import (
     LevelAssigner,
 )
@@ -500,7 +500,7 @@ class SimplifiedBlocks(CombinedBlock, _SimplifiedBlocksFields):
     D&D 5e characters with all attributes, choices, and equipment resolved.
     """
 
-    blocks: Blocks = Field(
+    blocks: AnyBlocks = Field(
         default_factory=lambda validated_data: (
             (
                 validated_data["initial_builder"],

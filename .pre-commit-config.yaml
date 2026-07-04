@@ -29,7 +29,7 @@ repos:
             "--exclude",
             ".venv,venv,tests,.claude",
             "--ignore-attributes-for-classes=.*",
-            "--ignore-decorators=@app*,@pytest.fixture,@property,@model_validator*,@field_serializer*,@field_validator*,@model_serializer*",
+            "--ignore-decorators=@app*,@pytest.fixture,@property,@model_validator*,@field_serializer*,@field_validator*,@model_serializer*,@_cf",
             "--ignore-names=Meta,__dict__,cli_cmd,truncate_to,delete_chain,list_chains,chain_exists,handler",
              "--extra-sys-path=.venv/lib/python3.12/site-packages,.",
           ]

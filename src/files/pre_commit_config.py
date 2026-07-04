@@ -65,6 +65,7 @@ repos:
           - pydantic-settings>=2.13.0
         # mypy_additional_dependencies
         args: [ --strict, --config-file, pyproject.toml ]
+        exclude: ^tests/
   - repo: https://github.com/Tesla2000/any-hook
     rev: v3.11.0
     hooks:

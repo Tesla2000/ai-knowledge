@@ -24,8 +24,8 @@ from dnd.character.blueprint.state import HasToolProficiencies
 from dnd.character.delta.delta import Delta
 from dnd.character.feature.feats import FeatName
 from dnd.character.race.race import Race
-from dnd.character.race.subrace_stats.subrace_to_stats import SUBRACE_STATS
-from dnd.character.race.subraces import Subrace
+from dnd.character.race.subrace_stats.subrace_to_stats import _get_subrace_stats
+from dnd.character.race.subraces import SubraceName
 from dnd.character.stats import Stats
 from dnd.choices.language import Language
 from dnd.other_profficiencies import GamingSet
@@ -42,7 +42,7 @@ class RaceSubracePair(BaseModel):
     """A validated pair of race and subrace for internal use by BaseRaceAssigner."""
 
     race: Race = Field(description="The character's primary race")
-    subrace: Subrace = Field(
+    subrace: SubraceName = Field(
         description="The subrace, must be valid for the selected race"
     )
 
@@ -51,7 +51,7 @@ class RaceDelta(Delta):
     """Delta produced when BaseRaceAssigner sets the character race and applies subrace stats."""
 
     race: Race
-    subrace: Subrace
+    subrace: SubraceName
     speed: PositiveInt
     dark_vision_range: NonNegativeInt
     stats: Stats
@@ -69,7 +69,7 @@ class RaceDelta(Delta):
 
             class BlueprintWithRace(Blueprint):
                 race: Race
-                subrace: Subrace
+                subrace: SubraceName
                 speed: PositiveInt
                 dark_vision_range: NonNegativeInt
                 stats: Stats
@@ -88,7 +88,7 @@ class RaceDelta(Delta):
 
             class BlueprintWithRace(type(state)):
                 race: Race
-                subrace: Subrace
+                subrace: SubraceName
                 speed: PositiveInt
                 dark_vision_range: NonNegativeInt
                 stats: Stats
@@ -130,8 +130,7 @@ class BaseRaceAssigner[T: HasStats](BuildingBlock[T, RaceDelta, HasRace], ABC):
     """Abstract base for assigning race and subrace to a character."""
 
     @abstractmethod
-    def _get_race_and_subrace(self) -> RaceSubracePair:
-        pass
+    def _get_race_and_subrace(self) -> RaceSubracePair: ...
 
     @overload
     @deprecated("Cannot assign race to a state that already has a race assigned")
@@ -149,7 +148,7 @@ class BaseRaceAssigner[T: HasStats](BuildingBlock[T, RaceDelta, HasRace], ABC):
             raise ValueError(f"{state} already has a race assigned")
 
         race_and_subrace = self._get_race_and_subrace()
-        subrace_stats = SUBRACE_STATS[race_and_subrace.subrace]
+        subrace_stats = _get_subrace_stats(race_and_subrace.subrace)
 
         new_stats = Stats(
             strength=state.stats.strength + subrace_stats.statistics.strength,

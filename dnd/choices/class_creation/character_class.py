@@ -220,5 +220,3 @@ AnySubclass = Union[
 subclass_level = frozendict(
     {class_: 2 if class_ in (Class.WIZARD,) else 3 for class_ in Class}
 )
-if not all(map(subclass_level.__contains__, Class)):
-    raise ValueError("Not all classes have assigned subclass levels")

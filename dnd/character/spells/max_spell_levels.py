@@ -109,7 +109,3 @@ MAX_SPELL_LEVELS = frozendict(
         CasterType.NONE: tuple(0 for _ in range(20)),
     }
 )
-if not all(map(MAX_SPELL_LEVELS.__contains__, CasterType)):
-    raise ValueError(
-        f"Not all Caster types defined in {','.join(map(str, MAX_SPELL_LEVELS.keys()))}"
-    )

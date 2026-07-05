@@ -15,10 +15,8 @@ def _default_hp(data: Mapping[str, object]) -> int:  # ignore
     constitution = 10
     if isinstance(stats, Stats):
         constitution = stats.constitution
-    elif isinstance(stats, Mapping):
-        con = stats.get("constitution", 10)
-        if isinstance(con, int):
-            constitution = con
+    elif stats is not None:
+        raise TypeError(f"stats must be Stats, got {type(stats)}")
     con_mod = (constitution - 10) // 2
     n_raw = data.get("n_hit_dice", 1)
     d_raw = data.get("hit_die_size", 8)

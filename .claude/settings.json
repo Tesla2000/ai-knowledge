@@ -1,4 +1,14 @@
 {
+  "permissions": {
+    "deny": [
+      "Write(./.pre-commit-config.yaml)",
+      "Edit(./.pre-commit-config.yaml)",
+      "Write(./pyproject.toml)",
+      "Edit(./pyproject.toml)",
+      "Read(./.env)",
+      "Bash(cat .env)"
+    ]
+  },
   "sandbox": {
     "enabled": true,
     "network": {

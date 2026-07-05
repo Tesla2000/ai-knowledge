@@ -59,7 +59,7 @@ from dnd.character.blueprint.building_blocks.subclass_assigner import (
     RandomSubclassAssigner,
 )
 from dnd.character.blueprint.state import HasWizardLevel
-from dnd.character.race.subraces import Subrace
+from dnd.character.race.subraces import SubraceName
 from dnd.choices.class_creation.character_class import Class
 from dnd.choices.stats_creation.statistic import Statistic
 
@@ -106,7 +106,7 @@ def example_building_blocks() -> CombinedBlock:
                     LevelAssigner(level=level),
                     StandardArray(stats_priority=stats_priority),
                     HumanRaceAssigner(
-                        subrace=Subrace.HUMAN_VARIANT_HUMAN_PLAYERSHANDBOOK,
+                        subrace=SubraceName.HUMAN_VARIANT_HUMAN_PLAYERSHANDBOOK,
                     ),
                     AllChoicesResolver(
                         blocks=(

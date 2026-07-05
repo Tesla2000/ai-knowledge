@@ -136,8 +136,7 @@ class WizardSpellAssigner[T: HasWizardLevel](
         count: int,
         available_spells: list[Spell],
         state: T,
-    ) -> tuple[Spell, ...]:
-        """Select N spells from available list."""
+    ) -> tuple[Spell, ...]: ...
 
     def _get_spells_to_learn(self, state: T) -> dict[int, int]:
         level = state.get_wizard_level()
@@ -194,8 +193,7 @@ class SorcererSpellAssigner[T: HasSorcererLevel](
         count: int,
         available_spells: list[Spell],
         state: T,
-    ) -> tuple[Spell, ...]:
-        """Select N spells from available list."""
+    ) -> tuple[Spell, ...]: ...
 
     def _get_spells_to_learn(self, state: T) -> dict[int, int]:
         level = state.get_sorcerer_level()

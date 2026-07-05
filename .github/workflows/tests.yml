@@ -27,4 +27,4 @@ jobs:
 
       - name: Run pytest
         run: |
-          timeout 69 uv run pytest tests -m "not integration and not requires_api_key" -W error::UserWarning
+          uv run pytest -m unit -W error::UserWarning

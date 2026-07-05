@@ -10,7 +10,7 @@ from dnd.character.magical_item.item import MagicalItem
 from dnd.character.character import ClassLevel
 from dnd.character.feature.feats import FeatName
 from dnd.character.race.race import Race
-from dnd.character.race.subraces import Subrace
+from dnd.character.race.subraces import SubraceName
 from dnd.character.spells.spells import Spells
 from dnd.character.stats import Stats
 from dnd.choices.alignment import Alignment
@@ -170,7 +170,7 @@ class HasBackground(BlueprintProtocol, Protocol):
 @runtime_checkable
 class HasRace(BlueprintProtocol, Protocol):
     race: Race
-    subrace: Subrace
+    subrace: SubraceName
     speed: PositiveInt
     dark_vision_range: NonNegativeInt
 

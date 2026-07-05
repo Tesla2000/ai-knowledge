@@ -74,8 +74,7 @@ class FeatChoiceResolver[T: ProtocolIntersection[HasFeats, HasStats]](
     @abstractmethod
     def _select_from_available(
         self, available: list[FeatName], state: T
-    ) -> FeatName | None:
-        """Select a feat from available options, or None if this resolver cannot choose."""
+    ) -> FeatName | None: ...
 
     def get_change(
         self, state: T

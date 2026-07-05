@@ -21,8 +21,18 @@ dependencies = [
 
 [tool.pytest.ini_options]
 markers = [
-    "integration: marks tests as integration tests (deselect with '-m \"not integration\"')",
-    "requires_api_key: marks tests that require API keys (deselect with '-m \"not requires_api_key\"')",  # pragma: allowlist secret
+    "unit: pure logic, no I/O",
+    "integration: multi-component, no server, no AI",
+    "smoke: quick sanity tests requiring an API key",
+    "e2e: full AI-powered flows requiring an API key",
+]
+addopts = "--cov=dnd --cov-report=term-missing --cov-fail-under=100"
+
+[tool.coverage.report]
+exclude_lines = [
+    "if TYPE_CHECKING:",
+    "assert_never",
+    "case _ as never:",
 ]
 
 [tool.mypy]

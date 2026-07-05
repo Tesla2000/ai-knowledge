@@ -17,52 +17,19 @@ class IncrementStorage(ABC):
     """
 
     @abstractmethod
-    def load_chain(self, chain_id: UUID) -> IncrementChain:
-        """Load an increment chain by ID.
-
-        Args:
-            chain_id: Unique identifier for the chain
-
-        Raises:
-            ValueError: If not found
-
-        Returns:
-            IncrementChain
-        """
+    def load_chain(self, chain_id: UUID) -> IncrementChain: ...
 
     @abstractmethod
-    def delete_chain(self, chain_id: UUID) -> bool:
-        """Delete an increment chain by ID.
-
-        Args:
-            chain_id: Unique identifier for the chain
-
-        Returns:
-            True if deleted, False if not found
-        """
+    def delete_chain(self, chain_id: UUID) -> bool: ...
 
     @abstractmethod
-    def list_chains(self) -> list[UUID]:
-        """List all available increment chain IDs.
-
-        Returns:
-            List of chain IDs
-        """
+    def list_chains(self) -> list[UUID]: ...
 
     @abstractmethod
-    def save_chain(self, chain_id: UUID, chain: IncrementChain) -> None:
-        """Save an increment chain by ID."""
+    def save_chain(self, chain_id: UUID, chain: IncrementChain) -> None: ...
 
     @abstractmethod
-    def chain_exists(self, chain_id: UUID) -> bool:
-        """Check if an increment chain exists.
-
-        Args:
-            chain_id: Unique identifier for the chain
-
-        Returns:
-            True if exists, False otherwise
-        """
+    def chain_exists(self, chain_id: UUID) -> bool: ...
 
 
 class FileIncrementStorage(IncrementStorage):

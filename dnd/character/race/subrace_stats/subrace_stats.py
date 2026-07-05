@@ -16,7 +16,7 @@ from pydantic import NonNegativeInt
 from pydantic import PositiveInt
 
 
-class SubraceStats(BaseModel):
+class Subrace(BaseModel):
     speed: PositiveInt
     dark_vision_range: NonNegativeInt
     languages: tuple[Language, ...] = Field(

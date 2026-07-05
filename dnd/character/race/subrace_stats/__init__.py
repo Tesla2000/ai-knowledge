@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 from dnd.character.race.subrace_stats.subrace_stats import (
-    SubraceStats,
+    Subrace,
 )
 
 __all__ = [
-    "SubraceStats",
+    "Subrace",
 ]

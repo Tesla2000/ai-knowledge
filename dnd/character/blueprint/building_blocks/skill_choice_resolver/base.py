@@ -73,8 +73,7 @@ class SkillChoiceResolver[
     model_config = ConfigDict(frozen=True)
 
     @abstractmethod
-    def _select_skills(self, state: T) -> frozenset[Skill]:
-        """Select skills from available options based on state context."""
+    def _select_skills(self, state: T) -> frozenset[Skill]: ...
 
     def get_change(
         self, state: T

@@ -10,6 +10,8 @@
 /lib/
 /config_files/
 /.run/
+/.coverage
 
 # Generated schema file (built at container build time)
 /dnd/server/static/simplified-blocks-schema.json
+/scripts/data/

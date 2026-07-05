@@ -10,7 +10,7 @@ from dnd.character.blueprint.building_blocks.race_assigner.base_race_assigner im
 )
 from dnd.character.blueprint.state import HasStats
 from dnd.character.race.race import Race
-from dnd.character.race.subraces import RACE_TO_SUBRACES
+from dnd.character.race.subraces import _get_subraces
 from pydantic import Field
 
 
@@ -26,5 +26,5 @@ class RandomRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
         random.seed(self.seed)
 
         race = random.choice(tuple(Race))
-        subrace = random.choice(RACE_TO_SUBRACES[race])
+        subrace = random.choice(_get_subraces(race))
         return RaceSubracePair(race=race, subrace=subrace)

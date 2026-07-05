@@ -66,8 +66,7 @@ class StatChoiceResolver[T: ProtocolIntersection[HasStats, HasNStatChoices]](
     model_config = ConfigDict(frozen=True)
 
     @abstractmethod
-    def select_stats_to_increase(self, state: T) -> dict[Statistic, int]:
-        """Select which stats to increase and by how much."""
+    def select_stats_to_increase(self, state: T) -> dict[Statistic, int]: ...
 
     def get_change(
         self, state: T

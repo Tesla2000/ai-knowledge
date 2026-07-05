@@ -55,8 +55,9 @@ class LanguageChoiceResolver[T: HasLanguages](
     model_config = ConfigDict(frozen=True)
 
     @abstractmethod
-    def _select_from_available(self, available: list[Language], state: T) -> Language:
-        """Select a language from available options."""
+    def _select_from_available(
+        self, available: list[Language], state: T
+    ) -> Language: ...
 
     def get_change(
         self, state: T

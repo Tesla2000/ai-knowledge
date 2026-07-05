@@ -83,9 +83,7 @@ class CombinedBlock(SerializableBlock):
             )
         if isinstance(other, CombinedBlock):
             return type(self)(blocks=self.blocks + other.blocks)
-        if isinstance(other, BuildingBlock):
-            return type(self)(blocks=self.blocks + (other,))
-        raise ValueError("What?")
+        return type(self)(blocks=self.blocks + (other,))
 
     def get_change(
         self, state: BlueprintProtocol

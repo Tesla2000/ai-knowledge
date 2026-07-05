@@ -77,8 +77,7 @@ class HealthIncrease[T: HasClasses](
     }
 
     @abstractmethod
-    def _get_hit_die_value(self, hit_die: HitDieSize) -> int:
-        """Get the hit die value for health increase."""
+    def _get_hit_die_value(self, hit_die: HitDieSize) -> int: ...
 
     def get_change(
         self, state: T

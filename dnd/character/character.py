@@ -8,7 +8,7 @@ from dnd.character.armor.names import ArmorName
 from dnd.character.feature.feats import FeatName
 from dnd.character.magical_item.item import MagicalItem
 from dnd.character.race.race import Race
-from dnd.character.race.subraces import Subrace
+from dnd.character.race.subraces import SubraceName
 from dnd.character.spells.spells import Spells
 from dnd.choices.alignment import Alignment
 from dnd.choices.background_creatrion.background import (
@@ -136,7 +136,7 @@ class Character(_CreatureBase):
         AfterValidator(_conv_to_frozendict),
     ] = frozendict()
     race: Race
-    subrace: Subrace
+    subrace: SubraceName
     background: Background
     alignment: Alignment
     health_base: PositiveInt = Field(exclude=True)

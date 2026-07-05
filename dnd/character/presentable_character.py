@@ -4,7 +4,6 @@ import json
 from collections import defaultdict
 from collections.abc import Mapping
 from itertools import filterfalse
-from typing import Annotated
 from typing import Self
 from typing import TYPE_CHECKING
 
@@ -30,17 +29,10 @@ from dnd.choices.class_creation.character_class import (
 from dnd.choices.class_creation.character_class import (
     SUBCLASSES,
 )
-from dnd.choices.language import Language
 from dnd.choices.stats_creation.statistic import Statistic
 from dnd.config import resource_paths
-from dnd.other_profficiencies import ArmorProficiency
-from dnd.other_profficiencies import GamingSet
-from dnd.other_profficiencies import MusicalInstrument
-from dnd.other_profficiencies import ToolProficiency
-from dnd.other_profficiencies import WeaponProficiency
 from dnd.skill_proficiency import Skill
 from dnd.skill_proficiency import skill2ability
-from pydantic import AfterValidator
 from pydantic import ConfigDict
 from pydantic import model_validator
 from pydantic import NonNegativeInt
@@ -49,82 +41,6 @@ if TYPE_CHECKING:
     _cf = property
 else:
     from pydantic import computed_field as _cf
-
-
-def _language_not_any(language: Language) -> Language:
-    if language == Language.ANY_OF_YOUR_CHOICE:
-        raise ValueError(
-            "Character language mustn't be any of your choice. Choose a languge"
-        )
-    return language
-
-
-def _skill_not_any(skill: Skill) -> Skill:
-    if skill == Skill.ANY_OF_YOUR_CHOICE:
-        raise ValueError(
-            "Character skill mustn't be any of your choice. Choose a skill"
-        )
-    return skill
-
-
-def _feat_not_any(feat: FeatName) -> FeatName:
-    if feat in FeatName.not_choosables():
-        raise ValueError("Character feat mustn't be any of your choice. Choose a feat")
-    return feat
-
-
-def _tool_proficiency_not_any[T: ToolProficiency | GamingSet | MusicalInstrument](
-    tool: T,
-) -> T:
-    if isinstance(tool, ToolProficiency) and tool == ToolProficiency.ANY_OF_YOUR_CHOICE:
-        raise ValueError(
-            "Character tool proficiency mustn't be any of your choice. Choose a tool"
-        )
-    if isinstance(tool, GamingSet) and tool == GamingSet.ANY_OF_YOUR_CHOICE:
-        raise ValueError(
-            "Character gaming set mustn't be any of your choice. Choose a gaming set"
-        )
-    if (
-        isinstance(tool, MusicalInstrument)
-        and tool == MusicalInstrument.ANY_OF_YOUR_CHOICE
-    ):
-        raise ValueError(
-            "Character musical instrument mustn't be any of your choice. Choose a musical instrument"
-        )
-    return tool
-
-
-def _weapon_proficiency_not_any(
-    weapon: WeaponProficiency,
-) -> WeaponProficiency:
-    if weapon == WeaponProficiency.ANY_OF_YOUR_CHOICE:
-        raise ValueError(
-            "Character weapon proficiency mustn't be any of your choice. Choose a weapon"
-        )
-    return weapon
-
-
-def _armor_proficiency_not_any(armor: ArmorProficiency) -> ArmorProficiency:
-    if armor == ArmorProficiency.ANY_OF_YOUR_CHOICE:
-        raise ValueError(
-            "Character armor proficiency mustn't be any of your choice. Choose an armor type"
-        )
-    return armor
-
-
-NotAnyLanguage = Annotated[Language, AfterValidator(_language_not_any)]
-NotAnySkill = Annotated[Skill, AfterValidator(_skill_not_any)]
-NotAnyFeat = Annotated[FeatName, AfterValidator(_feat_not_any)]
-NotAnyToolProficiency = Annotated[
-    ToolProficiency | GamingSet | MusicalInstrument,
-    AfterValidator(_tool_proficiency_not_any),
-]
-NotAnyWeaponProficiency = Annotated[
-    WeaponProficiency, AfterValidator(_weapon_proficiency_not_any)
-]
-NotAnyArmorProficiency = Annotated[
-    ArmorProficiency, AfterValidator(_armor_proficiency_not_any)
-]
 
 
 class PresentableCharacter(Character):

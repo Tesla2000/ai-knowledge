@@ -53,8 +53,7 @@ class MagicalItemChooserBase(
     )
 
     @abstractmethod
-    def _select_items(self, state: BlueprintProtocol) -> tuple[MagicalItem, ...]:
-        """Select magical items based on rarity counts."""
+    def _select_items(self, state: BlueprintProtocol) -> tuple[MagicalItem, ...]: ...
 
     def get_change(
         self, state: BlueprintProtocol

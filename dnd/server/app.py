@@ -94,6 +94,69 @@ class _MetadataDict(TypedDict):
     fields: dict[str, _Field]
 
 
+def _get_union_schema(
+    annotation: object, field_name: str, visited: set[object] | None = None
+) -> Mapping[str, object] | None:  # ignore
+    """Recursively build schema for Union type fields.
+
+    Returns a schema that validates block_type and recursively validates
+    nested Union fields within the Union member types.
+    """
+    if visited is None:
+        visited = set()
+
+    if annotation in visited:
+        return None
+    visited.add(annotation)
+
+    origin = get_origin(annotation)
+    if origin is not typing.Union:
+        return None
+
+    args = get_args(annotation)
+
+    block_types = []
+    nested_properties: dict[str, Mapping[str, object]] = {}
+
+    for arg in args:
+        actual_type = arg
+        if get_origin(arg) is typing.Annotated:
+            actual_type = get_args(arg)[0]
+
+        if not (
+            isinstance(actual_type, type) and issubclass(actual_type, SerializableBlock)
+        ):
+            continue
+        block_types.append(actual_type.get_block_type())
+
+        for nested_field_name, nested_field_info in actual_type.model_fields.items():
+            nested_schema = _get_union_schema(
+                nested_field_info.annotation,
+                nested_field_name,
+                visited.copy(),
+            )
+            if nested_schema:
+                if nested_field_name not in nested_properties:
+                    nested_properties[nested_field_name] = nested_schema
+
+    if not block_types:
+        return None
+
+    return {
+        "type": "object",
+        "properties": {
+            BLOCK_TYPE_FIELD_NAME: {
+                "type": "string",
+                "enum": sorted(block_types),
+                "description": f"Block type for {field_name}",
+            },
+            **nested_properties,
+        },
+        "required": [BLOCK_TYPE_FIELD_NAME],
+        "additionalProperties": True,
+    }
+
+
 def _get_concrete_block_classes() -> list[type[SerializableBlock]]:
     any_union = typing.get_args(AnyBuildingBlock)[0]
     result: list[type[SerializableBlock]] = []
@@ -114,9 +177,6 @@ def _generate_building_blocks_metadata() -> list[_MetadataDict]:
     for block_class in _get_concrete_block_classes():
         fields = {}
         for field_name, field_info in block_class.model_fields.items():
-            if field_name == BLOCK_TYPE_FIELD_NAME:
-                continue  # Skip discriminator field
-
             annotation = field_info.annotation
             if isinstance(annotation, type):
                 field_type = annotation.__name__
@@ -299,75 +359,6 @@ def create_app(storage: IncrementStorage) -> FastAPI:
         - stats_priority (tuple of Statistic enums)
         - block_type fields within all Union type resolvers/choosers (recursive)
         """
-
-        def get_union_schema(
-            annotation: object, field_name: str, visited: set[object] | None = None
-        ) -> Mapping[str, object] | None:  # ignore
-            """Recursively build schema for Union type fields.
-
-            Returns a schema that validates block_type and recursively validates
-            nested Union fields within the Union member types.
-            """
-            if visited is None:
-                visited = set()
-
-            if annotation in visited:
-                return None
-            visited.add(annotation)
-
-            origin = get_origin(annotation)
-            if origin is not typing.Union:
-                return None
-
-            args = get_args(annotation)
-
-            block_types = []
-            nested_properties = {}
-
-            for arg in args:
-                # Unwrap Annotated types to get the actual class
-                actual_type = arg
-                if get_origin(arg) is typing.Annotated:
-                    actual_type = get_args(arg)[0]
-
-                # Check if it's a class and is a subclass of SerializableBlock
-                if not (
-                    isinstance(actual_type, type)
-                    and issubclass(actual_type, SerializableBlock)
-                ):
-                    continue
-                block_types.append(actual_type.get_block_type())
-
-                for (
-                    nested_field_name,
-                    nested_field_info,
-                ) in actual_type.model_fields.items():
-                    nested_schema = get_union_schema(
-                        nested_field_info.annotation,
-                        nested_field_name,
-                        visited.copy(),
-                    )
-                    if nested_schema:
-                        if nested_field_name not in nested_properties:
-                            nested_properties[nested_field_name] = nested_schema
-
-            if not block_types:
-                return None
-
-            return {
-                "type": "object",
-                "properties": {
-                    BLOCK_TYPE_FIELD_NAME: {
-                        "type": "string",
-                        "enum": sorted(block_types),
-                        "description": f"Block type for {field_name}",
-                    },
-                    **nested_properties,
-                },
-                "required": [BLOCK_TYPE_FIELD_NAME],
-                "additionalProperties": True,
-            }
-
         # Generate schemas for non-Union fields
         classes_adapter = TypeAdapter(Classes)
         stats_priority_adapter: TypeAdapter[StatsPriority] = TypeAdapter(StatsPriority)
@@ -381,7 +372,7 @@ def create_app(storage: IncrementStorage) -> FastAPI:
         # Dynamically discover Union fields and build schemas recursively
         union_properties = {}
         for field_name, field_info in SimplifiedBlocks.model_fields.items():
-            union_schema = get_union_schema(field_info.annotation, field_name)
+            union_schema = _get_union_schema(field_info.annotation, field_name)
             if union_schema:
                 union_properties[field_name] = union_schema
 

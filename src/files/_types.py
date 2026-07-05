@@ -20,3 +20,4 @@ class FileType(StrEnum):
     CODE_OWNERS = auto()
     DEVCONTAINER_JSON = auto()
     CLAUDE_REVIEW_WORKFLOW = auto()
+    CLAUDE_SETTINGS = auto()

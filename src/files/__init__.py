@@ -2,6 +2,7 @@ from typing import Annotated
 
 from pydantic import Discriminator
 
+from src.files.claude.claude_settings import ClaudeSettings
 from src.files.devcontainer import DevcontainerJsonFile
 from src.files.file import File
 from src.files.github.code_owners_file import CodeOwnersFile
@@ -41,13 +42,15 @@ AnyFile = Annotated[
     | CodeOwnersFile
     | PythonVersionFile
     | DevcontainerJsonFile
-    | ClaudeReviewWorkflow,
+    | ClaudeReviewWorkflow
+    | ClaudeSettings,
     Discriminator("type"),
 ]
 
 __all__ = [
     "AnyFile",
     "ClaudeReviewWorkflow",
+    "ClaudeSettings",
     "CodeOwnersFile",
     "Dependency",
     "DevcontainerJsonFile",

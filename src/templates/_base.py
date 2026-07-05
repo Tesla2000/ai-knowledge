@@ -9,6 +9,7 @@ from pydantic import BaseModel, Field
 
 from src.files import (
     ClaudeReviewWorkflow,
+    ClaudeSettings,
     CodeOwnersFile,
     DevcontainerJsonFile,
     File,
@@ -93,25 +94,6 @@ uv sync --group dev
 echo 'source /workspace/.venv/bin/activate' >> /home/dev/.bashrc
 echo 'eval "$(fzf --bash)"' >> /home/dev/.bashrc
 uv run pre-commit install --overwrite --hook-type pre-commit --hook-type pre-push
-"""
-
-_CLAUDE_SETTINGS = """\
-{
-  "sandbox": {
-    "enabled": true,
-    "network": {
-      "allowedDomains": [
-        "api.anthropic.com",
-        "github.com",
-        "*.github.com",
-        "*.githubusercontent.com",
-        "pypi.org",
-        "files.pythonhosted.org",
-        "registry.npmjs.org"
-      ]
-    }
-  }
-}
 """
 
 
@@ -203,10 +185,7 @@ class Template(BaseModel, ABC):
         relative_path=Path(".devcontainer/post-create.sh"),
         content=_DEVCONTAINER_POST_CREATE,
     )
-    claude_settings: File = File(
-        relative_path=Path(".claude/settings.json"),
-        content=_CLAUDE_SETTINGS,
-    )
+    claude_settings: ClaudeSettings = ClaudeSettings()
     claude_review_workflow: ClaudeReviewWorkflow | None = (
         ClaudeReviewWorkflow()
     )

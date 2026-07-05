@@ -11,3 +11,5 @@
 | [Testing](topics/python/testing.md) | - Use pytest exclusively. |
 | [Typing](topics/python/typing.md) | - Always type hint both arguments and return type. |
 | [Git & Dependency Workflow](topics/workflow/git.md) | - Never commit unless explicitly asked. |
+| [Knowledge Base Maintenance](topics/workflow/knowledge-base.md) | ``` |
+| [Validation & Linting](topics/workflow/validation.md) | Pre-commit and tests are both code quality gates. The same principle applies to both: |

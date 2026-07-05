@@ -8,6 +8,7 @@
 - Never use `# pragma: no cover` unless the user explicitly allows it.
 - Do not use local imports in tests.
 - 100% coverage means 100%. Flag impossible branches or defensive code to the user instead of suppressing.
+- Save test output to a file and read it to analyse results. Never re-run with a different config just to see additional lines -- run once, read the saved output.
 
 ## Markers
 

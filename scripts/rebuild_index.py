@@ -1,6 +1,7 @@
 """Rebuild index.md from topics/ directory."""
 
 import re
+import sys
 from pathlib import Path
 
 
@@ -45,11 +46,12 @@ class IndexRebuilder:
     def rebuild(cls) -> None:
         entries = cls._collect_entries()
         rows = "\n".join(
-            f"| [{title}]({rel}) | {summary} |" for title, rel, summary in entries
+            f"| [{title}]({rel}) | {summary} |"
+            for title, rel, summary in entries
         )
         content = f"# Knowledge Base Index\n\n| File | Summary |\n|------|---------|\n{rows}\n"
         cls._INDEX_FILE.write_text(content, encoding="utf-8")
-        print(f"index.md updated with {len(entries)} entries.")  # ignore
+        sys.stdout.write(f"index.md updated with {len(entries)} entries.")
 
 
 if __name__ == "__main__":

@@ -71,6 +71,41 @@ class Parser(BaseModel):
         return cls(text=cls._clean(raw))
 ```
 
+## Entry points
+
+Never use `if __name__ == "__main__":` inside package/library files. Move CLI entry
+points to `scripts/`. Scripts are excluded from coverage and mypy, so the guard block
+disappears from the report entirely rather than needing suppression.
+
+## Dict-completeness guards
+
+Never use a runtime guard after a dict comprehension to verify all enum members are
+covered:
+
+```python
+# bad
+data = {member: ... for member in MyEnum}
+if not all(map(data.__contains__, MyEnum)):
+    raise ValueError(...)
+```
+
+Instead, replace the dict with an exhaustive `match` function. mypy enforces completeness
+statically, and `case _ as never: assert_never(never)` is the signal:
+
+```python
+# good
+def get_thing(key: MyEnum) -> Thing:
+    match key:
+        case MyEnum.A:
+            return ...
+        case MyEnum.B:
+            return ...
+        case _ as never:
+            assert_never(never)
+```
+
+See `dnd/character/race/subrace_stats/subrace_to_stats.py` for a worked example.
+
 ## Related
 
 - [imports.md](imports.md) -- class and module visibility

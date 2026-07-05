@@ -41,6 +41,22 @@ class Article(BaseModel):
 
 Pydantic v2 passes previously-validated fields as `data`. Prefer this over `@model_validator`.
 
+A `default_factory` receives validated data, but a child class can override a field's
+type annotation. Do NOT assume the factory only ever receives the parent-class type.
+Always guard with `isinstance` and raise `TypeError` for unexpected types:
+
+```python
+def _default_hp(data: Mapping[str, object]) -> int:
+    stats = data.get("stats")
+    if isinstance(stats, Stats):
+        constitution = stats.constitution
+    elif stats is not None:
+        raise TypeError(f"stats must be Stats, got {type(stats)}")
+    else:
+        constitution = 10
+    ...
+```
+
 ## Mapping Validation
 
 When validating `Mapping[str, object]`, use `Model.model_validate(data)` to reduce boilerplate.

@@ -78,6 +78,7 @@ with patch.object(MyClass, "_process"):
     ...
 ```
 
+
 ## Smoke tests
 
 One test per external service call (database, LLM, web). Do not bundle multiple external

@@ -11,7 +11,6 @@ from dnd.character.blueprint.building_blocks.background_assigner import (
 )
 from dnd.character.blueprint.building_blocks.building_block import (
     BuildingBlock,
-    CombinedBlock,
 )
 from dnd.character.blueprint.building_blocks.equipment_adder import EquipmentAdder
 from dnd.character.blueprint.building_blocks.feat_adder import FeatAdder
@@ -51,40 +50,9 @@ class TestBuildingBlockBase:
         with pytest.raises(NotImplementedError, match="_RawBlock must implement"):
             block.get_change(Blueprint())
 
-    def test_add_two_blocks_returns_combined(self) -> None:
+    def test_flatten_leaf_block_returns_self(self) -> None:
         b1 = NullBlock()
-        b2 = SexAssigner(sex=Sex.MALE)
-        combined = b1 + b2
-        assert isinstance(combined, CombinedBlock)
-        assert len(combined.blocks) == 2
-
-    def test_combined_block_add_building_block(self) -> None:
-        b1 = NullBlock()
-        b2 = SexAssigner(sex=Sex.MALE)
-        b3 = AgeAssigner(age=25)
-        combined = b1 + b2
-        combined2 = combined + b3
-        assert isinstance(combined2, CombinedBlock)
-        assert len(combined2.blocks) == 3
-
-    def test_combined_block_add_combined_block(self) -> None:
-        b1 = NullBlock()
-        b2 = SexAssigner(sex=Sex.MALE)
-        combined1 = b1 + b2
-        combined2 = b1 + b2
-        merged = combined1 + combined2
-        assert isinstance(merged, CombinedBlock)
-        assert len(merged.blocks) == 4
-
-    def test_combined_block_add_invalid_raises(self) -> None:
-        combined = NullBlock() + SexAssigner(sex=Sex.MALE)
-        with pytest.raises(ValueError, match="Only instances of"):
-            combined + 42
-
-    def test_combined_block_get_change(self) -> None:
-        combined = NullBlock() + SexAssigner(sex=Sex.MALE)
-        result = _exhaust(combined.get_change(Blueprint()))
-        assert result is not None
+        assert tuple(b1.flatten()) == (b1,)
 
 
 @pytest.mark.unit

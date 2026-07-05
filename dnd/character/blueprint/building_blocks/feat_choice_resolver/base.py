@@ -4,8 +4,12 @@ from abc import ABC
 from abc import abstractmethod
 from collections.abc import Generator
 from typing import cast
+from typing import overload
+from typing import Protocol
+from typing import runtime_checkable
 from typing import TYPE_CHECKING
 
+from typing_extensions import deprecated
 from typing_protocol_intersection import ProtocolIntersection
 
 from dnd.character.blueprint.building_blocks.building_block import BuildingBlock
@@ -19,11 +23,13 @@ from dnd.character.class_levels import ClassLevels
 from dnd.character.delta.delta import Delta
 from dnd.character.feature.feats import FeatName
 from pydantic import ConfigDict
+from typing import Literal
 
 
 class FeatResolutionDelta(Delta):
     """Delta produced when FeatChoiceResolver resolves feat placeholders."""
 
+    delta_type: Literal["FeatResolutionDelta"] = "FeatResolutionDelta"
     feats: tuple[FeatName, ...]
     n_stat_choices: int
 
@@ -55,9 +61,12 @@ class FeatResolutionDelta(Delta):
         )
 
 
-class FeatChoiceResolver[T: ProtocolIntersection[HasFeats, HasStats]](
-    BuildingBlock[T, FeatResolutionDelta, HasNStatChoices], ABC
-):
+@runtime_checkable
+class _FeatT(HasFeats, HasStats, Protocol):
+    pass
+
+
+class FeatChoiceResolver[S: _FeatT](BuildingBlock, ABC):
     """Resolves FeatName.ANY_OF_YOUR_CHOICE placeholders.
 
     This resolver replaces ANY_OF_YOUR_CHOICE placeholders in the
@@ -73,12 +82,31 @@ class FeatChoiceResolver[T: ProtocolIntersection[HasFeats, HasStats]](
 
     @abstractmethod
     def _select_from_available(
-        self, available: list[FeatName], state: T
+        self, available: list[FeatName], state: S
     ) -> FeatName | None: ...
 
-    def get_change(
+    @overload
+    def get_change[T: _FeatT](
         self, state: T
-    ) -> Generator[FeatResolutionDelta, None, ProtocolIntersection[T, HasNStatChoices]]:
+    ) -> Generator[
+        FeatResolutionDelta, None, ProtocolIntersection[T, HasNStatChoices]
+    ]: ...
+
+    @overload
+    @deprecated(
+        "Pass a state satisfying HasFeats and HasStats for precise return typing"
+    )
+    def get_change[T: BlueprintProtocol](
+        self, state: T
+    ) -> Generator[Delta, None, BlueprintProtocol]: ...
+
+    def get_change[T: BlueprintProtocol](
+        self, state: T
+    ) -> Generator[Delta, None, BlueprintProtocol]:
+        if not isinstance(state, _FeatT):
+            raise TypeError(
+                f"{type(self).__name__} requires HasFeats and HasStats, got {type(state).__name__}"
+            )
         existing_classes = (
             state.classes if isinstance(state, HasClasses) else ClassLevels()
         )
@@ -99,7 +127,7 @@ class FeatChoiceResolver[T: ProtocolIntersection[HasFeats, HasStats]](
         return delta.apply(state)
 
     def _resolve_feat(
-        self, feat: FeatName, state: T, ability_score_improvement_allowed: bool
+        self, feat: FeatName, state: _FeatT, ability_score_improvement_allowed: bool
     ) -> FeatName | None:
         if feat not in FeatName.not_choosables():
             return feat

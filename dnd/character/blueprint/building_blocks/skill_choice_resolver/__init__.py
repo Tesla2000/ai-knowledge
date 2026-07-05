@@ -3,9 +3,6 @@ from __future__ import annotations
 from typing import Annotated
 from typing import Union
 
-from dnd.character.blueprint.building_blocks.get_discriminator import (
-    get_discriminator,
-)
 from dnd.character.blueprint.building_blocks.skill_choice_resolver.ai import (
     AISkillChoiceResolver,
 )
@@ -15,31 +12,25 @@ from dnd.character.blueprint.building_blocks.skill_choice_resolver.random import
 from dnd.character.blueprint.state import HasNSkillChoices
 from dnd.character.blueprint.state import HasSkillProficiencies
 from dnd.character.blueprint.state import HasSkillsToChooseFrom
-from pydantic import Tag
+from pydantic import Field
 from typing_protocol_intersection import ProtocolIntersection
 
 AnySkillChoiceResolver = Annotated[
     Union[
-        Annotated[
-            RandomSkillChoiceResolver[
-                ProtocolIntersection[
-                    ProtocolIntersection[HasNSkillChoices, HasSkillsToChooseFrom],
-                    HasSkillProficiencies,
-                ]
-            ],
-            Tag(RandomSkillChoiceResolver.get_block_type()),
+        RandomSkillChoiceResolver[
+            ProtocolIntersection[
+                ProtocolIntersection[HasNSkillChoices, HasSkillsToChooseFrom],
+                HasSkillProficiencies,
+            ]
         ],
-        Annotated[
-            AISkillChoiceResolver[
-                ProtocolIntersection[
-                    ProtocolIntersection[HasNSkillChoices, HasSkillsToChooseFrom],
-                    HasSkillProficiencies,
-                ]
-            ],
-            Tag(AISkillChoiceResolver.get_block_type()),
+        AISkillChoiceResolver[
+            ProtocolIntersection[
+                ProtocolIntersection[HasNSkillChoices, HasSkillsToChooseFrom],
+                HasSkillProficiencies,
+            ]
         ],
     ],
-    get_discriminator(),
+    Field(discriminator="type"),
 ]
 
 __all__ = [

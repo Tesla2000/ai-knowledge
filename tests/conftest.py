@@ -19,6 +19,4 @@ def building_blocks():
 
 @pytest.fixture
 def base_builder(building_blocks, increment_storage):
-    return Builder(
-        building_blocks=(building_blocks,), increment_storage=increment_storage
-    )
+    return Builder(building_blocks=building_blocks, increment_storage=increment_storage)

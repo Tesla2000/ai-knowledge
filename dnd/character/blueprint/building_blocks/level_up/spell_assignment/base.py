@@ -5,9 +5,11 @@ from abc import abstractmethod
 from collections.abc import Generator
 from typing import ClassVar
 from typing import cast
+from typing import overload
 from typing import Protocol
 from typing import TYPE_CHECKING
 
+from typing_extensions import deprecated
 from typing_protocol_intersection import ProtocolIntersection
 
 from dnd.character.blueprint.building_blocks.building_block import BuildingBlock
@@ -17,6 +19,7 @@ from dnd.character.blueprint.state import HasSorcererLevel
 from dnd.character.blueprint.state import HasSpells
 from dnd.character.blueprint.state import HasWizardLevel
 from dnd.character.delta.delta import Delta
+from typing import Literal
 from dnd.character.spells import Cantrip
 from dnd.character.spells import EighthLevel
 from dnd.character.spells import FifthLevel
@@ -38,6 +41,7 @@ from dnd.choices.class_creation.character_class import Class
 class SpellsDelta(Delta):
     """Delta produced when SpellAssigner assigns spells."""
 
+    delta_type: Literal["SpellsDelta"] = "SpellsDelta"
     spells: Spells
 
     def apply[T: BlueprintProtocol](
@@ -118,9 +122,7 @@ def _apply_spells(
     return spells
 
 
-class WizardSpellAssigner[T: HasWizardLevel](
-    BuildingBlock[T, SpellsDelta, HasSpells], ABC
-):
+class WizardSpellAssigner(BuildingBlock, ABC):
     """Abstract base for wizard spell assignment strategies.
 
     T must satisfy HasWizardLevel — guaranteed by the type constraint so
@@ -135,10 +137,10 @@ class WizardSpellAssigner[T: HasWizardLevel](
         spell_level: int,
         count: int,
         available_spells: list[Spell],
-        state: T,
+        state: HasWizardLevel,
     ) -> tuple[Spell, ...]: ...
 
-    def _get_spells_to_learn(self, state: T) -> dict[int, int]:
+    def _get_spells_to_learn(self, state: HasWizardLevel) -> dict[int, int]:
         level = state.get_wizard_level()
         if level == 1:
             return {0: 3, 1: 6}
@@ -150,10 +152,26 @@ class WizardSpellAssigner[T: HasWizardLevel](
             0: int(level in n_cantrips_increase_levels),
         }
 
-    def get_change(
+    @overload
+    def get_change[T: HasWizardLevel](
         self, state: T
-    ) -> Generator[SpellsDelta, None, ProtocolIntersection[T, HasSpells]]:
-        spells_to_learn = self._get_spells_to_learn(state)
+    ) -> Generator[SpellsDelta, None, ProtocolIntersection[T, HasSpells]]: ...
+
+    @overload
+    @deprecated("Pass a state satisfying HasWizardLevel for precise return typing")
+    def get_change[T: BlueprintProtocol](
+        self, state: T
+    ) -> Generator[Delta, None, BlueprintProtocol]: ...
+
+    def get_change[T: BlueprintProtocol](
+        self, state: T
+    ) -> Generator[Delta, None, BlueprintProtocol]:
+        if not isinstance(state, HasWizardLevel):
+            raise TypeError(
+                f"{type(self).__name__} requires HasWizardLevel, got {type(state).__name__}"
+            )
+        wizard_state: HasWizardLevel = state
+        spells_to_learn = self._get_spells_to_learn(wizard_state)
         initial = state.spells if isinstance(state, HasSpells) else Spells()
 
         if not spells_to_learn:
@@ -167,7 +185,9 @@ class WizardSpellAssigner[T: HasWizardLevel](
             def select(
                 self, spell_level: int, count: int, available: list[Spell]
             ) -> tuple[Spell, ...]:
-                return assigner._select_spells(spell_level, count, available, state)
+                return assigner._select_spells(
+                    spell_level, count, available, wizard_state
+                )
 
         spells = _apply_spells(initial, spells_to_learn, Class.WIZARD, _Selector())
         delta = SpellsDelta(spells=spells)
@@ -175,9 +195,7 @@ class WizardSpellAssigner[T: HasWizardLevel](
         return delta.apply(state)
 
 
-class SorcererSpellAssigner[T: HasSorcererLevel](
-    BuildingBlock[T, SpellsDelta, HasSpells], ABC
-):
+class SorcererSpellAssigner(BuildingBlock, ABC):
     """Abstract base for sorcerer spell assignment strategies.
 
     T must satisfy HasSorcererLevel — guaranteed by the type constraint so
@@ -192,10 +210,10 @@ class SorcererSpellAssigner[T: HasSorcererLevel](
         spell_level: int,
         count: int,
         available_spells: list[Spell],
-        state: T,
+        state: HasSorcererLevel,
     ) -> tuple[Spell, ...]: ...
 
-    def _get_spells_to_learn(self, state: T) -> dict[int, int]:
+    def _get_spells_to_learn(self, state: HasSorcererLevel) -> dict[int, int]:
         level = state.get_sorcerer_level()
         if level == 1:
             return {0: 4, 1: 2}
@@ -207,10 +225,26 @@ class SorcererSpellAssigner[T: HasSorcererLevel](
             0: int(level in n_cantrips_increase_levels),
         }
 
-    def get_change(
+    @overload
+    def get_change[T: HasSorcererLevel](
         self, state: T
-    ) -> Generator[SpellsDelta, None, ProtocolIntersection[T, HasSpells]]:
-        spells_to_learn = self._get_spells_to_learn(state)
+    ) -> Generator[SpellsDelta, None, ProtocolIntersection[T, HasSpells]]: ...
+
+    @overload
+    @deprecated("Pass a state satisfying HasSorcererLevel for precise return typing")
+    def get_change[T: BlueprintProtocol](
+        self, state: T
+    ) -> Generator[Delta, None, BlueprintProtocol]: ...
+
+    def get_change[T: BlueprintProtocol](
+        self, state: T
+    ) -> Generator[Delta, None, BlueprintProtocol]:
+        if not isinstance(state, HasSorcererLevel):
+            raise TypeError(
+                f"{type(self).__name__} requires HasSorcererLevel, got {type(state).__name__}"
+            )
+        sorcerer_state: HasSorcererLevel = state
+        spells_to_learn = self._get_spells_to_learn(sorcerer_state)
         initial = state.spells if isinstance(state, HasSpells) else Spells()
 
         if not spells_to_learn:
@@ -224,7 +258,9 @@ class SorcererSpellAssigner[T: HasSorcererLevel](
             def select(
                 self, spell_level: int, count: int, available: list[Spell]
             ) -> tuple[Spell, ...]:
-                return assigner._select_spells(spell_level, count, available, state)
+                return assigner._select_spells(
+                    spell_level, count, available, sorcerer_state
+                )
 
         spells = _apply_spells(initial, spells_to_learn, Class.SORCERER, _Selector())
         delta = SpellsDelta(spells=spells)

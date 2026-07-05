@@ -3,11 +3,14 @@ from __future__ import annotations
 from abc import ABC
 from abc import abstractmethod
 from collections.abc import Generator
+from typing import Literal
 from typing import cast
 from typing import ClassVar
+from typing import overload
 from typing import TYPE_CHECKING
 from typing import TypedDict
 
+from typing_extensions import deprecated
 from typing_protocol_intersection import ProtocolIntersection
 
 from dnd.character.blueprint.building_blocks.building_block import BuildingBlock
@@ -26,6 +29,9 @@ from dnd.choices.equipment_creation.weapons import WeaponName
 from dnd.choices.stats_creation.statistic import Statistic
 from dnd.other_profficiencies import WeaponProficiency
 from dnd.skill_proficiency import Skill
+from dnd.character.blueprint.building_blocks.building_block_type import (
+    BuildingBlockType,
+)
 from pydantic import PositiveInt
 
 
@@ -69,6 +75,8 @@ class LevelIncrementDeltaBase(Delta, ABC):
 
 class WizardLevelIncrementDelta(LevelIncrementDeltaBase):
     """Delta produced when WizardLevelIncrementer increments wizard class level."""
+
+    delta_type: Literal["WizardLevelIncrementDelta"] = "WizardLevelIncrementDelta"
 
     def apply[T: BlueprintProtocol](
         self, state: T
@@ -115,6 +123,8 @@ class WizardLevelIncrementDelta(LevelIncrementDeltaBase):
 class SorcererLevelIncrementDelta(LevelIncrementDeltaBase):
     """Delta produced when SorcererLevelIncrementer increments sorcerer class level."""
 
+    delta_type: Literal["SorcererLevelIncrementDelta"] = "SorcererLevelIncrementDelta"
+
     def apply[T: BlueprintProtocol](
         self, state: T
     ) -> ProtocolIntersection[T, HasSorcererLevel]:
@@ -157,11 +167,7 @@ class SorcererLevelIncrementDelta(LevelIncrementDeltaBase):
         return cast(ProtocolIntersection[T, HasSorcererLevel], result)
 
 
-class LevelIncrementer[
-    T: HasLevel,
-    DeltaT: LevelIncrementDeltaBase,
-    StateOut: BlueprintProtocol,
-](BuildingBlock[T, DeltaT, StateOut], ABC):
+class LevelIncrementer(BuildingBlock, ABC):
     """Abstract base for building blocks that increment a character's level in one class.
 
     Subclass per class — do not add match statements here. Each concrete subclass
@@ -170,9 +176,24 @@ class LevelIncrementer[
 
     _ASI_LEVELS: ClassVar[frozenset[int]] = frozenset({4, 8, 12, 16, 19})
 
-    def get_change(
+    @overload
+    def get_change[T: HasLevel](
         self, state: T
-    ) -> Generator[DeltaT, None, ProtocolIntersection[T, StateOut]]:
+    ) -> Generator[LevelIncrementDeltaBase, None, BlueprintProtocol]: ...
+
+    @overload
+    @deprecated("Pass a state satisfying HasLevel for precise return typing")
+    def get_change[T: BlueprintProtocol](
+        self, state: T
+    ) -> Generator[Delta, None, BlueprintProtocol]: ...
+
+    def get_change[T: BlueprintProtocol](
+        self, state: T
+    ) -> Generator[Delta, None, BlueprintProtocol]:
+        if not isinstance(state, HasLevel):
+            raise TypeError(
+                f"{type(self).__name__} requires HasLevel, got {type(state).__name__}"
+            )
         existing_classes = (
             state.classes if isinstance(state, HasClasses) else ClassLevels()
         )
@@ -195,30 +216,34 @@ class LevelIncrementer[
         else:
             delta = self._make_delta(new_level)
         yield delta
-        return cast(ProtocolIntersection[T, StateOut], delta.apply(state))
+        return delta.apply(state)
 
     @abstractmethod
-    def _get_current_level(self, state: T) -> int: ...
+    def _get_current_level(self, state: HasLevel) -> int: ...
 
     @abstractmethod
-    def _first_level_delta(self, class_level: PositiveInt) -> DeltaT: ...
+    def _first_level_delta(
+        self, class_level: PositiveInt
+    ) -> LevelIncrementDeltaBase: ...
 
     @abstractmethod
     def _make_delta(
         self, class_level: int, feats: tuple[FeatName, ...] = ()
-    ) -> DeltaT: ...
+    ) -> LevelIncrementDeltaBase: ...
 
 
-class WizardLevelIncrementer[T: HasLevel](
-    LevelIncrementer[T, WizardLevelIncrementDelta, HasWizardLevel]
-):
+class WizardLevelIncrementer(LevelIncrementer):
     """Increments wizard class level; grants proficiencies at level 1 and ASI at 4/8/12/16/19."""
+
+    type: Literal[BuildingBlockType.WIZARD_LEVEL_INCREMENTER] = (
+        BuildingBlockType.WIZARD_LEVEL_INCREMENTER
+    )
 
     @property
     def class_(self) -> Class:
         return Class.WIZARD
 
-    def _get_current_level(self, state: T) -> int:
+    def _get_current_level(self, state: HasLevel) -> int:
         return state.get_wizard_level() if isinstance(state, HasWizardLevel) else 0
 
     def _make_delta(
@@ -264,16 +289,18 @@ class WizardLevelIncrementer[T: HasLevel](
         )
 
 
-class SorcererLevelIncrementer[T: HasLevel](
-    LevelIncrementer[T, SorcererLevelIncrementDelta, HasSorcererLevel]
-):
+class SorcererLevelIncrementer(LevelIncrementer):
     """Increments sorcerer class level; grants proficiencies at level 1 and ASI at 4/8/12/16/19."""
+
+    type: Literal[BuildingBlockType.SORCERER_LEVEL_INCREMENTER] = (
+        BuildingBlockType.SORCERER_LEVEL_INCREMENTER
+    )
 
     @property
     def class_(self) -> Class:
         return Class.SORCERER
 
-    def _get_current_level(self, state: T) -> int:
+    def _get_current_level(self, state: HasLevel) -> int:
         return state.get_sorcerer_level() if isinstance(state, HasSorcererLevel) else 0
 
     def _make_delta(

@@ -9,24 +9,14 @@ from dnd.character.blueprint.building_blocks.equipment_chooser.ai import (
 from dnd.character.blueprint.building_blocks.equipment_chooser.random import (
     RandomEquipmentChooser,
 )
-from dnd.character.blueprint.building_blocks.get_discriminator import (
-    get_discriminator,
-)
-from dnd.character.blueprint.state import HasEquipmentChoices
-from pydantic import Tag
+from pydantic import Field
 
 AnyEquipmentChooser = Annotated[
     Union[
-        Annotated[
-            RandomEquipmentChooser[HasEquipmentChoices],
-            Tag(RandomEquipmentChooser.get_block_type()),
-        ],
-        Annotated[
-            AIEquipmentChooser[HasEquipmentChoices],
-            Tag(AIEquipmentChooser.get_block_type()),
-        ],
+        RandomEquipmentChooser,
+        AIEquipmentChooser,
     ],
-    get_discriminator(),
+    Field(discriminator="type"),
 ]
 
 __all__ = [

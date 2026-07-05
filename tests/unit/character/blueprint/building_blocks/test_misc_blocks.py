@@ -11,9 +11,6 @@ from dnd.character.armor.names import ArmorName
 from dnd.character.blueprint.building_blocks.feat_choice_resolver.max_if_not_maxed import (
     MaxIfNotMaxedResolver,
 )
-from dnd.character.blueprint.building_blocks.get_discriminator import (
-    _get_discriminator_value,
-)
 from dnd.character.blueprint.building_blocks.equipment_chooser.random import (
     RandomEquipmentChooser,
 )
@@ -116,15 +113,6 @@ class TestStatsPriority:
                     Statistic.CHARISMA,
                 )
             )
-
-
-@pytest.mark.unit
-class TestGetDiscriminator:
-    def test_non_dict_non_block_returns_none(self) -> None:
-        assert _get_discriminator_value(42) is None
-
-    def test_none_returns_none(self) -> None:
-        assert _get_discriminator_value(None) is None
 
 
 @pytest.mark.unit

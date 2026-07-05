@@ -10,11 +10,13 @@ from dnd.character.blueprint.state import BlueprintProtocol
 from dnd.character.blueprint.state import HasMagicalItems
 from dnd.character.delta.delta import Delta
 from dnd.character.magical_item.item import MagicalItem
+from typing import Literal
 
 
 class MagicalItemsDelta(Delta):
     """Delta produced when a magical item is added to the character."""
 
+    delta_type: Literal["MagicalItemsDelta"] = "MagicalItemsDelta"
     magical_items: tuple[MagicalItem, ...]
 
     def apply[T: BlueprintProtocol](

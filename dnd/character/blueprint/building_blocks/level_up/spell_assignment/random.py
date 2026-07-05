@@ -11,6 +11,9 @@ from dnd.character.blueprint.state import HasSorcererLevel
 from dnd.character.blueprint.state import HasWizardLevel
 from dnd.character.spells import Spell
 from dnd.choices.class_creation.character_class import Class
+from dnd.character.blueprint.building_blocks.building_block_type import (
+    BuildingBlockType,
+)
 from pydantic import ConfigDict
 from pydantic import Field
 
@@ -22,7 +25,7 @@ def _random_select(
     return tuple(random.sample(available, min(count, len(available))))
 
 
-class WizardRandomSpellAssigner[T: HasWizardLevel](WizardSpellAssigner[T]):
+class WizardRandomSpellAssigner(WizardSpellAssigner):
     """Randomly selects wizard spells from the wizard spell list.
 
     Provides deterministic randomness when seed is set, useful for
@@ -31,6 +34,10 @@ class WizardRandomSpellAssigner[T: HasWizardLevel](WizardSpellAssigner[T]):
     Example:
         >>> assigner = WizardRandomSpellAssigner(seed=42)
     """
+
+    type: Literal[BuildingBlockType.WIZARD_RANDOM_SPELL_ASSIGNER] = (
+        BuildingBlockType.WIZARD_RANDOM_SPELL_ASSIGNER
+    )
 
     model_config = ConfigDict(frozen=True)
 
@@ -47,12 +54,12 @@ class WizardRandomSpellAssigner[T: HasWizardLevel](WizardSpellAssigner[T]):
         spell_level: int,
         count: int,
         available_spells: list[Spell],
-        _state: T,
+        _state: HasWizardLevel,
     ) -> tuple[Spell, ...]:
         return _random_select(self.seed, count, available_spells)
 
 
-class SorcererRandomSpellAssigner[T: HasSorcererLevel](SorcererSpellAssigner[T]):
+class SorcererRandomSpellAssigner(SorcererSpellAssigner):
     """Randomly selects sorcerer spells from the sorcerer spell list.
 
     Provides deterministic randomness when seed is set, useful for
@@ -61,6 +68,10 @@ class SorcererRandomSpellAssigner[T: HasSorcererLevel](SorcererSpellAssigner[T])
     Example:
         >>> assigner = SorcererRandomSpellAssigner(seed=42)
     """
+
+    type: Literal[BuildingBlockType.SORCERER_RANDOM_SPELL_ASSIGNER] = (
+        BuildingBlockType.SORCERER_RANDOM_SPELL_ASSIGNER
+    )
 
     model_config = ConfigDict(frozen=True)
 
@@ -77,6 +88,6 @@ class SorcererRandomSpellAssigner[T: HasSorcererLevel](SorcererSpellAssigner[T])
         spell_level: int,
         count: int,
         available_spells: list[Spell],
-        _state: T,
+        _state: HasSorcererLevel,
     ) -> tuple[Spell, ...]:
         return _random_select(self.seed, count, available_spells)

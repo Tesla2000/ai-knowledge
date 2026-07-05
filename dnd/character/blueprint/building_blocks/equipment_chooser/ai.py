@@ -9,6 +9,10 @@ from dnd.character.blueprint.building_blocks.equipment_chooser.base import (
 )
 from dnd.character.blueprint.state import HasEquipmentChoices
 from dnd.choices.equipment_creation.weapons import WeaponName
+from typing import Literal
+from dnd.character.blueprint.building_blocks.building_block_type import (
+    BuildingBlockType,
+)
 from langchain_openai import ChatOpenAI
 from pydantic import BaseModel
 from pydantic import Field
@@ -22,7 +26,7 @@ class EquipmentChoiceSelection(BaseModel):
     )
 
 
-class AIEquipmentChooser[T: HasEquipmentChoices](EquipmentChooser[T]):
+class AIEquipmentChooser(EquipmentChooser):
     """AI-powered equipment chooser that selects equipment based on character context.
 
     Uses an LLM to make intelligent equipment choices based on the character's
@@ -35,6 +39,10 @@ class AIEquipmentChooser[T: HasEquipmentChoices](EquipmentChooser[T]):
         ... )
         >>> builder = Builder().add(chooser)
     """
+
+    type: Literal[BuildingBlockType.AI_EQUIPMENT_CHOOSER] = (
+        BuildingBlockType.AI_EQUIPMENT_CHOOSER
+    )
 
     llm: ChatOpenAI = Field(
         description="Language model for making AI-powered decisions"
@@ -52,7 +60,7 @@ class AIEquipmentChooser[T: HasEquipmentChoices](EquipmentChooser[T]):
             return f"{item.value} (Armor)"
         return f"{item} (Equipment)"
 
-    def _build_prompt(self, state: T) -> str:
+    def _build_prompt(self, state: HasEquipmentChoices) -> str:
         parts = [
             "You are selecting equipment for a D&D 5e character.",
             "Choose the most thematically appropriate and mechanically sound equipment "
@@ -88,7 +96,7 @@ class AIEquipmentChooser[T: HasEquipmentChoices](EquipmentChooser[T]):
         return "\n".join(parts)
 
     def _pick_equipment(
-        self, state: T
+        self, state: HasEquipmentChoices
     ) -> tuple[list[WeaponName], list[ArmorName], list[str]]:
         if not state.equipment_choices:
             return [], [], []

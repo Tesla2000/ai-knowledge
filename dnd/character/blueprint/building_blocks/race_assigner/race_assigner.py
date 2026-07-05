@@ -2,21 +2,26 @@ from __future__ import annotations
 
 from typing import Literal
 
+from dnd.character.blueprint.building_blocks.building_block_type import (
+    BuildingBlockType,
+)
 from dnd.character.blueprint.building_blocks.race_assigner.base_race_assigner import (
     BaseRaceAssigner,
 )
 from dnd.character.blueprint.building_blocks.race_assigner.base_race_assigner import (
     RaceSubracePair,
 )
-from dnd.character.blueprint.state import HasStats
 from dnd.character.race.race import Race
 from dnd.character.race.subraces import SubraceName
 from pydantic import Field
 
 
-class HumanRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
+class HumanRaceAssigner(BaseRaceAssigner):
     """Assigns Human race and the specified Human subrace to the character."""
 
+    type: Literal[BuildingBlockType.HUMAN_RACE_ASSIGNER] = (
+        BuildingBlockType.HUMAN_RACE_ASSIGNER
+    )
     subrace: Literal[
         SubraceName.HUMAN_MARK_OF_FINDING_EBERRONRISINGFROMTHELASTWAR,
         SubraceName.HUMAN_MARK_OF_HANDLING_EBERRONRISINGFROMTHELASTWAR,
@@ -36,9 +41,12 @@ class HumanRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
         return RaceSubracePair(race=Race.HUMAN, subrace=self.subrace)
 
 
-class ElfRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
+class ElfRaceAssigner(BaseRaceAssigner):
     """Assigns Elf race and the specified Elf subrace to the character."""
 
+    type: Literal[BuildingBlockType.ELF_RACE_ASSIGNER] = (
+        BuildingBlockType.ELF_RACE_ASSIGNER
+    )
     subrace: Literal[
         SubraceName.ELF_MARK_OF_SHADOW_EBERRONRISINGFROMTHELASTWAR,
         SubraceName.ELF_PALLID_ELF_EXPLORERSGUIDETOWILDEMOUNT,
@@ -58,9 +66,12 @@ class ElfRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
         return RaceSubracePair(race=Race.ELF, subrace=self.subrace)
 
 
-class DwarfRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
+class DwarfRaceAssigner(BaseRaceAssigner):
     """Assigns Dwarf race and the specified Dwarf subrace to the character."""
 
+    type: Literal[BuildingBlockType.DWARF_RACE_ASSIGNER] = (
+        BuildingBlockType.DWARF_RACE_ASSIGNER
+    )
     subrace: Literal[
         SubraceName.DWARF_HILL_DWARF_PLAYERSHANDBOOK,
         SubraceName.DWARF_MOUNTAIN_DWARF_PLAYERSHANDBOOK,
@@ -70,9 +81,12 @@ class DwarfRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
         return RaceSubracePair(race=Race.DWARF, subrace=self.subrace)
 
 
-class HalflingRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
+class HalflingRaceAssigner(BaseRaceAssigner):
     """Assigns Halfling race and the specified Halfling subrace to the character."""
 
+    type: Literal[BuildingBlockType.HALFLING_RACE_ASSIGNER] = (
+        BuildingBlockType.HALFLING_RACE_ASSIGNER
+    )
     subrace: Literal[
         SubraceName.HALFLING_MARK_OF_HEALING_EBERRONRISINGFROMTHELASTWAR,
         SubraceName.HALFLING_MARK_OF_HOSPITALITY_EBERRONRISINGFROMTHELASTWAR,
@@ -86,9 +100,12 @@ class HalflingRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
         return RaceSubracePair(race=Race.HALFLING, subrace=self.subrace)
 
 
-class HalfElfRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
+class HalfElfRaceAssigner(BaseRaceAssigner):
     """Assigns Half-Elf race and the specified Half-Elf subrace to the character."""
 
+    type: Literal[BuildingBlockType.HALF_ELF_RACE_ASSIGNER] = (
+        BuildingBlockType.HALF_ELF_RACE_ASSIGNER
+    )
     subrace: Literal[
         SubraceName.HALF_ELF_AQUATIC_ELF_HERITAGE_PLAYERSHANDBOOK,
         SubraceName.HALF_ELF_DARK_ELF_HERITAGE_PLAYERSHANDBOOK,
@@ -100,9 +117,12 @@ class HalfElfRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
         return RaceSubracePair(race=Race.HALF_ELF, subrace=self.subrace)
 
 
-class HalfOrcRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
+class HalfOrcRaceAssigner(BaseRaceAssigner):
     """Assigns Half-Orc race and the specified Half-Orc subrace to the character."""
 
+    type: Literal[BuildingBlockType.HALF_ORC_RACE_ASSIGNER] = (
+        BuildingBlockType.HALF_ORC_RACE_ASSIGNER
+    )
     subrace: Literal[
         SubraceName.HALF_ORC_MARK_OF_FINDING_EBERRONRISINGFROMTHELASTWAR,
         SubraceName.HALF_ORC_HALF_ORC_PLAYERSHANDBOOK,
@@ -112,9 +132,12 @@ class HalfOrcRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
         return RaceSubracePair(race=Race.HALF_ORC, subrace=self.subrace)
 
 
-class TieflingRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
+class TieflingRaceAssigner(BaseRaceAssigner):
     """Assigns Tiefling race and the specified Tiefling subrace to the character."""
 
+    type: Literal[BuildingBlockType.TIEFLING_RACE_ASSIGNER] = (
+        BuildingBlockType.TIEFLING_RACE_ASSIGNER
+    )
     subrace: Literal[
         SubraceName.TIEFLING_BLOODLINE_OF_BAALZEBUL_MORDENKAINENSTOMEOFFOES,
         SubraceName.TIEFLING_BLOODLINE_OF_DISPATER_MORDENKAINENSTOMEOFFOES,
@@ -136,9 +159,12 @@ class TieflingRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
         return RaceSubracePair(race=Race.TIEFLING, subrace=self.subrace)
 
 
-class DragonbornRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
+class DragonbornRaceAssigner(BaseRaceAssigner):
     """Assigns Dragonborn race and the specified Dragonborn subrace to the character."""
 
+    type: Literal[BuildingBlockType.DRAGONBORN_RACE_ASSIGNER] = (
+        BuildingBlockType.DRAGONBORN_RACE_ASSIGNER
+    )
     subrace: Literal[
         SubraceName.DRAGONBORN_DRACONBLOOD_EXPLORERSGUIDETOWILDEMOUNT,
         SubraceName.DRAGONBORN_RAVENITE_EXPLORERSGUIDETOWILDEMOUNT,
@@ -155,9 +181,12 @@ class DragonbornRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
         return RaceSubracePair(race=Race.DRAGONBORN, subrace=self.subrace)
 
 
-class GnomeRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
+class GnomeRaceAssigner(BaseRaceAssigner):
     """Assigns Gnome race and the specified Gnome subrace to the character."""
 
+    type: Literal[BuildingBlockType.GNOME_RACE_ASSIGNER] = (
+        BuildingBlockType.GNOME_RACE_ASSIGNER
+    )
     subrace: Literal[
         SubraceName.GNOME_MARK_OF_SCRIBING_EBERRONRISINGFROMTHELASTWAR,
         SubraceName.GNOME_FOREST_GNOME_PLAYERSHANDBOOK,
@@ -168,9 +197,12 @@ class GnomeRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
         return RaceSubracePair(race=Race.GNOME, subrace=self.subrace)
 
 
-class AasimarRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
+class AasimarRaceAssigner(BaseRaceAssigner):
     """Assigns Aasimar race and the specified Aasimar subrace to the character."""
 
+    type: Literal[BuildingBlockType.AASIMAR_RACE_ASSIGNER] = (
+        BuildingBlockType.AASIMAR_RACE_ASSIGNER
+    )
     subrace: Literal[
         SubraceName.AASIMAR_FALLEN_AASIMAR_MORDENKAINENPRESENTSMONSTERSOFTHEMULTIVERSE,
         SubraceName.AASIMAR_PROTECTOR_AASIMAR_MORDENKAINENPRESENTSMONSTERSOFTHEMULTIVERSE,
@@ -184,9 +216,12 @@ class AasimarRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
         return RaceSubracePair(race=Race.AASIMAR, subrace=self.subrace)
 
 
-class GenasiAirRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
+class GenasiAirRaceAssigner(BaseRaceAssigner):
     """Assigns Air Genasi race and the specified Air Genasi subrace to the character."""
 
+    type: Literal[BuildingBlockType.GENASI_AIR_RACE_ASSIGNER] = (
+        BuildingBlockType.GENASI_AIR_RACE_ASSIGNER
+    )
     subrace: Literal[
         SubraceName.GENASI_AIR_AIR_GENASI_ELEMENTALEVILPLAYERSCOMPANION,
         SubraceName.GENASI_AIR_AIR_GENASI_MORDENKAINENPRESENTSMONSTERSOFTHEMULTIVERSE,
@@ -196,9 +231,12 @@ class GenasiAirRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
         return RaceSubracePair(race=Race.GENASI_AIR, subrace=self.subrace)
 
 
-class GenasiWaterRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
+class GenasiWaterRaceAssigner(BaseRaceAssigner):
     """Assigns Water Genasi race and the specified Water Genasi subrace to the character."""
 
+    type: Literal[BuildingBlockType.GENASI_WATER_RACE_ASSIGNER] = (
+        BuildingBlockType.GENASI_WATER_RACE_ASSIGNER
+    )
     subrace: Literal[
         SubraceName.GENASI_WATER_WATER_GENASI_ELEMENTALEVILPLAYERSCOMPANION,
         SubraceName.GENASI_WATER_WATER_GENASI_MORDENKAINENPRESENTSMONSTERSOFTHEMULTIVERSE,
@@ -208,9 +246,12 @@ class GenasiWaterRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
         return RaceSubracePair(race=Race.GENASI_WATER, subrace=self.subrace)
 
 
-class GenasiFireRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
+class GenasiFireRaceAssigner(BaseRaceAssigner):
     """Assigns Fire Genasi race and the specified Fire Genasi subrace to the character."""
 
+    type: Literal[BuildingBlockType.GENASI_FIRE_RACE_ASSIGNER] = (
+        BuildingBlockType.GENASI_FIRE_RACE_ASSIGNER
+    )
     subrace: Literal[
         SubraceName.GENASI_FIRE_FIRE_GENASI_ELEMENTALEVILPLAYERSCOMPANION,
         SubraceName.GENASI_FIRE_FIRE_GENASI_MORDENKAINENPRESENTSMONSTERSOFTHEMULTIVERSE,
@@ -220,9 +261,12 @@ class GenasiFireRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
         return RaceSubracePair(race=Race.GENASI_FIRE, subrace=self.subrace)
 
 
-class GenasiEarthRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
+class GenasiEarthRaceAssigner(BaseRaceAssigner):
     """Assigns Earth Genasi race and the specified Earth Genasi subrace to the character."""
 
+    type: Literal[BuildingBlockType.GENASI_EARTH_RACE_ASSIGNER] = (
+        BuildingBlockType.GENASI_EARTH_RACE_ASSIGNER
+    )
     subrace: Literal[
         SubraceName.GENASI_EARTH_EARTH_GENASI_ELEMENTALEVILPLAYERSCOMPANION,
         SubraceName.GENASI_EARTH_EARTH_GENASI_MORDENKAINENPRESENTSMONSTERSOFTHEMULTIVERSE,
@@ -232,9 +276,12 @@ class GenasiEarthRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
         return RaceSubracePair(race=Race.GENASI_EARTH, subrace=self.subrace)
 
 
-class GoliathRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
+class GoliathRaceAssigner(BaseRaceAssigner):
     """Assigns Goliath race and the specified Goliath subrace to the character."""
 
+    type: Literal[BuildingBlockType.GOLIATH_RACE_ASSIGNER] = (
+        BuildingBlockType.GOLIATH_RACE_ASSIGNER
+    )
     subrace: Literal[
         SubraceName.GOLIATH_GOLIATH_ELEMENTALEVILPLAYERSGUIDE,
         SubraceName.GOLIATH_GOLIATH_MORDENKAINENPRESENTSMONSTERSOFTHEMULTIVERSE,
@@ -244,9 +291,12 @@ class GoliathRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
         return RaceSubracePair(race=Race.GOLIATH, subrace=self.subrace)
 
 
-class FirbolgRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
+class FirbolgRaceAssigner(BaseRaceAssigner):
     """Assigns Firbolg race and the specified Firbolg subrace to the character."""
 
+    type: Literal[BuildingBlockType.FIRBOLG_RACE_ASSIGNER] = (
+        BuildingBlockType.FIRBOLG_RACE_ASSIGNER
+    )
     subrace: Literal[
         SubraceName.FIRBOLG_FIRBOLG_MORDENKAINENPRESENTSMONSTERSOFTHEMULTIVERSE,
         SubraceName.FIRBOLG_FIRBOLG_VOLOSGUIDETOMONSTERS,
@@ -256,9 +306,12 @@ class FirbolgRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
         return RaceSubracePair(race=Race.FIRBOLG, subrace=self.subrace)
 
 
-class TabaxiRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
+class TabaxiRaceAssigner(BaseRaceAssigner):
     """Assigns Tabaxi race and the specified Tabaxi subrace to the character."""
 
+    type: Literal[BuildingBlockType.TABAXI_RACE_ASSIGNER] = (
+        BuildingBlockType.TABAXI_RACE_ASSIGNER
+    )
     subrace: Literal[
         SubraceName.TABAXI_TABAXI_MORDENKAINENPRESENTSMONSTERSOFTHEMULTIVERSE,
         SubraceName.TABAXI_TABAXI_VOLOSGUIDETOMONSTERS,
@@ -268,9 +321,12 @@ class TabaxiRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
         return RaceSubracePair(race=Race.TABAXI, subrace=self.subrace)
 
 
-class LizardfolkRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
+class LizardfolkRaceAssigner(BaseRaceAssigner):
     """Assigns Lizardfolk race and the specified Lizardfolk subrace to the character."""
 
+    type: Literal[BuildingBlockType.LIZARDFOLK_RACE_ASSIGNER] = (
+        BuildingBlockType.LIZARDFOLK_RACE_ASSIGNER
+    )
     subrace: Literal[
         SubraceName.LIZARDFOLK_LIZARDFOLK_MORDENKAINENPRESENTSMONSTERSOFTHEMULTIVERSE,
         SubraceName.LIZARDFOLK_LIZARDFOLK_VOLOSGUIDETOMONSTERS,
@@ -280,9 +336,12 @@ class LizardfolkRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
         return RaceSubracePair(race=Race.LIZARDFOLK, subrace=self.subrace)
 
 
-class KenkuRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
+class KenkuRaceAssigner(BaseRaceAssigner):
     """Assigns Kenku race and the specified Kenku subrace to the character."""
 
+    type: Literal[BuildingBlockType.KENKU_RACE_ASSIGNER] = (
+        BuildingBlockType.KENKU_RACE_ASSIGNER
+    )
     subrace: Literal[
         SubraceName.KENKU_KENKU_MORDENKAINENPRESENTSMONSTERSOFTHEMULTIVERSE
     ] = Field(description="Kenku subrace selection")
@@ -291,9 +350,12 @@ class KenkuRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
         return RaceSubracePair(race=Race.KENKU, subrace=self.subrace)
 
 
-class TortleRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
+class TortleRaceAssigner(BaseRaceAssigner):
     """Assigns Tortle race and the specified Tortle subrace to the character."""
 
+    type: Literal[BuildingBlockType.TORTLE_RACE_ASSIGNER] = (
+        BuildingBlockType.TORTLE_RACE_ASSIGNER
+    )
     subrace: Literal[
         SubraceName.TORTLE_TORTLE_MORDENKAINENPRESENTSMONSTERSOFTHEMULTIVERSE
     ] = Field(description="Tortle subrace selection")
@@ -302,9 +364,12 @@ class TortleRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
         return RaceSubracePair(race=Race.TORTLE, subrace=self.subrace)
 
 
-class AarakocraRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
+class AarakocraRaceAssigner(BaseRaceAssigner):
     """Assigns Aarakocra race and the specified Aarakocra subrace to the character."""
 
+    type: Literal[BuildingBlockType.AARAKOCRA_RACE_ASSIGNER] = (
+        BuildingBlockType.AARAKOCRA_RACE_ASSIGNER
+    )
     subrace: Literal[
         SubraceName.AARAKOCRA_AARAKOCRA_MORDENKAINENPRESENTSMONSTERSOFTHEMULTIVERSE
     ] = Field(description="Aarakocra subrace selection")
@@ -313,9 +378,12 @@ class AarakocraRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
         return RaceSubracePair(race=Race.AARAKOCRA, subrace=self.subrace)
 
 
-class BugbearRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
+class BugbearRaceAssigner(BaseRaceAssigner):
     """Assigns Bugbear race and the specified Bugbear subrace to the character."""
 
+    type: Literal[BuildingBlockType.BUGBEAR_RACE_ASSIGNER] = (
+        BuildingBlockType.BUGBEAR_RACE_ASSIGNER
+    )
     subrace: Literal[
         SubraceName.BUGBEAR_BUGBEAR_MORDENKAINENPRESENTSMONSTERSOFTHEMULTIVERSE,
         SubraceName.BUGBEAR_BUGBEAR_VOLOSGUIDETOMONSTERS,
@@ -325,9 +393,12 @@ class BugbearRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
         return RaceSubracePair(race=Race.BUGBEAR, subrace=self.subrace)
 
 
-class GoblinRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
+class GoblinRaceAssigner(BaseRaceAssigner):
     """Assigns Goblin race and the specified Goblin subrace to the character."""
 
+    type: Literal[BuildingBlockType.GOBLIN_RACE_ASSIGNER] = (
+        BuildingBlockType.GOBLIN_RACE_ASSIGNER
+    )
     subrace: Literal[
         SubraceName.GOBLIN_DANKWOOD_GOBLIN_ADVENTURESWITHMUKDANKWOOD,
         SubraceName.GOBLIN_GOBLIN_MORDENKAINENPRESENTSMONSTERSOFTHEMULTIVERSE,
@@ -339,9 +410,12 @@ class GoblinRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
         return RaceSubracePair(race=Race.GOBLIN, subrace=self.subrace)
 
 
-class HobgoblinRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
+class HobgoblinRaceAssigner(BaseRaceAssigner):
     """Assigns Hobgoblin race and the specified Hobgoblin subrace to the character."""
 
+    type: Literal[BuildingBlockType.HOBGOBLIN_RACE_ASSIGNER] = (
+        BuildingBlockType.HOBGOBLIN_RACE_ASSIGNER
+    )
     subrace: Literal[
         SubraceName.HOBGOBLIN_HOBGOBLIN_MORDENKAINENPRESENTSMONSTERSOFTHEMULTIVERSE,
         SubraceName.HOBGOBLIN_HOBGOBLIN_UNEARTHEDARCANA,
@@ -352,9 +426,12 @@ class HobgoblinRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
         return RaceSubracePair(race=Race.HOBGOBLIN, subrace=self.subrace)
 
 
-class KoboldRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
+class KoboldRaceAssigner(BaseRaceAssigner):
     """Assigns Kobold race and the specified Kobold subrace to the character."""
 
+    type: Literal[BuildingBlockType.KOBOLD_RACE_ASSIGNER] = (
+        BuildingBlockType.KOBOLD_RACE_ASSIGNER
+    )
     subrace: Literal[
         SubraceName.KOBOLD_KOBOLD_MORDENKAINENPRESENTSMONSTERSOFTHEMULTIVERSE,
         SubraceName.KOBOLD_KOBOLD_UNEARTHEDARCANA,
@@ -365,9 +442,12 @@ class KoboldRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
         return RaceSubracePair(race=Race.KOBOLD, subrace=self.subrace)
 
 
-class OrcRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
+class OrcRaceAssigner(BaseRaceAssigner):
     """Assigns Orc race and the specified Orc subrace to the character."""
 
+    type: Literal[BuildingBlockType.ORC_RACE_ASSIGNER] = (
+        BuildingBlockType.ORC_RACE_ASSIGNER
+    )
     subrace: Literal[
         SubraceName.ORC_ORC_EBERRONRISINGFROMTHELASTWAR,
         SubraceName.ORC_ORC_EXPLORERSGUIDETOWILDEMOUNT,
@@ -380,9 +460,12 @@ class OrcRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
         return RaceSubracePair(race=Race.ORC, subrace=self.subrace)
 
 
-class WarforgedRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
+class WarforgedRaceAssigner(BaseRaceAssigner):
     """Assigns Warforged race and the specified Warforged subrace to the character."""
 
+    type: Literal[BuildingBlockType.WARFORGED_RACE_ASSIGNER] = (
+        BuildingBlockType.WARFORGED_RACE_ASSIGNER
+    )
     subrace: Literal[
         SubraceName.WARFORGED_WARFORGED_EBERRONRISINGFROMTHELASTWAR,
         SubraceName.WARFORGED_ENVOY_UNEARTHEDARCANA,
@@ -394,9 +477,12 @@ class WarforgedRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
         return RaceSubracePair(race=Race.WARFORGED, subrace=self.subrace)
 
 
-class ChangelingRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
+class ChangelingRaceAssigner(BaseRaceAssigner):
     """Assigns Changeling race and the specified Changeling subrace to the character."""
 
+    type: Literal[BuildingBlockType.CHANGELING_RACE_ASSIGNER] = (
+        BuildingBlockType.CHANGELING_RACE_ASSIGNER
+    )
     subrace: Literal[
         SubraceName.CHANGELING_CHANGELING_EBERRONRISINGFROMTHELASTWAR,
         SubraceName.CHANGELING_CHANGELING_MORDENKAINENPRESENTSMONSTERSOFTHEMULTIVERSE,
@@ -407,9 +493,12 @@ class ChangelingRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
         return RaceSubracePair(race=Race.CHANGELING, subrace=self.subrace)
 
 
-class ShifterRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
+class ShifterRaceAssigner(BaseRaceAssigner):
     """Assigns Shifter race and the specified Shifter subrace to the character."""
 
+    type: Literal[BuildingBlockType.SHIFTER_RACE_ASSIGNER] = (
+        BuildingBlockType.SHIFTER_RACE_ASSIGNER
+    )
     subrace: Literal[
         SubraceName.SHIFTER_BEASTHIDE_EBERRONRISINGFROMTHELASTWAR,
         SubraceName.SHIFTER_LONGTOOTH_EBERRONRISINGFROMTHELASTWAR,
@@ -427,9 +516,12 @@ class ShifterRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
         return RaceSubracePair(race=Race.SHIFTER, subrace=self.subrace)
 
 
-class MinotaurRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
+class MinotaurRaceAssigner(BaseRaceAssigner):
     """Assigns Minotaur race and the specified Minotaur subrace to the character."""
 
+    type: Literal[BuildingBlockType.MINOTAUR_RACE_ASSIGNER] = (
+        BuildingBlockType.MINOTAUR_RACE_ASSIGNER
+    )
     subrace: Literal[
         SubraceName.MINOTAUR_MINOTAUR_MORDENKAINENPRESENTSMONSTERSOFTHEMULTIVERSE
     ] = Field(description="Minotaur subrace selection")
@@ -438,9 +530,12 @@ class MinotaurRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
         return RaceSubracePair(race=Race.MINOTAUR, subrace=self.subrace)
 
 
-class CentaurRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
+class CentaurRaceAssigner(BaseRaceAssigner):
     """Assigns Centaur race and the specified Centaur subrace to the character."""
 
+    type: Literal[BuildingBlockType.CENTAUR_RACE_ASSIGNER] = (
+        BuildingBlockType.CENTAUR_RACE_ASSIGNER
+    )
     subrace: Literal[
         SubraceName.CENTAUR_GRUUL_CENTAUR_GUILDMASTERSGUIDETORAVNICA,
         SubraceName.CENTAUR_SELESNYA_CENTAUR_GUILDMASTERSGUIDETORAVNICA,
@@ -453,9 +548,12 @@ class CentaurRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
         return RaceSubracePair(race=Race.CENTAUR, subrace=self.subrace)
 
 
-class SatyrRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
+class SatyrRaceAssigner(BaseRaceAssigner):
     """Assigns Satyr race and the specified Satyr subrace to the character."""
 
+    type: Literal[BuildingBlockType.SATYR_RACE_ASSIGNER] = (
+        BuildingBlockType.SATYR_RACE_ASSIGNER
+    )
     subrace: Literal[
         SubraceName.SATYR_SATYR_MORDENKAINENPRESENTSMONSTERSOFTHEMULTIVERSE,
         SubraceName.SATYR_SATYR_MYTHICODYSSEYSOFTHEROS,
@@ -465,9 +563,12 @@ class SatyrRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
         return RaceSubracePair(race=Race.SATYR, subrace=self.subrace)
 
 
-class LeoninRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
+class LeoninRaceAssigner(BaseRaceAssigner):
     """Assigns Leonin race and the specified Leonin subrace to the character."""
 
+    type: Literal[BuildingBlockType.LEONIN_RACE_ASSIGNER] = (
+        BuildingBlockType.LEONIN_RACE_ASSIGNER
+    )
     subrace: Literal[SubraceName.LEONIN_LEONIN_LEONINFEATURES] = Field(
         description="Leonin subrace selection"
     )
@@ -476,9 +577,12 @@ class LeoninRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
         return RaceSubracePair(race=Race.LEONIN, subrace=self.subrace)
 
 
-class VerdanRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
+class VerdanRaceAssigner(BaseRaceAssigner):
     """Assigns Verdan race and the specified Verdan subrace to the character."""
 
+    type: Literal[BuildingBlockType.VERDAN_RACE_ASSIGNER] = (
+        BuildingBlockType.VERDAN_RACE_ASSIGNER
+    )
     subrace: Literal[SubraceName.VERDAN_VERDAN_PLAYERSHANDBOOK] = Field(
         description="Verdan subrace selection"
     )
@@ -487,9 +591,12 @@ class VerdanRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
         return RaceSubracePair(race=Race.VERDAN, subrace=self.subrace)
 
 
-class GrungRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
+class GrungRaceAssigner(BaseRaceAssigner):
     """Assigns Grung race and the specified Grung subrace to the character."""
 
+    type: Literal[BuildingBlockType.GRUNG_RACE_ASSIGNER] = (
+        BuildingBlockType.GRUNG_RACE_ASSIGNER
+    )
     subrace: Literal[SubraceName.GRUNG_GRUNG_PLAYERSHANDBOOK] = Field(
         description="Grung subrace selection"
     )
@@ -498,9 +605,12 @@ class GrungRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
         return RaceSubracePair(race=Race.GRUNG, subrace=self.subrace)
 
 
-class KalashtarRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
+class KalashtarRaceAssigner(BaseRaceAssigner):
     """Assigns Kalashtar race and the specified Kalashtar subrace to the character."""
 
+    type: Literal[BuildingBlockType.KALASHTAR_RACE_ASSIGNER] = (
+        BuildingBlockType.KALASHTAR_RACE_ASSIGNER
+    )
     subrace: Literal[
         SubraceName.KALASHTAR_KALASHTAR_EBERRONRISINGFROMTHELASTWAR,
         SubraceName.KALASHTAR_KALASHTAR_UNEARTHEDARCANA,
@@ -510,9 +620,12 @@ class KalashtarRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
         return RaceSubracePair(race=Race.KALASHTAR, subrace=self.subrace)
 
 
-class YuanTiPurebloodRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
+class YuanTiPurebloodRaceAssigner(BaseRaceAssigner):
     """Assigns Yuan-Ti Pureblood race and the specified Yuan-Ti subrace to the character."""
 
+    type: Literal[BuildingBlockType.YUAN_TI_PUREBLOOD_RACE_ASSIGNER] = (
+        BuildingBlockType.YUAN_TI_PUREBLOOD_RACE_ASSIGNER
+    )
     subrace: Literal[
         SubraceName.YUAN_TI_PUREBLOOD_MORDENKAINENPRESENTSMONSTERSOFTHEMULTIVERSE,
         SubraceName.YUAN_TI_PUREBLOOD_VOLOSGUIDETOMONSTERS,
@@ -522,9 +635,10 @@ class YuanTiPurebloodRaceAssigner[T: HasStats](BaseRaceAssigner[T]):
         return RaceSubracePair(race=Race.YUAN_TI_PUREBLOOD, subrace=self.subrace)
 
 
-class RaceAssigner[T: HasStats](BaseRaceAssigner[T]):
+class RaceAssigner(BaseRaceAssigner):
     """Assigns any race and subrace combination to the character."""
 
+    type: Literal[BuildingBlockType.RACE_ASSIGNER] = BuildingBlockType.RACE_ASSIGNER
     race: Race = Field(description="The race to assign")
     subrace: SubraceName = Field(description="The subrace to assign")
 

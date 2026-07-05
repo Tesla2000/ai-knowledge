@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from typing import Literal
 from collections.abc import Generator
 
 from dnd.character.blueprint.building_blocks.building_block import BuildingBlock
@@ -7,18 +8,23 @@ from dnd.character.blueprint.state import BlueprintProtocol
 from dnd.character.blueprint.state import HasOtherAbilities
 from dnd.character.delta.feature_delta import FeatureDelta
 from dnd.character.feature.feature import Feature
+from dnd.character.blueprint.building_blocks.building_block_type import (
+    BuildingBlockType,
+)
 from pydantic import Field
 
 
-class FeatureAssigner(
-    BuildingBlock[BlueprintProtocol, FeatureDelta, HasOtherAbilities]
-):
+class FeatureAssigner(BuildingBlock):
     """Building block that assigns a feature to a character blueprint.
 
     Example:
         >>> trance = Feature(...)
         >>> trance_assigner = FeatureAssigner(feature=trance)
     """
+
+    type: Literal[BuildingBlockType.FEATURE_ASSIGNER] = (
+        BuildingBlockType.FEATURE_ASSIGNER
+    )
 
     feature: Feature = Field(
         description="Character feature to assign (ability, trait, or stat boost)"

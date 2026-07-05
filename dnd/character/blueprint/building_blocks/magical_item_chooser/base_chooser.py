@@ -16,9 +16,7 @@ from pydantic import Field
 from pydantic import NonNegativeInt
 
 
-class MagicalItemChooserBase(
-    BuildingBlock[BlueprintProtocol, MagicalItemsDelta, HasMagicalItems], ABC
-):
+class MagicalItemChooserBase(BuildingBlock, ABC):
     """Abstract base class for choosers that select magical items.
 
     Implementations must select magical items based on rarity counts:

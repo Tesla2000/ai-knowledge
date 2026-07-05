@@ -13,11 +13,13 @@ from dnd.choices.alignment import Alignment
 from dnd.choices.background_creatrion.background import Background
 from dnd.choices.sex import Sex
 from pydantic import PositiveInt
+from typing import Literal
 
 
 class InitialDataDelta(Delta):
     """Delta produced when InitialDataFiller assigns all required flavor fields."""
 
+    delta_type: Literal["InitialDataDelta"] = "InitialDataDelta"
     name: str
     sex: Sex
     age: PositiveInt

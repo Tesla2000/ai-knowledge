@@ -17,23 +17,32 @@ from dnd.character.blueprint.building_blocks.subclass_assigner.random import (
 )
 from dnd.character.blueprint.state import HasClasses
 from dnd.character.blueprint.state import HasSubclasses
+from typing import Literal
+from dnd.character.blueprint.building_blocks.building_block_type import (
+    BuildingBlockType,
+)
 from pydantic import Field
 
 
-class OptionalSubclassAssigner[T: ProtocolIntersection[HasClasses, HasSubclasses]](
-    BuildingBlock[T, SubclassDelta, HasSubclasses]
-):
+_SubclassT = ProtocolIntersection[HasClasses, HasSubclasses]
+
+
+class OptionalSubclassAssigner(BuildingBlock):
     """Optionally assigns a subclass, gracefully handling cases where assignment is not possible.
 
     Wraps another subclass assigner and silently succeeds if the assignment would fail
     (e.g., character not high enough level for subclass selection).
     """
 
-    assigner: RandomSubclassAssigner[T] | AISubclassAssigner[T] = Field(
+    type: Literal[BuildingBlockType.OPTIONAL_SUBCLASS_ASSIGNER] = (
+        BuildingBlockType.OPTIONAL_SUBCLASS_ASSIGNER
+    )
+
+    assigner: RandomSubclassAssigner | AISubclassAssigner = Field(
         description="The subclass assigner strategy to use (random or AI)"
     )
 
-    def get_change(
+    def get_change[T: _SubclassT](
         self, state: T
     ) -> Generator[SubclassDelta, None, ProtocolIntersection[T, HasSubclasses]]:
         try:

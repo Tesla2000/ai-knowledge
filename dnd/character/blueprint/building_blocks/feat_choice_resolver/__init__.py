@@ -15,58 +15,39 @@ from dnd.character.blueprint.building_blocks.feat_choice_resolver.max_if_not_max
 from dnd.character.blueprint.building_blocks.feat_choice_resolver.random import (
     RandomFeatChoiceResolver,
 )
-from dnd.character.blueprint.building_blocks.get_discriminator import (
-    get_discriminator,
-)
 from dnd.character.blueprint.state import HasClasses
 from dnd.character.blueprint.state import HasFeats
 from dnd.character.blueprint.state import HasStats
 from dnd.character.blueprint.state import HasStatsCup
-from pydantic import Tag
+from pydantic import Field
 from typing_protocol_intersection import ProtocolIntersection
 
 AnyFeatChoiceResolver = Annotated[
     Union[
-        Annotated[
-            RandomFeatChoiceResolver[
+        RandomFeatChoiceResolver[
+            ProtocolIntersection[ProtocolIntersection[HasFeats, HasStats], HasClasses]
+        ],
+        AIFeatChoiceResolver[
+            ProtocolIntersection[ProtocolIntersection[HasFeats, HasStats], HasClasses]
+        ],
+        MaxFirstResolver[
+            ProtocolIntersection[
                 ProtocolIntersection[
                     ProtocolIntersection[HasFeats, HasStats], HasClasses
-                ]
-            ],
-            Tag(RandomFeatChoiceResolver.get_block_type()),
+                ],
+                HasStatsCup,
+            ]
         ],
-        Annotated[
-            AIFeatChoiceResolver[
+        MaxIfNotMaxedResolver[
+            ProtocolIntersection[
                 ProtocolIntersection[
                     ProtocolIntersection[HasFeats, HasStats], HasClasses
-                ]
-            ],
-            Tag(AIFeatChoiceResolver.get_block_type()),
-        ],
-        Annotated[
-            MaxFirstResolver[
-                ProtocolIntersection[
-                    ProtocolIntersection[
-                        ProtocolIntersection[HasFeats, HasStats], HasClasses
-                    ],
-                    HasStatsCup,
-                ]
-            ],
-            Tag(MaxFirstResolver.get_block_type()),
-        ],
-        Annotated[
-            MaxIfNotMaxedResolver[
-                ProtocolIntersection[
-                    ProtocolIntersection[
-                        ProtocolIntersection[HasFeats, HasStats], HasClasses
-                    ],
-                    HasStatsCup,
-                ]
-            ],
-            Tag(MaxIfNotMaxedResolver.get_block_type()),
+                ],
+                HasStatsCup,
+            ]
         ],
     ],
-    get_discriminator(),
+    Field(discriminator="type"),
 ]
 
 __all__ = [

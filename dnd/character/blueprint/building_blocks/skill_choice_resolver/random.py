@@ -2,25 +2,21 @@ from __future__ import annotations
 
 import random
 
-from typing_protocol_intersection import ProtocolIntersection
 
 from dnd.character.blueprint.building_blocks.skill_choice_resolver.base import (
     SkillChoiceResolver,
+    _SkillT,
 )
-from dnd.character.blueprint.state import HasNSkillChoices
-from dnd.character.blueprint.state import HasSkillProficiencies
-from dnd.character.blueprint.state import HasSkillsToChooseFrom
 from dnd.skill_proficiency import Skill
+from typing import Literal
+from dnd.character.blueprint.building_blocks.building_block_type import (
+    BuildingBlockType,
+)
 from pydantic import ConfigDict
 from pydantic import Field
 
 
-class RandomSkillChoiceResolver[
-    T: ProtocolIntersection[
-        ProtocolIntersection[HasNSkillChoices, HasSkillsToChooseFrom],
-        HasSkillProficiencies,
-    ]
-](SkillChoiceResolver[T]):
+class RandomSkillChoiceResolver(SkillChoiceResolver):
     """Randomly selects skills from available options.
 
     Provides deterministic randomness when seed is set, useful for
@@ -32,6 +28,10 @@ class RandomSkillChoiceResolver[
         >>> resolver = RandomSkillChoiceResolver()  # Truly random
     """
 
+    type: Literal[BuildingBlockType.RANDOM_SKILL_CHOICE_RESOLVER] = (
+        BuildingBlockType.RANDOM_SKILL_CHOICE_RESOLVER
+    )
+
     model_config = ConfigDict(frozen=True)
 
     seed: int | None = Field(
@@ -39,7 +39,7 @@ class RandomSkillChoiceResolver[
         description="Optional seed for reproducible random selection",
     )
 
-    def _select_skills(self, state: T) -> frozenset[Skill]:
+    def _select_skills(self, state: _SkillT) -> frozenset[Skill]:
         random.seed(self.seed)
         n = state.n_skill_choices
         available_skills = state.skills_to_choose_from

@@ -4,8 +4,12 @@ from abc import ABC
 from abc import abstractmethod
 from collections.abc import Generator
 from typing import cast
+from typing import overload
+from typing import Protocol
+from typing import runtime_checkable
 from typing import TYPE_CHECKING
 
+from typing_extensions import deprecated
 from typing_protocol_intersection import ProtocolIntersection
 
 from dnd.character.blueprint.building_blocks.building_block import BuildingBlock
@@ -17,11 +21,13 @@ from dnd.character.blueprint.state import HasSkillsToChooseFrom
 from dnd.character.delta.delta import Delta
 from dnd.skill_proficiency import Skill
 from pydantic import ConfigDict
+from typing import Literal
 
 
 class SkillsDelta(Delta):
     """Delta produced when SkillChoiceResolver resolves skill choices."""
 
+    delta_type: Literal["SkillsDelta"] = "SkillsDelta"
     skill_proficiencies: tuple[Skill, ...]
     n_skill_choices: int
     skills_to_choose_from: frozenset[Skill]
@@ -57,12 +63,12 @@ class SkillsDelta(Delta):
         )
 
 
-class SkillChoiceResolver[
-    T: ProtocolIntersection[
-        ProtocolIntersection[HasNSkillChoices, HasSkillsToChooseFrom],
-        HasSkillProficiencies,
-    ]
-](BuildingBlock[T, SkillsDelta, HasSkillProficiencies], ABC):
+@runtime_checkable
+class _SkillT(HasNSkillChoices, HasSkillsToChooseFrom, HasSkillProficiencies, Protocol):
+    pass
+
+
+class SkillChoiceResolver(BuildingBlock, ABC):
     """Abstract base class for resolving n_skill_choices.
 
     When a race/class grants skill proficiencies of the player's choice
@@ -73,11 +79,30 @@ class SkillChoiceResolver[
     model_config = ConfigDict(frozen=True)
 
     @abstractmethod
-    def _select_skills(self, state: T) -> frozenset[Skill]: ...
+    def _select_skills(self, state: _SkillT) -> frozenset[Skill]: ...
 
-    def get_change(
+    @overload
+    def get_change[T: _SkillT](
         self, state: T
-    ) -> Generator[SkillsDelta, None, ProtocolIntersection[T, HasSkillProficiencies]]:
+    ) -> Generator[
+        SkillsDelta, None, ProtocolIntersection[T, HasSkillProficiencies]
+    ]: ...
+
+    @overload
+    @deprecated(
+        "Pass a state satisfying HasNSkillChoices, HasSkillsToChooseFrom and HasSkillProficiencies for precise return typing"
+    )
+    def get_change[T: BlueprintProtocol](
+        self, state: T
+    ) -> Generator[Delta, None, BlueprintProtocol]: ...
+
+    def get_change[T: BlueprintProtocol](
+        self, state: T
+    ) -> Generator[Delta, None, BlueprintProtocol]:
+        if not isinstance(state, _SkillT):
+            raise TypeError(
+                f"{type(self).__name__} requires HasNSkillChoices, HasSkillsToChooseFrom and HasSkillProficiencies, got {type(state).__name__}"
+            )
         if state.n_skill_choices == 0:
             delta = SkillsDelta(
                 skill_proficiencies=state.skill_proficiencies,

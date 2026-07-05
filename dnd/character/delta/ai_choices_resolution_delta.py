@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from typing import cast
+from typing import Literal
 from typing import TYPE_CHECKING
 
 from typing_protocol_intersection import ProtocolIntersection
@@ -23,6 +24,7 @@ from dnd.skill_proficiency import Skill
 class AIChoicesResolutionDelta(Delta):
     """Delta produced by AIAllNonStatChoicesResolver — resolves all non-stat choices at once."""
 
+    delta_type: Literal["AIChoicesResolutionDelta"] = "AIChoicesResolutionDelta"
     languages: tuple[Language, ...]
     skill_proficiencies: tuple[Skill, ...]
     feats: tuple[FeatName, ...]

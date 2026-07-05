@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Generator
+from typing import Literal
 from typing import cast
 from typing import TYPE_CHECKING
 
@@ -11,6 +12,9 @@ from dnd.character.blueprint.state import Blueprint
 from dnd.character.blueprint.state import BlueprintProtocol
 from dnd.character.blueprint.state import HasAge
 from dnd.character.delta.delta import Delta
+from dnd.character.blueprint.building_blocks.building_block_type import (
+    BuildingBlockType,
+)
 from pydantic import Field
 from pydantic import PositiveInt
 
@@ -18,6 +22,7 @@ from pydantic import PositiveInt
 class AgeDelta(Delta):
     """Delta produced when AgeAssigner sets the character age."""
 
+    delta_type: Literal["AgeDelta"] = "AgeDelta"
     age: PositiveInt
 
     def apply[T: BlueprintProtocol](self, state: T) -> ProtocolIntersection[T, HasAge]:
@@ -38,12 +43,14 @@ class AgeDelta(Delta):
         )
 
 
-class AgeAssigner[T: BlueprintProtocol](BuildingBlock[T, AgeDelta, HasAge]):
+class AgeAssigner(BuildingBlock):
     """Assigns an age to the character."""
+
+    type: Literal[BuildingBlockType.AGE_ASSIGNER] = BuildingBlockType.AGE_ASSIGNER
 
     age: PositiveInt = Field(description="Character's age in years")
 
-    def get_change(
+    def get_change[T: BlueprintProtocol](
         self, state: T
     ) -> Generator[AgeDelta, None, ProtocolIntersection[T, HasAge]]:
         delta = AgeDelta(age=self.age)

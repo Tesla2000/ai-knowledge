@@ -4,11 +4,6 @@ from dnd.character.blueprint.building_blocks import (
 from dnd.character.blueprint.building_blocks.building_block import (
     BuildingBlock,
 )
-from dnd.character.blueprint.building_blocks.building_block import (
-    CombinedBlock,
-)
-from dnd.character.blueprint.state import BlueprintProtocol
-from dnd.character.delta.delta import Delta
 from dnd.character.builder import Builder
 from dnd.character.checkpoint import IncrementChain
 from dnd.character.checkpoint import IncrementStorage
@@ -34,17 +29,18 @@ class _CreateCharacterResponse(BaseModel):
     error: str | None = None
 
 
-EXAMPLES = (example_building_blocks().model_dump(mode="json"),)
+_building_blocks_creator: TypeAdapter[tuple[BuildingBlock, ...]] = TypeAdapter(
+    tuple[AnyBuildingBlock, ...]
+)
+
+EXAMPLES = (
+    _building_blocks_creator.dump_python(example_building_blocks(), mode="json"),
+)
 
 
 class _CreateCharacterRequestSchema(BaseModel):
-    building_blocks: dict[str, object] = Field(examples=list(EXAMPLES))
+    building_blocks: list[dict[str, object]] = Field(examples=list(EXAMPLES))
     increment_chain: dict[str, object] = Field(examples=[IncrementChain()])
-
-
-_building_block_creator: TypeAdapter[
-    BuildingBlock[BlueprintProtocol, Delta, BlueprintProtocol] | CombinedBlock
-] = TypeAdapter(AnyBuildingBlock)
 
 
 def create_app(storage: IncrementStorage) -> FastAPI:
@@ -53,19 +49,16 @@ def create_app(storage: IncrementStorage) -> FastAPI:
     @app_.post(
         "/create_character",
         response_model=_CreateCharacterResponse,
-        response_model_exclude_unset=True,
     )
     def create_character(
         request: _CreateCharacterRequestSchema, response: Response
     ) -> _CreateCharacterResponse:
-        blocks = request.building_blocks
-
         errors = []
-        building_blocks: (
-            BuildingBlock[BlueprintProtocol, Delta, BlueprintProtocol] | CombinedBlock
-        )
+        building_blocks: tuple[BuildingBlock, ...]
         try:
-            building_blocks = _building_block_creator.validate_python(blocks)
+            building_blocks = _building_blocks_creator.validate_python(
+                request.building_blocks
+            )
         except ValidationError as e:
             errors.append(e)
         try:
@@ -75,7 +68,7 @@ def create_app(storage: IncrementStorage) -> FastAPI:
         if errors:
             raise HTTPException(status_code=422, detail="\n\n".join(map(str, errors)))
         builder = Builder(
-            building_blocks=(building_blocks,),
+            building_blocks=building_blocks,
             increment_storage=storage,
         )
         result = builder.build(increment_chain)

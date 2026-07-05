@@ -2,15 +2,16 @@
 
 from __future__ import annotations
 
-from typing_protocol_intersection import ProtocolIntersection
-
 from dnd.character.blueprint.blueprint_formatter import BlueprintFormatter
 from dnd.character.blueprint.building_blocks.stat_choice_resolver.base import (
     StatChoiceResolver,
+    _StatT,
 )
-from dnd.character.blueprint.state import HasNStatChoices
-from dnd.character.blueprint.state import HasStats
 from dnd.choices.stats_creation.statistic import Statistic
+from typing import Literal
+from dnd.character.blueprint.building_blocks.building_block_type import (
+    BuildingBlockType,
+)
 from langchain_openai import ChatOpenAI
 from pydantic import BaseModel
 from pydantic import Field
@@ -24,9 +25,7 @@ class StatIncreaseSelection(BaseModel):
     )
 
 
-class AIStatChoiceResolver[T: ProtocolIntersection[HasStats, HasNStatChoices]](
-    StatChoiceResolver[T]
-):
+class AIStatChoiceResolver(StatChoiceResolver):
     """AI-powered stat choice resolver that selects stat increases based on character context.
 
     Uses an LLM to make intelligent decisions about which ability scores to increase
@@ -40,6 +39,10 @@ class AIStatChoiceResolver[T: ProtocolIntersection[HasStats, HasNStatChoices]](
         >>> builder = Builder().add(resolver)
     """
 
+    type: Literal[BuildingBlockType.AI_STAT_CHOICE_RESOLVER] = (
+        BuildingBlockType.AI_STAT_CHOICE_RESOLVER
+    )
+
     llm: ChatOpenAI = Field(
         description="Language model for making AI-powered decisions"
     )
@@ -49,7 +52,7 @@ class AIStatChoiceResolver[T: ProtocolIntersection[HasStats, HasNStatChoices]](
         description="Blueprint formatter for creating AI prompts",
     )
 
-    def _build_prompt(self, state: T) -> str:
+    def _build_prompt(self, state: _StatT) -> str:
         n = state.n_stat_choices
 
         system_prompt = (
@@ -77,7 +80,7 @@ class AIStatChoiceResolver[T: ProtocolIntersection[HasStats, HasNStatChoices]](
 
         return character_description + "\n".join(instructions)
 
-    def select_stats_to_increase(self, state: T) -> dict[Statistic, int]:
+    def select_stats_to_increase(self, state: _StatT) -> dict[Statistic, int]:
         prompt = self._build_prompt(state)
 
         structured_llm = self.llm.with_structured_output(StatIncreaseSelection)

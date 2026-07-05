@@ -8,6 +8,10 @@ from dnd.character.blueprint.building_blocks.initial_data_filler.ai_builder_base
 from dnd.character.blueprint.state import BlueprintProtocol
 from dnd.character.blueprint.state import HasInitialData
 from dnd.character.delta.initial_data_delta import InitialDataDelta
+from typing import Literal
+from dnd.character.blueprint.building_blocks.building_block_type import (
+    BuildingBlockType,
+)
 
 
 class AIBaseBuilderAssigner(AIBuilderBase):
@@ -27,6 +31,10 @@ class AIBaseBuilderAssigner(AIBuilderBase):
         >>> builder = Builder([assigner])
         >>> character = builder.build()
     """
+
+    type: Literal[BuildingBlockType.AI_BASE_BUILDER_ASSIGNER] = (
+        BuildingBlockType.AI_BASE_BUILDER_ASSIGNER
+    )
 
     def get_change(
         self, state: BlueprintProtocol

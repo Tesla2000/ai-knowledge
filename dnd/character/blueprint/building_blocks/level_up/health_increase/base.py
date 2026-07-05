@@ -5,8 +5,10 @@ from abc import abstractmethod
 from collections.abc import Generator
 from typing import ClassVar
 from typing import cast
+from typing import overload
 from typing import TYPE_CHECKING
 
+from typing_extensions import deprecated
 from typing_protocol_intersection import ProtocolIntersection
 
 from dnd.character.blueprint.building_blocks.building_block import BuildingBlock
@@ -18,11 +20,13 @@ from dnd.character.delta.delta import Delta
 from dnd.choices.class_creation.character_class import Class
 from dnd.choices.equipment_creation.weapons import HitDieSize
 from pydantic import Field
+from typing import Literal
 
 
 class HealthBaseDelta(Delta):
     """Delta produced when HealthIncrease updates health_base."""
 
+    delta_type: Literal["HealthBaseDelta"] = "HealthBaseDelta"
     health_base: int
 
     def apply[T: BlueprintProtocol](
@@ -47,9 +51,7 @@ class HealthBaseDelta(Delta):
         )
 
 
-class HealthIncrease[T: HasClasses](
-    BuildingBlock[T, HealthBaseDelta, HasHealthBase], ABC
-):
+class HealthIncrease(BuildingBlock, ABC):
     """Abstract base class for health increase strategies when leveling up.
 
     Subclasses must implement _get_hit_die_value to determine how much
@@ -79,9 +81,24 @@ class HealthIncrease[T: HasClasses](
     @abstractmethod
     def _get_hit_die_value(self, hit_die: HitDieSize) -> int: ...
 
-    def get_change(
+    @overload
+    def get_change[T: HasClasses](
         self, state: T
-    ) -> Generator[HealthBaseDelta, None, ProtocolIntersection[T, HasHealthBase]]:
+    ) -> Generator[HealthBaseDelta, None, ProtocolIntersection[T, HasHealthBase]]: ...
+
+    @overload
+    @deprecated("Pass a state satisfying HasClasses for precise return typing")
+    def get_change[T: BlueprintProtocol](
+        self, state: T
+    ) -> Generator[Delta, None, BlueprintProtocol]: ...
+
+    def get_change[T: BlueprintProtocol](
+        self, state: T
+    ) -> Generator[Delta, None, BlueprintProtocol]:
+        if not isinstance(state, HasClasses):
+            raise TypeError(
+                f"{type(self).__name__} requires HasClasses, got {type(state).__name__}"
+            )
         hit_die = self._class2hit_die[self.class_]
         current_health: int | None = (
             state.health_base if isinstance(state, HasHealthBase) else None

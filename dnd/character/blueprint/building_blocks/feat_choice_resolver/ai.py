@@ -3,7 +3,11 @@
 from __future__ import annotations
 
 from collections.abc import Generator
+from typing import overload
+from typing import Protocol
+from typing import runtime_checkable
 
+from typing_extensions import deprecated
 from typing_protocol_intersection import ProtocolIntersection
 
 from dnd.character.blueprint.blueprint_formatter import BlueprintFormatter
@@ -11,11 +15,17 @@ from dnd.character.blueprint.building_blocks.building_block import BuildingBlock
 from dnd.character.blueprint.building_blocks.feat_choice_resolver.base import (
     FeatResolutionDelta,
 )
+from dnd.character.blueprint.state import BlueprintProtocol
 from dnd.character.blueprint.state import HasClasses
 from dnd.character.blueprint.state import HasFeats
 from dnd.character.blueprint.state import HasNStatChoices
 from dnd.character.blueprint.state import HasStats
+from dnd.character.delta.delta import Delta
 from dnd.character.feature.feats import FeatName
+from typing import Literal
+from dnd.character.blueprint.building_blocks.building_block_type import (
+    BuildingBlockType,
+)
 from langchain_openai import ChatOpenAI
 from pydantic import BaseModel
 from pydantic import Field
@@ -27,9 +37,12 @@ class FeatSelection(BaseModel):
     feats: set[FeatName] = Field(default_factory=set)
 
 
-class AIFeatChoiceResolver[
-    T: ProtocolIntersection[ProtocolIntersection[HasFeats, HasStats], HasClasses]
-](BuildingBlock[T, FeatResolutionDelta, HasNStatChoices]):
+@runtime_checkable
+class _AIFeatT(HasFeats, HasStats, HasClasses, Protocol):
+    pass
+
+
+class AIFeatChoiceResolver(BuildingBlock):
     """AI-powered resolver for FeatName.ANY_OF_YOUR_CHOICE placeholders.
 
     Uses an LLM to make intelligent feat selections based on
@@ -41,6 +54,10 @@ class AIFeatChoiceResolver[
         ... )
     """
 
+    type: Literal[BuildingBlockType.AI_FEAT_CHOICE_RESOLVER] = (
+        BuildingBlockType.AI_FEAT_CHOICE_RESOLVER
+    )
+
     llm: ChatOpenAI = Field(
         description="Language model for making AI-powered decisions"
     )
@@ -50,7 +67,7 @@ class AIFeatChoiceResolver[
         description="Blueprint formatter for creating AI prompts",
     )
 
-    def _build_prompt(self, state: T) -> str:
+    def _build_prompt(self, state: _AIFeatT) -> str:
         system_prompt = (
             "You are resolving FeatName.ANY_OF_YOUR_CHOICE placeholders "
             "for a D&D 5e character.\n"
@@ -102,9 +119,28 @@ class AIFeatChoiceResolver[
 
         return character_description + "\n".join(instructions)
 
-    def get_change(
+    @overload
+    def get_change[T: _AIFeatT](
         self, state: T
-    ) -> Generator[FeatResolutionDelta, None, ProtocolIntersection[T, HasNStatChoices]]:
+    ) -> Generator[
+        FeatResolutionDelta, None, ProtocolIntersection[T, HasNStatChoices]
+    ]: ...
+
+    @overload
+    @deprecated(
+        "Pass a state satisfying HasFeats, HasStats and HasClasses for precise return typing"
+    )
+    def get_change[T: BlueprintProtocol](
+        self, state: T
+    ) -> Generator[Delta, None, BlueprintProtocol]: ...
+
+    def get_change[T: BlueprintProtocol](
+        self, state: T
+    ) -> Generator[Delta, None, BlueprintProtocol]:
+        if not isinstance(state, _AIFeatT):
+            raise TypeError(
+                f"{type(self).__name__} requires HasFeats, HasStats and HasClasses, got {type(state).__name__}"
+            )
         if not any(map(state.feats.__contains__, FeatName.not_choosables())):
             delta = FeatResolutionDelta(feats=state.feats, n_stat_choices=0)
             yield delta

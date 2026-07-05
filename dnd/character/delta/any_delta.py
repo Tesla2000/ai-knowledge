@@ -51,53 +51,43 @@ from dnd.character.blueprint.building_blocks.tool_proficiency_choice_resolver.ba
 )
 from dnd.character.blueprint.building_blocks.weapon_adder import WeaponsDelta
 from dnd.character.delta.ai_choices_resolution_delta import AIChoicesResolutionDelta
-from dnd.character.delta.delta import Delta
 from dnd.character.delta.feature_delta import FeatureDelta
 from dnd.character.delta.initial_data_delta import InitialDataDelta
 from dnd.character.delta.magical_items_delta import MagicalItemsDelta
-from pydantic import Discriminator
-from pydantic import Tag
-
-
-def _get_delta_type(data: object) -> str | None:
-    if isinstance(data, dict):
-        return data.get("delta_type")
-    if isinstance(data, Delta):
-        return data.delta_type
-    return None
+from pydantic import Field
 
 
 AnyDelta = Annotated[
     Union[
-        Annotated[AgeDelta, Tag("AgeDelta")],
-        Annotated[AIChoicesResolutionDelta, Tag("AIChoicesResolutionDelta")],
-        Annotated[AlignmentDelta, Tag("AlignmentDelta")],
-        Annotated[BackgroundDelta, Tag("BackgroundDelta")],
-        Annotated[EquipmentDelta, Tag("EquipmentDelta")],
-        Annotated[FeatResolutionDelta, Tag("FeatResolutionDelta")],
-        Annotated[FeatsDelta, Tag("FeatsDelta")],
-        Annotated[FeatureDelta, Tag("FeatureDelta")],
-        Annotated[HealthBaseDelta, Tag("HealthBaseDelta")],
-        Annotated[InitialDataDelta, Tag("InitialDataDelta")],
-        Annotated[LanguagesDelta, Tag("LanguagesDelta")],
-        Annotated[LevelDelta, Tag("LevelDelta")],
-        Annotated[MagicalItemsDelta, Tag("MagicalItemsDelta")],
-        Annotated[NameDelta, Tag("NameDelta")],
-        Annotated[NullDelta, Tag("NullDelta")],
-        Annotated[OtherEquipmentDelta, Tag("OtherEquipmentDelta")],
-        Annotated[RaceDelta, Tag("RaceDelta")],
-        Annotated[SexDelta, Tag("SexDelta")],
-        Annotated[SkillsDelta, Tag("SkillsDelta")],
-        Annotated[SorcererLevelIncrementDelta, Tag("SorcererLevelIncrementDelta")],
-        Annotated[SpellsDelta, Tag("SpellsDelta")],
-        Annotated[StatChoiceDelta, Tag("StatChoiceDelta")],
-        Annotated[StatsDelta, Tag("StatsDelta")],
-        Annotated[SubclassDelta, Tag("SubclassDelta")],
-        Annotated[ToolProficienciesDelta, Tag("ToolProficienciesDelta")],
-        Annotated[WeaponsDelta, Tag("WeaponsDelta")],
-        Annotated[WizardLevelIncrementDelta, Tag("WizardLevelIncrementDelta")],
+        AgeDelta,
+        AIChoicesResolutionDelta,
+        AlignmentDelta,
+        BackgroundDelta,
+        EquipmentDelta,
+        FeatResolutionDelta,
+        FeatsDelta,
+        FeatureDelta,
+        HealthBaseDelta,
+        InitialDataDelta,
+        LanguagesDelta,
+        LevelDelta,
+        MagicalItemsDelta,
+        NameDelta,
+        NullDelta,
+        OtherEquipmentDelta,
+        RaceDelta,
+        SexDelta,
+        SkillsDelta,
+        SorcererLevelIncrementDelta,
+        SpellsDelta,
+        StatChoiceDelta,
+        StatsDelta,
+        SubclassDelta,
+        ToolProficienciesDelta,
+        WeaponsDelta,
+        WizardLevelIncrementDelta,
     ],
-    Discriminator(_get_delta_type),
+    Field(discriminator="delta_type"),
 ]
 
 __all__ = ["AnyDelta"]

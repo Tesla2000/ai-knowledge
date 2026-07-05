@@ -10,6 +10,10 @@ from dnd.character.blueprint.state import BlueprintProtocol
 from dnd.character.magical_item.item import MagicalItem
 from dnd.character.magical_item.items import MAGICAL_ITEMS
 from dnd.character.magical_item.level import Level
+from typing import Literal
+from dnd.character.blueprint.building_blocks.building_block_type import (
+    BuildingBlockType,
+)
 from langchain_openai import ChatOpenAI
 from pydantic import BaseModel
 from pydantic import ConfigDict
@@ -40,6 +44,10 @@ class AIMagicalItemChooser(MagicalItemChooserBase):
         ... )
         >>> builder = Builder().add(chooser)
     """
+
+    type: Literal[BuildingBlockType.AI_MAGICAL_ITEM_CHOOSER] = (
+        BuildingBlockType.AI_MAGICAL_ITEM_CHOOSER
+    )
 
     model_config = ConfigDict(frozen=True)
 

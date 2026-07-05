@@ -11,6 +11,10 @@ from dnd.character.blueprint.state import BlueprintProtocol
 from dnd.character.magical_item.item import MagicalItem
 from dnd.character.magical_item.items import MAGICAL_ITEMS
 from dnd.character.magical_item.level import Level
+from typing import Literal
+from dnd.character.blueprint.building_blocks.building_block_type import (
+    BuildingBlockType,
+)
 from pydantic import ConfigDict
 from pydantic import Field
 
@@ -29,6 +33,10 @@ class RandomMagicalItemChooser(MagicalItemChooserBase):
         ... )
         >>> builder = Builder().add(chooser)
     """
+
+    type: Literal[BuildingBlockType.RANDOM_MAGICAL_ITEM_CHOOSER] = (
+        BuildingBlockType.RANDOM_MAGICAL_ITEM_CHOOSER
+    )
 
     model_config = ConfigDict(frozen=True)
 

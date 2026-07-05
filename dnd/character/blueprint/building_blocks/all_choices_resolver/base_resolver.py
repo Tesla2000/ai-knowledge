@@ -19,7 +19,7 @@ class AllChoicesResolverBase(BaseModel):
     - Equipment choices
 
     This base class provides a common type for both sequential resolvers
-    (AllChoicesResolver via CombinedBlock) and holistic AI resolvers
+    (AllChoicesResolver) and holistic AI resolvers
     (AIAllChoicesResolver).
 
     Subclasses implement _get_change() to define resolution logic.

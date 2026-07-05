@@ -9,13 +9,15 @@ from dnd.character.blueprint.state import HasToolProficiencies
 from dnd.other_profficiencies import GamingSet
 from dnd.other_profficiencies import MusicalInstrument
 from dnd.other_profficiencies import ToolProficiency
+from typing import Literal
+from dnd.character.blueprint.building_blocks.building_block_type import (
+    BuildingBlockType,
+)
 from pydantic import ConfigDict
 from pydantic import Field
 
 
-class RandomToolProficiencyChoiceResolver[T: HasToolProficiencies](
-    ToolProficiencyChoiceResolver[T]
-):
+class RandomToolProficiencyChoiceResolver(ToolProficiencyChoiceResolver):
     """Randomly selects tool proficiencies for ANY_OF_YOUR_CHOICE placeholders.
 
     Provides deterministic randomness when seed is set, useful for
@@ -27,6 +29,10 @@ class RandomToolProficiencyChoiceResolver[T: HasToolProficiencies](
         >>> resolver = RandomToolProficiencyChoiceResolver()  # Truly random
     """
 
+    type: Literal[BuildingBlockType.RANDOM_TOOL_PROFICIENCY_CHOICE_RESOLVER] = (
+        BuildingBlockType.RANDOM_TOOL_PROFICIENCY_CHOICE_RESOLVER
+    )
+
     model_config = ConfigDict(frozen=True)
 
     seed: int | None = Field(
@@ -35,17 +41,19 @@ class RandomToolProficiencyChoiceResolver[T: HasToolProficiencies](
     )
 
     def _select_tool_proficiency(
-        self, available: list[ToolProficiency], state: T
+        self, available: list[ToolProficiency], state: HasToolProficiencies
     ) -> ToolProficiency:
         random.seed(self.seed)
         return random.choice(available)
 
-    def _select_gaming_set(self, available: list[GamingSet], state: T) -> GamingSet:
+    def _select_gaming_set(
+        self, available: list[GamingSet], state: HasToolProficiencies
+    ) -> GamingSet:
         random.seed(self.seed)
         return random.choice(available)
 
     def _select_musical_instrument(
-        self, available: list[MusicalInstrument], state: T
+        self, available: list[MusicalInstrument], state: HasToolProficiencies
     ) -> MusicalInstrument:
         random.seed(self.seed)
         return random.choice(available)

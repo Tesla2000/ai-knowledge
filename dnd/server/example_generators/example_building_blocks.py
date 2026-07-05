@@ -1,6 +1,4 @@
-from dnd.character.blueprint.building_blocks import (
-    CombinedBlock,
-)
+from dnd.character.blueprint.building_blocks.building_block import BuildingBlock
 from dnd.character.blueprint.building_blocks import (
     LevelAssigner,
 )
@@ -64,7 +62,7 @@ from dnd.choices.class_creation.character_class import Class
 from dnd.choices.stats_creation.statistic import Statistic
 
 
-def example_building_blocks() -> CombinedBlock:
+def example_building_blocks() -> tuple[BuildingBlock, ...]:
     stats_priority = (
         Statistic.INTELLIGENCE,
         Statistic.CONSTITUTION,
@@ -99,34 +97,32 @@ def example_building_blocks() -> CombinedBlock:
         ),
     )
     level = 16
-    return CombinedBlock(
-        blocks=(
-            InitialBuilder(
-                blocks=(
-                    LevelAssigner(level=level),
-                    StandardArray(stats_priority=stats_priority),
-                    HumanRaceAssigner(
-                        subrace=SubraceName.HUMAN_VARIANT_HUMAN_PLAYERSHANDBOOK,
-                    ),
-                    AllChoicesResolver(
-                        blocks=(
-                            RandomLanguageChoiceResolver(),
-                            RandomSkillChoiceResolver(),
-                            MaxFirstResolver(
-                                priority=stats_priority,
-                                then=RandomFeatChoiceResolver(),
-                            ),
-                            RandomToolProficiencyChoiceResolver(),
-                            PriorityStatChoiceResolver(priority=stats_priority),
-                            RandomEquipmentChooser(),
+    return (
+        InitialBuilder(
+            blocks=(
+                LevelAssigner(level=level),
+                StandardArray(stats_priority=stats_priority),
+                HumanRaceAssigner(
+                    subrace=SubraceName.HUMAN_VARIANT_HUMAN_PLAYERSHANDBOOK,
+                ),
+                AllChoicesResolver(
+                    blocks=(
+                        RandomLanguageChoiceResolver(),
+                        RandomSkillChoiceResolver(),
+                        MaxFirstResolver(
+                            priority=stats_priority,
+                            then=RandomFeatChoiceResolver(),
                         ),
+                        RandomToolProficiencyChoiceResolver(),
+                        PriorityStatChoiceResolver(priority=stats_priority),
+                        RandomEquipmentChooser(),
                     ),
-                )
-            ),
-            RandomInitialDataFiller(),
-            LevelUpMultiple(blocks=tuple(level_up for _ in range(level))),
-            RandomSubclassAssigner(
-                class_=class_,
-            ),
-        )
+                ),
+            )
+        ),
+        RandomInitialDataFiller(),
+        LevelUpMultiple(blocks=tuple(level_up for _ in range(level))),
+        RandomSubclassAssigner(
+            class_=class_,
+        ),
     )

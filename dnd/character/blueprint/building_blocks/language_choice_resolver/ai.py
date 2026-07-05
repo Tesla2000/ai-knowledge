@@ -15,6 +15,10 @@ from langchain_openai import ChatOpenAI
 from pydantic import BaseModel
 from pydantic import Field
 from typing_protocol_intersection import ProtocolIntersection
+from typing import Literal
+from dnd.character.blueprint.building_blocks.building_block_type import (
+    BuildingBlockType,
+)
 
 
 class LanguageSelection(BaseModel):
@@ -23,7 +27,7 @@ class LanguageSelection(BaseModel):
     languages: set[Language] = Field(default_factory=set)
 
 
-class AILanguageChoiceResolver[T: HasLanguages](LanguageChoiceResolver[T]):
+class AILanguageChoiceResolver(LanguageChoiceResolver):
     """AI-powered resolver for Language.ANY_OF_YOUR_CHOICE placeholders.
 
     Uses an LLM to make intelligent language selections based on
@@ -35,6 +39,10 @@ class AILanguageChoiceResolver[T: HasLanguages](LanguageChoiceResolver[T]):
         ...  )
     """
 
+    type: Literal[BuildingBlockType.AI_LANGUAGE_CHOICE_RESOLVER] = (
+        BuildingBlockType.AI_LANGUAGE_CHOICE_RESOLVER
+    )
+
     llm: ChatOpenAI = Field(
         description="Language model for making AI-powered decisions"
     )
@@ -44,11 +52,13 @@ class AILanguageChoiceResolver[T: HasLanguages](LanguageChoiceResolver[T]):
         description="Blueprint formatter for creating AI prompts",
     )
 
-    def _select_from_available(self, available: list[Language], state: T) -> Language:
+    def _select_from_available(
+        self, available: list[Language], state: HasLanguages
+    ) -> Language:
         """Not used — this class overrides get_change directly."""
         raise NotImplementedError("AILanguageChoiceResolver overrides get_change")
 
-    def _build_prompt(self, state: T) -> str:
+    def _build_prompt(self, state: HasLanguages) -> str:
         system_prompt = (
             "You are resolving Language.ANY_OF_YOUR_CHOICE placeholders "
             "for a D&D 5e character.\n"
@@ -83,7 +93,7 @@ class AILanguageChoiceResolver[T: HasLanguages](LanguageChoiceResolver[T]):
 
         return character_description + "\n".join(instructions)
 
-    def get_change(
+    def get_change[T: HasLanguages](
         self, state: T
     ) -> Generator[LanguagesDelta, None, ProtocolIntersection[T, HasLanguages]]:
         if Language.ANY_OF_YOUR_CHOICE not in state.languages:

@@ -4,17 +4,19 @@ from __future__ import annotations
 
 from collections.abc import Generator
 from itertools import filterfalse
-
+from typing import Literal
 
 from dnd.character.blueprint.blueprint_formatter import BlueprintFormatter
 from dnd.character.blueprint.building_blocks.all_choices_resolver.base_resolver import (
     AllChoicesResolverBase,
 )
+from dnd.character.blueprint.building_blocks.building_block_type import (
+    BuildingBlockType,
+)
 from dnd.character.blueprint.building_blocks.all_choices_resolver.choice_package import (
     ChoicePackage,
 )
 from dnd.character.blueprint.building_blocks.building_block import BuildingBlock
-from dnd.character.blueprint.building_blocks.building_block import CombinedBlock
 from dnd.character.blueprint.building_blocks.equipment_chooser import (
     AnyEquipmentChooser,
 )
@@ -49,7 +51,7 @@ from pydantic import ConfigDict
 from pydantic import Field
 
 
-class AIAllChoicesResolver(AllChoicesResolverBase, CombinedBlock):
+class AIAllChoicesResolver(AllChoicesResolverBase, BuildingBlock):
     """AI-powered resolver that makes all character choices holistically.
 
     Unlike the standard AllChoicesResolver which chains individual resolvers,
@@ -71,6 +73,9 @@ class AIAllChoicesResolver(AllChoicesResolverBase, CombinedBlock):
         >>> builder = Builder().add(resolver)
     """
 
+    type: Literal[BuildingBlockType.AI_ALL_CHOICES_RESOLVER] = (
+        BuildingBlockType.AI_ALL_CHOICES_RESOLVER
+    )
     blocks: tuple[
         AnyStatChoiceResolver,
         AnyEquipmentChooser,
@@ -88,10 +93,20 @@ class AIAllChoicesResolver(AllChoicesResolverBase, CombinedBlock):
         description="Ordered building blocks: stat resolver, equipment chooser, optional feat resolver, and non-stat choices resolver",
     )
 
+    def flatten(self) -> Generator[BuildingBlock]:
+        for block in self.blocks:
+            yield from block.flatten()
 
-class AIAllNonStatChoicesResolver(
-    BuildingBlock[BlueprintProtocol, AIChoicesResolutionDelta, BlueprintProtocol]
-):
+    def get_change(
+        self, state: BlueprintProtocol
+    ) -> Generator[AIChoicesResolutionDelta, None, BlueprintProtocol]:
+        current: BlueprintProtocol = state
+        for block in self.flatten():
+            current = yield from block.get_change(current)
+        return current
+
+
+class AIAllNonStatChoicesResolver(BuildingBlock):
     """AI-powered resolver for non-stat character choices (languages, skills, feats, tools).
 
     Handles all non-stat character choices in a single AI call, making coherent
@@ -103,6 +118,9 @@ class AIAllNonStatChoicesResolver(
         >>> resolver = AIAllNonStatChoicesResolver(llm=llm)
     """
 
+    type: Literal[BuildingBlockType.AI_ALL_NON_STAT_CHOICES_RESOLVER] = (
+        BuildingBlockType.AI_ALL_NON_STAT_CHOICES_RESOLVER
+    )
     model_config = ConfigDict(frozen=True)
 
     llm: ChatOpenAI = Field(

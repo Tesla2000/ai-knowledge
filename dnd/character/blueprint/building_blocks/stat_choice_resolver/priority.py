@@ -1,23 +1,22 @@
 from __future__ import annotations
 
-from typing_protocol_intersection import ProtocolIntersection
-
 from dnd.character.blueprint.building_blocks.stat_choice_resolver.base import (
     StatChoiceResolver,
+    _StatT,
 )
 from dnd.character.blueprint.building_blocks.stats_priority import StatsPriority
-from dnd.character.blueprint.state import HasNStatChoices
-from dnd.character.blueprint.state import HasStats
 from dnd.character.blueprint.state import HasStatsCup
 from dnd.character.stats import Stats
 from dnd.choices.stats_creation.statistic import Statistic
+from typing import Literal
+from dnd.character.blueprint.building_blocks.building_block_type import (
+    BuildingBlockType,
+)
 from pydantic import ConfigDict
 from pydantic import Field
 
 
-class PriorityStatChoiceResolver[T: ProtocolIntersection[HasStats, HasNStatChoices]](
-    StatChoiceResolver[T]
-):
+class PriorityStatChoiceResolver(StatChoiceResolver):
     """Resolves stat choices based on a priority order.
 
     Uses logic similar to ability score improvements: prioritizes making odd
@@ -41,6 +40,10 @@ class PriorityStatChoiceResolver[T: ProtocolIntersection[HasStats, HasNStatChoic
         ... )
     """
 
+    type: Literal[BuildingBlockType.PRIORITY_STAT_CHOICE_RESOLVER] = (
+        BuildingBlockType.PRIORITY_STAT_CHOICE_RESOLVER
+    )
+
     model_config = ConfigDict(frozen=True)
 
     priority: StatsPriority = Field(
@@ -56,7 +59,7 @@ class PriorityStatChoiceResolver[T: ProtocolIntersection[HasStats, HasNStatChoic
         charisma=20,
     )
 
-    def select_stats_to_increase(self, state: T) -> dict[Statistic, int]:
+    def select_stats_to_increase(self, state: _StatT) -> dict[Statistic, int]:
         """Select stats to increase based on priority order."""
         increases = {stat: 0 for stat in self.priority}
         stats_cup = (

@@ -24,6 +24,10 @@ from dnd.character.blueprint.state import HasSkinColor
 from dnd.character.blueprint.state import HasWeaknesses
 from dnd.character.blueprint.state import HasWeight
 from dnd.character.delta.initial_data_delta import InitialDataDelta
+from typing import Literal
+from dnd.character.blueprint.building_blocks.building_block_type import (
+    BuildingBlockType,
+)
 
 
 class AIPartialBuilderAssigner(AIBuilderBase):
@@ -44,6 +48,10 @@ class AIPartialBuilderAssigner(AIBuilderBase):
         ... ])
         >>> character = builder.build()
     """
+
+    type: Literal[BuildingBlockType.AI_PARTIAL_BUILDER_ASSIGNER] = (
+        BuildingBlockType.AI_PARTIAL_BUILDER_ASSIGNER
+    )
 
     def get_change(
         self, state: BlueprintProtocol

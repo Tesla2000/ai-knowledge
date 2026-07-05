@@ -9,11 +9,13 @@ from dnd.character.blueprint.state import Blueprint
 from dnd.character.blueprint.state import BlueprintProtocol
 from dnd.character.blueprint.state import HasOtherAbilities
 from dnd.character.delta.delta import Delta
+from typing import Literal
 
 
 class FeatureDelta(Delta):
     """Delta produced when FeatureAssigner applies a feature's active abilities."""
 
+    delta_type: Literal["FeatureDelta"] = "FeatureDelta"
     other_active_abilities: tuple[str, ...]
 
     def apply[T: BlueprintProtocol](

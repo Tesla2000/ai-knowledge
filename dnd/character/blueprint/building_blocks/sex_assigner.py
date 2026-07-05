@@ -2,11 +2,15 @@ from __future__ import annotations
 
 from collections.abc import Generator
 from typing import cast
+from typing import Literal
 from typing import TYPE_CHECKING
 
 from typing_protocol_intersection import ProtocolIntersection
 
 from dnd.character.blueprint.building_blocks.building_block import BuildingBlock
+from dnd.character.blueprint.building_blocks.building_block_type import (
+    BuildingBlockType,
+)
 from dnd.character.blueprint.state import Blueprint
 from dnd.character.blueprint.state import BlueprintProtocol
 from dnd.character.blueprint.state import HasSex
@@ -18,6 +22,7 @@ from pydantic import Field
 class SexDelta(Delta):
     """Delta produced when SexAssigner sets the character sex."""
 
+    delta_type: Literal["SexDelta"] = "SexDelta"
     sex: Sex
 
     def apply[T: BlueprintProtocol](self, state: T) -> ProtocolIntersection[T, HasSex]:
@@ -38,12 +43,13 @@ class SexDelta(Delta):
         )
 
 
-class SexAssigner[T: BlueprintProtocol](BuildingBlock[T, SexDelta, HasSex]):
+class SexAssigner(BuildingBlock):
     """Assigns a sex to the character."""
 
+    type: Literal[BuildingBlockType.SEX_ASSIGNER] = BuildingBlockType.SEX_ASSIGNER
     sex: Sex = Field(description="Character's biological sex")
 
-    def get_change(
+    def get_change[T: BlueprintProtocol](
         self, state: T
     ) -> Generator[SexDelta, None, ProtocolIntersection[T, HasSex]]:
         delta = SexDelta(sex=self.sex)

@@ -2,14 +2,17 @@ from __future__ import annotations
 
 import random
 
-from dnd.character.blueprint.state import HasClasses
 from dnd.character.blueprint.building_blocks.level_up.health_increase.base import (
     HealthIncrease,
 )
 from dnd.choices.equipment_creation.weapons import HitDieSize
+from typing import Literal
+from dnd.character.blueprint.building_blocks.building_block_type import (
+    BuildingBlockType,
+)
 
 
-class HealthIncreaseRandomMinTwo(HealthIncrease[HasClasses]):
+class HealthIncreaseRandomMinTwo(HealthIncrease):
     """Random health increase strategy with minimum value of 2.
 
     Rolls a random value between 2 and the hit die size.
@@ -21,6 +24,10 @@ class HealthIncreaseRandomMinTwo(HealthIncrease[HasClasses]):
         - d10 hit die: random 2-10
         - d12 hit die: random 2-12
     """
+
+    type: Literal[BuildingBlockType.HEALTH_INCREASE_RANDOM_MIN_TWO] = (
+        BuildingBlockType.HEALTH_INCREASE_RANDOM_MIN_TWO
+    )
 
     def _get_hit_die_value(self, hit_die: HitDieSize) -> int:
         """Get random hit die value, minimum 2.

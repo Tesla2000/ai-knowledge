@@ -19,17 +19,14 @@ from dnd.character.blueprint.building_blocks.all_choices_resolver.base import (
 from dnd.character.blueprint.building_blocks.all_choices_resolver.choice_package import (
     ChoicePackage,
 )
-from dnd.character.blueprint.building_blocks.get_discriminator import (
-    get_discriminator,
-)
-from pydantic import Tag
+from pydantic import Field
 
 AnyChoiceResolver = Annotated[
     Union[
-        Annotated[AllChoicesResolver, Tag(AllChoicesResolver.get_block_type())],
-        Annotated[AIAllChoicesResolver, Tag(AIAllChoicesResolver.get_block_type())],
+        AllChoicesResolver,
+        AIAllChoicesResolver,
     ],
-    get_discriminator(),
+    Field(discriminator="type"),
 ]
 
 __all__ = [

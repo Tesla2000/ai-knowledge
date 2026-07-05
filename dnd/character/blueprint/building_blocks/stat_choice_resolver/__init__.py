@@ -3,9 +3,6 @@ from __future__ import annotations
 from typing import Annotated
 from typing import Union
 
-from dnd.character.blueprint.building_blocks.get_discriminator import (
-    get_discriminator,
-)
 from dnd.character.blueprint.building_blocks.stat_choice_resolver.ai import (
     AIStatChoiceResolver,
 )
@@ -14,21 +11,15 @@ from dnd.character.blueprint.building_blocks.stat_choice_resolver.priority impor
 )
 from dnd.character.blueprint.state import HasNStatChoices
 from dnd.character.blueprint.state import HasStats
-from pydantic import Tag
+from pydantic import Field
 from typing_protocol_intersection import ProtocolIntersection
 
 AnyStatChoiceResolver = Annotated[
     Union[
-        Annotated[
-            PriorityStatChoiceResolver[ProtocolIntersection[HasStats, HasNStatChoices]],
-            Tag(PriorityStatChoiceResolver.get_block_type()),
-        ],
-        Annotated[
-            AIStatChoiceResolver[ProtocolIntersection[HasStats, HasNStatChoices]],
-            Tag(AIStatChoiceResolver.get_block_type()),
-        ],
+        PriorityStatChoiceResolver[ProtocolIntersection[HasStats, HasNStatChoices]],
+        AIStatChoiceResolver[ProtocolIntersection[HasStats, HasNStatChoices]],
     ],
-    get_discriminator(),
+    Field(discriminator="type"),
 ]
 
 __all__ = [

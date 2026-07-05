@@ -1,0 +1,1 @@
+uv run dnd/fight/__main__.py --encounter '[{"creature":"valthor_the_dreadknight","n_entities":1},{"creature":"seraphine_the_pale_warden","n_entities":1},{"creature":"mordecai_the_hexknight","n_entities":1},{"creature":"lyra_the_blood_reaper","n_entities":1}]' --players '[{"character":"murgen","initiative":15}]'

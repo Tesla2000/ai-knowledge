@@ -8,9 +8,13 @@ from dnd.character.blueprint.building_blocks.equipment_chooser.base import (
 )
 from dnd.character.blueprint.state import HasEquipmentChoices
 from dnd.choices.equipment_creation.weapons import WeaponName
+from typing import Literal
+from dnd.character.blueprint.building_blocks.building_block_type import (
+    BuildingBlockType,
+)
 
 
-class RandomEquipmentChooser[T: HasEquipmentChoices](EquipmentChooser[T]):
+class RandomEquipmentChooser(EquipmentChooser):
     """Randomly selects equipment from available choices.
 
     For each equipment choice in the blueprint, randomly selects one option
@@ -22,8 +26,12 @@ class RandomEquipmentChooser[T: HasEquipmentChoices](EquipmentChooser[T]):
         >>> # Randomly picks from equipment_choices and categorizes them
     """
 
+    type: Literal[BuildingBlockType.RANDOM_EQUIPMENT_CHOOSER] = (
+        BuildingBlockType.RANDOM_EQUIPMENT_CHOOSER
+    )
+
     def _pick_equipment(
-        self, state: T
+        self, state: HasEquipmentChoices
     ) -> tuple[list[WeaponName], list[ArmorName], list[str]]:
         weapons: list[WeaponName] = []
         armors: list[ArmorName] = []

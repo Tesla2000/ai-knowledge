@@ -17,6 +17,9 @@ from dnd.character.blueprint.state import HasSorcererLevel
 from dnd.character.blueprint.state import HasWizardLevel
 from dnd.character.spells import Spell
 from dnd.choices.class_creation.character_class import Class
+from dnd.character.blueprint.building_blocks.building_block_type import (
+    BuildingBlockType,
+)
 from langchain_openai import ChatOpenAI
 from pydantic import BaseModel
 from pydantic import ConfigDict
@@ -98,7 +101,7 @@ def _llm_select(
     return tuple(_result.spells[:count])
 
 
-class WizardLLMSpellAssigner[T: HasWizardLevel](WizardSpellAssigner[T]):
+class WizardLLMSpellAssigner(WizardSpellAssigner):
     """Uses LLM to select thematically appropriate wizard spells.
 
     Selects spells based on character background, personality, and theme
@@ -111,6 +114,10 @@ class WizardLLMSpellAssigner[T: HasWizardLevel](WizardSpellAssigner[T]):
         ...     character_description="Fire-focused evocation specialist",
         ... )
     """
+
+    type: Literal[BuildingBlockType.WIZARD_LLM_SPELL_ASSIGNER] = (
+        BuildingBlockType.WIZARD_LLM_SPELL_ASSIGNER
+    )
 
     model_config = ConfigDict(frozen=True)
 
@@ -130,7 +137,7 @@ class WizardLLMSpellAssigner[T: HasWizardLevel](WizardSpellAssigner[T]):
         spell_level: int,
         count: int,
         available_spells: list[Spell],
-        state: T,
+        state: HasWizardLevel,
     ) -> tuple[Spell, ...]:
         return _llm_select(
             self.llm,
@@ -143,7 +150,7 @@ class WizardLLMSpellAssigner[T: HasWizardLevel](WizardSpellAssigner[T]):
         )
 
 
-class SorcererLLMSpellAssigner[T: HasSorcererLevel](SorcererSpellAssigner[T]):
+class SorcererLLMSpellAssigner(SorcererSpellAssigner):
     """Uses LLM to select thematically appropriate sorcerer spells.
 
     Selects spells based on character background, personality, and theme
@@ -156,6 +163,10 @@ class SorcererLLMSpellAssigner[T: HasSorcererLevel](SorcererSpellAssigner[T]):
         ...     character_description="Draconic sorcerer with fire affinity",
         ... )
     """
+
+    type: Literal[BuildingBlockType.SORCERER_LLM_SPELL_ASSIGNER] = (
+        BuildingBlockType.SORCERER_LLM_SPELL_ASSIGNER
+    )
 
     model_config = ConfigDict(frozen=True)
 
@@ -175,7 +186,7 @@ class SorcererLLMSpellAssigner[T: HasSorcererLevel](SorcererSpellAssigner[T]):
         spell_level: int,
         count: int,
         available_spells: list[Spell],
-        state: T,
+        state: HasSorcererLevel,
     ) -> tuple[Spell, ...]:
         return _llm_select(
             self.llm,

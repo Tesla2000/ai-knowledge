@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Generator
+from typing import Literal
 from typing import cast
 from typing import TYPE_CHECKING
 
@@ -11,12 +12,16 @@ from dnd.character.blueprint.state import Blueprint
 from dnd.character.blueprint.state import BlueprintProtocol
 from dnd.character.blueprint.state import HasName
 from dnd.character.delta.delta import Delta
+from dnd.character.blueprint.building_blocks.building_block_type import (
+    BuildingBlockType,
+)
 from pydantic import Field
 
 
 class NameDelta(Delta):
     """Delta produced when NameAssigner sets the character name."""
 
+    delta_type: Literal["NameDelta"] = "NameDelta"
     name: str
 
     def apply[T: BlueprintProtocol](self, state: T) -> ProtocolIntersection[T, HasName]:
@@ -37,12 +42,14 @@ class NameDelta(Delta):
         )
 
 
-class NameAssigner[T: BlueprintProtocol](BuildingBlock[T, NameDelta, HasName]):
+class NameAssigner(BuildingBlock):
     """Assigns a name to the character."""
+
+    type: Literal[BuildingBlockType.NAME_ASSIGNER] = BuildingBlockType.NAME_ASSIGNER
 
     name: str = Field(description="Character's full name")
 
-    def get_change(
+    def get_change[T: BlueprintProtocol](
         self, state: T
     ) -> Generator[NameDelta, None, ProtocolIntersection[T, HasName]]:
         delta = NameDelta(name=self.name)

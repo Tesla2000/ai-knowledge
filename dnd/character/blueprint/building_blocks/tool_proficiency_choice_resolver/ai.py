@@ -17,6 +17,10 @@ from langchain_openai import ChatOpenAI
 from pydantic import BaseModel
 from pydantic import Field
 from typing_protocol_intersection import ProtocolIntersection
+from typing import Literal
+from dnd.character.blueprint.building_blocks.building_block_type import (
+    BuildingBlockType,
+)
 
 
 class ToolProficiencySelection(BaseModel):
@@ -27,9 +31,7 @@ class ToolProficiencySelection(BaseModel):
     )
 
 
-class AIToolProficiencyChoiceResolver[T: HasToolProficiencies](
-    ToolProficiencyChoiceResolver[T]
-):
+class AIToolProficiencyChoiceResolver(ToolProficiencyChoiceResolver):
     """AI-powered resolver for tool proficiency ANY_OF_YOUR_CHOICE placeholders.
 
     Uses an LLM to make intelligent tool selections based on
@@ -41,6 +43,10 @@ class AIToolProficiencyChoiceResolver[T: HasToolProficiencies](
         ... )
     """
 
+    type: Literal[BuildingBlockType.AI_TOOL_PROFICIENCY_CHOICE_RESOLVER] = (
+        BuildingBlockType.AI_TOOL_PROFICIENCY_CHOICE_RESOLVER
+    )
+
     llm: ChatOpenAI = Field(
         description="Language model for making AI-powered decisions"
     )
@@ -51,28 +57,30 @@ class AIToolProficiencyChoiceResolver[T: HasToolProficiencies](
     )
 
     def _select_tool_proficiency(
-        self, available: list[ToolProficiency], state: T
+        self, available: list[ToolProficiency], state: HasToolProficiencies
     ) -> ToolProficiency:
         """Not used — this class overrides get_change directly."""
         raise NotImplementedError(
             "AIToolProficiencyChoiceResolver overrides get_change"
         )
 
-    def _select_gaming_set(self, available: list[GamingSet], state: T) -> GamingSet:
+    def _select_gaming_set(
+        self, available: list[GamingSet], state: HasToolProficiencies
+    ) -> GamingSet:
         """Not used — this class overrides get_change directly."""
         raise NotImplementedError(
             "AIToolProficiencyChoiceResolver overrides get_change"
         )
 
     def _select_musical_instrument(
-        self, available: list[MusicalInstrument], state: T
+        self, available: list[MusicalInstrument], state: HasToolProficiencies
     ) -> MusicalInstrument:
         """Not used — this class overrides get_change directly."""
         raise NotImplementedError(
             "AIToolProficiencyChoiceResolver overrides get_change"
         )
 
-    def _build_prompt(self, state: T) -> str:
+    def _build_prompt(self, state: HasToolProficiencies) -> str:
         system_prompt = (
             "You are resolving tool proficiency ANY_OF_YOUR_CHOICE "
             "placeholders for a D&D 5e character.\n"
@@ -124,7 +132,7 @@ class AIToolProficiencyChoiceResolver[T: HasToolProficiencies](
 
         return character_description + "\n".join(instructions)
 
-    def get_change(
+    def get_change[T: HasToolProficiencies](
         self, state: T
     ) -> Generator[
         ToolProficienciesDelta, None, ProtocolIntersection[T, HasToolProficiencies]

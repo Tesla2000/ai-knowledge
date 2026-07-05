@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Generator
+from typing import Literal
 from typing import cast
 from typing import TYPE_CHECKING
 
@@ -13,11 +14,15 @@ from dnd.character.blueprint.state import HasLevel
 from dnd.character.character import ClassLevel
 from pydantic import Field
 from dnd.character.delta.delta import Delta
+from dnd.character.blueprint.building_blocks.building_block_type import (
+    BuildingBlockType,
+)
 
 
 class LevelDelta(Delta):
     """Delta produced when LevelAssigner sets the character level."""
 
+    delta_type: Literal["LevelDelta"] = "LevelDelta"
     level: ClassLevel
 
     def apply[T: BlueprintProtocol](
@@ -40,12 +45,14 @@ class LevelDelta(Delta):
         )
 
 
-class LevelAssigner[T: BlueprintProtocol](BuildingBlock[T, LevelDelta, HasLevel]):
+class LevelAssigner(BuildingBlock):
     """Assigns a level to the character."""
+
+    type: Literal[BuildingBlockType.LEVEL_ASSIGNER] = BuildingBlockType.LEVEL_ASSIGNER
 
     level: ClassLevel = Field(description="The character's total level (1–20)")
 
-    def get_change(
+    def get_change[T: BlueprintProtocol](
         self, state: T
     ) -> Generator[LevelDelta, None, ProtocolIntersection[T, HasLevel]]:
         delta = LevelDelta(level=self.level)

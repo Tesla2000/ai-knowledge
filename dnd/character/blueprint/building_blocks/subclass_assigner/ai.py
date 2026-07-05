@@ -3,31 +3,37 @@
 from __future__ import annotations
 
 from collections.abc import Generator
+from typing import overload
 
+from typing_extensions import deprecated
 from typing_protocol_intersection import ProtocolIntersection
 
 from dnd.character.blueprint.blueprint_formatter import BlueprintFormatter
 from dnd.character.blueprint.building_blocks.building_block import BuildingBlock
 from dnd.character.blueprint.building_blocks.subclass_assigner.base import (
     SubclassDelta,
+    _SubclassT,
 )
 from dnd.character.blueprint.building_blocks.subclass_assigner.base import (
     _check_can_assign,
 )
-from dnd.character.blueprint.state import HasClasses
+from dnd.character.blueprint.state import BlueprintProtocol
 from dnd.character.blueprint.state import HasSubclasses
+from dnd.character.delta.delta import Delta
 from dnd.choices.class_creation.character_class import AnySubclass
 from dnd.choices.class_creation.character_class import Class
 from dnd.choices.class_creation.character_class import SUBCLASSES
+from typing import Literal
+from dnd.character.blueprint.building_blocks.building_block_type import (
+    BuildingBlockType,
+)
 from langchain_openai import ChatOpenAI
 from pydantic import BaseModel
 from pydantic import Field
 from pydantic import create_model
 
 
-class AISubclassAssigner[T: ProtocolIntersection[HasClasses, HasSubclasses]](
-    BuildingBlock[T, SubclassDelta, HasSubclasses]
-):
+class AISubclassAssigner(BuildingBlock):
     """AI-powered subclass assigner that selects subclasses based on character context.
 
     Uses an LLM to make intelligent subclass selections based on the character's
@@ -43,6 +49,10 @@ class AISubclassAssigner[T: ProtocolIntersection[HasClasses, HasSubclasses]](
         >>> builder = Builder().add(assigner)
     """
 
+    type: Literal[BuildingBlockType.AI_SUBCLASS_ASSIGNER] = (
+        BuildingBlockType.AI_SUBCLASS_ASSIGNER
+    )
+
     class_: Class = Field(
         description="The character class for which to assign a subclass"
     )
@@ -55,7 +65,7 @@ class AISubclassAssigner[T: ProtocolIntersection[HasClasses, HasSubclasses]](
         description="Blueprint formatter for creating AI prompts",
     )
 
-    def _build_prompt(self, state: T) -> str:
+    def _build_prompt(self, state: _SubclassT) -> str:
         system_prompt = (
             f"You are selecting a subclass for a D&D 5e {self.class_.value}.\n"
             "Choose the subclass that best fits the character's:\n"
@@ -91,9 +101,26 @@ class AISubclassAssigner[T: ProtocolIntersection[HasClasses, HasSubclasses]](
 
         return character_description + "\n".join(subclass_instructions)
 
-    def get_change(
+    @overload
+    def get_change[T: _SubclassT](
         self, state: T
-    ) -> Generator[SubclassDelta, None, ProtocolIntersection[T, HasSubclasses]]:
+    ) -> Generator[SubclassDelta, None, ProtocolIntersection[T, HasSubclasses]]: ...
+
+    @overload
+    @deprecated(
+        "Pass a state satisfying HasClasses and HasSubclasses for precise return typing"
+    )
+    def get_change[T: BlueprintProtocol](
+        self, state: T
+    ) -> Generator[Delta, None, BlueprintProtocol]: ...
+
+    def get_change[T: BlueprintProtocol](
+        self, state: T
+    ) -> Generator[Delta, None, BlueprintProtocol]:
+        if not isinstance(state, _SubclassT):
+            raise TypeError(
+                f"{type(self).__name__} requires HasClasses and HasSubclasses, got {type(state).__name__}"
+            )
         _check_can_assign(self.class_, state)
         subclass_enum = SUBCLASSES[self.class_]
         for existing in state.subclasses:

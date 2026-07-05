@@ -4,13 +4,9 @@ from __future__ import annotations
 
 from typing import Literal
 
-from typing_protocol_intersection import ProtocolIntersection
-
 from dnd.character.blueprint.building_blocks.subclass_assigner.base import (
     SubclassAssigner,
 )
-from dnd.character.blueprint.state import HasClasses
-from dnd.character.blueprint.state import HasSubclasses
 from dnd.choices.class_creation.character_class import ArtificerSubclass
 from dnd.choices.class_creation.character_class import BarbarianSubclass
 from dnd.choices.class_creation.character_class import BardSubclass
@@ -25,13 +21,18 @@ from dnd.choices.class_creation.character_class import RogueSubclass
 from dnd.choices.class_creation.character_class import SorcererSubclass
 from dnd.choices.class_creation.character_class import WarlockSubclass
 from dnd.choices.class_creation.character_class import WizardSubclass
+from dnd.character.blueprint.building_blocks.building_block_type import (
+    BuildingBlockType,
+)
 from pydantic import Field
 
 
-class ArtificerSubclassAssigner[T: ProtocolIntersection[HasClasses, HasSubclasses]](
-    SubclassAssigner[T]
-):
+class ArtificerSubclassAssigner(SubclassAssigner):
     """Assigns a specific Artificer subclass to the character."""
+
+    type: Literal[BuildingBlockType.ARTIFICER_SUBCLASS_ASSIGNER] = (
+        BuildingBlockType.ARTIFICER_SUBCLASS_ASSIGNER
+    )
 
     class_: Literal[Class.ARTIFICER] = Class.ARTIFICER
     subclass: Literal[
@@ -42,10 +43,12 @@ class ArtificerSubclassAssigner[T: ProtocolIntersection[HasClasses, HasSubclasse
     ] = Field(description="Artificer subclass selection")
 
 
-class BarbarianSubclassAssigner[T: ProtocolIntersection[HasClasses, HasSubclasses]](
-    SubclassAssigner[T]
-):
+class BarbarianSubclassAssigner(SubclassAssigner):
     """Assigns a specific Barbarian subclass to the character."""
+
+    type: Literal[BuildingBlockType.BARBARIAN_SUBCLASS_ASSIGNER] = (
+        BuildingBlockType.BARBARIAN_SUBCLASS_ASSIGNER
+    )
 
     class_: Literal[Class.BARBARIAN] = Class.BARBARIAN
     subclass: Literal[
@@ -61,10 +64,12 @@ class BarbarianSubclassAssigner[T: ProtocolIntersection[HasClasses, HasSubclasse
     ] = Field(description="Barbarian subclass selection")
 
 
-class BardSubclassAssigner[T: ProtocolIntersection[HasClasses, HasSubclasses]](
-    SubclassAssigner[T]
-):
+class BardSubclassAssigner(SubclassAssigner):
     """Assigns a specific Bard subclass to the character."""
+
+    type: Literal[BuildingBlockType.BARD_SUBCLASS_ASSIGNER] = (
+        BuildingBlockType.BARD_SUBCLASS_ASSIGNER
+    )
 
     class_: Literal[Class.BARD] = Class.BARD
     subclass: Literal[
@@ -79,10 +84,12 @@ class BardSubclassAssigner[T: ProtocolIntersection[HasClasses, HasSubclasses]](
     ] = Field(description="Bard subclass selection")
 
 
-class ClericSubclassAssigner[T: ProtocolIntersection[HasClasses, HasSubclasses]](
-    SubclassAssigner[T]
-):
+class ClericSubclassAssigner(SubclassAssigner):
     """Assigns a specific Cleric subclass to the character."""
+
+    type: Literal[BuildingBlockType.CLERIC_SUBCLASS_ASSIGNER] = (
+        BuildingBlockType.CLERIC_SUBCLASS_ASSIGNER
+    )
 
     class_: Literal[Class.CLERIC] = Class.CLERIC
     subclass: Literal[
@@ -103,10 +110,12 @@ class ClericSubclassAssigner[T: ProtocolIntersection[HasClasses, HasSubclasses]]
     ] = Field(description="Cleric subclass selection")
 
 
-class DruidSubclassAssigner[T: ProtocolIntersection[HasClasses, HasSubclasses]](
-    SubclassAssigner[T]
-):
+class DruidSubclassAssigner(SubclassAssigner):
     """Assigns a specific Druid subclass to the character."""
+
+    type: Literal[BuildingBlockType.DRUID_SUBCLASS_ASSIGNER] = (
+        BuildingBlockType.DRUID_SUBCLASS_ASSIGNER
+    )
 
     class_: Literal[Class.DRUID] = Class.DRUID
     subclass: Literal[
@@ -120,10 +129,12 @@ class DruidSubclassAssigner[T: ProtocolIntersection[HasClasses, HasSubclasses]](
     ] = Field(description="Druid subclass selection")
 
 
-class FighterSubclassAssigner[T: ProtocolIntersection[HasClasses, HasSubclasses]](
-    SubclassAssigner[T]
-):
+class FighterSubclassAssigner(SubclassAssigner):
     """Assigns a specific Fighter subclass to the character."""
+
+    type: Literal[BuildingBlockType.FIGHTER_SUBCLASS_ASSIGNER] = (
+        BuildingBlockType.FIGHTER_SUBCLASS_ASSIGNER
+    )
 
     class_: Literal[Class.FIGHTER] = Class.FIGHTER
     subclass: Literal[
@@ -140,10 +151,12 @@ class FighterSubclassAssigner[T: ProtocolIntersection[HasClasses, HasSubclasses]
     ] = Field(description="Fighter subclass selection")
 
 
-class MonkSubclassAssigner[T: ProtocolIntersection[HasClasses, HasSubclasses]](
-    SubclassAssigner[T]
-):
+class MonkSubclassAssigner(SubclassAssigner):
     """Assigns a specific Monk subclass to the character."""
+
+    type: Literal[BuildingBlockType.MONK_SUBCLASS_ASSIGNER] = (
+        BuildingBlockType.MONK_SUBCLASS_ASSIGNER
+    )
 
     class_: Literal[Class.MONK] = Class.MONK
     subclass: Literal[
@@ -160,10 +173,12 @@ class MonkSubclassAssigner[T: ProtocolIntersection[HasClasses, HasSubclasses]](
     ] = Field(description="Monk subclass selection")
 
 
-class PaladinSubclassAssigner[T: ProtocolIntersection[HasClasses, HasSubclasses]](
-    SubclassAssigner[T]
-):
+class PaladinSubclassAssigner(SubclassAssigner):
     """Assigns a specific Paladin subclass to the character."""
+
+    type: Literal[BuildingBlockType.PALADIN_SUBCLASS_ASSIGNER] = (
+        BuildingBlockType.PALADIN_SUBCLASS_ASSIGNER
+    )
 
     class_: Literal[Class.PALADIN] = Class.PALADIN
     subclass: Literal[
@@ -179,10 +194,12 @@ class PaladinSubclassAssigner[T: ProtocolIntersection[HasClasses, HasSubclasses]
     ] = Field(description="Paladin subclass selection")
 
 
-class RangerSubclassAssigner[T: ProtocolIntersection[HasClasses, HasSubclasses]](
-    SubclassAssigner[T]
-):
+class RangerSubclassAssigner(SubclassAssigner):
     """Assigns a specific Ranger subclass to the character."""
+
+    type: Literal[BuildingBlockType.RANGER_SUBCLASS_ASSIGNER] = (
+        BuildingBlockType.RANGER_SUBCLASS_ASSIGNER
+    )
 
     class_: Literal[Class.RANGER] = Class.RANGER
     subclass: Literal[
@@ -197,10 +214,12 @@ class RangerSubclassAssigner[T: ProtocolIntersection[HasClasses, HasSubclasses]]
     ] = Field(description="Ranger subclass selection")
 
 
-class RogueSubclassAssigner[T: ProtocolIntersection[HasClasses, HasSubclasses]](
-    SubclassAssigner[T]
-):
+class RogueSubclassAssigner(SubclassAssigner):
     """Assigns a specific Rogue subclass to the character."""
+
+    type: Literal[BuildingBlockType.ROGUE_SUBCLASS_ASSIGNER] = (
+        BuildingBlockType.ROGUE_SUBCLASS_ASSIGNER
+    )
 
     class_: Literal[Class.ROGUE] = Class.ROGUE
     subclass: Literal[
@@ -216,10 +235,12 @@ class RogueSubclassAssigner[T: ProtocolIntersection[HasClasses, HasSubclasses]](
     ] = Field(description="Rogue subclass selection")
 
 
-class SorcererSubclassAssigner[T: ProtocolIntersection[HasClasses, HasSubclasses]](
-    SubclassAssigner[T]
-):
+class SorcererSubclassAssigner(SubclassAssigner):
     """Assigns a specific Sorcerer subclass to the character."""
+
+    type: Literal[BuildingBlockType.SORCERER_SUBCLASS_ASSIGNER] = (
+        BuildingBlockType.SORCERER_SUBCLASS_ASSIGNER
+    )
 
     class_: Literal[Class.SORCERER] = Class.SORCERER
     subclass: Literal[
@@ -234,10 +255,12 @@ class SorcererSubclassAssigner[T: ProtocolIntersection[HasClasses, HasSubclasses
     ] = Field(description="Sorcerer subclass selection")
 
 
-class WarlockSubclassAssigner[T: ProtocolIntersection[HasClasses, HasSubclasses]](
-    SubclassAssigner[T]
-):
+class WarlockSubclassAssigner(SubclassAssigner):
     """Assigns a specific Warlock subclass to the character."""
+
+    type: Literal[BuildingBlockType.WARLOCK_SUBCLASS_ASSIGNER] = (
+        BuildingBlockType.WARLOCK_SUBCLASS_ASSIGNER
+    )
 
     class_: Literal[Class.WARLOCK] = Class.WARLOCK
     subclass: Literal[
@@ -253,10 +276,12 @@ class WarlockSubclassAssigner[T: ProtocolIntersection[HasClasses, HasSubclasses]
     ] = Field(description="Warlock subclass selection")
 
 
-class WizardSubclassAssigner[T: ProtocolIntersection[HasClasses, HasSubclasses]](
-    SubclassAssigner[T]
-):
+class WizardSubclassAssigner(SubclassAssigner):
     """Assigns a specific Wizard subclass to the character."""
+
+    type: Literal[BuildingBlockType.WIZARD_SUBCLASS_ASSIGNER] = (
+        BuildingBlockType.WIZARD_SUBCLASS_ASSIGNER
+    )
 
     class_: Literal[Class.WIZARD] = Class.WIZARD
     subclass: Literal[

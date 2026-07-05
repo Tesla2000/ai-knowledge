@@ -23,6 +23,7 @@ from dnd.character.blueprint.state import HasStats
 from dnd.character.blueprint.state import HasToolProficiencies
 from dnd.character.delta.delta import Delta
 from dnd.character.feature.feats import FeatName
+from typing import Literal
 from dnd.character.race.race import Race
 from dnd.character.race.subrace_stats.subrace_to_stats import _get_subrace_stats
 from dnd.character.race.subraces import SubraceName
@@ -50,6 +51,7 @@ class RaceSubracePair(BaseModel):
 class RaceDelta(Delta):
     """Delta produced when BaseRaceAssigner sets the character race and applies subrace stats."""
 
+    delta_type: Literal["RaceDelta"] = "RaceDelta"
     race: Race
     subrace: SubraceName
     speed: PositiveInt
@@ -126,7 +128,7 @@ class RaceDelta(Delta):
         )
 
 
-class BaseRaceAssigner[T: HasStats](BuildingBlock[T, RaceDelta, HasRace], ABC):
+class BaseRaceAssigner(BuildingBlock, ABC):
     """Abstract base for assigning race and subrace to a character."""
 
     @abstractmethod
@@ -137,13 +139,23 @@ class BaseRaceAssigner[T: HasStats](BuildingBlock[T, RaceDelta, HasRace], ABC):
     def get_change(self, state: HasRace) -> Never: ...
 
     @overload
-    def get_change(
+    def get_change[T: HasStats](
         self, state: T
     ) -> Generator[RaceDelta, None, ProtocolIntersection[T, HasRace]]: ...
 
-    def get_change(
+    @overload
+    @deprecated("Pass a state satisfying HasStats for precise return typing")
+    def get_change[T: BlueprintProtocol](
+        self, state: T
+    ) -> Generator[Delta, None, BlueprintProtocol]: ...
+
+    def get_change[T: BlueprintProtocol](
         self, state: T | HasRace
-    ) -> Generator[RaceDelta, None, ProtocolIntersection[T, HasRace]]:
+    ) -> Generator[Delta, None, BlueprintProtocol]:
+        if not isinstance(state, HasStats):
+            raise TypeError(
+                f"{type(self).__name__} requires HasStats, got {type(state).__name__}"
+            )
         if isinstance(state, HasRace):
             raise ValueError(f"{state} already has a race assigned")
 

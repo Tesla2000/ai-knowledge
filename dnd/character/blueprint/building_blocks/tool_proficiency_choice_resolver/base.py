@@ -4,8 +4,10 @@ from abc import ABC
 from abc import abstractmethod
 from collections.abc import Generator
 from typing import cast
+from typing import overload
 from typing import TYPE_CHECKING
 
+from typing_extensions import deprecated
 from typing_protocol_intersection import ProtocolIntersection
 
 from dnd.character.blueprint.building_blocks.building_block import BuildingBlock
@@ -17,11 +19,13 @@ from dnd.other_profficiencies import GamingSet
 from dnd.other_profficiencies import MusicalInstrument
 from dnd.other_profficiencies import ToolProficiency
 from pydantic import ConfigDict
+from typing import Literal
 
 
 class ToolProficienciesDelta(Delta):
     """Delta produced when ToolProficiencyChoiceResolver resolves choices."""
 
+    delta_type: Literal["ToolProficienciesDelta"] = "ToolProficienciesDelta"
     tool_proficiencies: tuple[ToolProficiency | GamingSet | MusicalInstrument, ...]
 
     def apply[T: BlueprintProtocol](
@@ -49,9 +53,7 @@ class ToolProficienciesDelta(Delta):
         )
 
 
-class ToolProficiencyChoiceResolver[T: HasToolProficiencies](
-    BuildingBlock[T, ToolProficienciesDelta, HasToolProficiencies], ABC
-):
+class ToolProficiencyChoiceResolver(BuildingBlock, ABC):
     """Resolves ANY_OF_YOUR_CHOICE placeholders in tool proficiencies.
 
     This resolver handles the union type:
@@ -64,22 +66,41 @@ class ToolProficiencyChoiceResolver[T: HasToolProficiencies](
 
     @abstractmethod
     def _select_tool_proficiency(
-        self, available: list[ToolProficiency], state: T
+        self, available: list[ToolProficiency], state: HasToolProficiencies
     ) -> ToolProficiency: ...
 
     @abstractmethod
-    def _select_gaming_set(self, available: list[GamingSet], state: T) -> GamingSet: ...
+    def _select_gaming_set(
+        self, available: list[GamingSet], state: HasToolProficiencies
+    ) -> GamingSet: ...
 
     @abstractmethod
     def _select_musical_instrument(
-        self, available: list[MusicalInstrument], state: T
+        self, available: list[MusicalInstrument], state: HasToolProficiencies
     ) -> MusicalInstrument: ...
 
-    def get_change(
+    @overload
+    def get_change[T: HasToolProficiencies](
         self, state: T
     ) -> Generator[
         ToolProficienciesDelta, None, ProtocolIntersection[T, HasToolProficiencies]
-    ]:
+    ]: ...
+
+    @overload
+    @deprecated(
+        "Pass a state satisfying HasToolProficiencies for precise return typing"
+    )
+    def get_change[T: BlueprintProtocol](
+        self, state: T
+    ) -> Generator[Delta, None, BlueprintProtocol]: ...
+
+    def get_change[T: BlueprintProtocol](
+        self, state: T
+    ) -> Generator[Delta, None, BlueprintProtocol]:
+        if not isinstance(state, HasToolProficiencies):
+            raise TypeError(
+                f"{type(self).__name__} requires HasToolProficiencies, got {type(state).__name__}"
+            )
         resolved: list[ToolProficiency | GamingSet | MusicalInstrument] = []
         for tool in state.tool_proficiencies:
             if (

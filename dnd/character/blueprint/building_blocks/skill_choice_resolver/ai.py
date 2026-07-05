@@ -2,16 +2,17 @@
 
 from __future__ import annotations
 
-from typing_protocol_intersection import ProtocolIntersection
 
 from dnd.character.blueprint.blueprint_formatter import BlueprintFormatter
 from dnd.character.blueprint.building_blocks.skill_choice_resolver.base import (
     SkillChoiceResolver,
+    _SkillT,
 )
-from dnd.character.blueprint.state import HasNSkillChoices
-from dnd.character.blueprint.state import HasSkillProficiencies
-from dnd.character.blueprint.state import HasSkillsToChooseFrom
 from dnd.skill_proficiency import Skill
+from typing import Literal
+from dnd.character.blueprint.building_blocks.building_block_type import (
+    BuildingBlockType,
+)
 from langchain_openai import ChatOpenAI
 from pydantic import BaseModel
 from pydantic import Field
@@ -25,12 +26,7 @@ class SkillSelection(BaseModel):
     )
 
 
-class AISkillChoiceResolver[
-    T: ProtocolIntersection[
-        ProtocolIntersection[HasNSkillChoices, HasSkillsToChooseFrom],
-        HasSkillProficiencies,
-    ]
-](SkillChoiceResolver[T]):
+class AISkillChoiceResolver(SkillChoiceResolver):
     """AI-powered skill choice resolver that selects skills based on character context.
 
     Uses an LLM to make intelligent skill selections based on the character's
@@ -45,6 +41,10 @@ class AISkillChoiceResolver[
         >>> builder = Builder().add(resolver)
     """
 
+    type: Literal[BuildingBlockType.AI_SKILL_CHOICE_RESOLVER] = (
+        BuildingBlockType.AI_SKILL_CHOICE_RESOLVER
+    )
+
     llm: ChatOpenAI = Field(
         description="Language model for making AI-powered decisions"
     )
@@ -54,7 +54,7 @@ class AISkillChoiceResolver[
         description="Blueprint formatter for creating AI prompts",
     )
 
-    def _build_prompt(self, state: T) -> str:
+    def _build_prompt(self, state: _SkillT) -> str:
         n = state.n_skill_choices
         available_skills = state.skills_to_choose_from
 
@@ -90,7 +90,7 @@ class AISkillChoiceResolver[
 
         return "\n".join(parts)
 
-    def _select_skills(self, state: T) -> frozenset[Skill]:
+    def _select_skills(self, state: _SkillT) -> frozenset[Skill]:
         prompt = self._build_prompt(state)
 
         structured_llm = self.llm.with_structured_output(SkillSelection)

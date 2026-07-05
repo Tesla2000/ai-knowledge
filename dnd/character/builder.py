@@ -12,10 +12,6 @@ from typing import Self
 from dnd.character.blueprint.building_blocks.building_block import (
     BuildingBlock,
 )
-from dnd.character.blueprint.building_blocks.building_block import (
-    CombinedBlock,
-)
-from dnd.character.delta.delta import Delta
 
 from dnd.character.blueprint.state import Blueprint
 from dnd.character.blueprint.state import BlueprintProtocol
@@ -28,7 +24,7 @@ from dnd.character.presentable_character import (
 )
 
 
-class BuildResult(NamedTuple):
+class BuiltResult(NamedTuple):
     """Result of building a character with increment tracking."""
 
     chain_id: uuid.UUID
@@ -42,10 +38,7 @@ _logger = logging.getLogger(__name__)
 class Builder:
     def __init__(
         self,
-        building_blocks: tuple[
-            BuildingBlock[BlueprintProtocol, Delta, BlueprintProtocol] | CombinedBlock,
-            ...,
-        ] = (),
+        building_blocks: tuple[BuildingBlock, ...] = (),
         increment_storage: IncrementStorage | None = None,
         logger: Logger = _logger,
     ):
@@ -55,18 +48,15 @@ class Builder:
 
     def _flatten(
         self,
-    ) -> Generator[BuildingBlock[BlueprintProtocol, Delta, BlueprintProtocol]]:
+    ) -> Generator[BuildingBlock]:
         for block in self._building_blocks:
-            if isinstance(block, CombinedBlock):
-                yield from block.flatten()
-            else:
-                yield block
+            yield from block.flatten()
 
     @staticmethod
     def _init_character() -> Blueprint:
         return Blueprint()
 
-    def build(self, increment_chain: IncrementChain = IncrementChain()) -> BuildResult:
+    def build(self, increment_chain: IncrementChain = IncrementChain()) -> BuiltResult:
         """Build character with automatic increment tracking.
 
         Returns:
@@ -94,13 +84,13 @@ class Builder:
                         increment_chain = increment_chain.add_increment(delta)
                 except StopIteration as exc:
                     state = exc.value
-            return BuildResult(
+            return BuiltResult(
                 character=self._make_presentable(state),
                 chain_id=chain_id,
             )
         except Exception as e:
             self._logger.error(traceback.format_exc())
-            return BuildResult(
+            return BuiltResult(
                 chain_id=chain_id,
                 error=e,
             )
@@ -109,8 +99,7 @@ class Builder:
 
     def add(
         self,
-        building_block: BuildingBlock[BlueprintProtocol, Delta, BlueprintProtocol]
-        | CombinedBlock,
+        building_block: BuildingBlock,
     ) -> Self:
         return type(self)(
             self._building_blocks + (building_block,), self._increment_storage

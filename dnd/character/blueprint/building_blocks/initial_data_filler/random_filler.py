@@ -29,6 +29,10 @@ from dnd.character.delta.initial_data_delta import InitialDataDelta
 from dnd.choices.alignment import Alignment
 from dnd.choices.background_creatrion.background import Background
 from dnd.choices.sex import Sex
+from typing import Literal
+from dnd.character.blueprint.building_blocks.building_block_type import (
+    BuildingBlockType,
+)
 from pydantic import ConfigDict
 from pydantic import Field
 
@@ -43,6 +47,10 @@ class RandomInitialDataFiller(InitialDataFiller):
         >>> # or
         >>> filler = RandomInitialDataFiller()  # Truly random
     """
+
+    type: Literal[BuildingBlockType.RANDOM_INITIAL_DATA_FILLER] = (
+        BuildingBlockType.RANDOM_INITIAL_DATA_FILLER
+    )
 
     model_config = ConfigDict(frozen=True)
 

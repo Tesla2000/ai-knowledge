@@ -15,7 +15,7 @@ from pydantic import ConfigDict
 from pydantic import Field
 
 
-class RandomFeatChoiceResolver(FeatChoiceResolver):
+class RandomFeatChoiceResolver(FeatChoiceResolver[_FeatT]):
     """Randomly selects feats for ANY_OF_YOUR_CHOICE placeholders.
 
     Provides deterministic randomness when seed is set, useful for

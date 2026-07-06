@@ -28,6 +28,7 @@ from dnd.character.blueprint.building_blocks.stat_choice_resolver import (
     AnyStatChoiceResolver,
 )
 from dnd.character.blueprint.state import BlueprintProtocol
+from dnd.character.delta.delta import Delta
 from dnd.character.blueprint.state import HasClasses
 from dnd.character.blueprint.state import HasFeats
 from dnd.character.blueprint.state import HasLanguages
@@ -46,7 +47,6 @@ from dnd.other_profficiencies import MusicalInstrument
 from dnd.other_profficiencies import ToolProficiency
 from dnd.skill_proficiency import Skill
 from langchain_openai import ChatOpenAI
-from typing_protocol_intersection import ProtocolIntersection
 from pydantic import ConfigDict
 from pydantic import Field
 
@@ -79,15 +79,7 @@ class AIAllChoicesResolver(AllChoicesResolverBase, BuildingBlock):
     blocks: tuple[
         AnyStatChoiceResolver,
         AnyEquipmentChooser,
-        NullBlock[BlueprintProtocol]
-        | MaxIfNotMaxedResolver[
-            ProtocolIntersection[
-                ProtocolIntersection[
-                    ProtocolIntersection[HasFeats, HasStats], HasClasses
-                ],
-                HasStatsCup,
-            ]
-        ],
+        NullBlock | MaxIfNotMaxedResolver,
         AIAllNonStatChoicesResolver,
     ] = Field(
         description="Ordered building blocks: stat resolver, equipment chooser, optional feat resolver, and non-stat choices resolver",
@@ -99,7 +91,7 @@ class AIAllChoicesResolver(AllChoicesResolverBase, BuildingBlock):
 
     def get_change(
         self, state: BlueprintProtocol
-    ) -> Generator[AIChoicesResolutionDelta, None, BlueprintProtocol]:
+    ) -> Generator[Delta, None, BlueprintProtocol]:
         current: BlueprintProtocol = state
         for block in self.flatten():
             current = yield from block.get_change(current)

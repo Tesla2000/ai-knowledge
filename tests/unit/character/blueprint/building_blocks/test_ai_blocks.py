@@ -9,8 +9,13 @@ from pydantic import Field
 from dnd.character.armor.names import ArmorName
 from dnd.character.blueprint.blueprint_formatter import BlueprintFormatter
 from dnd.character.blueprint.building_blocks.all_choices_resolver.ai import (
+    AIAllChoicesResolver,
     AIAllNonStatChoicesResolver,
 )
+from dnd.character.blueprint.building_blocks.building_block_type import (
+    BuildingBlockType,
+)
+from dnd.character.blueprint.building_blocks.null_block import NullBlock
 from dnd.character.blueprint.building_blocks.tool_proficiency_choice_resolver.ai import (
     AIToolProficiencyChoiceResolver,
     ToolProficiencySelection,
@@ -91,6 +96,13 @@ def _exhaust(gen: Generator[object, object, object]) -> object:
         return exc.value
 
 
+class _MinimalBP:
+    """Satisfies BlueprintProtocol (__iter__) but lacks all specific protocol fields."""
+
+    def __iter__(self) -> object:
+        return iter([])
+
+
 _DEFAULT_STATS = Stats(
     strength=10,
     dexterity=10,
@@ -147,7 +159,7 @@ class _Level1ClassLevels(ClassLevels):
     wizard: int = 1
 
 
-class _ConcreteEquipmentChooser(EquipmentChooser[Blueprint]):
+class _ConcreteEquipmentChooser(EquipmentChooser):
     """Concrete EquipmentChooser that inherits the base _pick_equipment."""
 
 
@@ -1208,3 +1220,48 @@ class TestEquipmentChooserBasePickEquipment:
         block = _ConcreteEquipmentChooser.model_construct()
         with pytest.raises(NotImplementedError):
             block._pick_equipment(Blueprint())
+
+
+@pytest.mark.unit
+class TestAIBlocksTypeErrors:
+    def test_minimal_bp_iter_returns_empty(self) -> None:
+        assert list(_MinimalBP()) == []
+
+    def test_ai_feat_resolver_requires_feats_and_classes(self) -> None:
+        block = AIFeatChoiceResolver.model_construct(
+            llm=MagicMock(), formatter=BlueprintFormatter()
+        )
+        with pytest.raises(TypeError):
+            next(block.get_change(_MinimalBP()))
+
+    def test_ai_language_resolver_requires_languages(self) -> None:
+        block = AILanguageChoiceResolver.model_construct(
+            llm=MagicMock(), formatter=BlueprintFormatter()
+        )
+        with pytest.raises(TypeError):
+            next(block.get_change(_MinimalBP()))
+
+    def test_ai_subclass_assigner_requires_classes_and_subclasses(self) -> None:
+        block = AISubclassAssigner.model_construct(
+            class_=Class.WIZARD, llm=MagicMock(), formatter=BlueprintFormatter()
+        )
+        with pytest.raises(TypeError):
+            next(block.get_change(_MinimalBP()))
+
+    def test_ai_tool_proficiency_resolver_requires_tool_proficiencies(self) -> None:
+        block = AIToolProficiencyChoiceResolver.model_construct(
+            llm=MagicMock(), formatter=BlueprintFormatter()
+        )
+        with pytest.raises(TypeError):
+            next(block.get_change(_MinimalBP()))
+
+
+@pytest.mark.unit
+class TestAIAllChoicesResolverGetChange:
+    def test_get_change_with_null_blocks(self) -> None:
+        resolver = AIAllChoicesResolver.model_construct(
+            type=BuildingBlockType.AI_ALL_CHOICES_RESOLVER,
+            blocks=(NullBlock(), NullBlock(), NullBlock(), NullBlock()),
+        )
+        result = _exhaust(resolver.get_change(Blueprint()))
+        assert result is not None

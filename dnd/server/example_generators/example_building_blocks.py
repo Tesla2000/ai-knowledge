@@ -56,7 +56,6 @@ from dnd.character.blueprint.building_blocks.stats_builder.standard_array import
 from dnd.character.blueprint.building_blocks.subclass_assigner import (
     RandomSubclassAssigner,
 )
-from dnd.character.blueprint.state import HasWizardLevel
 from dnd.character.race.subraces import SubraceName
 from dnd.choices.class_creation.character_class import Class
 from dnd.choices.stats_creation.statistic import Statistic
@@ -85,9 +84,7 @@ def example_building_blocks() -> tuple[BuildingBlock, ...]:
             RandomEquipmentChooser(),
         ),
     )
-    spell_assigner: WizardRandomSpellAssigner[HasWizardLevel] = (
-        WizardRandomSpellAssigner()
-    )
+    spell_assigner: WizardRandomSpellAssigner = WizardRandomSpellAssigner()
     level_up = LevelUp(
         blocks=(
             WizardLevelIncrementer(),

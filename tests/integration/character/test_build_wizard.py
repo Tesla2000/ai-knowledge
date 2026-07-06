@@ -67,7 +67,6 @@ from dnd.character.blueprint.building_blocks.level_up.spell_assignment import (
 from dnd.character.blueprint.building_blocks.level_up.spell_assignment.base import (
     WizardSpellAssigner,
 )
-from dnd.character.blueprint.state import HasWizardLevel
 from dnd.character.blueprint.building_blocks.stats_builder.standard_array import (
     StandardArray,
 )
@@ -88,7 +87,7 @@ from dnd.choices.class_creation.character_class import (
 )
 from dnd.choices.stats_creation.statistic import Statistic
 
-SpellAssigner = WizardSpellAssigner[HasWizardLevel]
+SpellAssigner = WizardSpellAssigner
 
 
 @pytest.mark.integration

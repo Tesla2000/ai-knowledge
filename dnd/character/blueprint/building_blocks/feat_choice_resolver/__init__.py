@@ -15,37 +15,14 @@ from dnd.character.blueprint.building_blocks.feat_choice_resolver.max_if_not_max
 from dnd.character.blueprint.building_blocks.feat_choice_resolver.random import (
     RandomFeatChoiceResolver,
 )
-from dnd.character.blueprint.state import HasClasses
-from dnd.character.blueprint.state import HasFeats
-from dnd.character.blueprint.state import HasStats
-from dnd.character.blueprint.state import HasStatsCup
 from pydantic import Field
-from typing_protocol_intersection import ProtocolIntersection
 
 AnyFeatChoiceResolver = Annotated[
     Union[
-        RandomFeatChoiceResolver[
-            ProtocolIntersection[ProtocolIntersection[HasFeats, HasStats], HasClasses]
-        ],
-        AIFeatChoiceResolver[
-            ProtocolIntersection[ProtocolIntersection[HasFeats, HasStats], HasClasses]
-        ],
-        MaxFirstResolver[
-            ProtocolIntersection[
-                ProtocolIntersection[
-                    ProtocolIntersection[HasFeats, HasStats], HasClasses
-                ],
-                HasStatsCup,
-            ]
-        ],
-        MaxIfNotMaxedResolver[
-            ProtocolIntersection[
-                ProtocolIntersection[
-                    ProtocolIntersection[HasFeats, HasStats], HasClasses
-                ],
-                HasStatsCup,
-            ]
-        ],
+        RandomFeatChoiceResolver,
+        AIFeatChoiceResolver,
+        MaxFirstResolver,
+        MaxIfNotMaxedResolver,
     ],
     Field(discriminator="type"),
 ]

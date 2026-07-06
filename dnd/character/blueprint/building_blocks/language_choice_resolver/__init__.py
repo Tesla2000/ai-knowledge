@@ -9,13 +9,12 @@ from dnd.character.blueprint.building_blocks.language_choice_resolver.ai import 
 from dnd.character.blueprint.building_blocks.language_choice_resolver.random import (
     RandomLanguageChoiceResolver,
 )
-from dnd.character.blueprint.state import HasLanguages
 from pydantic import Field
 
 AnyLanguageChoiceResolver = Annotated[
     Union[
-        RandomLanguageChoiceResolver[HasLanguages],
-        AILanguageChoiceResolver[HasLanguages],
+        RandomLanguageChoiceResolver,
+        AILanguageChoiceResolver,
     ],
     Field(discriminator="type"),
 ]

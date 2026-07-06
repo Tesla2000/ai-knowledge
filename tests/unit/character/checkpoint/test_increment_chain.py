@@ -26,20 +26,14 @@ class TestIncrementChain:
     def test_len_after_increments(self) -> None:
         block = NullBlock()
         gen = block.get_change(Blueprint())
-        try:
-            delta = next(gen)
-        except StopIteration:
-            return
+        delta = next(gen)
         chain = IncrementChain().add_increment(delta)
         assert len(chain) == 1
 
     def test_truncate_to_zero_returns_empty(self) -> None:
         block = NullBlock()
         gen = block.get_change(Blueprint())
-        try:
-            delta = next(gen)
-        except StopIteration:
-            return
+        delta = next(gen)
         chain = IncrementChain().add_increment(delta)
         truncated = chain.truncate_to(0)
         assert len(truncated) == 0

@@ -87,7 +87,6 @@ from dnd.character.blueprint.building_blocks.level_up.spell_assignment.base impo
     SorcererSpellAssigner,
     WizardSpellAssigner,
 )
-from dnd.character.blueprint.state import HasSorcererLevel, HasWizardLevel
 from dnd.character.blueprint.building_blocks.stats_builder.standard_array import (
     StandardArray,
 )
@@ -114,9 +113,7 @@ from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
 
 
-SpellAssigner = (
-    WizardSpellAssigner[HasWizardLevel] | SorcererSpellAssigner[HasSorcererLevel]
-)
+SpellAssigner = WizardSpellAssigner | SorcererSpellAssigner
 load_dotenv()
 
 

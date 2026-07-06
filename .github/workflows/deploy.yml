@@ -6,8 +6,8 @@ on:
 
 env:
   AWS_REGION: eu-central-1
-  ECR_REPOSITORY: dnd-character-lambda
-  LAMBDA_FUNCTION_NAME: dnd-character-api
+  ECR_REPOSITORY: dnd-character-creator
+  LAMBDA_FUNCTION_NAME: dnd-character-creator
 
 jobs:
   deploy:
@@ -27,6 +27,11 @@ jobs:
           role-to-assume: arn:aws:iam::472765723468:role/dnd-deployer
           aws-region: ${{ env.AWS_REGION }}
 
+      - name: Login to public ECR (base image)
+        run: |
+          aws ecr-public get-login-password --region us-east-1 \
+            | docker login --username AWS --password-stdin public.ecr.aws
+
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
@@ -34,15 +39,17 @@ jobs:
       - name: Build, tag, and push Docker image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          IMAGE_TAG: latest
+          IMAGE_TAG: ${{ github.sha }}
         run: |
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:latest .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
 
       - name: Update Lambda function
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          IMAGE_TAG: latest
+          IMAGE_TAG: ${{ github.sha }}
         run: |
           aws lambda update-function-code \
             --function-name $LAMBDA_FUNCTION_NAME \

@@ -114,7 +114,9 @@ class FeatChoiceResolver[S: _FeatT](BuildingBlock, ABC):
 
         resolved = set()
         for feat in state.feats:
-            result = self._resolve_feat(feat, state, ability_score_improvement_allowed)
+            result = self._resolve_feat(
+                feat, cast(S, state), ability_score_improvement_allowed
+            )
             resolved.add(result if result is not None else feat)
 
         n_asi = sum(1 for f in resolved if f == FeatName.ABILITY_SCORE_IMPROVEMENT)
@@ -127,7 +129,7 @@ class FeatChoiceResolver[S: _FeatT](BuildingBlock, ABC):
         return delta.apply(state)
 
     def _resolve_feat(
-        self, feat: FeatName, state: _FeatT, ability_score_improvement_allowed: bool
+        self, feat: FeatName, state: S, ability_score_improvement_allowed: bool
     ) -> FeatName | None:
         if feat not in FeatName.not_choosables():
             return feat

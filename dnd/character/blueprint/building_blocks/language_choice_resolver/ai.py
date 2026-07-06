@@ -3,8 +3,13 @@
 from __future__ import annotations
 
 from collections.abc import Generator
+from typing import overload
+
+from typing_extensions import deprecated
 
 from dnd.character.blueprint.blueprint_formatter import BlueprintFormatter
+from dnd.character.blueprint.state import BlueprintProtocol
+from dnd.character.delta.delta import Delta
 from dnd.character.blueprint.building_blocks.language_choice_resolver.base import (
     LanguageChoiceResolver,
     LanguagesDelta,
@@ -93,9 +98,24 @@ class AILanguageChoiceResolver(LanguageChoiceResolver):
 
         return character_description + "\n".join(instructions)
 
+    @overload
     def get_change[T: HasLanguages](
         self, state: T
-    ) -> Generator[LanguagesDelta, None, ProtocolIntersection[T, HasLanguages]]:
+    ) -> Generator[LanguagesDelta, None, ProtocolIntersection[T, HasLanguages]]: ...
+
+    @overload
+    @deprecated("Pass a state satisfying HasLanguages for precise return typing")
+    def get_change[T: BlueprintProtocol](
+        self, state: T
+    ) -> Generator[Delta, None, BlueprintProtocol]: ...
+
+    def get_change[T: BlueprintProtocol](
+        self, state: T
+    ) -> Generator[Delta, None, BlueprintProtocol]:
+        if not isinstance(state, HasLanguages):
+            raise TypeError(
+                f"{type(self).__name__} requires HasLanguages, got {type(state).__name__}"
+            )
         if Language.ANY_OF_YOUR_CHOICE not in state.languages:
             delta = LanguagesDelta(languages=frozenset(state.languages))
             yield delta

@@ -3,8 +3,13 @@
 from __future__ import annotations
 
 from collections.abc import Generator
+from typing import overload
+
+from typing_extensions import deprecated
 
 from dnd.character.blueprint.blueprint_formatter import BlueprintFormatter
+from dnd.character.blueprint.state import BlueprintProtocol
+from dnd.character.delta.delta import Delta
 from dnd.character.blueprint.building_blocks.tool_proficiency_choice_resolver.base import (
     ToolProficiencyChoiceResolver,
     ToolProficienciesDelta,
@@ -132,11 +137,28 @@ class AIToolProficiencyChoiceResolver(ToolProficiencyChoiceResolver):
 
         return character_description + "\n".join(instructions)
 
+    @overload
     def get_change[T: HasToolProficiencies](
         self, state: T
     ) -> Generator[
         ToolProficienciesDelta, None, ProtocolIntersection[T, HasToolProficiencies]
-    ]:
+    ]: ...
+
+    @overload
+    @deprecated(
+        "Pass a state satisfying HasToolProficiencies for precise return typing"
+    )
+    def get_change[T: BlueprintProtocol](
+        self, state: T
+    ) -> Generator[Delta, None, BlueprintProtocol]: ...
+
+    def get_change[T: BlueprintProtocol](
+        self, state: T
+    ) -> Generator[Delta, None, BlueprintProtocol]:
+        if not isinstance(state, HasToolProficiencies):
+            raise TypeError(
+                f"{type(self).__name__} requires HasToolProficiencies, got {type(state).__name__}"
+            )
         has_placeholder = any(
             (isinstance(t, ToolProficiency) and t == ToolProficiency.ANY_OF_YOUR_CHOICE)
             or (isinstance(t, GamingSet) and t == GamingSet.ANY_OF_YOUR_CHOICE)

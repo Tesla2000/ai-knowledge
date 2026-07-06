@@ -4,9 +4,6 @@ from unittest.mock import patch
 
 import pytest
 from dnd.character.blueprint.building_blocks import (
-    CombinedBlock,
-)
-from dnd.character.blueprint.building_blocks import (
     LevelAssigner,
 )
 from dnd.character.blueprint.building_blocks import (
@@ -15,7 +12,12 @@ from dnd.character.blueprint.building_blocks import (
 from dnd.character.checkpoint import IncrementChain
 from dnd.choices.sex import Sex
 from dnd.server.app import EXAMPLES
+from dnd.server.app import _building_blocks_creator
 from tests.integration.server.test_client import TestClient
+
+
+def _dump(blocks: tuple) -> list:
+    return _building_blocks_creator.dump_python(blocks, mode="json")
 
 
 class TestCreateCharacter(TestClient):
@@ -25,7 +27,7 @@ class TestCreateCharacter(TestClient):
         response = client.post(
             "/create_character",
             json={
-                "building_blocks": building_blocks.model_dump(mode="json"),
+                "building_blocks": _dump(building_blocks),
                 "increment_chain": IncrementChain().model_dump(mode="json"),
             },
         )
@@ -44,7 +46,7 @@ class TestCreateCharacter(TestClient):
         first_response = client.post(
             "/create_character",
             json={
-                "building_blocks": building_blocks.model_dump(mode="json"),
+                "building_blocks": _dump(building_blocks),
                 "increment_chain": IncrementChain().model_dump(mode="json"),
             },
         )
@@ -53,20 +55,12 @@ class TestCreateCharacter(TestClient):
         first_data = first_response.json()
         first_chain = first_data["increment_chain"]
 
-        additional_blocks = CombinedBlock(
-            blocks=(
-                SexAssigner(
-                    sex=Sex.MALE,
-                ),
-            )
-        )
+        extended_blocks = building_blocks + (SexAssigner(sex=Sex.MALE),)
 
         second_response = client.post(
             "/create_character",
             json={
-                "building_blocks": (building_blocks + additional_blocks).model_dump(
-                    mode="json"
-                ),
+                "building_blocks": _dump(extended_blocks),
                 "increment_chain": first_chain,
             },
         )
@@ -87,7 +81,7 @@ class TestCreateCharacter(TestClient):
             response = client.post(
                 "/create_character",
                 json={
-                    "building_blocks": building_blocks.model_dump(mode="json"),
+                    "building_blocks": _dump(building_blocks),
                     "increment_chain": IncrementChain().model_dump(mode="json"),
                 },
             )
@@ -99,7 +93,7 @@ class TestCreateCharacter(TestClient):
         response = client.post(
             "/create_character",
             json={
-                "building_blocks": CombinedBlock(blocks=()).model_dump(mode="json"),
+                "building_blocks": _dump(()),
                 "increment_chain": IncrementChain().model_dump(mode="json"),
             },
         )
@@ -112,7 +106,7 @@ class TestCreateCharacter(TestClient):
         response = client.post(
             "/create_character",
             json={
-                "building_blocks": building_blocks.model_dump(mode="json"),
+                "building_blocks": _dump(building_blocks),
                 "increment_chain": IncrementChain().model_dump(mode="json"),
             },
         )
@@ -124,17 +118,15 @@ class TestCreateCharacter(TestClient):
     def test_multiple_character_creations(self, client, storage):
         """Test creating multiple characters."""
         for i in range(3):
-            building_blocks = CombinedBlock(
-                blocks=(
-                    SexAssigner(sex=Sex.MALE if i % 2 == 0 else Sex.FEMALE),
-                    LevelAssigner(level=i + 1),
-                )
+            blocks = (
+                SexAssigner(sex=Sex.MALE if i % 2 == 0 else Sex.FEMALE),
+                LevelAssigner(level=i + 1),
             )
 
             response = client.post(
                 "/create_character",
                 json={
-                    "building_blocks": building_blocks.model_dump(mode="json"),
+                    "building_blocks": _dump(blocks),
                     "increment_chain": IncrementChain().model_dump(mode="json"),
                 },
             )
@@ -146,17 +138,15 @@ class TestCreateCharacter(TestClient):
 
     def test_response_model_structure(self, client):
         """Test that response follows expected model structure."""
-        building_blocks = CombinedBlock(
-            blocks=(
-                SexAssigner(sex=Sex.MALE),
-                LevelAssigner(level=1),
-            )
+        blocks = (
+            SexAssigner(sex=Sex.MALE),
+            LevelAssigner(level=1),
         )
 
         response = client.post(
             "/create_character",
             json={
-                "building_blocks": building_blocks.model_dump(mode="json"),
+                "building_blocks": _dump(blocks),
                 "increment_chain": IncrementChain().model_dump(mode="json"),
             },
         )
@@ -177,6 +167,16 @@ class TestCreateCharacter(TestClient):
             },
         )
         assert response.status_code == 200
+
+    def test_invalid_building_blocks_returns_422(self, client):
+        response = client.post(
+            "/create_character",
+            json={
+                "building_blocks": [{"type": "invalid_block_type"}],
+                "increment_chain": {},
+            },
+        )
+        assert response.status_code == 422
 
     @pytest.mark.parametrize("example", EXAMPLES)
     def test_create_character_examples(self, example, client):

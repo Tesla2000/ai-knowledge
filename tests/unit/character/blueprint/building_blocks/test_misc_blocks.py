@@ -2,10 +2,13 @@ from __future__ import annotations
 
 import random
 from collections.abc import Generator
-from pydantic import create_model
-from pydantic import TypeAdapter
+from unittest.mock import patch
 
 import pytest
+from pydantic import TypeAdapter
+from pydantic import create_model
+
+from dnd.character.presentable_character import PresentableCharacter
 
 from dnd.character.armor.names import ArmorName
 from dnd.character.blueprint.building_blocks.feat_choice_resolver.max_if_not_maxed import (
@@ -420,3 +423,41 @@ class TestOptionalSubclassAssigner:
         )
         result = _exhaust(assigner.get_change(state))
         assert result is not None
+
+    def test_assigns_subclass_successfully_at_eligible_level(self) -> None:
+        state = Blueprint()
+        state = _exhaust(LevelAssigner(level=3).get_change(state))
+        state = _exhaust(WizardLevelIncrementer().get_change(state))
+        state = _exhaust(WizardLevelIncrementer().get_change(state))
+        state = _exhaust(WizardLevelIncrementer().get_change(state))
+        assigner = OptionalSubclassAssigner(
+            assigner=RandomSubclassAssigner(class_=Class.WIZARD)
+        )
+        result = _exhaust(assigner.get_change(state))
+        assert result is not None
+        assert len(result.subclasses) > 0
+
+
+@pytest.mark.unit
+class TestBuilderExceptionHandling:
+    def test_exception_during_build_captured_in_result(self) -> None:
+        block = NullBlock()
+        with patch.object(NullBlock, "get_change", side_effect=ValueError("forced")):
+            result = Builder().add(block).build()
+        assert result.error is not None
+        assert isinstance(result.error, ValueError)
+
+
+@pytest.mark.unit
+class TestPresentableCharacterRaceAbilities:
+    def test_race_active_abilities_included_in_actions(self) -> None:
+        pc = PresentableCharacter.model_construct(
+            race=Race.AARAKOCRA,
+            other_active_abilities=("Talons",),
+            feats=frozenset(),
+            classes={},
+            subclasses=(),
+        )
+        actions = pc.actions
+        all_abilities = [a for abilities in actions.values() for a in abilities]
+        assert any(a.name == "Talons" for a in all_abilities)

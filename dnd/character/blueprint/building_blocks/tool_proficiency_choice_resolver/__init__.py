@@ -9,13 +9,12 @@ from dnd.character.blueprint.building_blocks.tool_proficiency_choice_resolver.ai
 from dnd.character.blueprint.building_blocks.tool_proficiency_choice_resolver.random import (
     RandomToolProficiencyChoiceResolver,
 )
-from dnd.character.blueprint.state import HasToolProficiencies
 from pydantic import Field
 
 AnyToolProficiencyChoiceResolver = Annotated[
     Union[
-        RandomToolProficiencyChoiceResolver[HasToolProficiencies],
-        AIToolProficiencyChoiceResolver[HasToolProficiencies],
+        RandomToolProficiencyChoiceResolver,
+        AIToolProficiencyChoiceResolver,
     ],
     Field(discriminator="type"),
 ]

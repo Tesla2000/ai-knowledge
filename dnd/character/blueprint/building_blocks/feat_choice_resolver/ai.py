@@ -19,7 +19,6 @@ from dnd.character.blueprint.state import BlueprintProtocol
 from dnd.character.blueprint.state import HasClasses
 from dnd.character.blueprint.state import HasFeats
 from dnd.character.blueprint.state import HasNStatChoices
-from dnd.character.blueprint.state import HasStats
 from dnd.character.delta.delta import Delta
 from dnd.character.feature.feats import FeatName
 from typing import Literal
@@ -38,7 +37,7 @@ class FeatSelection(BaseModel):
 
 
 @runtime_checkable
-class _AIFeatT(HasFeats, HasStats, HasClasses, Protocol):
+class _AIFeatT(HasFeats, HasClasses, Protocol):
     pass
 
 
@@ -128,7 +127,7 @@ class AIFeatChoiceResolver(BuildingBlock):
 
     @overload
     @deprecated(
-        "Pass a state satisfying HasFeats, HasStats and HasClasses for precise return typing"
+        "Pass a state satisfying HasFeats and HasClasses for precise return typing"
     )
     def get_change[T: BlueprintProtocol](
         self, state: T
@@ -139,7 +138,7 @@ class AIFeatChoiceResolver(BuildingBlock):
     ) -> Generator[Delta, None, BlueprintProtocol]:
         if not isinstance(state, _AIFeatT):
             raise TypeError(
-                f"{type(self).__name__} requires HasFeats, HasStats and HasClasses, got {type(state).__name__}"
+                f"{type(self).__name__} requires HasFeats and HasClasses, got {type(state).__name__}"
             )
         if not any(map(state.feats.__contains__, FeatName.not_choosables())):
             delta = FeatResolutionDelta(feats=state.feats, n_stat_choices=0)

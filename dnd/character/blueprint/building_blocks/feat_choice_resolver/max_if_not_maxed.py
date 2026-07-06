@@ -33,7 +33,7 @@ class _MaxFeatT(_FeatT, HasStatsCup, Protocol):
     pass
 
 
-class MaxIfNotMaxedResolver(FeatChoiceResolver):
+class MaxIfNotMaxedResolver(FeatChoiceResolver[_MaxFeatT]):
     """Chooses Ability Score Improvement only if the highest priority stat is not maxed.
 
     If the highest priority stat is already at its cap, returns a no-op delta
@@ -55,7 +55,7 @@ class MaxIfNotMaxedResolver(FeatChoiceResolver):
         description="Ability score priority order for determining which stat to check"
     )
 
-    def _select_from_available(  # mypy: disable-error-code=override
+    def _select_from_available(
         self, available: list[FeatName], state: _MaxFeatT
     ) -> FeatName | None:
         highest_priority_stat = self.priority[0]
@@ -66,7 +66,7 @@ class MaxIfNotMaxedResolver(FeatChoiceResolver):
         return None
 
     @overload
-    def get_change[T: _MaxFeatT](
+    def get_change[T: _FeatT](
         self, state: T
     ) -> Generator[
         FeatResolutionDelta, None, ProtocolIntersection[T, HasNStatChoices]
@@ -74,7 +74,7 @@ class MaxIfNotMaxedResolver(FeatChoiceResolver):
 
     @overload
     @deprecated(
-        "Pass a state satisfying HasFeats, HasStats and HasStatsCup for precise return typing"
+        "Pass a state satisfying HasFeats and HasStats for precise return typing"
     )
     def get_change[T: BlueprintProtocol](
         self, state: T

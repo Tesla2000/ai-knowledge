@@ -18,7 +18,7 @@ repos:
     rev: v1.5.0
     hooks:
       - id: detect-secrets
-        args: [--exclude-files, '^(README\.md|alembic/.*)$']
+        args: [--exclude-files, '^(README\.md|alembic/.*)$', --baseline, .secrets.baseline]
   - repo: https://github.com/Tesla2000/vulture
     rev: v0.0.4
     hooks:
@@ -60,4 +60,5 @@ repos:
     rev: v3.18.0
     hooks:
       - id: any-hook
+        language_version: python3.12
         args: [--modifiers, '[{"type": "remove-f-prefix"},{"type": "open-to-path"},{"type": "any-to-object"},{"type": "check-untracked", "directories": ["src","tests"]},{"type":"pydantic-config-to-model-config"},{"type":"local-imports"},{"type":"pydantic-v1-to-v2"},{"type":"str-enum-inheritance"},{"type":"forbidden-functions","forbidden_functions":["hasattr","getattr","print"]},{"type":"utcnow-to-datetime-now"},{"type":"len-as-bool"},{"type": "leaky-mapping-typing"},{"type":"arbitrary-types-allowed-check"},{"type":"instance-of-pydantic-model-detector"},{"type":"comment-detector","patterns":["type:\\s*ignore","mypy:"]}]']

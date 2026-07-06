@@ -46,9 +46,9 @@ from dnd.other_profficiencies import GamingSet
 from dnd.other_profficiencies import MusicalInstrument
 from dnd.other_profficiencies import ToolProficiency
 from dnd.skill_proficiency import Skill
-from langchain_openai import ChatOpenAI
 from pydantic import ConfigDict
 from pydantic import Field
+from structured_output_creator import OpenAIService, RaisingService
 
 
 class AIAllChoicesResolver(AllChoicesResolverBase, BuildingBlock):
@@ -117,8 +117,9 @@ class AIAllNonStatChoicesResolver(BuildingBlock):
     )
     model_config = ConfigDict(frozen=True)
 
-    llm: ChatOpenAI = Field(
-        description="Language model for making AI-powered decisions"
+    llm: RaisingService = Field(
+        default_factory=lambda: RaisingService(service=OpenAIService()),
+        description="Language model for making AI-powered decisions",
     )
 
     formatter: BlueprintFormatter = Field(
@@ -366,11 +367,7 @@ class AIAllNonStatChoicesResolver(BuildingBlock):
             n_tools_to_choose,
         )
 
-        structured_llm = self.llm.with_structured_output(ChoicePackage)
-        _result = structured_llm.invoke(prompt)
-        if not isinstance(_result, ChoicePackage):
-            raise TypeError(f"Expected ChoicePackage, got {type(_result)}")
-        choices = _result
+        choices = self.llm.create_structured_output(prompt, ChoicePackage)
 
         new_languages = tuple(set(choices.languages))[:n_languages_to_choose]
         new_skill_profs = tuple(set(choices.skill_proficiencies))[

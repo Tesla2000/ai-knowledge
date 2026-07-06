@@ -111,7 +111,7 @@ from dnd.choices.class_creation.character_class import (
 )
 from dnd.choices.stats_creation.statistic import Statistic
 from dotenv import load_dotenv
-from langchain_openai import ChatOpenAI
+from structured_output_creator import OpenAIService, RaisingService
 
 
 SpellAssigner = WizardSpellAssigner | SorcererSpellAssigner
@@ -267,12 +267,14 @@ class TestBuildMulticlass:
             )
         )
 
-    @pytest.mark.requires_api_key
+    @pytest.mark.smoke
     def test_build_multiclass_with_ai(self):
         """Test wizard build with AI-powered choices (all choices including magical items)."""
         # Create LLM for AI-powered choices
-        llm = ChatOpenAI(model="gpt-4o", temperature=0.7)
-        spells_llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.3)
+        llm = RaisingService(service=OpenAIService(model="gpt-4o", temperature=0.7))
+        spells_llm = RaisingService(
+            service=OpenAIService(model="gpt-4o-mini", temperature=0.3)
+        )
 
         # Use AI for ALL choices (languages, skills, feats, stats, magical items)
         all_choices_resolver = AIAllChoicesResolver(

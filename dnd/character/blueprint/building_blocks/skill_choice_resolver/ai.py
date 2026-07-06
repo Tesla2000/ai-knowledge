@@ -13,9 +13,9 @@ from typing import Literal
 from dnd.character.blueprint.building_blocks.building_block_type import (
     BuildingBlockType,
 )
-from langchain_openai import ChatOpenAI
 from pydantic import BaseModel
 from pydantic import Field
+from structured_output_creator import OpenAIService, RaisingService
 
 
 class SkillSelection(BaseModel):
@@ -45,8 +45,9 @@ class AISkillChoiceResolver(SkillChoiceResolver):
         BuildingBlockType.AI_SKILL_CHOICE_RESOLVER
     )
 
-    llm: ChatOpenAI = Field(
-        description="Language model for making AI-powered decisions"
+    llm: RaisingService = Field(
+        default_factory=lambda: RaisingService(service=OpenAIService()),
+        description="Language model for making AI-powered decisions",
     )
 
     formatter: BlueprintFormatter = Field(
@@ -93,11 +94,7 @@ class AISkillChoiceResolver(SkillChoiceResolver):
     def _select_skills(self, state: _SkillT) -> frozenset[Skill]:
         prompt = self._build_prompt(state)
 
-        structured_llm = self.llm.with_structured_output(SkillSelection)
-        _result = structured_llm.invoke(prompt)
-        if not isinstance(_result, SkillSelection):
-            raise TypeError(f"Expected SkillSelection, got {type(_result)}")
-        selection = _result
+        selection = self.llm.create_structured_output(prompt, SkillSelection)
 
         if len(selection.selected_skills) != state.n_skill_choices:
             raise ValueError(

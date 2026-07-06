@@ -12,9 +12,9 @@ from typing import Literal
 from dnd.character.blueprint.building_blocks.building_block_type import (
     BuildingBlockType,
 )
-from langchain_openai import ChatOpenAI
 from pydantic import BaseModel
 from pydantic import Field
+from structured_output_creator import OpenAIService, RaisingService
 
 
 class StatIncreaseSelection(BaseModel):
@@ -43,8 +43,9 @@ class AIStatChoiceResolver(StatChoiceResolver):
         BuildingBlockType.AI_STAT_CHOICE_RESOLVER
     )
 
-    llm: ChatOpenAI = Field(
-        description="Language model for making AI-powered decisions"
+    llm: RaisingService = Field(
+        default_factory=lambda: RaisingService(service=OpenAIService()),
+        description="Language model for making AI-powered decisions",
     )
 
     formatter: BlueprintFormatter = Field(
@@ -83,11 +84,7 @@ class AIStatChoiceResolver(StatChoiceResolver):
     def select_stats_to_increase(self, state: _StatT) -> dict[Statistic, int]:
         prompt = self._build_prompt(state)
 
-        structured_llm = self.llm.with_structured_output(StatIncreaseSelection)
-        _result = structured_llm.invoke(prompt)
-        if not isinstance(_result, StatIncreaseSelection):
-            raise TypeError(f"Expected StatIncreaseSelection, got {type(_result)}")
-        selection = _result
+        selection = self.llm.create_structured_output(prompt, StatIncreaseSelection)
 
         total_increases = sum(selection.stat_increases.values())
         if total_increases != state.n_stat_choices:

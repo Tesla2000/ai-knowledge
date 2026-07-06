@@ -8,8 +8,8 @@ from dnd.character.blueprint.building_blocks.character_base_template import (
 from dnd.character.blueprint.building_blocks.initial_data_filler.base_filler import (
     InitialDataFiller,
 )
-from langchain_openai import ChatOpenAI
 from pydantic import Field
+from structured_output_creator import OpenAIService, RaisingService
 
 
 class AIBuilderBase(InitialDataFiller, ABC):
@@ -23,21 +23,10 @@ class AIBuilderBase(InitialDataFiller, ABC):
         description="Natural language description of the character to generate"
     )
 
-    llm: ChatOpenAI = Field(
-        description="Language model for making AI-powered decisions"
+    llm: RaisingService = Field(
+        default_factory=lambda: RaisingService(service=OpenAIService()),
+        description="Language model for making AI-powered decisions",
     )
 
     def _generate_character_template(self, prompt: str) -> CharacterBaseTemplate:
-        """Generate character parameters using AI.
-
-        Args:
-            prompt: The prompt to send to the AI.
-
-        Returns:
-            CharacterBaseTemplate with AI-generated values.
-        """
-        template = self.llm.with_structured_output(CharacterBaseTemplate)
-        result = template.invoke(prompt)
-        if not isinstance(result, CharacterBaseTemplate):
-            raise TypeError(f"Expected CharacterBaseTemplate, got {type(result)}")
-        return result
+        return self.llm.create_structured_output(prompt, CharacterBaseTemplate)

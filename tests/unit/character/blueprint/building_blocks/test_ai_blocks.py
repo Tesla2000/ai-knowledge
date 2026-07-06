@@ -5,6 +5,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 from pydantic import Field
+from pydantic import ValidationError
 
 from dnd.character.armor.names import ArmorName
 from dnd.character.blueprint.blueprint_formatter import BlueprintFormatter
@@ -32,7 +33,6 @@ from dnd.character.blueprint.building_blocks.character_base_template import (
 )
 from dnd.character.blueprint.building_blocks.equipment_chooser.ai import (
     AIEquipmentChooser,
-    EquipmentChoiceSelection,
 )
 from dnd.character.blueprint.building_blocks.feat_choice_resolver.ai import (
     AIFeatChoiceResolver,
@@ -86,6 +86,7 @@ from dnd.character.race.race import Race
 from dnd.choices.sex import Sex
 from dnd.choices.stats_creation.statistic import Statistic
 from dnd.skill_proficiency import Skill
+from structured_output_creator import LLMRefusalError
 
 
 def _exhaust(gen: Generator[object, object, object]) -> object:
@@ -167,32 +168,28 @@ class _ConcreteEquipmentChooser(EquipmentChooser):
 class TestAIBaseBuilderAssigner:
     def test_get_change_calls_llm(self) -> None:
         mock_llm = MagicMock()
-        mock_chain = MagicMock()
-        mock_llm.with_structured_output.return_value = mock_chain
-        mock_chain.invoke.return_value = _MOCK_TEMPLATE
+        mock_llm.create_structured_output.return_value = _MOCK_TEMPLATE
 
         block = AIBaseBuilderAssigner.model_construct(
             description="A wizard", llm=mock_llm
         )
         result = _exhaust(block.get_change(Blueprint()))
         assert result is not None
-        mock_chain.invoke.assert_called_once()
+        mock_llm.create_structured_output.assert_called_once()
 
 
 @pytest.mark.unit
 class TestAIPartialBuilderAssigner:
     def test_get_change_calls_llm(self) -> None:
         mock_llm = MagicMock()
-        mock_chain = MagicMock()
-        mock_llm.with_structured_output.return_value = mock_chain
-        mock_chain.invoke.return_value = _MOCK_TEMPLATE
+        mock_llm.create_structured_output.return_value = _MOCK_TEMPLATE
 
         block = AIPartialBuilderAssigner.model_construct(
             description="A wizard", llm=mock_llm
         )
         result = _exhaust(block.get_change(Blueprint()))
         assert result is not None
-        mock_chain.invoke.assert_called_once()
+        mock_llm.create_structured_output.assert_called_once()
 
 
 @pytest.mark.unit
@@ -204,13 +201,11 @@ class TestAIStatChoiceResolver:
         )
         result = _exhaust(block.get_change(_StatsBP()))
         assert result is not None
-        mock_llm.with_structured_output.assert_not_called()
+        mock_llm.create_structured_output.assert_not_called()
 
     def test_with_stat_choices_calls_llm(self) -> None:
         mock_llm = MagicMock()
-        mock_chain = MagicMock()
-        mock_llm.with_structured_output.return_value = mock_chain
-        mock_chain.invoke.return_value = StatIncreaseSelection(
+        mock_llm.create_structured_output.return_value = StatIncreaseSelection(
             stat_increases={Statistic.INTELLIGENCE: 2}
         )
 
@@ -220,7 +215,7 @@ class TestAIStatChoiceResolver:
         state = _StatsBP(n_stat_choices=2)
         result = _exhaust(block.get_change(state))
         assert result is not None
-        mock_chain.invoke.assert_called_once()
+        mock_llm.create_structured_output.assert_called_once()
 
 
 @pytest.mark.unit
@@ -232,13 +227,11 @@ class TestAISkillChoiceResolver:
         )
         result = _exhaust(block.get_change(Blueprint()))
         assert result is not None
-        mock_llm.with_structured_output.assert_not_called()
+        mock_llm.create_structured_output.assert_not_called()
 
     def test_with_skill_choices_calls_llm(self) -> None:
         mock_llm = MagicMock()
-        mock_chain = MagicMock()
-        mock_llm.with_structured_output.return_value = mock_chain
-        mock_chain.invoke.return_value = SkillSelection(
+        mock_llm.create_structured_output.return_value = SkillSelection(
             selected_skills=(Skill.ARCANA, Skill.HISTORY)
         )
 
@@ -253,7 +246,7 @@ class TestAISkillChoiceResolver:
         )
         result = _exhaust(block.get_change(state))
         assert result is not None
-        mock_chain.invoke.assert_called_once()
+        mock_llm.create_structured_output.assert_called_once()
 
 
 @pytest.mark.unit
@@ -265,13 +258,13 @@ class TestAIAllNonStatChoicesResolver:
         )
         result = _exhaust(block.get_change(Blueprint()))
         assert result is not None
-        mock_llm.with_structured_output.assert_not_called()
+        mock_llm.create_structured_output.assert_not_called()
 
     def test_with_language_choice_calls_llm(self) -> None:
         mock_llm = MagicMock()
-        mock_chain = MagicMock()
-        mock_llm.with_structured_output.return_value = mock_chain
-        mock_chain.invoke.return_value = ChoicePackage(languages=[Language.COMMON])
+        mock_llm.create_structured_output.return_value = ChoicePackage(
+            languages=[Language.COMMON]
+        )
 
         block = AIAllNonStatChoicesResolver.model_construct(
             llm=mock_llm, formatter=BlueprintFormatter()
@@ -279,7 +272,7 @@ class TestAIAllNonStatChoicesResolver:
         state = Blueprint(languages=(Language.ANY_OF_YOUR_CHOICE,))
         result = _exhaust(block.get_change(state))
         assert result is not None
-        mock_chain.invoke.assert_called_once()
+        mock_llm.create_structured_output.assert_called_once()
 
 
 @pytest.mark.unit
@@ -291,14 +284,12 @@ class TestAIMagicalItemChooser:
         )
         result = _exhaust(block.get_change(Blueprint()))
         assert result is not None
-        mock_llm.with_structured_output.assert_not_called()
+        mock_llm.create_structured_output.assert_not_called()
 
     def test_with_n_common_calls_llm(self) -> None:
         first_item = next(iter(MAGICAL_ITEMS))
         mock_llm = MagicMock()
-        mock_chain = MagicMock()
-        mock_llm.with_structured_output.return_value = mock_chain
-        mock_chain.invoke.return_value = MagicalItemSelection(
+        mock_llm.create_structured_output.return_value = MagicalItemSelection(
             selected_items=[first_item.name]
         )
 
@@ -316,7 +307,7 @@ class TestAIMagicalItemChooser:
         )
         result = _exhaust(block.get_change(Blueprint()))
         assert result is not None
-        mock_chain.invoke.assert_called_once()
+        mock_llm.create_structured_output.assert_called_once()
 
 
 @pytest.mark.unit
@@ -328,14 +319,12 @@ class TestAIEquipmentChooser:
         )
         result = _exhaust(block.get_change(Blueprint()))
         assert result is not None
-        mock_llm.with_structured_output.assert_not_called()
+        mock_llm.create_structured_output.assert_not_called()
 
     def test_with_equipment_choices_calls_llm(self) -> None:
         mock_llm = MagicMock()
-        mock_chain = MagicMock()
-        mock_llm.with_structured_output.return_value = mock_chain
-        mock_chain.invoke.return_value = EquipmentChoiceSelection(
-            selected_indices=(0, 0, 0)
+        mock_llm.create_structured_output.side_effect = lambda prompt, model_class: (
+            model_class(choice_0=0, choice_1=0, choice_2=0)
         )
 
         block = AIEquipmentChooser.model_construct(
@@ -350,7 +339,7 @@ class TestAIEquipmentChooser:
         )
         result = _exhaust(block.get_change(state))
         assert result is not None
-        mock_chain.invoke.assert_called_once()
+        mock_llm.create_structured_output.assert_called_once()
 
 
 @pytest.mark.unit
@@ -362,13 +351,13 @@ class TestAIFeatChoiceResolver:
         )
         result = _exhaust(block.get_change(Blueprint()))
         assert result is not None
-        mock_llm.with_structured_output.assert_not_called()
+        mock_llm.create_structured_output.assert_not_called()
 
     def test_with_placeholder_calls_llm(self) -> None:
         mock_llm = MagicMock()
-        mock_chain = MagicMock()
-        mock_llm.with_structured_output.return_value = mock_chain
-        mock_chain.invoke.return_value = FeatSelection(feats={FeatName.ALERT})
+        mock_llm.create_structured_output.return_value = FeatSelection(
+            feats={FeatName.ALERT}
+        )
 
         block = AIFeatChoiceResolver.model_construct(
             llm=mock_llm, formatter=BlueprintFormatter()
@@ -376,7 +365,7 @@ class TestAIFeatChoiceResolver:
         state = Blueprint(feats=(FeatName.ANY_OF_YOUR_CHOICE,))
         result = _exhaust(block.get_change(state))
         assert result is not None
-        mock_chain.invoke.assert_called_once()
+        mock_llm.create_structured_output.assert_called_once()
 
 
 @pytest.mark.unit
@@ -395,19 +384,17 @@ class TestAISubclassAssigner:
             )
             result = _exhaust(block.get_change(state))
         assert result is not None
-        mock_llm.with_structured_output.assert_not_called()
+        mock_llm.create_structured_output.assert_not_called()
 
     def test_new_assignment_calls_llm(self) -> None:
         wizard_subclass_enum = SUBCLASSES[Class.WIZARD]
         first_subclass = next(iter(wizard_subclass_enum))
 
-        def subclass_model_side_effect(model_class: object) -> MagicMock:
-            chain = MagicMock()
-            chain.invoke.return_value = model_class(subclass=first_subclass)
-            return chain
+        def subclass_model_side_effect(prompt: object, model_class: object) -> object:
+            return model_class(subclass=first_subclass)
 
         mock_llm = MagicMock()
-        mock_llm.with_structured_output.side_effect = subclass_model_side_effect
+        mock_llm.create_structured_output.side_effect = subclass_model_side_effect
 
         with patch(
             "dnd.character.blueprint.building_blocks.subclass_assigner.ai._check_can_assign"
@@ -418,13 +405,11 @@ class TestAISubclassAssigner:
             )
             result = _exhaust(block.get_change(state))
         assert result is not None
-        mock_llm.with_structured_output.assert_called_once()
+        mock_llm.create_structured_output.assert_called_once()
 
-    def test_llm_error_raises_value_error(self) -> None:
+    def test_llm_error_raises_llm_error(self) -> None:
         mock_llm = MagicMock()
-        mock_chain = MagicMock()
-        mock_llm.with_structured_output.return_value = mock_chain
-        mock_chain.invoke.side_effect = RuntimeError("LLM failure")
+        mock_llm.create_structured_output.side_effect = LLMRefusalError("LLM failure")
 
         with patch(
             "dnd.character.blueprint.building_blocks.subclass_assigner.ai._check_can_assign"
@@ -433,7 +418,7 @@ class TestAISubclassAssigner:
             block = AISubclassAssigner.model_construct(
                 class_=Class.WIZARD, llm=mock_llm, formatter=BlueprintFormatter()
             )
-            with pytest.raises(ValueError, match="AI failed to select subclass"):
+            with pytest.raises(LLMRefusalError):
                 _exhaust(block.get_change(state))
 
 
@@ -442,20 +427,15 @@ class TestWizardLLMSpellAssigner:
     def test_get_change_selects_spells(self) -> None:
         call_count: list[int] = [0]
 
-        def spell_model_side_effect(model_class: object) -> MagicMock:
-            chain = MagicMock()
+        def spell_model_side_effect(prompt: object, model_class: object) -> object:
             level = call_count[0]
             call_count[0] += 1
             if level == 0:
-                chain.invoke.return_value = model_class(spells=(Cantrip.FIRE_BOLT,))
-            else:
-                chain.invoke.return_value = model_class(
-                    spells=(FirstLevel.MAGIC_MISSILE,)
-                )
-            return chain
+                return model_class(spells=(Cantrip.FIRE_BOLT,))
+            return model_class(spells=(FirstLevel.MAGIC_MISSILE,))
 
         mock_llm = MagicMock()
-        mock_llm.with_structured_output.side_effect = spell_model_side_effect
+        mock_llm.create_structured_output.side_effect = spell_model_side_effect
 
         block = WizardLLMSpellAssigner.model_construct(
             llm=mock_llm, character_description=None, class_=Class.WIZARD
@@ -463,7 +443,7 @@ class TestWizardLLMSpellAssigner:
         state = _WizardBlueprint()
         result = _exhaust(block.get_change(state))
         assert result is not None
-        assert mock_llm.with_structured_output.call_count >= 1
+        assert mock_llm.create_structured_output.call_count >= 1
 
 
 @pytest.mark.unit
@@ -471,20 +451,15 @@ class TestSorcererLLMSpellAssigner:
     def test_get_change_selects_spells(self) -> None:
         call_count: list[int] = [0]
 
-        def spell_model_side_effect(model_class: object) -> MagicMock:
-            chain = MagicMock()
+        def spell_model_side_effect(prompt: object, model_class: object) -> object:
             level = call_count[0]
             call_count[0] += 1
             if level == 0:
-                chain.invoke.return_value = model_class(spells=(Cantrip.FIRE_BOLT,))
-            else:
-                chain.invoke.return_value = model_class(
-                    spells=(FirstLevel.MAGIC_MISSILE,)
-                )
-            return chain
+                return model_class(spells=(Cantrip.FIRE_BOLT,))
+            return model_class(spells=(FirstLevel.MAGIC_MISSILE,))
 
         mock_llm = MagicMock()
-        mock_llm.with_structured_output.side_effect = spell_model_side_effect
+        mock_llm.create_structured_output.side_effect = spell_model_side_effect
 
         block = SorcererLLMSpellAssigner.model_construct(
             llm=mock_llm, character_description=None, class_=Class.SORCERER
@@ -492,61 +467,31 @@ class TestSorcererLLMSpellAssigner:
         state = _SorcererBlueprint()
         result = _exhaust(block.get_change(state))
         assert result is not None
-        assert mock_llm.with_structured_output.call_count >= 1
+        assert mock_llm.create_structured_output.call_count >= 1
 
-    def test_llm_exception_raises_value_error(self) -> None:
+    def test_llm_error_raises_llm_error(self) -> None:
         mock_llm = MagicMock()
-        mock_chain = MagicMock()
-        mock_llm.with_structured_output.return_value = mock_chain
-        mock_chain.invoke.side_effect = RuntimeError("network error")
+        mock_llm.create_structured_output.side_effect = LLMRefusalError("network error")
 
         block = SorcererLLMSpellAssigner.model_construct(
             llm=mock_llm, character_description=None, class_=Class.SORCERER
         )
         state = _SorcererBlueprint()
-        with pytest.raises(ValueError, match="LLM failed to select spells"):
-            _exhaust(block.get_change(state))
-
-    def test_llm_wrong_type_raises_type_error(self) -> None:
-        mock_llm = MagicMock()
-        mock_chain = MagicMock()
-        mock_llm.with_structured_output.return_value = mock_chain
-        mock_chain.invoke.return_value = "not a SpellSelection"
-
-        block = SorcererLLMSpellAssigner.model_construct(
-            llm=mock_llm, character_description=None, class_=Class.SORCERER
-        )
-        state = _SorcererBlueprint()
-        with pytest.raises(TypeError, match="Expected SpellSelection"):
+        with pytest.raises(LLMRefusalError):
             _exhaust(block.get_change(state))
 
 
 @pytest.mark.unit
 class TestWizardLLMSpellAssignerErrors:
-    def test_llm_exception_raises_value_error(self) -> None:
+    def test_llm_error_raises_llm_error(self) -> None:
         mock_llm = MagicMock()
-        mock_chain = MagicMock()
-        mock_llm.with_structured_output.return_value = mock_chain
-        mock_chain.invoke.side_effect = RuntimeError("network error")
+        mock_llm.create_structured_output.side_effect = LLMRefusalError("network error")
 
         block = WizardLLMSpellAssigner.model_construct(
             llm=mock_llm, character_description=None, class_=Class.WIZARD
         )
         state = _WizardBlueprint()
-        with pytest.raises(ValueError, match="LLM failed to select spells"):
-            _exhaust(block.get_change(state))
-
-    def test_llm_wrong_type_raises_type_error(self) -> None:
-        mock_llm = MagicMock()
-        mock_chain = MagicMock()
-        mock_llm.with_structured_output.return_value = mock_chain
-        mock_chain.invoke.return_value = "not a SpellSelection"
-
-        block = WizardLLMSpellAssigner.model_construct(
-            llm=mock_llm, character_description=None, class_=Class.WIZARD
-        )
-        state = _WizardBlueprint()
-        with pytest.raises(TypeError, match="Expected SpellSelection"):
+        with pytest.raises(LLMRefusalError):
             _exhaust(block.get_change(state))
 
 
@@ -554,9 +499,7 @@ class TestWizardLLMSpellAssignerErrors:
 class TestAIAllNonStatChoicesResolverExtraBranches:
     def test_skill_proficiency_choice_calls_llm(self) -> None:
         mock_llm = MagicMock()
-        mock_chain = MagicMock()
-        mock_llm.with_structured_output.return_value = mock_chain
-        mock_chain.invoke.return_value = ChoicePackage(
+        mock_llm.create_structured_output.return_value = ChoicePackage(
             skill_proficiencies=[Skill.PERCEPTION]
         )
 
@@ -566,13 +509,13 @@ class TestAIAllNonStatChoicesResolverExtraBranches:
         state = Blueprint(skill_proficiencies=(Skill.ANY_OF_YOUR_CHOICE,))
         result = _exhaust(block.get_change(state))
         assert result is not None
-        mock_chain.invoke.assert_called_once()
+        mock_llm.create_structured_output.assert_called_once()
 
     def test_feat_choice_calls_llm(self) -> None:
         mock_llm = MagicMock()
-        mock_chain = MagicMock()
-        mock_llm.with_structured_output.return_value = mock_chain
-        mock_chain.invoke.return_value = ChoicePackage(feats=[FeatName.ALERT])
+        mock_llm.create_structured_output.return_value = ChoicePackage(
+            feats=[FeatName.ALERT]
+        )
 
         block = AIAllNonStatChoicesResolver.model_construct(
             llm=mock_llm, formatter=BlueprintFormatter()
@@ -580,13 +523,11 @@ class TestAIAllNonStatChoicesResolverExtraBranches:
         state = Blueprint(feats=(FeatName.ANY_OF_YOUR_CHOICE,))
         result = _exhaust(block.get_change(state))
         assert result is not None
-        mock_chain.invoke.assert_called_once()
+        mock_llm.create_structured_output.assert_called_once()
 
     def test_tool_proficiency_choice_calls_llm(self) -> None:
         mock_llm = MagicMock()
-        mock_chain = MagicMock()
-        mock_llm.with_structured_output.return_value = mock_chain
-        mock_chain.invoke.return_value = ChoicePackage(
+        mock_llm.create_structured_output.return_value = ChoicePackage(
             tool_proficiencies=[ToolProficiency.ALCHEMISTS_SUPPLIES]
         )
 
@@ -596,19 +537,17 @@ class TestAIAllNonStatChoicesResolverExtraBranches:
         state = Blueprint(tool_proficiencies=(ToolProficiency.ANY_OF_YOUR_CHOICE,))
         result = _exhaust(block.get_change(state))
         assert result is not None
-        mock_chain.invoke.assert_called_once()
+        mock_llm.create_structured_output.assert_called_once()
 
-    def test_wrong_result_type_raises_type_error(self) -> None:
+    def test_llm_error_raises_llm_error(self) -> None:
         mock_llm = MagicMock()
-        mock_chain = MagicMock()
-        mock_llm.with_structured_output.return_value = mock_chain
-        mock_chain.invoke.return_value = "not a ChoicePackage"
+        mock_llm.create_structured_output.side_effect = LLMRefusalError("bad output")
 
         block = AIAllNonStatChoicesResolver.model_construct(
             llm=mock_llm, formatter=BlueprintFormatter()
         )
         state = Blueprint(languages=(Language.ANY_OF_YOUR_CHOICE,))
-        with pytest.raises(TypeError, match="Expected ChoicePackage"):
+        with pytest.raises(LLMRefusalError):
             _exhaust(block.get_change(state))
 
 
@@ -622,13 +561,13 @@ class TestAILanguageChoiceResolver:
         state = Blueprint(languages=(Language.COMMON,))
         result = _exhaust(block.get_change(state))
         assert result is not None
-        mock_llm.with_structured_output.assert_not_called()
+        mock_llm.create_structured_output.assert_not_called()
 
     def test_with_placeholder_calls_llm(self) -> None:
         mock_llm = MagicMock()
-        mock_chain = MagicMock()
-        mock_llm.with_structured_output.return_value = mock_chain
-        mock_chain.invoke.return_value = LanguageSelection(languages={Language.ELVISH})
+        mock_llm.create_structured_output.return_value = LanguageSelection(
+            languages={Language.ELVISH}
+        )
 
         block = AILanguageChoiceResolver.model_construct(
             llm=mock_llm, formatter=BlueprintFormatter()
@@ -636,13 +575,11 @@ class TestAILanguageChoiceResolver:
         state = Blueprint(languages=(Language.ANY_OF_YOUR_CHOICE,))
         result = _exhaust(block.get_change(state))
         assert result is not None
-        mock_chain.invoke.assert_called_once()
+        mock_llm.create_structured_output.assert_called_once()
 
     def test_wrong_count_raises_value_error(self) -> None:
         mock_llm = MagicMock()
-        mock_chain = MagicMock()
-        mock_llm.with_structured_output.return_value = mock_chain
-        mock_chain.invoke.return_value = LanguageSelection(
+        mock_llm.create_structured_output.return_value = LanguageSelection(
             languages={Language.ELVISH, Language.DWARVISH}
         )
 
@@ -653,17 +590,15 @@ class TestAILanguageChoiceResolver:
         with pytest.raises(ValueError, match="AI returned"):
             _exhaust(block.get_change(state))
 
-    def test_wrong_type_raises_type_error(self) -> None:
+    def test_llm_error_raises_llm_error(self) -> None:
         mock_llm = MagicMock()
-        mock_chain = MagicMock()
-        mock_llm.with_structured_output.return_value = mock_chain
-        mock_chain.invoke.return_value = "not a LanguageSelection"
+        mock_llm.create_structured_output.side_effect = LLMRefusalError("bad output")
 
         block = AILanguageChoiceResolver.model_construct(
             llm=mock_llm, formatter=BlueprintFormatter()
         )
         state = Blueprint(languages=(Language.ANY_OF_YOUR_CHOICE,))
-        with pytest.raises(TypeError, match="Expected LanguageSelection"):
+        with pytest.raises(LLMRefusalError):
             _exhaust(block.get_change(state))
 
 
@@ -677,13 +612,11 @@ class TestAIToolProficiencyChoiceResolver:
         state = Blueprint(tool_proficiencies=(ToolProficiency.ALCHEMISTS_SUPPLIES,))
         result = _exhaust(block.get_change(state))
         assert result is not None
-        mock_llm.with_structured_output.assert_not_called()
+        mock_llm.create_structured_output.assert_not_called()
 
     def test_with_tool_placeholder_calls_llm(self) -> None:
         mock_llm = MagicMock()
-        mock_chain = MagicMock()
-        mock_llm.with_structured_output.return_value = mock_chain
-        mock_chain.invoke.return_value = ToolProficiencySelection(
+        mock_llm.create_structured_output.return_value = ToolProficiencySelection(
             tool_proficiencies={ToolProficiency.ALCHEMISTS_SUPPLIES}
         )
 
@@ -693,13 +626,11 @@ class TestAIToolProficiencyChoiceResolver:
         state = Blueprint(tool_proficiencies=(ToolProficiency.ANY_OF_YOUR_CHOICE,))
         result = _exhaust(block.get_change(state))
         assert result is not None
-        mock_chain.invoke.assert_called_once()
+        mock_llm.create_structured_output.assert_called_once()
 
     def test_gaming_set_placeholder_calls_llm(self) -> None:
         mock_llm = MagicMock()
-        mock_chain = MagicMock()
-        mock_llm.with_structured_output.return_value = mock_chain
-        mock_chain.invoke.return_value = ToolProficiencySelection(
+        mock_llm.create_structured_output.return_value = ToolProficiencySelection(
             tool_proficiencies={GamingSet.DICE_SET}
         )
 
@@ -709,13 +640,11 @@ class TestAIToolProficiencyChoiceResolver:
         state = Blueprint(tool_proficiencies=(GamingSet.ANY_OF_YOUR_CHOICE,))
         result = _exhaust(block.get_change(state))
         assert result is not None
-        mock_chain.invoke.assert_called_once()
+        mock_llm.create_structured_output.assert_called_once()
 
     def test_musical_instrument_placeholder_calls_llm(self) -> None:
         mock_llm = MagicMock()
-        mock_chain = MagicMock()
-        mock_llm.with_structured_output.return_value = mock_chain
-        mock_chain.invoke.return_value = ToolProficiencySelection(
+        mock_llm.create_structured_output.return_value = ToolProficiencySelection(
             tool_proficiencies={MusicalInstrument.LUTE}
         )
 
@@ -725,19 +654,17 @@ class TestAIToolProficiencyChoiceResolver:
         state = Blueprint(tool_proficiencies=(MusicalInstrument.ANY_OF_YOUR_CHOICE,))
         result = _exhaust(block.get_change(state))
         assert result is not None
-        mock_chain.invoke.assert_called_once()
+        mock_llm.create_structured_output.assert_called_once()
 
-    def test_wrong_type_raises_type_error(self) -> None:
+    def test_llm_error_raises_llm_error(self) -> None:
         mock_llm = MagicMock()
-        mock_chain = MagicMock()
-        mock_llm.with_structured_output.return_value = mock_chain
-        mock_chain.invoke.return_value = "not a ToolProficiencySelection"
+        mock_llm.create_structured_output.side_effect = LLMRefusalError("bad output")
 
         block = AIToolProficiencyChoiceResolver.model_construct(
             llm=mock_llm, formatter=BlueprintFormatter()
         )
         state = Blueprint(tool_proficiencies=(ToolProficiency.ANY_OF_YOUR_CHOICE,))
-        with pytest.raises(TypeError, match="Expected ToolProficiencySelection"):
+        with pytest.raises(LLMRefusalError):
             _exhaust(block.get_change(state))
 
 
@@ -745,9 +672,7 @@ class TestAIToolProficiencyChoiceResolver:
 class TestAIFeatChoiceResolverExtraBranches:
     def test_wrong_count_raises_value_error(self) -> None:
         mock_llm = MagicMock()
-        mock_chain = MagicMock()
-        mock_llm.with_structured_output.return_value = mock_chain
-        mock_chain.invoke.return_value = FeatSelection(
+        mock_llm.create_structured_output.return_value = FeatSelection(
             feats={FeatName.ALERT, FeatName.ACTOR}
         )
 
@@ -758,17 +683,15 @@ class TestAIFeatChoiceResolverExtraBranches:
         with pytest.raises(ValueError, match="AI returned"):
             _exhaust(block.get_change(state))
 
-    def test_wrong_type_raises_type_error(self) -> None:
+    def test_llm_error_raises_llm_error(self) -> None:
         mock_llm = MagicMock()
-        mock_chain = MagicMock()
-        mock_llm.with_structured_output.return_value = mock_chain
-        mock_chain.invoke.return_value = "not a FeatSelection"
+        mock_llm.create_structured_output.side_effect = LLMRefusalError("bad output")
 
         block = AIFeatChoiceResolver.model_construct(
             llm=mock_llm, formatter=BlueprintFormatter()
         )
         state = Blueprint(feats=(FeatName.ANY_OF_YOUR_CHOICE,))
-        with pytest.raises(TypeError, match="Expected FeatSelection"):
+        with pytest.raises(LLMRefusalError):
             _exhaust(block.get_change(state))
 
 
@@ -776,9 +699,7 @@ class TestAIFeatChoiceResolverExtraBranches:
 class TestAISkillChoiceResolverExtraBranches:
     def test_wrong_count_raises_value_error(self) -> None:
         mock_llm = MagicMock()
-        mock_chain = MagicMock()
-        mock_llm.with_structured_output.return_value = mock_chain
-        mock_chain.invoke.return_value = SkillSelection(
+        mock_llm.create_structured_output.return_value = SkillSelection(
             selected_skills=(Skill.ARCANA, Skill.HISTORY, Skill.PERCEPTION)
         )
 
@@ -796,9 +717,7 @@ class TestAISkillChoiceResolverExtraBranches:
 
     def test_invalid_skill_raises_value_error(self) -> None:
         mock_llm = MagicMock()
-        mock_chain = MagicMock()
-        mock_llm.with_structured_output.return_value = mock_chain
-        mock_chain.invoke.return_value = SkillSelection(
+        mock_llm.create_structured_output.return_value = SkillSelection(
             selected_skills=(Skill.ATHLETICS, Skill.DECEPTION)
         )
 
@@ -812,11 +731,9 @@ class TestAISkillChoiceResolverExtraBranches:
         with pytest.raises(ValueError, match="not in available skills"):
             _exhaust(block.get_change(state))
 
-    def test_wrong_type_raises_type_error(self) -> None:
+    def test_llm_error_raises_llm_error(self) -> None:
         mock_llm = MagicMock()
-        mock_chain = MagicMock()
-        mock_llm.with_structured_output.return_value = mock_chain
-        mock_chain.invoke.return_value = "not a SkillSelection"
+        mock_llm.create_structured_output.side_effect = LLMRefusalError("bad output")
 
         block = AISkillChoiceResolver.model_construct(
             llm=mock_llm, formatter=BlueprintFormatter()
@@ -825,7 +742,7 @@ class TestAISkillChoiceResolverExtraBranches:
             n_skill_choices=2,
             skills_to_choose_from=frozenset({Skill.ARCANA, Skill.HISTORY}),
         )
-        with pytest.raises(TypeError, match="Expected SkillSelection"):
+        with pytest.raises(LLMRefusalError):
             _exhaust(block.get_change(state))
 
 
@@ -833,9 +750,7 @@ class TestAISkillChoiceResolverExtraBranches:
 class TestAIStatChoiceResolverExtraBranches:
     def test_wrong_total_raises_value_error(self) -> None:
         mock_llm = MagicMock()
-        mock_chain = MagicMock()
-        mock_llm.with_structured_output.return_value = mock_chain
-        mock_chain.invoke.return_value = StatIncreaseSelection(
+        mock_llm.create_structured_output.return_value = StatIncreaseSelection(
             stat_increases={Statistic.INTELLIGENCE: 1}
         )
 
@@ -848,9 +763,7 @@ class TestAIStatChoiceResolverExtraBranches:
 
     def test_negative_increase_raises_value_error(self) -> None:
         mock_llm = MagicMock()
-        mock_chain = MagicMock()
-        mock_llm.with_structured_output.return_value = mock_chain
-        mock_chain.invoke.return_value = StatIncreaseSelection(
+        mock_llm.create_structured_output.return_value = StatIncreaseSelection(
             stat_increases={Statistic.INTELLIGENCE: 3, Statistic.WISDOM: -1}
         )
 
@@ -861,27 +774,25 @@ class TestAIStatChoiceResolverExtraBranches:
         with pytest.raises(ValueError, match="negative increase"):
             _exhaust(block.get_change(state))
 
-    def test_wrong_type_raises_type_error(self) -> None:
+    def test_llm_error_raises_llm_error(self) -> None:
         mock_llm = MagicMock()
-        mock_chain = MagicMock()
-        mock_llm.with_structured_output.return_value = mock_chain
-        mock_chain.invoke.return_value = "not a StatIncreaseSelection"
+        mock_llm.create_structured_output.side_effect = LLMRefusalError("bad output")
 
         block = AIStatChoiceResolver.model_construct(
             llm=mock_llm, formatter=BlueprintFormatter()
         )
         state = _StatsBP(n_stat_choices=2)
-        with pytest.raises(TypeError, match="Expected StatIncreaseSelection"):
+        with pytest.raises(LLMRefusalError):
             _exhaust(block.get_change(state))
 
 
 @pytest.mark.unit
 class TestAIEquipmentChooserExtraBranches:
-    def test_wrong_selection_count_raises_value_error(self) -> None:
+    def test_missing_choice_raises_validation_error(self) -> None:
         mock_llm = MagicMock()
-        mock_chain = MagicMock()
-        mock_llm.with_structured_output.return_value = mock_chain
-        mock_chain.invoke.return_value = EquipmentChoiceSelection(selected_indices=(0,))
+        mock_llm.create_structured_output.side_effect = lambda prompt, model_class: (
+            model_class(choice_0=0)  # choice_1 missing
+        )
 
         block = AIEquipmentChooser.model_construct(
             llm=mock_llm, formatter=BlueprintFormatter()
@@ -892,43 +803,39 @@ class TestAIEquipmentChooserExtraBranches:
                 (ArmorName.CLOTHES,),
             )
         )
-        with pytest.raises(ValueError, match="AI returned"):
+        with pytest.raises(ValidationError):
             _exhaust(block.get_change(state))
 
-    def test_out_of_bounds_index_raises_value_error(self) -> None:
+    def test_out_of_bounds_index_raises_validation_error(self) -> None:
         mock_llm = MagicMock()
-        mock_chain = MagicMock()
-        mock_llm.with_structured_output.return_value = mock_chain
-        mock_chain.invoke.return_value = EquipmentChoiceSelection(selected_indices=(5,))
+        mock_llm.create_structured_output.side_effect = lambda prompt, model_class: (
+            model_class(choice_0=5)  # lt=1, so 5 is out of bounds
+        )
 
         block = AIEquipmentChooser.model_construct(
             llm=mock_llm, formatter=BlueprintFormatter()
         )
         state = Blueprint(equipment_choices=((WeaponName.DAGGER,),))
-        with pytest.raises(ValueError, match="AI selected index"):
+        with pytest.raises(ValidationError):
             _exhaust(block.get_change(state))
 
-    def test_wrong_type_raises_type_error(self) -> None:
+    def test_llm_error_raises_llm_error(self) -> None:
         mock_llm = MagicMock()
-        mock_chain = MagicMock()
-        mock_llm.with_structured_output.return_value = mock_chain
-        mock_chain.invoke.return_value = "not an EquipmentChoiceSelection"
+        mock_llm.create_structured_output.side_effect = LLMRefusalError("bad output")
 
         block = AIEquipmentChooser.model_construct(
             llm=mock_llm, formatter=BlueprintFormatter()
         )
         state = Blueprint(equipment_choices=((WeaponName.DAGGER,),))
-        with pytest.raises(TypeError, match="Expected EquipmentChoiceSelection"):
+        with pytest.raises(LLMRefusalError):
             _exhaust(block.get_change(state))
 
 
 @pytest.mark.unit
 class TestAIMagicalItemChooserExtraBranches:
-    def test_wrong_type_raises_type_error(self) -> None:
+    def test_llm_error_raises_llm_error(self) -> None:
         mock_llm = MagicMock()
-        mock_chain = MagicMock()
-        mock_llm.with_structured_output.return_value = mock_chain
-        mock_chain.invoke.return_value = "not a MagicalItemSelection"
+        mock_llm.create_structured_output.side_effect = LLMRefusalError("bad output")
 
         block = AIMagicalItemChooser.model_construct(
             llm=mock_llm,
@@ -942,7 +849,7 @@ class TestAIMagicalItemChooserExtraBranches:
             n_unique=0,
             n_mistery=0,
         )
-        with pytest.raises(TypeError, match="Expected MagicalItemSelection"):
+        with pytest.raises(LLMRefusalError):
             _exhaust(block.get_change(Blueprint()))
 
     def test_wrong_count_raises_value_error(self) -> None:
@@ -951,9 +858,7 @@ class TestAIMagicalItemChooserExtraBranches:
             item for item in MAGICAL_ITEMS if item.name != first_item.name
         )
         mock_llm = MagicMock()
-        mock_chain = MagicMock()
-        mock_llm.with_structured_output.return_value = mock_chain
-        mock_chain.invoke.return_value = MagicalItemSelection(
+        mock_llm.create_structured_output.return_value = MagicalItemSelection(
             selected_items=[first_item.name, second_item.name]
         )
 
@@ -975,26 +880,22 @@ class TestAIMagicalItemChooserExtraBranches:
 
 @pytest.mark.unit
 class TestAIBaseBuilderAssignerExtraBranches:
-    def test_wrong_type_raises_type_error(self) -> None:
+    def test_llm_error_raises_llm_error(self) -> None:
         mock_llm = MagicMock()
-        mock_chain = MagicMock()
-        mock_llm.with_structured_output.return_value = mock_chain
-        mock_chain.invoke.return_value = "not a CharacterBaseTemplate"
+        mock_llm.create_structured_output.side_effect = LLMRefusalError("bad output")
 
         block = AIBaseBuilderAssigner.model_construct(
             description="A wizard", llm=mock_llm
         )
-        with pytest.raises(TypeError, match="Expected CharacterBaseTemplate"):
+        with pytest.raises(LLMRefusalError):
             _exhaust(block.get_change(Blueprint()))
 
 
 @pytest.mark.unit
 class TestAISubclassAssignerExtraBranches:
-    def test_wrong_type_raises_type_error(self) -> None:
+    def test_llm_error_raises_llm_error(self) -> None:
         mock_llm = MagicMock()
-        mock_chain = MagicMock()
-        mock_llm.with_structured_output.return_value = mock_chain
-        mock_chain.invoke.return_value = "not a SubclassSelection"
+        mock_llm.create_structured_output.side_effect = LLMRefusalError("bad output")
 
         with patch(
             "dnd.character.blueprint.building_blocks.subclass_assigner.ai._check_can_assign"
@@ -1003,7 +904,7 @@ class TestAISubclassAssignerExtraBranches:
             block = AISubclassAssigner.model_construct(
                 class_=Class.WIZARD, llm=mock_llm, formatter=BlueprintFormatter()
             )
-            with pytest.raises(TypeError, match="Expected SubclassSelection"):
+            with pytest.raises(LLMRefusalError):
                 _exhaust(block.get_change(state))
 
 
@@ -1012,9 +913,7 @@ class TestAIMagicalItemChooserRarityBranches:
     def test_all_non_common_rarities(self) -> None:
         items = list(MAGICAL_ITEMS)
         mock_llm = MagicMock()
-        mock_chain = MagicMock()
-        mock_llm.with_structured_output.return_value = mock_chain
-        mock_chain.invoke.return_value = MagicalItemSelection(
+        mock_llm.create_structured_output.return_value = MagicalItemSelection(
             selected_items=[items[0].name] * 7
         )
 
@@ -1148,9 +1047,9 @@ class TestAIFeatChoiceResolverBuildPrompt:
 class TestAIAllNonStatChoicesResolverBuildPrompt:
     def test_feat_level_one_note(self) -> None:
         mock_llm = MagicMock()
-        mock_chain = MagicMock()
-        mock_llm.with_structured_output.return_value = mock_chain
-        mock_chain.invoke.return_value = ChoicePackage(feats=[FeatName.ALERT])
+        mock_llm.create_structured_output.return_value = ChoicePackage(
+            feats=[FeatName.ALERT]
+        )
 
         block = AIAllNonStatChoicesResolver.model_construct(
             llm=mock_llm, formatter=BlueprintFormatter()
@@ -1163,9 +1062,9 @@ class TestAIAllNonStatChoicesResolverBuildPrompt:
 
     def test_stat_choices_section_in_prompt(self) -> None:
         mock_llm = MagicMock()
-        mock_chain = MagicMock()
-        mock_llm.with_structured_output.return_value = mock_chain
-        mock_chain.invoke.return_value = ChoicePackage(languages=[Language.COMMON])
+        mock_llm.create_structured_output.return_value = ChoicePackage(
+            languages=[Language.COMMON]
+        )
 
         block = AIAllNonStatChoicesResolver.model_construct(
             llm=mock_llm, formatter=BlueprintFormatter()
@@ -1176,9 +1075,7 @@ class TestAIAllNonStatChoicesResolverBuildPrompt:
 
     def test_skill_choices_section_in_prompt(self) -> None:
         mock_llm = MagicMock()
-        mock_chain = MagicMock()
-        mock_llm.with_structured_output.return_value = mock_chain
-        mock_chain.invoke.return_value = ChoicePackage()
+        mock_llm.create_structured_output.return_value = ChoicePackage()
 
         block = AIAllNonStatChoicesResolver.model_construct(
             llm=mock_llm, formatter=BlueprintFormatter()

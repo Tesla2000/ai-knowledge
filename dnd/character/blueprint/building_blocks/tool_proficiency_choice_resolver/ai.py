@@ -19,9 +19,9 @@ from dnd.character.blueprint.state import HasToolProficiencies
 from dnd.other_profficiencies import GamingSet
 from dnd.other_profficiencies import MusicalInstrument
 from dnd.other_profficiencies import ToolProficiency
-from langchain_openai import ChatOpenAI
 from pydantic import BaseModel
 from pydantic import Field
+from structured_output_creator import OpenAIService, RaisingService
 from typing_protocol_intersection import ProtocolIntersection
 from typing import Literal
 from dnd.character.blueprint.building_blocks.building_block_type import (
@@ -53,8 +53,9 @@ class AIToolProficiencyChoiceResolver(ToolProficiencyChoiceResolver):
         BuildingBlockType.AI_TOOL_PROFICIENCY_CHOICE_RESOLVER
     )
 
-    llm: ChatOpenAI = Field(
-        description="Language model for making AI-powered decisions"
+    llm: RaisingService = Field(
+        default_factory=lambda: RaisingService(service=OpenAIService()),
+        description="Language model for making AI-powered decisions",
     )
 
     formatter: BlueprintFormatter = Field(
@@ -183,11 +184,7 @@ class AIToolProficiencyChoiceResolver(ToolProficiencyChoiceResolver):
             yield delta
             return delta.apply(state)
 
-        structured_llm = self.llm.with_structured_output(ToolProficiencySelection)
-        _result = structured_llm.invoke(prompt)
-        if not isinstance(_result, ToolProficiencySelection):
-            raise TypeError(f"Expected ToolProficiencySelection, got {type(_result)}")
-        selection = _result
+        selection = self.llm.create_structured_output(prompt, ToolProficiencySelection)
 
         new_tools: set[ToolProficiency | GamingSet | MusicalInstrument] = {
             t

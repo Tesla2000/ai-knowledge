@@ -13,17 +13,11 @@ from typing import Literal
 from dnd.character.blueprint.building_blocks.building_block_type import (
     BuildingBlockType,
 )
-from langchain_openai import ChatOpenAI
+from typing import Annotated
+
 from pydantic import BaseModel
 from pydantic import Field
-
-
-class EquipmentChoiceSelection(BaseModel):
-    """Schema for AI to select equipment from choices."""
-
-    selected_indices: tuple[int, ...] = Field(
-        description="Index of selected item from each equipment choice (0-indexed)"
-    )
+from structured_output_creator import OpenAIService, RaisingService
 
 
 class AIEquipmentChooser(EquipmentChooser):
@@ -44,8 +38,9 @@ class AIEquipmentChooser(EquipmentChooser):
         BuildingBlockType.AI_EQUIPMENT_CHOOSER
     )
 
-    llm: ChatOpenAI = Field(
-        description="Language model for making AI-powered decisions"
+    llm: RaisingService = Field(
+        default_factory=lambda: RaisingService(service=OpenAIService()),
+        description="Language model for making AI-powered decisions",
     )
 
     formatter: BlueprintFormatter = Field(
@@ -53,7 +48,8 @@ class AIEquipmentChooser(EquipmentChooser):
         description="Blueprint formatter for creating AI prompts",
     )
 
-    def _format_equipment_item(self, item: ArmorName | WeaponName | str) -> str:
+    @staticmethod
+    def _format_equipment_item(item: ArmorName | WeaponName | str) -> str:
         if isinstance(item, WeaponName):
             return f"{item.value} (Weapon)"
         elif isinstance(item, ArmorName):
@@ -101,30 +97,38 @@ class AIEquipmentChooser(EquipmentChooser):
         if not state.equipment_choices:
             return [], [], []
 
-        prompt = self._build_prompt(state)
-        structured_llm = self.llm.with_structured_output(EquipmentChoiceSelection)
-        _result = structured_llm.invoke(prompt)
-        if not isinstance(_result, EquipmentChoiceSelection):
-            raise TypeError(f"Expected EquipmentChoiceSelection, got {type(_result)}")
-        selection = _result
+        EquipmentChoiceSelection = type(
+            "EquipmentChoiceSelection",
+            (BaseModel,),
+            {
+                "__annotations__": {
+                    f"choice_{i}": Annotated[
+                        int,
+                        Field(
+                            ge=0,
+                            lt=len(opts),
+                            description=", ".join(
+                                f"{j}={self._format_equipment_item(item)}"
+                                for j, item in enumerate(opts)
+                            ),
+                        ),
+                    ]
+                    for i, opts in enumerate(state.equipment_choices)
+                }
+            },
+        )
 
-        if len(selection.selected_indices) != len(state.equipment_choices):
-            raise ValueError(
-                f"AI returned {len(selection.selected_indices)} selections "
-                f"but expected {len(state.equipment_choices)}"
-            )
+        prompt = self._build_prompt(state)
+        selection: BaseModel = self.llm.create_structured_output(
+            prompt, EquipmentChoiceSelection
+        )
+        selected = selection.model_dump()
 
         weapons: list[WeaponName] = []
         armors: list[ArmorName] = []
         others: list[str] = []
-        for choice_idx, selected_idx in enumerate(selection.selected_indices):
-            options = state.equipment_choices[choice_idx]
-            if selected_idx >= len(options):
-                raise ValueError(
-                    f"AI selected index {selected_idx} but choice {choice_idx} "
-                    f"only has {len(options)} options"
-                )
-            choice = options[selected_idx]
+        for choice_idx, options in enumerate(state.equipment_choices):
+            choice = options[selected[f"choice_{choice_idx}"]]
             if isinstance(choice, WeaponName):
                 weapons.append(choice)
             elif isinstance(choice, ArmorName):

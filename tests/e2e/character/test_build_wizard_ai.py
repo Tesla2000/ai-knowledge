@@ -33,7 +33,7 @@ from dnd.character.blueprint.building_blocks.subclass_assigner import (
 from dnd.character.builder import SuccessBuiltResult
 from dnd.character.character import Character
 from dotenv import load_dotenv
-from langchain_openai import ChatOpenAI
+from structured_output_creator import OpenAIService, RaisingService
 from tests.integration.character.test_build_wizard import TestBuildWizard
 
 load_dotenv()
@@ -42,8 +42,10 @@ load_dotenv()
 @pytest.mark.e2e
 class TestBuildWizardAI(TestBuildWizard):
     def test_build_wizard_with_ai(self) -> None:
-        llm = ChatOpenAI(model="gpt-5.4", temperature=0.7)
-        spells_llm = ChatOpenAI(model="gpt-5.4-mini", temperature=0.3)
+        llm = RaisingService(service=OpenAIService(model="gpt-5.4", temperature=0.7))
+        spells_llm = RaisingService(
+            service=OpenAIService(model="gpt-5.4-mini", temperature=0.3)
+        )
 
         all_choices_resolver = AIAllChoicesResolver(
             stat_choice_resolver=PriorityStatChoiceResolver(

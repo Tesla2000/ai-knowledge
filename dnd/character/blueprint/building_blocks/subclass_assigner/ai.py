@@ -28,10 +28,10 @@ from typing import Literal
 from dnd.character.blueprint.building_blocks.building_block_type import (
     BuildingBlockType,
 )
-from langchain_openai import ChatOpenAI
 from pydantic import BaseModel
 from pydantic import Field
 from pydantic import create_model
+from structured_output_creator import OpenAIService, RaisingService
 
 
 class AISubclassAssigner(BuildingBlock):
@@ -57,8 +57,9 @@ class AISubclassAssigner(BuildingBlock):
     class_: Class = Field(
         description="The character class for which to assign a subclass"
     )
-    llm: ChatOpenAI = Field(
-        description="Language model for making AI-powered decisions"
+    llm: RaisingService = Field(
+        default_factory=lambda: RaisingService(service=OpenAIService()),
+        description="Language model for making AI-powered decisions",
     )
 
     formatter: BlueprintFormatter = Field(
@@ -139,18 +140,7 @@ class AISubclassAssigner(BuildingBlock):
             subclass=(subclass_enum, ...),
         )
 
-        structured_llm = self.llm.with_structured_output(SubclassSelection)
-
-        try:
-            result = structured_llm.invoke(prompt)
-        except Exception as e:
-            raise ValueError(
-                f"AI failed to select subclass for {self.class_.value}: {e}"
-            ) from e
-
-        if not isinstance(result, _SubclassSelectionBase):
-            raise TypeError(f"Expected SubclassSelection, got {type(result)}")
-
+        result = self.llm.create_structured_output(prompt, SubclassSelection)
         selected: AnySubclass = result.subclass
         delta = SubclassDelta(subclasses=state.subclasses + (selected,))
         yield delta

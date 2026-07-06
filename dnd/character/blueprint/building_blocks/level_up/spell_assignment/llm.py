@@ -20,11 +20,11 @@ from dnd.choices.class_creation.character_class import Class
 from dnd.character.blueprint.building_blocks.building_block_type import (
     BuildingBlockType,
 )
-from langchain_openai import ChatOpenAI
 from pydantic import BaseModel
 from pydantic import ConfigDict
 from pydantic import create_model
 from pydantic import Field
+from structured_output_creator import OpenAIService, RaisingService
 
 
 def _build_llm_prompt(
@@ -68,7 +68,7 @@ def _build_llm_prompt(
 
 
 def _llm_select(
-    llm: ChatOpenAI,
+    llm: RaisingService,
     class_name: str,
     character_description: str | None,
     spell_level: int,
@@ -89,15 +89,7 @@ def _llm_select(
         spells=(tuple[Spell, ...], ...),
     )
 
-    structured = llm.with_structured_output(SpellSelection)
-    try:
-        _result = structured.invoke(context)
-    except Exception as e:
-        raise ValueError(
-            f"LLM failed to select spells for level {spell_level}: {e}"
-        ) from e
-    if not isinstance(_result, _SpellSelectionBase):
-        raise TypeError(f"Expected SpellSelection, got {type(_result)}")
+    _result = llm.create_structured_output(context, SpellSelection)
     return tuple(_result.spells[:count])
 
 
@@ -124,8 +116,9 @@ class WizardLLMSpellAssigner(WizardSpellAssigner):
     class_: Literal[Class.WIZARD] = Field(
         default=Class.WIZARD, description="Character class this assigner handles"
     )
-    llm: ChatOpenAI = Field(
-        description="Language model for making AI-powered decisions"
+    llm: RaisingService = Field(
+        default_factory=lambda: RaisingService(service=OpenAIService()),
+        description="Language model for making AI-powered decisions",
     )
     character_description: str | None = Field(
         default=None,
@@ -173,8 +166,9 @@ class SorcererLLMSpellAssigner(SorcererSpellAssigner):
     class_: Literal[Class.SORCERER] = Field(
         default=Class.SORCERER, description="Character class this assigner handles"
     )
-    llm: ChatOpenAI = Field(
-        description="Language model for making AI-powered decisions"
+    llm: RaisingService = Field(
+        default_factory=lambda: RaisingService(service=OpenAIService()),
+        description="Language model for making AI-powered decisions",
     )
     character_description: str | None = Field(
         default=None,

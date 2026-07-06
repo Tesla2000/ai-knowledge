@@ -53,6 +53,8 @@ repos:
           - starlette
           - langchain-openai
           - typing_protocol_intersection
+          - structured_output_creator
+          - pydantic_frozendict
         args: [ --strict, --config-file, pyproject.toml ]
   - repo: https://github.com/Tesla2000/any-hook
     rev: v3.18.0

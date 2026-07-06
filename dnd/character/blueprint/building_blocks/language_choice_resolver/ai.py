@@ -17,9 +17,9 @@ from dnd.character.blueprint.building_blocks.language_choice_resolver.base impor
 )
 from dnd.character.blueprint.state import HasLanguages
 from dnd.choices.language import Language
-from langchain_openai import ChatOpenAI
 from pydantic import BaseModel
 from pydantic import Field
+from structured_output_creator import OpenAIService, RaisingService
 from typing_protocol_intersection import ProtocolIntersection
 from typing import Literal
 from dnd.character.blueprint.building_blocks.building_block_type import (
@@ -49,8 +49,9 @@ class AILanguageChoiceResolver(LanguageChoiceResolver):
         BuildingBlockType.AI_LANGUAGE_CHOICE_RESOLVER
     )
 
-    llm: ChatOpenAI = Field(
-        description="Language model for making AI-powered decisions"
+    llm: RaisingService = Field(
+        default_factory=lambda: RaisingService(service=OpenAIService()),
+        description="Language model for making AI-powered decisions",
     )
 
     formatter: BlueprintFormatter = Field(
@@ -126,11 +127,7 @@ class AILanguageChoiceResolver(LanguageChoiceResolver):
             yield delta
             return delta.apply(state)
 
-        structured_llm = self.llm.with_structured_output(LanguageSelection)
-        _result = structured_llm.invoke(prompt)
-        if not isinstance(_result, LanguageSelection):
-            raise TypeError(f"Expected LanguageSelection, got {type(_result)}")
-        selection = _result
+        selection = self.llm.create_structured_output(prompt, LanguageSelection)
 
         count = list(state.languages).count(Language.ANY_OF_YOUR_CHOICE)
         if len(selection.languages) != count:

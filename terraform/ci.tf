@@ -134,6 +134,7 @@ data "aws_iam_policy_document" "deployer_production_policy" {
       "iam:DeleteRolePolicy",
       "iam:ListAttachedRolePolicies",
       "iam:ListRolePolicies",
+      "iam:ListInstanceProfilesForRole",
       "iam:CreateOpenIDConnectProvider",
       "iam:GetOpenIDConnectProvider",
       "iam:DeleteOpenIDConnectProvider",
@@ -250,6 +251,7 @@ data "aws_iam_policy_document" "deployer_development_policy" {
       "iam:DeleteRolePolicy",
       "iam:ListAttachedRolePolicies",
       "iam:ListRolePolicies",
+      "iam:ListInstanceProfilesForRole",
     ]
     resources = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/dnd-character-creator-development-exec"]
   }

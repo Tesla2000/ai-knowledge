@@ -110,6 +110,7 @@ data "aws_iam_policy_document" "deployer_production_policy" {
       "lambda:AddPermission",
       "lambda:RemovePermission",
       "lambda:GetPolicy",
+      "lambda:ListVersionsByFunction",
     ]
     resources = ["arn:aws:lambda:${var.aws_region}:${data.aws_caller_identity.current.account_id}:function:dnd-character-creator"]
   }

@@ -72,27 +72,13 @@ aws ssm put-parameter \
   --overwrite
 ```
 
-**Step 6 — Create the development deployer role (in CloudShell)**
-
-This is needed before the dev workflow can run from any branch. The production Terraform apply above creates `dnd-deployer-production` (main only); the dev role must be bootstrapped separately so it exists before any branch merges to main. Run from inside the `terraform/` directory:
-
-```shell
-aws iam create-role --role-name dnd-deployer-development \
-  --assume-role-policy-document '{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Principal":{"Federated":"arn:aws:iam::472765723468:oidc-provider/token.actions.githubusercontent.com"},"Action":"sts:AssumeRoleWithWebIdentity","Condition":{"StringEquals":{"token.actions.githubusercontent.com:aud":"sts.amazonaws.com"},"StringLike":{"token.actions.githubusercontent.com:sub":"repo:Tesla2000/dnd-character-creator:ref:refs/heads/*"}}}]}' && \
-  aws iam put-role-policy --role-name dnd-deployer-development \
-    --policy-name dnd-deployer-development-policy \
-    --policy-document file://bootstrap-dev-policy.json
-```
-
-After the first production deploy merges to `main`, Terraform manages both deployer roles permanently and this step is no longer needed for future setups.
-
-**Step 7 — Set the development OpenAI API key (in CloudShell)**
+**Step 6 — Set the development OpenAI API key (in CloudShell)**
 
 ```shell
 aws ssm put-parameter --name /dnd/development/openai_api_key --value "sk-..." --type SecureString --overwrite --region eu-central-1
 ```
 
-**Step 8 — Trigger the first deploy**
+**Step 7 — Trigger the first deploy**
 
 Merge the `deployment` branch into `main`. The CI pipeline will run automatically on push, or can be triggered manually from the [GitHub Actions UI](https://github.com/Tesla2000/dnd-character-creator/actions).
 

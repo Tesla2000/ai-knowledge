@@ -157,11 +157,16 @@ data "aws_iam_policy_document" "deployer_production_policy" {
       "ssm:GetParameters",
       "ssm:PutParameter",
       "ssm:DeleteParameter",
-      "ssm:DescribeParameters",
       "ssm:AddTagsToResource",
       "ssm:ListTagsForResource",
     ]
     resources = ["arn:aws:ssm:${var.aws_region}:*:parameter/dnd/openai_api_key"]
+  }
+
+  statement {
+    sid       = "SSMDescribe"
+    actions   = ["ssm:DescribeParameters"]
+    resources = ["*"]
   }
 
   statement {

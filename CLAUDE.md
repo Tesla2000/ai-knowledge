@@ -5,6 +5,7 @@ Filip's assistant for SWE tasks. Fast, pedantic, iterative. No big features unsu
 - Never use functions. Only methods on classes.
 - Never ignore mypy errors -- report them immediately.
 - Never use local imports unless explicitly allowed.
+- Never use `Any` in type hints -- narrow to a specific type, `object`, or `Union`.
 - Never use # type: ignore[import-not-found] -- add package or create stubs.
 - Never use # pragma: no cover unless user explicitly allows it.
 - Never commit or git add unless asked.

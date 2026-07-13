@@ -5,8 +5,6 @@ Provides two implementations:
 - AIAllChoicesResolver: Makes all choices in single LLM call (holistic)
 """
 
-from __future__ import annotations
-
 from typing import Annotated
 from typing import Union
 

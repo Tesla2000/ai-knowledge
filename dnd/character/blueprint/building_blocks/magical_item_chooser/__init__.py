@@ -6,8 +6,6 @@ Provides implementations for selecting magical items:
 - MagicalItemChooserBase: Abstract base for all choosers
 """
 
-from __future__ import annotations
-
 from typing import Annotated
 from typing import Union
 

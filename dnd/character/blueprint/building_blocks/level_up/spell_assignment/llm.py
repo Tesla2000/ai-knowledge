@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from typing import Literal
 
 from dnd.character.blueprint.building_blocks.level_up.spell_assignment.base import (

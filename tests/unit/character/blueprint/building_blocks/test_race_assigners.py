@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import pytest
 
 from dnd.character.blueprint.building_blocks.race_assigner.base_race_assigner import (

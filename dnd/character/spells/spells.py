@@ -1,6 +1,3 @@
-from __future__ import annotations
-
-
 from dnd.character.spells.spell_slots import Cantrip
 from dnd.character.spells.spell_slots import EighthLevel
 from dnd.character.spells.spell_slots import FifthLevel

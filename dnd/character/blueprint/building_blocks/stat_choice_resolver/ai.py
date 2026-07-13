@@ -1,7 +1,5 @@
 """AI-powered stat choice resolver for intelligent ability score increases."""
 
-from __future__ import annotations
-
 from dnd.character.blueprint.formatter import BlueprintFormatter
 from dnd.character.blueprint.building_blocks.stat_choice_resolver.base import (
     StatChoiceResolver,

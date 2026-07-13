@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from dnd.character.ability import Ability
 from dnd.choices.stats_creation.statistic import StatisticAndAny
 from dnd.other_profficiencies import ArmorProficiency

@@ -1,7 +1,5 @@
 """Concrete subclass assigners — one per D&D class, with Literal-typed subclass field."""
 
-from __future__ import annotations
-
 from typing import Literal
 
 from dnd.character.blueprint.building_blocks.subclass_assigner.base import (

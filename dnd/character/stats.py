@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from typing import Self
 
 from dnd.choices.stats_creation.statistic import Statistic

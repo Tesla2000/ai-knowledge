@@ -1,7 +1,5 @@
 """Base class for all choices resolution."""
 
-from __future__ import annotations
-
 from pydantic import BaseModel
 
 

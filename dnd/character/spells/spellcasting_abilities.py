@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from dnd.choices.class_creation.character_class import (
     Class,
 )

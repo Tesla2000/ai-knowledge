@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from dnd.character.armor.names import ArmorName
 from dnd.character.magical_item.item import MagicalItem
 from dnd.character.magical_item.level import Level

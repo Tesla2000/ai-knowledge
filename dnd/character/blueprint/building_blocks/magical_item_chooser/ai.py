@@ -1,7 +1,5 @@
 """AI-powered holistic magical item selection."""
 
-from __future__ import annotations
-
 from dnd.character.blueprint.formatter import BlueprintFormatter
 from dnd.character.blueprint.building_blocks.magical_item_chooser.base_chooser import (
     MagicalItemChooserBase,

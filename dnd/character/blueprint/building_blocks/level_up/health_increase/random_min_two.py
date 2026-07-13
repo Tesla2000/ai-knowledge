@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import random
 
 from dnd.character.blueprint.building_blocks.level_up.health_increase.base import (

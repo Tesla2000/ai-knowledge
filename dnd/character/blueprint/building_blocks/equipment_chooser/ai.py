@@ -1,7 +1,5 @@
 """AI-powered equipment chooser for intelligent equipment selection."""
 
-from __future__ import annotations
-
 from dnd.character.armor.names import ArmorName
 from dnd.character.blueprint.formatter import BlueprintFormatter
 from dnd.character.blueprint.building_blocks.equipment_chooser.base import (

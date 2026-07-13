@@ -1,7 +1,5 @@
 """Random subclass assigner for character creation."""
 
-from __future__ import annotations
-
 import random
 from typing import Literal
 from typing import cast

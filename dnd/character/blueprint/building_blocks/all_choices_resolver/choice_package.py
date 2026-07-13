@@ -1,7 +1,5 @@
 """Package containing all choice selections for AI resolution."""
 
-from __future__ import annotations
-
 from dnd.character.feature.feats import FeatName
 from dnd.choices.language import Language
 from dnd.other_profficiencies import GamingSet

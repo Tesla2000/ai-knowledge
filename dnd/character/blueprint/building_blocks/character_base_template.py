@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from dnd.character.race.race import Race
 from dnd.choices.alignment import Alignment
 from dnd.choices.background_creatrion.background import (

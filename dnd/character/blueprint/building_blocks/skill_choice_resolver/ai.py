@@ -1,8 +1,5 @@
 """AI-powered skill choice resolver for intelligent skill selection."""
 
-from __future__ import annotations
-
-
 from dnd.character.blueprint.formatter import BlueprintFormatter
 from dnd.character.blueprint.building_blocks.skill_choice_resolver.base import (
     SkillChoiceResolver,

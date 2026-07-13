@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import random
 
 from dnd.character.armor.names import ArmorName

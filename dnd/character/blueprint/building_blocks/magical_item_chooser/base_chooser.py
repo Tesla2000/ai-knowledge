@@ -1,7 +1,5 @@
 """Base class for all magical item choosers."""
 
-from __future__ import annotations
-
 from abc import ABC
 from abc import abstractmethod
 

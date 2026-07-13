@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from dnd.character.blueprint.building_blocks.level_up.health_increase.base import (
     HealthIncrease,
 )

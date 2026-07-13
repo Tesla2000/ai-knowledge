@@ -1,7 +1,5 @@
 """AI-powered holistic all choices resolver."""
 
-from __future__ import annotations
-
 from itertools import filterfalse
 from typing import Literal
 
@@ -58,68 +56,6 @@ from dnd.character.blueprint.sentinels import (
     _CDK,
 )
 from dnd.character.stats import Stats
-
-
-class AIAllChoicesResolver(AllChoicesResolverBase, BuildingBlock):
-    """AI-powered resolver that makes all character choices holistically."""
-
-    type: Literal[BuildingBlockType.AI_ALL_CHOICES_RESOLVER] = (
-        BuildingBlockType.AI_ALL_CHOICES_RESOLVER
-    )
-
-    stat_choice_resolver: AnyStatChoiceResolver
-    equipment_chooser: AnyEquipmentChooser
-    feat_choice_resolver: NullBlock | MaxIfNotMaxedResolver
-    all_non_stat_choices_resolver: AIAllNonStatChoicesResolver
-
-    def apply(
-        self,
-        blueprint: Blueprint[
-            _RK,
-            Stats,
-            _HeK,
-            _StCK,
-            _SkCK,
-            _WZK,
-            _SOK,
-            _FGK,
-            _BAK,
-            _ROK,
-            _CLK,
-            _DRK,
-            _PAK,
-            _RAK,
-            _MOK,
-            _BDK,
-            _WAK,
-            _ARK,
-            _CDK,
-        ],
-    ) -> Blueprint[
-        _RK,
-        Stats,
-        _HeK,
-        Literal[0],
-        Literal[0],
-        _WZK,
-        _SOK,
-        _FGK,
-        _BAK,
-        _ROK,
-        _CLK,
-        _DRK,
-        _PAK,
-        _RAK,
-        _MOK,
-        _BDK,
-        _WAK,
-        _ARK,
-        _CDK,
-    ]:
-        r1 = self.stat_choice_resolver.apply(blueprint)
-        r2 = self.equipment_chooser.apply(r1)
-        r3 = self.feat_choice_resolver.apply(r2)
-        return self.all_non_stat_choices_resolver.apply(r3)
 
 
 class AIAllNonStatChoicesResolver(BuildingBlock):
@@ -389,3 +325,65 @@ class AIAllNonStatChoicesResolver(BuildingBlock):
                 "skills_to_choose_from": frozenset(),
             }
         )
+
+
+class AIAllChoicesResolver(AllChoicesResolverBase, BuildingBlock):
+    """AI-powered resolver that makes all character choices holistically."""
+
+    type: Literal[BuildingBlockType.AI_ALL_CHOICES_RESOLVER] = (
+        BuildingBlockType.AI_ALL_CHOICES_RESOLVER
+    )
+
+    stat_choice_resolver: AnyStatChoiceResolver
+    equipment_chooser: AnyEquipmentChooser
+    feat_choice_resolver: NullBlock | MaxIfNotMaxedResolver
+    all_non_stat_choices_resolver: AIAllNonStatChoicesResolver
+
+    def apply(
+        self,
+        blueprint: Blueprint[
+            _RK,
+            Stats,
+            _HeK,
+            _StCK,
+            _SkCK,
+            _WZK,
+            _SOK,
+            _FGK,
+            _BAK,
+            _ROK,
+            _CLK,
+            _DRK,
+            _PAK,
+            _RAK,
+            _MOK,
+            _BDK,
+            _WAK,
+            _ARK,
+            _CDK,
+        ],
+    ) -> Blueprint[
+        _RK,
+        Stats,
+        _HeK,
+        Literal[0],
+        Literal[0],
+        _WZK,
+        _SOK,
+        _FGK,
+        _BAK,
+        _ROK,
+        _CLK,
+        _DRK,
+        _PAK,
+        _RAK,
+        _MOK,
+        _BDK,
+        _WAK,
+        _ARK,
+        _CDK,
+    ]:
+        r1 = self.stat_choice_resolver.apply(blueprint)
+        r2 = self.equipment_chooser.apply(r1)
+        r3 = self.feat_choice_resolver.apply(r2)
+        return self.all_non_stat_choices_resolver.apply(r3)

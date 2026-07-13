@@ -4,8 +4,6 @@ This package provides building blocks for assigning subclasses to characters,
 including both random and AI-powered selection strategies.
 """
 
-from __future__ import annotations
-
 from dnd.character.blueprint.building_blocks.subclass_assigner.ai import (
     AISubclassAssigner,
 )

@@ -4,8 +4,6 @@ Generate block metadata JSON for the frontend.
 Run from /workspace/frontend: python3 scripts/generate_blocks.py
 """
 
-from __future__ import annotations
-
 import enum
 import json
 import sys

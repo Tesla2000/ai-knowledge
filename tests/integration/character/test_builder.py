@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from dnd.character.blueprint.states.state import Blueprint
 
 

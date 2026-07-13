@@ -1,7 +1,5 @@
 """Optional character identity/flavor data, assigned incrementally by building blocks."""
 
-from __future__ import annotations
-
 from typing import ClassVar
 
 from dnd.choices.alignment import Alignment

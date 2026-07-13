@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from dnd.character.magical_item.level import Level
 from dnd.character.magical_item.source import Source
 from pydantic import BaseModel

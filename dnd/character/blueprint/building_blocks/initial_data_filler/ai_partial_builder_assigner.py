@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from dnd.character.blueprint.building_blocks.building_block import _WideBlueprint
 from dnd.character.blueprint.building_blocks.initial_data_filler.ai_builder_base import (
     AIBuilderBase,

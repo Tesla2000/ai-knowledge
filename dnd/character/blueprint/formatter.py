@@ -1,7 +1,5 @@
 """Component for formatting blueprint data into structured text for AI prompts."""
 
-from __future__ import annotations
-
 from typing import Literal
 
 from dnd.character.blueprint.states.state import _BPT

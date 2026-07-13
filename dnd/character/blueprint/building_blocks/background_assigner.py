@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from typing import Literal
 
 from dnd.character.blueprint.building_blocks.building_block_type import (

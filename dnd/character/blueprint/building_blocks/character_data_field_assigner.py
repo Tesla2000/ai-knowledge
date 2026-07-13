@@ -1,7 +1,5 @@
 """Base class for assigning a single CharacterData field."""
 
-from __future__ import annotations
-
 from abc import ABC
 from abc import abstractmethod
 

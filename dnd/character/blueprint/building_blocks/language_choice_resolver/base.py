@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from abc import abstractmethod
 
 from dnd.character.blueprint.building_blocks.building_block import BuildingBlock

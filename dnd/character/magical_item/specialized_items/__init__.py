@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from dnd.character.magical_item.specialized_items.ac_and_saving_throw_bonus_item import (
     ACAndSavingThrowBonusItem,
 )

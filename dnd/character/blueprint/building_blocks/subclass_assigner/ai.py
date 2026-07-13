@@ -1,7 +1,5 @@
 """AI-powered subclass assigner."""
 
-from __future__ import annotations
-
 from dnd.character.blueprint.formatter import BlueprintFormatter
 from dnd.character.blueprint.building_blocks.building_block import BuildingBlock
 from dnd.character.blueprint.building_blocks.subclass_assigner.base import (

@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import pytest
 import dnd.server.app as _app_module
 from unittest.mock import MagicMock

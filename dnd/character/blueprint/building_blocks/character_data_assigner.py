@@ -1,7 +1,5 @@
 """Assigns a whole CharacterData object to the blueprint at once."""
 
-from __future__ import annotations
-
 from typing import Literal
 
 from dnd.character.blueprint.building_blocks.building_block import BuildingBlock

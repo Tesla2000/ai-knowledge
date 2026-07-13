@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from abc import ABC
 
 from dnd.character.blueprint.building_blocks.character_base_template import (

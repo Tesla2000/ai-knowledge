@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import pytest
 
 from dnd.character.blueprint.building_blocks.all_choices_resolver.base import (

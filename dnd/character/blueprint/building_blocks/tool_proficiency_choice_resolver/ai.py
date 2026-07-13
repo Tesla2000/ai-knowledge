@@ -1,7 +1,5 @@
 """AI-powered tool proficiency choice resolver."""
 
-from __future__ import annotations
-
 from dnd.character.blueprint.formatter import BlueprintFormatter
 from dnd.character.blueprint.building_blocks.tool_proficiency_choice_resolver.base import (
     ToolProficiencyChoiceResolver,

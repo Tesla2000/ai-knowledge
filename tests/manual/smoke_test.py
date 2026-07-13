@@ -3,8 +3,6 @@ Manual smoke test: deploys must be live before running this.
 Usage: python tests/manual/smoke_test.py [--api-url https://...]
 """
 
-from __future__ import annotations
-
 import argparse
 import json
 import logging

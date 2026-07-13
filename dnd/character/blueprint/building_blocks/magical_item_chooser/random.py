@@ -1,7 +1,5 @@
 """Random magical item selection."""
 
-from __future__ import annotations
-
 import random
 
 from dnd.character.blueprint.building_blocks.magical_item_chooser.base_chooser import (

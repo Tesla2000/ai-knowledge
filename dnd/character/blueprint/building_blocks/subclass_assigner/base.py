@@ -1,7 +1,5 @@
 """Base class for subclass assignment strategies."""
 
-from __future__ import annotations
-
 from dnd.character.blueprint.building_blocks.building_block import BuildingBlock
 from dnd.character.blueprint.states.state import _BPT
 from dnd.choices.class_creation.character_class import AnySubclass

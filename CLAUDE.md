@@ -1,83 +1,44 @@
-# CLAUDE.md
+Filip's assistant for SWE tasks. Fast, pedantic, iterative. No big features unsupervised.
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+# Hard rules (always apply)
 
-## Commands
+- Never use functions. Only methods on classes.
+- Never ignore mypy errors -- report them immediately.
+- Never use local imports unless explicitly allowed.
+- Never use `Any` in type hints -- narrow to a specific type, `object`, or `Union`.
+- Never use # type: ignore[import-not-found] -- add package or create stubs.
+- Never use # pragma: no cover unless user explicitly allows it.
+- Never commit or git add unless asked.
+- Never run mypy or pre-commit unless asked.
+- Use uv add to add dependencies. Never edit pyproject.toml or .pre-commit-config.yaml manually.
+- Always type hint arguments and return type.
+- Use only ASCII punctuation. No em dashes, curly quotes, ellipsis characters.
+- When mentioning files always use full path from root with line number: full_path:69
+- Present all changes to a file in one approval -- never split imports from code.
+- Use timeouts or run in background with a check for long-running commands.
+- Don't implement in plan mode -- wait for approval, then execute.
+- Save pre-commit output and read it instead of re-running: `pre-commit run --all-files 2>&1 | tee pre-commit-output.txt`
+- Save test output and read it instead of re-running with different config to see other lines.
 
-```bash
-# Run all pre-commit hooks (lint + type-check)
-pre-commit run --all-files
+# Skills (load on demand)
 
-# Run only mypy
-pre-commit run mypy --all-files
+Use /python-style for: comprehensions, defaultdict, staticmethod/classmethod, imports, typing, module exports.
+Use /pydantic for: frozen models, Annotated validators, cross-field defaults, InstanceOf fields.
+Use /services for: service creation pattern, types.py, __init__.py exports, PydanticLogger.
+Use /exception-handling for: return-value error pattern, specific exception types, no raise.
+Use /testing for: patch.object format, autospec, coverage, saving test output.
+Use /cli for: BaseSettings CLI pattern, cli_cmd entry point.
 
-# Run tests by marker
-pytest -m unit
-pytest -m integration
-pytest -m "unit or integration"   # no API key required
-pytest -m smoke                   # requires OPENAI_API_KEY
-pytest -m e2e                     # full AI flows
+# Knowledge base
 
-# Run a single test file
-pytest tests/unit/path/to/test_file.py
+Full rule documentation with examples lives at:
+~/PassionProjects/ai-knowledge/topics/
 
-# Run the FastAPI server locally
-uvicorn dnd.server.app:app --reload
-```
+Index: ~/PassionProjects/ai-knowledge/index.md
 
-## Architecture
+# How to update rules
 
-### The Blueprint Pipeline
-
-`Blueprint` (`dnd/character/blueprint/state.py`) is a **19-parameter frozen Pydantic generic** that encodes build state in its type parameters:
-
-```
-Blueprint[_RK, _StK, _HeK, _StCK, _SkCK, _WZK, _SOK, _FGK, _BAK, _ROK, _CLK, _DRK, _PAK, _RAK, _MOK, _BDK, _WAK, _ARK, _CDK]
-```
-
-- `_RK` — `Race | None` (race assigned)
-- `_StK` — `Stats | None` (base stats assigned)
-- `_HeK` — `PositiveInt | None` (health pool)
-- `_StCK / _SkCK` — `Literal[0] | PositiveInt` (remaining choice counts)
-- `_WZK / _SOK / _FGK…_ARK` — phantom class levels (pre/post-subclass per class)
-- `_CDK` — `CharacterData | None` (name, age, background, etc.)
-
-The type parameters are **covariant** (Blueprint is frozen/read-only), so `Blueprint[Race, Stats, ...]` is a subtype of `Blueprint[Race|None, Stats|None, ...]`. This makes `_WideBlueprint` and `AnyBluprint` work as proper supertypes.
-
-### Building Blocks
-
-Each step is a `BuildingBlock` — a frozen Pydantic model with a discriminated `type: BuildingBlockType` field and an `apply(blueprint: InType) -> OutType` method. The type signature precisely encodes what changes at each step.
-
-Key type aliases used in `apply` signatures:
-- `_WideBlueprint` (`building_block.py`) — accepts any Blueprint as input (all params at max width)
-- `AnyBluprint` / `_BPT` (`state.py`) — for type-preserving identity-like blocks (e.g. `NullBlock`)
-- `EmptyBlueprint` — the all-None/Literal[0] starting state
-- `InitializedBlueprint` (`initial_builder.py`) — output after race+stats+level are set
-
-### Build Pipeline
-
-The `/create_character` endpoint in `dnd/server/app.py` chains blocks in two phases:
-
-1. **`InitialBuilder.apply(EmptyBlueprint)`** — orchestrates: `LevelAssigner → StatsBuilder → RaceAssigner → AllChoicesResolver`, outputs `InitializedBlueprint`
-2. **Subsequent blocks** — health, subclass assigners (per class), feat/spell/equipment resolvers, `InitialDataFiller` (assigns `CharacterData`)
-3. **`CharacterConverter`** — seals the final Blueprint into `PresentableCharacter`
-
-### Phantom Subclass Types
-
-Different classes gain subclasses at different levels (Sorcerer=1, Wizard=2, most others=3). Each has dedicated enums and phantom generic classes (`WizardPreSubclassLevel`, `SorcererPreSubclassLevel`, `ClassPreSubclassLevel`, etc.) so that level-gated subclass blocks are type-safe — the wrong block on the wrong class fails at pipeline-construction time, not runtime.
-
-## Strict Constraints (enforced by pre-commit hooks)
-
-- **`# type: ignore` is forbidden** — fix the underlying type error instead
-- **`arbitrary_types_allowed = True` is forbidden** — use `InstanceOf[T]` from pydantic-frozendict
-- **`hasattr`, `getattr`, `print` are forbidden** — use attribute access directly; use logging
-- **OOP methods over standalone functions** — the main API surface should be a method on the relevant class
-- **`from __future__ import annotations`** — required in all files that use forward references in type hints
-- mypy runs with `--strict`; 100% test coverage is required
-
-## Key Invariants
-
-- All Pydantic models must be `frozen=True`
-- `apply` methods in building blocks must be fully typed with explicit Blueprint TypeVar signatures — do not use `_WideBlueprint` as both input and output; use the 19-TypeVar form
-- `_StK = Stats` must be pinned (not free) in any block that reads `blueprint.stats` for computation (e.g. `FeatChoiceResolver`, `AllChoicesResolver`)
-- `model_copy(update={...})` is the mutation pattern; `Blueprint[...].model_validate(dict(bp) | {...})` is used when the type parameter changes
+1. Edit the relevant skill file in ~/.claude/skills/<name>/SKILL.md
+2. Mirror the change in ~/PassionProjects/ai-knowledge/topics/<domain>/<file>.md
+3. Run: python3 ~/PassionProjects/ai-knowledge/scripts/rebuild_index.py
+4. If the rule must always load (not just on demand), add it to the Hard rules section above.

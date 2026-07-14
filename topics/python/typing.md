@@ -3,6 +3,8 @@
 ## Rules
 
 - Always type hint both arguments and return type.
+- Never use `Any`. Narrow to a specific type, `object`, or a `Union`; the `any-hook`
+  pre-commit hook enforces this and its errors must never be ignored.
 - Never use plain tuple with a fixed number of arguments. Use `NamedTuple` instead.
 - Use `object` in type hints only when the type genuinely cannot be narrowed.
 - Never use `from __future__ import annotations`.

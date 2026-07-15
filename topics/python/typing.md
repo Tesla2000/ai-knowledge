@@ -7,7 +7,10 @@
   pre-commit hook enforces this and its errors must never be ignored.
 - Never use plain tuple with a fixed number of arguments. Use `NamedTuple` instead.
 - Use `object` in type hints only when the type genuinely cannot be narrowed.
-- Never use `from __future__ import annotations`.
+- Never use `from __future__ import annotations`. Type hints must be real types evaluated at
+  definition time, not strings deferred to runtime.
+- For self-referential return types inside a class (e.g., a classmethod returning its own
+  class), use `typing.Self` — never a quoted string like `"MyClass"`.
 - Do not define types between imports.
 
 ## NamedTuple

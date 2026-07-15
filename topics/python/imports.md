@@ -42,6 +42,14 @@ from mylib import Config as _Config   # do not alias public as private
 
 ## Circular imports
 
+Circular imports must be resolved at the module level by restructuring:
+- Move the shared type/class to a third module that both sides can import from.
+- Split a large module into smaller ones so the dependency graph is acyclic.
+
+Never work around circular imports with `TYPE_CHECKING` guards or local (inline) imports.
+`TYPE_CHECKING`-only imports are invisible at runtime and break Pydantic field resolution.
+Local imports hide the real dependency and violate the "no local imports" rule.
+
 If removing an unused import would break a circular import boundary, leave it in place.
 Otherwise, defer to the linter.
 

@@ -9,13 +9,11 @@ from typing import (
     TypeVar,
     cast,
     get_args,
-    Any,
 )
 from collections.abc import Iterable, Sequence
 from typing import assert_never
 
 from pydantic import BaseModel, ConfigDict, PositiveInt, Field
-from pydantic._internal._forward_ref import PydanticRecursiveRef
 
 from dnd.choices.class_creation.character_class import Class
 
@@ -1777,9 +1775,9 @@ class _SpellSelector(BaseModel, Generic[_T_co]):
 
     def __class_getitem__(
         cls,
-        item: type[Any] | tuple[type[Any], ...],
-    ) -> type[BaseModel] | PydanticRecursiveRef:
-        result = super().__class_getitem__(item)
+        item: type[object] | tuple[type[object], ...],
+    ) -> type[BaseModel]:
+        result = cast(type[BaseModel], super().__class_getitem__(item))
         result.__name__ = "SpellSelection"
         return result
 

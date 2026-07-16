@@ -13,6 +13,7 @@ from dnd.choices.class_creation.character_class import Class
 from dnd.character.blueprint.building_blocks.building_block_type import (
     BuildingBlockType,
 )
+from pydantic import BaseModel
 from pydantic import ConfigDict
 from pydantic import Field
 from structured_output_creator import OpenAIService, RaisingService
@@ -58,7 +59,7 @@ def _build_llm_prompt(
 
 
 def _llm_select(
-    llm: RaisingService,
+    llm: RaisingService[BaseModel],
     query: ClassSpellLevel,
     character_description: str | None,
     count: int,
@@ -97,7 +98,7 @@ class WizardLLMSpellAssigner(WizardSpellAssigner):
     class_: Literal[Class.WIZARD] = Field(
         default=Class.WIZARD, description="Character class this assigner handles"
     )
-    llm: RaisingService = Field(
+    llm: RaisingService[BaseModel] = Field(
         exclude=True,
         default_factory=lambda: RaisingService(service=OpenAIService()),
         description="Language model for making AI-powered decisions",
@@ -148,7 +149,7 @@ class SorcererLLMSpellAssigner(SorcererSpellAssigner):
     class_: Literal[Class.SORCERER] = Field(
         default=Class.SORCERER, description="Character class this assigner handles"
     )
-    llm: RaisingService = Field(
+    llm: RaisingService[BaseModel] = Field(
         exclude=True,
         default_factory=lambda: RaisingService(service=OpenAIService()),
         description="Language model for making AI-powered decisions",

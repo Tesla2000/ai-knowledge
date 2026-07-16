@@ -57,7 +57,7 @@ class AIStatChoiceResolver(StatChoiceResolver):
         BuildingBlockType.AI_STAT_CHOICE_RESOLVER
     )
 
-    llm: RaisingService = Field(
+    llm: RaisingService[BaseModel] = Field(
         exclude=True,
         default_factory=lambda: RaisingService(service=OpenAIService()),
         description="Language model for making AI-powered decisions",

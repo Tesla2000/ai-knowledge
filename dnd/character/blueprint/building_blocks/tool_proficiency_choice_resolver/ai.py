@@ -25,7 +25,7 @@ class AIToolProficiencyChoiceResolver(ToolProficiencyChoiceResolver):
         BuildingBlockType.AI_TOOL_PROFICIENCY_CHOICE_RESOLVER
     )
 
-    llm: RaisingService = Field(
+    llm: RaisingService[BaseModel] = Field(
         exclude=True, default_factory=lambda: RaisingService(service=OpenAIService())
     )
 

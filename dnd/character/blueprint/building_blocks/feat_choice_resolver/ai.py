@@ -21,7 +21,7 @@ class AIFeatChoiceResolver(BuildingBlock):
         BuildingBlockType.AI_FEAT_CHOICE_RESOLVER
     )
 
-    llm: RaisingService = Field(
+    llm: RaisingService[BaseModel] = Field(
         exclude=True, default_factory=lambda: RaisingService(service=OpenAIService())
     )
 

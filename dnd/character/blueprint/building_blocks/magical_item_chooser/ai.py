@@ -39,7 +39,7 @@ class AIMagicalItemChooser(MagicalItemChooserBase):
 
     model_config = ConfigDict(frozen=True)
 
-    llm: RaisingService = Field(
+    llm: RaisingService[BaseModel] = Field(
         exclude=True,
         default_factory=lambda: RaisingService(service=OpenAIService()),
         description="Language model for making AI-powered decisions",

@@ -6,6 +6,7 @@ from dnd.character.blueprint.building_blocks.character_base_template import (
 from dnd.character.blueprint.building_blocks.initial_data_filler.base_filler import (
     InitialDataFiller,
 )
+from pydantic import BaseModel
 from pydantic import Field
 from structured_output_creator import OpenAIService, RaisingService
 
@@ -21,7 +22,7 @@ class AIBuilderBase(InitialDataFiller, ABC):
         description="Natural language description of the character to generate"
     )
 
-    llm: RaisingService = Field(
+    llm: RaisingService[BaseModel] = Field(
         exclude=True,
         default_factory=lambda: RaisingService(service=OpenAIService()),
         description="Language model for making AI-powered decisions",

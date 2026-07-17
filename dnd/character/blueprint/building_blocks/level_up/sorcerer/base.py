@@ -1,7 +1,6 @@
 from abc import ABC
 from abc import abstractmethod
 from typing import Literal
-from typing import cast
 
 from pydantic import Field
 
@@ -29,7 +28,6 @@ from dnd.character.blueprint.sentinels import MaybeCharacterData
 from dnd.character.blueprint.sentinels import MaybeHealth
 from dnd.character.blueprint.sentinels import SorcererPreSubclassLevel
 from dnd.character.blueprint.sentinels import SorcererSubclassLevel
-from pydantic import PositiveInt
 from dnd.character.blueprint.states.sorcerer.base import SorcererBlueprint
 from dnd.character.blueprint.states.sorcerer.base import _SBPT
 from dnd.character.blueprint.states.state import Blueprint
@@ -114,35 +112,7 @@ class SorcererLevel1Base[SubclassOut: SorcererSubclass](BuildingBlock, ABC):
     ]:
         r1 = self._update_blueprint(blueprint)
         r2 = self.health_increase.apply(r1)
-        r3 = self.spell_assigner.apply(
-            cast(
-                Blueprint[
-                    Race,
-                    Stats,
-                    PositiveInt,
-                    _StCK_,
-                    _SkCK_,
-                    _WZK_,
-                    SorcererSubclassLevel[
-                        Literal[FirstSubclassPostLevel.FIRST], SubclassOut
-                    ],
-                    _FGK_,
-                    _BAK_,
-                    _ROK_,
-                    _CLK_,
-                    _DRK_,
-                    _PAK_,
-                    _RAK_,
-                    _MOK_,
-                    _BDK_,
-                    _WAK_,
-                    _ARK_,
-                    _CDK_,
-                ],
-                r2,
-            )
-        )
-        partial = SorcererBlueprint[
+        sorc_r2 = SorcererBlueprint[
             _StCK_,
             _SkCK_,
             _WZK_,
@@ -161,10 +131,11 @@ class SorcererLevel1Base[SubclassOut: SorcererSubclass](BuildingBlock, ABC):
             _CDK_,
             Literal[0],
         ].model_validate(
-            dict(r3)
+            dict(r2)
             | {"spell_slots": FULL_CASTER_SPELL_SLOTS[0], "n_metamagic_choices": 0}
         )
-        return partial.increase_full_caster()
+        r3 = self.spell_assigner.apply(sorc_r2)
+        return r3.increase_full_caster()
 
 
 class SorcererSharedLevelBase[
@@ -243,8 +214,7 @@ class SorcererSharedLevelBase[
     ]:
         r1 = self._update_blueprint(blueprint)
         r2 = self.health_increase.apply(r1)
-        r3 = self.spell_assigner.apply(r2)
-        partial = SorcererBlueprint[
+        sorc_r2 = SorcererBlueprint[
             _StCK_,
             _SkCK_,
             _WZK_,
@@ -263,14 +233,15 @@ class SorcererSharedLevelBase[
             _CDK_,
             _McK_,
         ].model_validate(
-            dict(r3)
+            dict(r2)
             | {
                 "spell_slots": blueprint.spell_slots,
                 "caster_level": blueprint.caster_level,
                 "n_metamagic_choices": blueprint.n_metamagic_choices,
             }
         )
-        return partial.increase_full_caster()
+        r3 = self.spell_assigner.apply(sorc_r2)
+        return r3.increase_full_caster()
 
 
 class SorcererFeatGrantingLevelBase[
@@ -425,8 +396,7 @@ class SorcererSubclassFeatureLevelBase[
     ]:
         r1 = self._update_blueprint(blueprint)
         r2 = self.health_increase.apply(r1)
-        r3 = self.spell_assigner.apply(r2)
-        partial = SorcererBlueprint[
+        sorc_r2 = SorcererBlueprint[
             _StCK_,
             _SkCK_,
             _WZK_,
@@ -445,11 +415,12 @@ class SorcererSubclassFeatureLevelBase[
             _CDK_,
             _McK_,
         ].model_validate(
-            dict(r3)
+            dict(r2)
             | {
                 "spell_slots": blueprint.spell_slots,
                 "caster_level": blueprint.caster_level,
                 "n_metamagic_choices": blueprint.n_metamagic_choices,
             }
         )
-        return partial.increase_full_caster()
+        r3 = self.spell_assigner.apply(sorc_r2)
+        return r3.increase_full_caster()

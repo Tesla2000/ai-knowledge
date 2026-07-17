@@ -1,6 +1,5 @@
 from abc import ABC
 from abc import abstractmethod
-from typing import ClassVar
 from typing import Protocol
 
 from dnd.character.blueprint.building_blocks.building_block import (
@@ -8,37 +7,24 @@ from dnd.character.blueprint.building_blocks.building_block import (
     _WideBlueprint,
 )
 from dnd.character.blueprint.sentinels import (
-    _ARK,
-    _BAK,
-    _BDK,
-    _CDK,
-    _CLK,
-    _DRK,
-    _FGK,
-    _HeK,
-    _MOK,
-    _PAK,
-    _RAK,
-    _ROK,
-    _RK,
-    _SkCK,
-    _SOK,
-    _SOK_NZ,
-    _StCK,
-    _StK,
-    _WAK,
-    _WZK,
-    _WZK_NZ,
+    AnyClassLevel,
+    AnyMetamagicChoices,
+    AnyNonZeroSorcererLevel,
+    AnyNonZeroWizardLevel,
+    AnySorcererLevel,
+    AnyStatChoices,
+    AnyWizardLevel,
+    MaybeCharacterData,
 )
 from collections.abc import Callable
 
-from dnd.character.blueprint.states.state import Blueprint
+from dnd.character.blueprint.states.sorcerer.base import SorcererBlueprint
+from dnd.character.blueprint.states.wizard.base import WizardBlueprint
 from dnd.character.spells import ClassSpellLevel
 from dnd.character.spells import get_class_spells_set
 from dnd.character.spells import SpellLevel
 from dnd.character.spells import Spell
-from dnd.character.spells.max_spell_levels import CasterType
-from dnd.character.spells.max_spell_levels import MAX_SPELL_LEVELS
+from dnd.character.spells.max_spell_levels import SpellSlots
 from dnd.character.spells.spells import Spells
 from dnd.choices.class_creation.character_class import Class
 
@@ -98,8 +84,6 @@ def _apply_spells(
 class WizardSpellAssigner(BuildingBlock, ABC):
     """Abstract base for wizard spell assignment strategies."""
 
-    _caster_type: ClassVar[CasterType] = CasterType.FULL
-
     @abstractmethod
     def select_spells(
         self,
@@ -109,63 +93,79 @@ class WizardSpellAssigner(BuildingBlock, ABC):
         state: _WideBlueprint,
     ) -> tuple[Spell, ...]: ...
 
-    def _get_spells_to_learn(self, state: _WideBlueprint) -> dict[SpellLevel, int]:
-        level = state.classes.get_level(Class.WIZARD)
-        if level == 1:
+    def _get_spells_to_learn(
+        self,
+        class_level: int,
+        spell_slots: SpellSlots[int, int, int, int, int, int, int, int, int],
+    ) -> dict[SpellLevel, int]:
+        if class_level == 1:
             return {0: 3, 1: 6}
-        effective = level
-        max_spell_level = MAX_SPELL_LEVELS[self._caster_type][min(effective, 20) - 1]
+        max_spell_level = spell_slots.max_level()
         n_cantrips_increase_levels = (4, 10)
         return {
             max_spell_level: 2,
-            0: int(level in n_cantrips_increase_levels),
+            0: int(class_level in n_cantrips_increase_levels),
         }
 
-    def apply(
+    def apply[
+        _StCK_: AnyStatChoices,
+        _SkCK_: AnyStatChoices,
+        _WZK_: AnyNonZeroWizardLevel,
+        _SOK_: AnySorcererLevel,
+        _FGK_: AnyClassLevel,
+        _BAK_: AnyClassLevel,
+        _ROK_: AnyClassLevel,
+        _CLK_: AnyClassLevel,
+        _DRK_: AnyClassLevel,
+        _PAK_: AnyClassLevel,
+        _RAK_: AnyClassLevel,
+        _MOK_: AnyClassLevel,
+        _BDK_: AnyClassLevel,
+        _WAK_: AnyClassLevel,
+        _ARK_: AnyClassLevel,
+        _CDK_: MaybeCharacterData,
+    ](
         self,
-        blueprint: Blueprint[
-            _RK,
-            _StK,
-            _HeK,
-            _StCK,
-            _SkCK,
-            _WZK_NZ,
-            _SOK,
-            _FGK,
-            _BAK,
-            _ROK,
-            _CLK,
-            _DRK,
-            _PAK,
-            _RAK,
-            _MOK,
-            _BDK,
-            _WAK,
-            _ARK,
-            _CDK,
+        blueprint: WizardBlueprint[
+            _StCK_,
+            _SkCK_,
+            _WZK_,
+            _SOK_,
+            _FGK_,
+            _BAK_,
+            _ROK_,
+            _CLK_,
+            _DRK_,
+            _PAK_,
+            _RAK_,
+            _MOK_,
+            _BDK_,
+            _WAK_,
+            _ARK_,
+            _CDK_,
         ],
-    ) -> Blueprint[
-        _RK,
-        _StK,
-        _HeK,
-        _StCK,
-        _SkCK,
-        _WZK_NZ,
-        _SOK,
-        _FGK,
-        _BAK,
-        _ROK,
-        _CLK,
-        _DRK,
-        _PAK,
-        _RAK,
-        _MOK,
-        _BDK,
-        _WAK,
-        _ARK,
-        _CDK,
+    ) -> WizardBlueprint[
+        _StCK_,
+        _SkCK_,
+        _WZK_,
+        _SOK_,
+        _FGK_,
+        _BAK_,
+        _ROK_,
+        _CLK_,
+        _DRK_,
+        _PAK_,
+        _RAK_,
+        _MOK_,
+        _BDK_,
+        _WAK_,
+        _ARK_,
+        _CDK_,
     ]:
-        spells_to_learn = self._get_spells_to_learn(blueprint)
+        spells_to_learn = self._get_spells_to_learn(
+            blueprint.classes.get_level(Class.WIZARD),
+            blueprint.spell_slots,
+        )
         if not spells_to_learn:
             return blueprint
 
@@ -189,8 +189,6 @@ class WizardSpellAssigner(BuildingBlock, ABC):
 class SorcererSpellAssigner(BuildingBlock, ABC):
     """Abstract base for sorcerer spell assignment strategies."""
 
-    _caster_type: ClassVar[CasterType] = CasterType.FULL
-
     @abstractmethod
     def select_spells(
         self,
@@ -200,68 +198,87 @@ class SorcererSpellAssigner(BuildingBlock, ABC):
         state: _WideBlueprint,
     ) -> tuple[Spell, ...]: ...
 
-    def _get_spells_to_learn(self, state: _WideBlueprint) -> dict[SpellLevel, int]:
-        level = state.classes.get_level(Class.SORCERER)
-        if level == 1:
+    def _get_spells_to_learn(
+        self,
+        class_level: int,
+        spell_slots: SpellSlots[int, int, int, int, int, int, int, int, int],
+    ) -> dict[SpellLevel, int]:
+        if class_level == 1:
             return {0: 4, 1: 2}
-        effective = level
-        max_spell_level = MAX_SPELL_LEVELS[self._caster_type][min(effective, 20) - 1]
+        max_spell_level = spell_slots.max_level()
         n_cantrips_increase_levels = (4, 10)
         return {
             max_spell_level: 1,
-            0: int(level in n_cantrips_increase_levels),
+            0: int(class_level in n_cantrips_increase_levels),
         }
 
-    def apply(
+    def apply[
+        _StCK_: AnyStatChoices,
+        _SkCK_: AnyStatChoices,
+        _WZK_: AnyWizardLevel,
+        _SOK_: AnyNonZeroSorcererLevel,
+        _FGK_: AnyClassLevel,
+        _BAK_: AnyClassLevel,
+        _ROK_: AnyClassLevel,
+        _CLK_: AnyClassLevel,
+        _DRK_: AnyClassLevel,
+        _PAK_: AnyClassLevel,
+        _RAK_: AnyClassLevel,
+        _MOK_: AnyClassLevel,
+        _BDK_: AnyClassLevel,
+        _WAK_: AnyClassLevel,
+        _ARK_: AnyClassLevel,
+        _CDK_: MaybeCharacterData,
+        _McK_: AnyMetamagicChoices,
+    ](
         self,
-        blueprint: Blueprint[
-            _RK,
-            _StK,
-            _HeK,
-            _StCK,
-            _SkCK,
-            _WZK,
-            _SOK_NZ,
-            _FGK,
-            _BAK,
-            _ROK,
-            _CLK,
-            _DRK,
-            _PAK,
-            _RAK,
-            _MOK,
-            _BDK,
-            _WAK,
-            _ARK,
-            _CDK,
+        blueprint: SorcererBlueprint[
+            _StCK_,
+            _SkCK_,
+            _WZK_,
+            _SOK_,
+            _FGK_,
+            _BAK_,
+            _ROK_,
+            _CLK_,
+            _DRK_,
+            _PAK_,
+            _RAK_,
+            _MOK_,
+            _BDK_,
+            _WAK_,
+            _ARK_,
+            _CDK_,
+            _McK_,
         ],
-    ) -> Blueprint[
-        _RK,
-        _StK,
-        _HeK,
-        _StCK,
-        _SkCK,
-        _WZK,
-        _SOK_NZ,
-        _FGK,
-        _BAK,
-        _ROK,
-        _CLK,
-        _DRK,
-        _PAK,
-        _RAK,
-        _MOK,
-        _BDK,
-        _WAK,
-        _ARK,
-        _CDK,
+    ) -> SorcererBlueprint[
+        _StCK_,
+        _SkCK_,
+        _WZK_,
+        _SOK_,
+        _FGK_,
+        _BAK_,
+        _ROK_,
+        _CLK_,
+        _DRK_,
+        _PAK_,
+        _RAK_,
+        _MOK_,
+        _BDK_,
+        _WAK_,
+        _ARK_,
+        _CDK_,
+        _McK_,
     ]:
-        sorcerer_state = blueprint
-        spells_to_learn = self._get_spells_to_learn(sorcerer_state)
+        spells_to_learn = self._get_spells_to_learn(
+            blueprint.classes.get_level(Class.SORCERER),
+            blueprint.spell_slots,
+        )
         if not spells_to_learn:
             return blueprint
 
         assigner = self
+        sorcerer_state = blueprint
 
         class _Selector:
             def select(

@@ -1,4 +1,5 @@
 from typing import TYPE_CHECKING
+from typing import ClassVar
 from typing import Literal
 
 from dnd.character.ac_modifier import AdditiveAcModifier
@@ -15,14 +16,12 @@ from dnd.character.stats import Stats
 from dnd.choices.class_creation.character_class import Class
 from dnd.choices.class_creation.character_class import FighterSubclass
 from dnd.choices.class_creation.character_class import RogueSubclass
-
 from dnd.choices.stats_creation.statistic import Statistic
 from dnd.skill_proficiency import Skill
 from dnd.skill_proficiency import skill2ability
 from pydantic import ConfigDict
 from pydantic import NonNegativeInt
 from pydantic import PositiveInt
-from typing import ClassVar
 
 if TYPE_CHECKING:
     _cf = property

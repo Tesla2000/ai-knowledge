@@ -34,7 +34,7 @@ _CHARACTER_DATA = CharacterData(
 _LEVEL_20 = FirstSubclassPostLevel.TWENTIETH
 
 _SPELL_SLOTS_20 = FULL_CASTER_SPELL_SLOTS[19]
-_SPELL_SLOTS_20_DUMP = _SPELL_SLOTS_20.model_dump()
+_SPELL_SLOTS_20_DUMP = list(_SPELL_SLOTS_20)
 
 
 @pytest.mark.integration

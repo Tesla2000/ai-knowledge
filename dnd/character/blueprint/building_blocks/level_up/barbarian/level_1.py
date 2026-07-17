@@ -20,6 +20,7 @@ from dnd.character.blueprint.sentinels import ThirdSubclassPreLevel
 from dnd.character.blueprint.states.state import _BPT
 from dnd.choices.abilities.action import BasicAction
 from dnd.choices.abilities.action_type import ActionType
+from dnd.character.actions._ability_name import AbilityName
 from dnd.choices.stats_creation.statistic import Statistic
 from dnd.other_profficiencies import ArmorProficiency
 from dnd.other_profficiencies import WeaponProficiency
@@ -66,7 +67,8 @@ class BarbarianLevel1(
             + (
                 BasicAction(
                     action_type=ActionType.BONUS_ACTION,
-                    name="Rage",
+                    name=AbilityName.RAGE,
+                    range_tails=0,
                     description=(
                         "You can enter a rage as a bonus action. While raging, you gain "
                         "advantage on Strength checks and saving throws, a bonus to melee "

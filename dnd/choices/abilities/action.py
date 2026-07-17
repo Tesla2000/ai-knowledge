@@ -5,6 +5,7 @@ from typing import Literal
 from pydantic import BaseModel
 from pydantic import ConfigDict
 from pydantic import Field
+from pydantic import NonNegativeInt
 from pydantic import PositiveInt
 
 from dnd.choices.abilities.action_type import ActionType
@@ -18,6 +19,8 @@ class BasicAction(BaseModel):
     action_type: ActionType
     name: str
     description: str
+    range_tails: NonNegativeInt = 1
+    radius_tails: NonNegativeInt = 0
 
 
 class AttackAction(BaseModel):
@@ -31,6 +34,8 @@ class AttackAction(BaseModel):
     dice_size: PositiveInt
     attack_bonus: int = 0
     damage_bonus: int = 0
+    range_tails: NonNegativeInt = 1
+    radius_tails: NonNegativeInt = 0
 
 
 class SavingThrowAction(BaseModel):
@@ -45,6 +50,8 @@ class SavingThrowAction(BaseModel):
     dc: int
     saving_throw_type: Statistic
     half_on_success: bool = True
+    range_tails: NonNegativeInt = 1
+    radius_tails: NonNegativeInt = 0
 
 
 AnyLeafAction = Annotated[
@@ -61,6 +68,8 @@ class OrAction(BaseModel):
     name: str
     description: str
     options: tuple[AnyLeafAction, ...]
+    range_tails: NonNegativeInt = 1
+    radius_tails: NonNegativeInt = 0
 
 
 class AndAction(BaseModel):
@@ -71,6 +80,8 @@ class AndAction(BaseModel):
     name: str
     description: str
     options: tuple[AnyLeafAction, ...]
+    range_tails: NonNegativeInt = 1
+    radius_tails: NonNegativeInt = 0
 
 
 AnyAction = Annotated[

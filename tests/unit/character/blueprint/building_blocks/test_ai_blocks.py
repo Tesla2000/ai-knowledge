@@ -51,9 +51,12 @@ from dnd.character.blueprint.building_blocks.stat_choice_resolver.ai import (
     AIStatChoiceResolver,
     StatIncreaseSelection,
 )
+from dnd.character.blueprint.states.sorcerer.base import SorcererBlueprint
 from dnd.character.blueprint.states.state import Blueprint
+from dnd.character.blueprint.states.wizard.base import WizardBlueprint
 from dnd.character.feature.feats import FeatName
 from dnd.character.magical_item.items import MAGICAL_ITEMS
+from dnd.character.spells.max_spell_levels import FULL_CASTER_SPELL_SLOTS
 from dnd.character.spells.spell_slots import WizardCantrip as Cantrip
 from dnd.character.spells.spell_slots import WizardFirstLevel as FirstLevel
 from dnd.character.stats import Stats
@@ -344,7 +347,9 @@ class TestWizardLLMSpellAssigner:
         block = WizardLLMSpellAssigner.model_construct(
             llm=mock_llm, character_description=None, class_=Class.WIZARD
         )
-        state = Blueprint(classes=_Level1ClassLevels())
+        state = WizardBlueprint(
+            classes=_Level1ClassLevels(), spell_slots=FULL_CASTER_SPELL_SLOTS[0]
+        )
         result = block.apply(state)
         assert result is not None
         assert mock_llm.create_structured_output.call_count >= 1
@@ -368,7 +373,9 @@ class TestSorcererLLMSpellAssigner:
         block = SorcererLLMSpellAssigner.model_construct(
             llm=mock_llm, character_description=None, class_=Class.SORCERER
         )
-        state = Blueprint(classes=_Level1SorcererClassLevels())
+        state = SorcererBlueprint(
+            classes=_Level1SorcererClassLevels(), spell_slots=FULL_CASTER_SPELL_SLOTS[0]
+        )
         result = block.apply(state)
         assert result is not None
         assert mock_llm.create_structured_output.call_count >= 1
@@ -380,7 +387,9 @@ class TestSorcererLLMSpellAssigner:
         block = SorcererLLMSpellAssigner.model_construct(
             llm=mock_llm, character_description=None, class_=Class.SORCERER
         )
-        state = Blueprint(classes=_Level1SorcererClassLevels())
+        state = SorcererBlueprint(
+            classes=_Level1SorcererClassLevels(), spell_slots=FULL_CASTER_SPELL_SLOTS[0]
+        )
         with pytest.raises(LLMRefusalError):
             block.apply(state)
 
@@ -394,7 +403,9 @@ class TestWizardLLMSpellAssignerErrors:
         block = WizardLLMSpellAssigner.model_construct(
             llm=mock_llm, character_description=None, class_=Class.WIZARD
         )
-        state = Blueprint(classes=_Level1ClassLevels())
+        state = WizardBlueprint(
+            classes=_Level1ClassLevels(), spell_slots=FULL_CASTER_SPELL_SLOTS[0]
+        )
         with pytest.raises(LLMRefusalError):
             block.apply(state)
 
@@ -787,7 +798,11 @@ class TestSpellAssignerEmptySpellsToLearn:
             block = WizardLLMSpellAssigner.model_construct(
                 llm=MagicMock(), character_description=None, class_=Class.WIZARD
             )
-            result = block.apply(Blueprint(classes=_Level1ClassLevels()))
+            result = block.apply(
+                WizardBlueprint(
+                    classes=_Level1ClassLevels(), spell_slots=FULL_CASTER_SPELL_SLOTS[0]
+                )
+            )
         assert result is not None
 
     def test_sorcerer_empty_spells_returns_early(self) -> None:
@@ -797,7 +812,12 @@ class TestSpellAssignerEmptySpellsToLearn:
             block = SorcererLLMSpellAssigner.model_construct(
                 llm=MagicMock(), character_description=None, class_=Class.SORCERER
             )
-            result = block.apply(Blueprint(classes=_Level1SorcererClassLevels()))
+            result = block.apply(
+                SorcererBlueprint(
+                    classes=_Level1SorcererClassLevels(),
+                    spell_slots=FULL_CASTER_SPELL_SLOTS[0],
+                )
+            )
         assert result is not None
 
 

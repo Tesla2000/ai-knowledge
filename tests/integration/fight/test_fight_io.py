@@ -8,7 +8,7 @@ from pathlib import Path
 import pytest
 
 import scripts.fight as fight_script
-from dnd.character._creature_base import _CreatureBase
+from dnd.character.presentable_character import PresentableCharacter
 from dnd.character.stats import Stats
 from dnd.fight._attack import _Attack
 from dnd.fight._attack_result import _AttackResult
@@ -67,6 +67,41 @@ _BASE_DATA: dict[str, object] = {
     "other_active_abilities": [],
 }
 
+_BASE_PC_DATA: dict[str, object] = {
+    "race": "Human",
+    "stats": _STATS.model_dump(),
+    "health_base": 8,
+    "character_data": {"name": "test"},
+    "classes": {
+        "wizard": 0,
+        "sorcerer": 0,
+        "fighter": 0,
+        "barbarian": 1,
+        "rogue": 0,
+        "cleric": 0,
+        "druid": 0,
+        "paladin": 0,
+        "ranger": 0,
+        "monk": 0,
+        "bard": 0,
+        "warlock": 0,
+        "artificer": 0,
+    },
+    "speed": 30,
+    "dark_vision_range": 0,
+    "saving_throw_proficiencies": [],
+    "other_active_abilities": [],
+}
+
+
+def _pc_json(name: str) -> str:
+    return json.dumps(
+        PresentableCharacter.model_validate(
+            {**_BASE_PC_DATA, "character_data": {"name": name}}
+        ).model_dump(mode="json")
+    )
+
+
 _CREATURE_DATA: dict[str, object] = {
     **_BASE_DATA,
     "n_hit_dice": 1,
@@ -118,20 +153,23 @@ class TestLoadCreature:
 
 @pytest.mark.integration
 class TestLoadCharacter:
-    def test_returns_creature_base_unchanged(self) -> None:
-        base = _CreatureBase.model_validate(_BASE_DATA)
-        assert _load_character(base) is base
+    def test_returns_presentable_character_unchanged(self) -> None:
+        pc = PresentableCharacter.model_validate(_BASE_PC_DATA)
+        assert _load_character(pc) is pc
 
     def test_loads_from_file(
         self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
     ) -> None:
+        pc = PresentableCharacter.model_validate(_BASE_PC_DATA)
         characters_dir = tmp_path / "characters"
         characters_dir.mkdir()
-        (characters_dir / "hero.json").write_text(json.dumps(_BASE_DATA))
+        (characters_dir / "hero.json").write_text(
+            json.dumps(pc.model_dump(mode="json"))
+        )
         monkeypatch.setattr(fight_script, "_CHARACTER_DIR", characters_dir)
         result = _load_character("hero")
-        assert isinstance(result, _CreatureBase)
-        assert result.name == "test"
+        assert isinstance(result, PresentableCharacter)
+        assert result.character_data.name == "test"
 
     def test_raises_on_missing_file(
         self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
@@ -159,9 +197,7 @@ class TestRunFight:
         (creatures_dir / "skeleton.json").write_text(
             json.dumps({**_CREATURE_DATA, "name": "skeleton", "initiative": 5})
         )
-        (characters_dir / "hero.json").write_text(
-            json.dumps({**_BASE_DATA, "name": "hero"})
-        )
+        (characters_dir / "hero.json").write_text(_pc_json("hero"))
         monkeypatch.setattr(fight_script, "_CREATURE_DIR", creatures_dir)
         monkeypatch.setattr(fight_script, "_CHARACTER_DIR", characters_dir)
         cli = _FightCli.model_construct(

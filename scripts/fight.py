@@ -9,12 +9,13 @@ from typing import Annotated, ClassVar
 from pydantic import BaseModel, BeforeValidator, ConfigDict, PositiveInt
 from pydantic_settings import BaseSettings, CliApp, SettingsConfigDict
 
-from dnd.character._creature_base import _CreatureBase
+from dnd.character.presentable_character import PresentableCharacter
 from dnd.fight._action_group import _Action, _And, _Or
 from dnd.fight._attack import _Attack
-from dnd.fight._creature import _Creature, _PlayerFightCreature
+from dnd.fight._creature import _Creature
 from dnd.fight._non_attack import _NonAttack
 from dnd.fight._saving_throw import _SavingThrow
+from dnd.fight.fight_character import FightCharacter
 
 _DATA_DIR = Path(__file__).parent / "data"
 _CREATURE_DIR = _DATA_DIR / "creatures"
@@ -34,8 +35,8 @@ def _load_creature(value: object) -> _Creature:
     return _Creature.model_validate(json.loads(path.read_text()))
 
 
-def _load_character(value: object) -> _CreatureBase:
-    if isinstance(value, _CreatureBase):
+def _load_character(value: object) -> PresentableCharacter:
+    if isinstance(value, PresentableCharacter):
         return value
     if not isinstance(value, str):
         raise ValueError(f"character must be a str name, got {type(value).__name__}")
@@ -44,7 +45,7 @@ def _load_character(value: object) -> _CreatureBase:
         raise ValueError(
             f"Unknown character '{value}'. Available: {[p.stem for p in _CHARACTER_DIR.glob('*.json')]}"
         )
-    return _CreatureBase.model_validate(json.loads(path.read_text()))
+    return PresentableCharacter.model_validate(json.loads(path.read_text()))
 
 
 def _dmg(n_dice: int, dice_size: int, damage_bonus: int) -> str:
@@ -174,7 +175,7 @@ class _EncounterEntry(BaseModel):
 class _PlayerEntry(BaseModel):
     model_config: ClassVar[ConfigDict] = ConfigDict(frozen=True)
 
-    character: Annotated[_CreatureBase, BeforeValidator(_load_character)]
+    character: Annotated[PresentableCharacter, BeforeValidator(_load_character)]
     initiative: int
 
 
@@ -193,19 +194,14 @@ class _FightCli(BaseSettings):
             for entry in self.encounter
             for i in range(entry.n_entities)
         )
-        player_combatants: tuple[tuple[None, _PlayerFightCreature], ...] = tuple(
-            (
-                None,
-                _PlayerFightCreature(
-                    initiative=p.initiative, **p.character.model_dump()
-                ),
-            )
+        player_combatants: tuple[tuple[None, FightCharacter], ...] = tuple(
+            (None, FightCharacter.from_presentable(p.character, p.initiative))
             for p in self.players
         )
-        all_combatants: tuple[
-            tuple[int | None, _Creature | _PlayerFightCreature], ...
-        ] = monsters + player_combatants
-        turn_order: list[tuple[int | None, _Creature | _PlayerFightCreature]] = sorted(
+        all_combatants: tuple[tuple[int | None, _Creature | FightCharacter], ...] = (
+            monsters + player_combatants
+        )
+        turn_order: list[tuple[int | None, _Creature | FightCharacter]] = sorted(
             all_combatants, key=lambda ic: -ic[1].initiative
         )
         monster_prefixes: list[str] = [
@@ -219,21 +215,22 @@ class _FightCli(BaseSettings):
         hp: dict[str, int] = {}
         max_hp: dict[str, int] = {}
         for idx, c in turn_order:
+            pfx = f"{c.name} {idx}" if idx is not None else c.name
             if isinstance(c, _Creature):
-                pfx = f"{c.name} {idx}" if idx is not None else c.name
                 hp[pfx] = c.hp
                 max_hp[pfx] = c.hp
-        if hp:
+            else:
+                hp[pfx] = c.current_health
+                max_hp[pfx] = c.max_health
+        if any(isinstance(c, _Creature) for _, c in turn_order):
             sys.stdout.write("--- Enemies ---\n")
-            for pfx, h in hp.items():
-                sys.stdout.write(f"  {pfx}: {h} HP\n")
-        player_damage: dict[str, int] = {pfx: 0 for pfx in player_prefixes}
+            for idx, c in turn_order:
+                if isinstance(c, _Creature):
+                    pfx = f"{c.name} {idx}" if idx is not None else c.name
+                    sys.stdout.write(f"  {pfx}: {hp[pfx]} HP\n")
         for index, creature in cycle(turn_order):
             prefix = f"{creature.name} {index}" if index is not None else creature.name
-            if isinstance(creature, _Creature):
-                status = f"{hp[prefix]}/{max_hp[prefix]}"
-            else:
-                status = f"dealt: {player_damage[prefix]}"
+            status = f"{hp[prefix]}/{max_hp[prefix]}"
             input(f"\n{prefix} ({status}) moves now...")
             if isinstance(creature, _Creature):
                 offhand: list[_Action | _NonAttack | _Or | _And] = []
@@ -276,11 +273,6 @@ class _FightCli(BaseSettings):
                                 f"  {target}: {prev}/{max_hp[target]}"
                                 f" → {hp[target]}/{max_hp[target]}\n"
                             )
-                            if prefix in player_damage:
-                                player_damage[prefix] += dmg
-                                sys.stdout.write(
-                                    f"  {prefix} total dealt: {player_damage[prefix]}\n"
-                                )
                             break
                         except ValueError:
                             sys.stdout.write("  Enter a valid number.\n")

@@ -9,23 +9,32 @@ from pathlib import Path
 
 import pytest
 
+import dnd.character.actions.attack_with_axe as attack_with_axe_module
 import dnd.fight._attack as attack_module
 import dnd.fight._creature as creature_module
 import dnd.fight._saving_throw as saving_throw_module
 import dnd.fight._spell_attack as spell_attack_module
 import scripts.fight as fight_module
-from dnd.character._creature_base import _CreatureBase
+from dnd.character.presentable_character import PresentableCharacter
 from dnd.character.stats import Stats
+from dnd.choices.abilities.action import AttackAction, BasicAction
+from dnd.choices.abilities.action_type import ActionType
 from dnd.choices.stats_creation.statistic import Statistic
+from dnd.character.actions._ability_name import AbilityName
 from dnd.fight._action_group import _And, _Or
 from dnd.fight._attack import _Attack
 from dnd.fight._attack_result import _AttackResult
-from dnd.fight._creature import _Creature, _PlayerFightCreature
+from dnd.fight._creature import _Creature
+from dnd.character.actions._damage_type import DamageType
+from dnd.fight._fight_resource import _FightResource, ResourceName
 from dnd.fight._multi_attack import _MultiAttack
 from dnd.fight._non_attack import _NonAttack
 from dnd.fight._saving_throw import _SavingThrow
 from dnd.fight._saving_throw_result import _SavingThrowResult
 from dnd.fight._spell_attack import _SpellAttack
+from dnd.character.actions.combat_action import AttackWithAxe, UseRage
+from dnd.fight.battlemap import Battlemap
+from dnd.fight.fight_character import FightCharacter
 from scripts.fight import (
     _EncounterEntry,
     _FightCli,
@@ -85,6 +94,41 @@ _BASE_DATA: dict[str, object] = {
     "saving_throw_proficiencies": [],
     "other_active_abilities": [],
 }
+
+_BASE_PC_DATA: dict[str, object] = {
+    "race": "Human",
+    "stats": _STATS.model_dump(),
+    "health_base": 8,
+    "character_data": {"name": "test"},
+    "classes": {
+        "wizard": 0,
+        "sorcerer": 0,
+        "fighter": 0,
+        "barbarian": 1,
+        "rogue": 0,
+        "cleric": 0,
+        "druid": 0,
+        "paladin": 0,
+        "ranger": 0,
+        "monk": 0,
+        "bard": 0,
+        "warlock": 0,
+        "artificer": 0,
+    },
+    "speed": 30,
+    "dark_vision_range": 0,
+    "saving_throw_proficiencies": [],
+    "other_active_abilities": [],
+}
+
+
+def _pc_json(name: str) -> str:
+    return json.dumps(
+        PresentableCharacter.model_validate(
+            {**_BASE_PC_DATA, "character_data": {"name": name}}
+        ).model_dump(mode="json")
+    )
+
 
 _CREATURE_DATA: dict[str, object] = {
     **_BASE_DATA,
@@ -315,21 +359,281 @@ class TestCreatureInit:
             creature_module._default_hp({"stats": "not a Stats object"})
 
 
+def _make_fc(**kwargs: object) -> FightCharacter:
+    pc = PresentableCharacter.model_validate(_BASE_PC_DATA)
+    return FightCharacter.from_presentable(pc, initiative=14).model_copy(update=kwargs)
+
+
+def _make_fc_with_attack(**kwargs: object) -> FightCharacter:
+    pc = PresentableCharacter.model_validate(
+        {**_BASE_PC_DATA, "actions": [_ATTACK_ACTION.model_dump()]}
+    )
+    return FightCharacter.from_presentable(pc, initiative=14).model_copy(update=kwargs)
+
+
+def _make_battlemap(*fighters: FightCharacter) -> Battlemap:
+    return Battlemap(combatants=fighters)
+
+
+def _make_adjacent_target() -> FightCharacter:
+    pc = PresentableCharacter.model_validate(_BASE_PC_DATA)
+    return FightCharacter.from_presentable(pc, initiative=5).model_copy(
+        update={"position": (1, 0)}
+    )
+
+
+_RAGE_RESOURCE = _FightResource(name=ResourceName.RAGE, max_uses=3, remaining_uses=2)
+
+_ATTACK_ACTION = AttackAction(
+    action_type=ActionType.ACTION,
+    name=AbilityName.ATTACK_WITH_AXE,
+    description="A melee weapon attack.",
+    n_dice=1,
+    dice_size=8,
+    attack_bonus=3,
+    damage_bonus=2,
+    range_tails=1,
+)
+
+_RAGE_ACTION = BasicAction(
+    action_type=ActionType.BONUS_ACTION,
+    name=AbilityName.RAGE,
+    description="Enter a rage.",
+    range_tails=0,
+)
+
+_UNKNOWN_ACTION = BasicAction(
+    action_type=ActionType.BONUS_ACTION,
+    name="Bladesong",
+    description="A bladesinger ability.",
+)
+
+
 @pytest.mark.unit
-class TestPlayerFightCreature:
-    def test_construction(self) -> None:
-        player = _PlayerFightCreature(
-            name="test",
-            stats=_STATS,
-            speed=30,
-            dark_vision_range=0,
-            initiative_bonus=2,
-            saving_throw_proficiencies=(),
-            other_active_abilities=(),
-            initiative=14,
+class TestFightCharacter:
+    def test_from_presentable(self) -> None:
+        pc = PresentableCharacter.model_validate(_BASE_PC_DATA)
+        fc = FightCharacter.from_presentable(pc, initiative=14)
+        assert fc.name == "test"
+        assert fc.initiative == 14
+        assert fc.current_health == fc.max_health
+        assert fc.has_action is True
+        assert fc.has_bonus_action is True
+        assert fc.has_reaction is True
+        assert fc.has_free_action is True
+
+    def test_get_actions_skips_unknown_names(self) -> None:
+        fc = _make_fc(
+            character=PresentableCharacter.model_validate(
+                {**_BASE_PC_DATA, "actions": [_UNKNOWN_ACTION.model_dump()]}
+            )
         )
-        assert player.name == "test"
-        assert player.initiative == 14
+        bm = _make_battlemap(fc)
+        assert fc.get_actions(bm) == ()
+
+    def test_get_actions_returns_rage_when_resource_available(self) -> None:
+        fc = _make_fc(
+            character=PresentableCharacter.model_validate(
+                {**_BASE_PC_DATA, "actions": [_RAGE_ACTION.model_dump()]}
+            ),
+            resources=(_RAGE_RESOURCE,),
+        )
+        bm = _make_battlemap(fc)
+        action_groups = fc.get_actions(bm)
+        assert len(action_groups) == 1
+        assert len(action_groups[0]) == 1
+        assert isinstance(action_groups[0][0], UseRage)
+
+    def test_get_actions_no_rage_when_already_raging(self) -> None:
+        fc = _make_fc(
+            character=PresentableCharacter.model_validate(
+                {**_BASE_PC_DATA, "actions": [_RAGE_ACTION.model_dump()]}
+            ),
+            resources=(_RAGE_RESOURCE,),
+            active_features=frozenset({AbilityName.RAGE}),
+        )
+        bm = _make_battlemap(fc)
+        assert fc.get_actions(bm) == ()
+
+    def test_get_actions_no_rage_when_no_resource(self) -> None:
+        fc = _make_fc(
+            character=PresentableCharacter.model_validate(
+                {**_BASE_PC_DATA, "actions": [_RAGE_ACTION.model_dump()]}
+            ),
+        )
+        bm = _make_battlemap(fc)
+        assert fc.get_actions(bm) == ()
+
+    def test_get_actions_no_rage_when_no_bonus_action(self) -> None:
+        fc = _make_fc(
+            character=PresentableCharacter.model_validate(
+                {**_BASE_PC_DATA, "actions": [_RAGE_ACTION.model_dump()]}
+            ),
+            resources=(_RAGE_RESOURCE,),
+            has_bonus_action=False,
+        )
+        bm = _make_battlemap(fc)
+        assert fc.get_actions(bm) == ()
+
+    def test_get_actions_returns_attack_when_has_action(self) -> None:
+        fc = _make_fc(
+            character=PresentableCharacter.model_validate(
+                {**_BASE_PC_DATA, "actions": [_ATTACK_ACTION.model_dump()]}
+            ),
+        )
+        target = _make_adjacent_target()
+        bm = _make_battlemap(fc, target)
+        action_groups = fc.get_actions(bm)
+        assert len(action_groups) == 1
+        assert len(action_groups[0]) == 1
+        assert isinstance(action_groups[0][0], AttackWithAxe)
+
+    def test_get_actions_returns_two_attack_slots_for_two_melee_actions(self) -> None:
+        fc = _make_fc(
+            character=PresentableCharacter.model_validate(
+                {
+                    **_BASE_PC_DATA,
+                    "actions": [
+                        _ATTACK_ACTION.model_dump(),
+                        _ATTACK_ACTION.model_dump(),
+                    ],
+                }
+            ),
+        )
+        target = _make_adjacent_target()
+        bm = _make_battlemap(fc, target)
+        action_groups = fc.get_actions(bm)
+        assert len(action_groups) == 2
+        assert all(isinstance(g[0], AttackWithAxe) for g in action_groups)
+
+    def test_get_actions_no_attack_when_action_spent(self) -> None:
+        fc = _make_fc(
+            character=PresentableCharacter.model_validate(
+                {**_BASE_PC_DATA, "actions": [_ATTACK_ACTION.model_dump()]}
+            ),
+            has_action=False,
+        )
+        target = _make_adjacent_target()
+        bm = _make_battlemap(fc, target)
+        assert fc.get_actions(bm) == ()
+
+
+@pytest.mark.unit
+class TestUseRage:
+    def test_perform_sets_resistance_and_bonus(self) -> None:
+        fc = _make_fc(resources=(_RAGE_RESOURCE,))
+        bm = _make_battlemap(fc)
+        rages = UseRage.create(fc)
+        assert len(rages) == 1
+        new_bm = rages[0].perform(bm)
+        new_fc = new_bm.combatants[0]
+        assert isinstance(new_fc, FightCharacter)
+        assert DamageType.BLUDGEONING in new_fc.damage_resistance
+        assert DamageType.PIERCING in new_fc.damage_resistance
+        assert DamageType.SLASHING in new_fc.damage_resistance
+        assert new_fc.attack_bonus == 2
+        assert AbilityName.RAGE in new_fc.active_features
+        assert not new_fc.has_bonus_action
+
+    def test_perform_consumes_rage_resource(self) -> None:
+        fc = _make_fc(resources=(_RAGE_RESOURCE,))
+        bm = _make_battlemap(fc)
+        rages = UseRage.create(fc)
+        assert len(rages) == 1
+        new_bm = rages[0].perform(bm)
+        new_fc = new_bm.combatants[0]
+        assert isinstance(new_fc, FightCharacter)
+        remaining = next(r for r in new_fc.resources if r.name == ResourceName.RAGE)
+        assert remaining.remaining_uses == _RAGE_RESOURCE.remaining_uses - 1
+
+    def test_perform_stacks_attack_bonus(self) -> None:
+        fc = _make_fc(resources=(_RAGE_RESOURCE,), attack_bonus=1)
+        bm = _make_battlemap(fc)
+        rages = UseRage.create(fc)
+        assert len(rages) == 1
+        new_bm = rages[0].perform(bm)
+        new_fc = new_bm.combatants[0]
+        assert isinstance(new_fc, FightCharacter)
+        assert new_fc.attack_bonus == 3
+
+
+@pytest.mark.unit
+class TestAttackWithAxe:
+    def test_create_returns_empty_when_no_action(self) -> None:
+        fc = _make_fc_with_attack(has_action=False)
+        target = _make_adjacent_target()
+        bm = _make_battlemap(fc, target)
+        assert AttackWithAxe.create(fc, bm) == ()
+
+    def test_create_returns_empty_when_no_attack_action(self) -> None:
+        fc = _make_fc()
+        target = _make_adjacent_target()
+        bm = _make_battlemap(fc, target)
+        assert AttackWithAxe.create(fc, bm) == ()
+
+    def test_create_returns_empty_when_ranged_attack(self) -> None:
+        ranged = AttackAction(
+            action_type=ActionType.ACTION,
+            name="bow",
+            description="A ranged attack.",
+            n_dice=1,
+            dice_size=6,
+            attack_bonus=3,
+            damage_bonus=0,
+            range_tails=6,
+        )
+        fc = _make_fc(
+            character=PresentableCharacter.model_validate(
+                {**_BASE_PC_DATA, "actions": [ranged.model_dump()]}
+            ),
+        )
+        target = _make_adjacent_target()
+        bm = _make_battlemap(fc, target)
+        assert AttackWithAxe.create(fc, bm) == ()
+
+    def test_create_returns_empty_when_no_adjacent_target(self) -> None:
+        fc = _make_fc_with_attack()
+        far_target = _make_fc().model_copy(update={"position": (5, 5)})
+        bm = _make_battlemap(fc, far_target)
+        assert AttackWithAxe.create(fc, bm) == ()
+
+    def test_create_returns_one_per_adjacent_target(self) -> None:
+        fc = _make_fc_with_attack()
+        t1 = _make_fc().model_copy(update={"position": (1, 0)})
+        t2 = _make_fc().model_copy(update={"position": (0, 1)})
+        bm = _make_battlemap(fc, t1, t2)
+        attacks = AttackWithAxe.create(fc, bm)
+        assert len(attacks) == 2
+        positions = {a.target_position for a in attacks}
+        assert positions == {(1, 0), (0, 1)}
+
+    def test_perform_spends_action(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        monkeypatch.setattr(attack_with_axe_module, "randint", lambda *a: 10)
+        fc = _make_fc_with_attack()
+        target = _make_adjacent_target()
+        bm = _make_battlemap(fc, target)
+        attacks = AttackWithAxe.create(fc, bm)
+        assert len(attacks) == 1
+        new_bm = attacks[0].perform(bm)
+        new_fc = new_bm.combatants[0]
+        assert isinstance(new_fc, FightCharacter)
+        assert not new_fc.has_action
+
+    def test_perform_rolls_dice(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        rolls: list[int] = []
+
+        def fake_randint(a: int, b: int) -> int:
+            rolls.append(a)
+            return 5
+
+        monkeypatch.setattr(attack_with_axe_module, "randint", fake_randint)
+        fc = _make_fc_with_attack(attack_bonus=3)
+        target = _make_adjacent_target()
+        bm = _make_battlemap(fc, target)
+        attacks = AttackWithAxe.create(fc, bm)
+        assert len(attacks) == 1
+        attacks[0].perform(bm)
+        assert len(rolls) > 0
 
 
 @pytest.mark.unit
@@ -679,20 +983,23 @@ class TestLoadCreature:
 
 @pytest.mark.unit
 class TestLoadCharacter:
-    def test_returns_creature_base_unchanged(self) -> None:
-        base = _CreatureBase.model_validate(_BASE_DATA)
-        assert _load_character(base) is base
+    def test_returns_presentable_character_unchanged(self) -> None:
+        pc = PresentableCharacter.model_validate(_BASE_PC_DATA)
+        assert _load_character(pc) is pc
 
     def test_loads_from_file(
         self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
     ) -> None:
+        pc = PresentableCharacter.model_validate(_BASE_PC_DATA)
         characters_dir = tmp_path / "characters"
         characters_dir.mkdir()
-        (characters_dir / "hero.json").write_text(json.dumps(_BASE_DATA))
+        (characters_dir / "hero.json").write_text(
+            json.dumps(pc.model_dump(mode="json"))
+        )
         monkeypatch.setattr(fight_module, "_CHARACTER_DIR", characters_dir)
         result = _load_character("hero")
-        assert isinstance(result, _CreatureBase)
-        assert result.name == "test"
+        assert isinstance(result, PresentableCharacter)
+        assert result.character_data.name == "test"
 
     def test_raises_on_missing_file(
         self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
@@ -720,9 +1027,7 @@ class TestRunFight:
         (creatures_dir / "skeleton.json").write_text(
             json.dumps({**_CREATURE_DATA, "name": "skeleton", "initiative": 5})
         )
-        (characters_dir / "hero.json").write_text(
-            json.dumps({**_BASE_DATA, "name": "hero"})
-        )
+        (characters_dir / "hero.json").write_text(_pc_json("hero"))
         monkeypatch.setattr(fight_module, "_CREATURE_DIR", creatures_dir)
         monkeypatch.setattr(fight_module, "_CHARACTER_DIR", characters_dir)
         cli = _FightCli.model_construct(
@@ -871,9 +1176,7 @@ class TestRunFight:
             "attacks": [attack.model_dump()],
         }
         (creatures_dir / "goblin.json").write_text(json.dumps(creature_data))
-        (characters_dir / "hero.json").write_text(
-            json.dumps({**_BASE_DATA, "name": "hero"})
-        )
+        (characters_dir / "hero.json").write_text(_pc_json("hero"))
         monkeypatch.setattr(fight_module, "_CREATURE_DIR", creatures_dir)
         monkeypatch.setattr(fight_module, "_CHARACTER_DIR", characters_dir)
         cli = _FightCli.model_construct(
@@ -909,9 +1212,7 @@ class TestRunFight:
             "attacks": [attack.model_dump()],
         }
         (creatures_dir / "goblin.json").write_text(json.dumps(creature_data))
-        (characters_dir / "hero.json").write_text(
-            json.dumps({**_BASE_DATA, "name": "hero"})
-        )
+        (characters_dir / "hero.json").write_text(_pc_json("hero"))
         monkeypatch.setattr(fight_module, "_CREATURE_DIR", creatures_dir)
         monkeypatch.setattr(fight_module, "_CHARACTER_DIR", characters_dir)
         cli = _FightCli.model_construct(
@@ -947,9 +1248,7 @@ class TestRunFight:
             "attacks": [attack.model_dump()],
         }
         (creatures_dir / "goblin.json").write_text(json.dumps(creature_data))
-        (characters_dir / "hero.json").write_text(
-            json.dumps({**_BASE_DATA, "name": "hero"})
-        )
+        (characters_dir / "hero.json").write_text(_pc_json("hero"))
         monkeypatch.setattr(fight_module, "_CREATURE_DIR", creatures_dir)
         monkeypatch.setattr(fight_module, "_CHARACTER_DIR", characters_dir)
         cli = _FightCli.model_construct(

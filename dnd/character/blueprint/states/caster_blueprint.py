@@ -5,14 +5,14 @@ from pydantic import BaseModel
 from pydantic import ConfigDict
 from pydantic import NonNegativeInt
 
-from dnd.character.spells.max_spell_levels import AnySpellSlots
 from dnd.character.spells.max_spell_levels import FULL_CASTER_SPELL_SLOTS
+from dnd.character.spells.max_spell_levels import SpellSlots
 
 
 class CasterBlueprint(BaseModel):
     model_config: ClassVar[ConfigDict] = ConfigDict(frozen=True)
 
-    spell_slots: AnySpellSlots
+    spell_slots: SpellSlots[int, int, int, int, int, int, int, int, int]
     caster_level: NonNegativeInt = 0
 
     def increase_full_caster(self) -> Self:

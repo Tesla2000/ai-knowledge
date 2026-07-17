@@ -59,7 +59,3 @@ class _Creature(_CreatureBase):
     n_hit_dice: PositiveInt
     hit_die_size: PositiveInt
     hp: PositiveInt = Field(default_factory=_default_hp)
-
-
-class _PlayerFightCreature(_CreatureBase):
-    initiative: int

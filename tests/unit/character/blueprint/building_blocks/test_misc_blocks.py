@@ -43,7 +43,10 @@ from dnd.character.blueprint.building_blocks.stats_builder.standard_array import
     StandardArray,
 )
 from dnd.character.blueprint.building_blocks.stats_priority import StatsPriority
+from dnd.character.blueprint.states.sorcerer.base import SorcererBlueprint
 from dnd.character.blueprint.states.state import Blueprint
+from dnd.character.blueprint.states.wizard.base import WizardBlueprint
+from dnd.character.spells.max_spell_levels import FULL_CASTER_SPELL_SLOTS
 from dnd.character.stats import Stats
 from dnd.choices.stats_creation.statistic import Statistic
 from dnd.character.race.race import Race
@@ -112,16 +115,18 @@ class TestHealthIncreaseRandomMinTwo:
 @pytest.mark.unit
 class TestSorcererSpellAssigner:
     def test_first_level_assigns_spells(self) -> None:
-        state = Blueprint()
-        state = state.model_copy(update={"classes": ClassLevels(sorcerer=1)})
         assigner = SorcererRandomSpellAssigner()
+        state = SorcererBlueprint(
+            classes=ClassLevels(sorcerer=1), spell_slots=FULL_CASTER_SPELL_SLOTS[0]
+        )
         result = assigner.apply(state)
         assert result is not None
 
     def test_second_level_assigns_spells(self) -> None:
-        state = Blueprint()
-        state = state.model_copy(update={"classes": ClassLevels(sorcerer=2)})
         assigner = SorcererRandomSpellAssigner()
+        state = SorcererBlueprint(
+            classes=ClassLevels(sorcerer=2), spell_slots=FULL_CASTER_SPELL_SLOTS[1]
+        )
         result = assigner.apply(state)
         assert result is not None
 
@@ -194,8 +199,9 @@ class TestSpellAssignerEdgeCases:
         self, monkeypatch: pytest.MonkeyPatch
     ) -> None:
         monkeypatch.setattr(spell_base, "_get_available_spells", lambda query: [])
-        state = Blueprint()
-        state = state.model_copy(update={"classes": ClassLevels(wizard=1)})
+        state = WizardBlueprint(
+            classes=ClassLevels(wizard=1), spell_slots=FULL_CASTER_SPELL_SLOTS[0]
+        )
         assigner = WizardRandomSpellAssigner()
         result = assigner.apply(state)
         assert result is not None
@@ -212,13 +218,15 @@ class TestSpellAssignerEdgeCases:
             return [mock_spell]
 
         monkeypatch.setattr(spell_base, "_get_available_spells", fake_available)
-        state = Blueprint()
-        state = state.model_copy(update={"classes": ClassLevels(wizard=1)})
         pre_spells = Spells(
             cantrips=(mock_cantrip,),
             first_level_spells=(mock_spell,),
         )
-        state = state.model_copy(update={"spells": pre_spells})
+        state = WizardBlueprint(
+            classes=ClassLevels(wizard=1),
+            spell_slots=FULL_CASTER_SPELL_SLOTS[0],
+            spells=pre_spells,
+        )
         assigner = WizardRandomSpellAssigner()
         result = assigner.apply(state)
         assert result is not None
@@ -259,15 +267,17 @@ class TestBuildingBlockApplyException:
 @pytest.mark.unit
 class TestWizardSpellAssignerLevel2:
     def test_wizard_level_2_assigns_spells(self) -> None:
-        state = Blueprint()
-        state = state.model_copy(update={"classes": ClassLevels(wizard=2)})
+        state = WizardBlueprint(
+            classes=ClassLevels(wizard=2), spell_slots=FULL_CASTER_SPELL_SLOTS[1]
+        )
         assigner = WizardRandomSpellAssigner()
         result = assigner.apply(state)
         assert result is not None
 
     def test_wizard_random_spell_assigner_select_spells(self) -> None:
-        state = Blueprint()
-        state = state.model_copy(update={"classes": ClassLevels(wizard=2)})
+        state = WizardBlueprint(
+            classes=ClassLevels(wizard=2), spell_slots=FULL_CASTER_SPELL_SLOTS[1]
+        )
         assigner = WizardRandomSpellAssigner(seed=42)
         result = assigner.apply(state)
         assert result is not None

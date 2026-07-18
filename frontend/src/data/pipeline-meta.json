@@ -22,19 +22,10 @@
       ]
     },
     {
-      "kind": "generic",
-      "origin": "WizardPreSubclassLevel",
-      "args": [
-        {
-          "kind": "literal",
-          "values": [
-            0
-          ]
-        },
-        {
-          "kind": "none"
-        }
-      ]
+      "kind": "none"
+    },
+    {
+      "kind": "none"
     },
     {
       "kind": "generic",
@@ -221,19 +212,10 @@
     }
   ],
   "originHierarchy": {
-    "WizardBlueprint": [
-      "Blueprint"
-    ],
-    "WizardLevel18Blueprint": [
-      "WizardBlueprint",
-      "Blueprint"
-    ],
-    "WizardLevel20Blueprint": [
-      "WizardLevel18Blueprint",
-      "WizardBlueprint",
-      "Blueprint"
-    ],
     "SorcererBlueprint": [
+      "Blueprint"
+    ],
+    "BarbarianBlueprint": [
       "Blueprint"
     ]
   },
@@ -266,31 +248,23 @@
       "kind": "union",
       "members": [
         {
-          "kind": "generic",
-          "origin": "WizardPreSubclassLevel",
-          "args": [
-            {
-              "kind": "type",
-              "name": "SecondSubclassPreLevel"
-            },
-            {
-              "kind": "none"
-            }
-          ]
+          "kind": "type",
+          "name": "WizardInfo[AnyWizardLevel]"
         },
         {
-          "kind": "generic",
-          "origin": "WizardSubclassLevel",
-          "args": [
-            {
-              "kind": "type",
-              "name": "SecondSubclassPostLevel"
-            },
-            {
-              "kind": "type",
-              "name": "WizardSubclass"
-            }
-          ]
+          "kind": "none"
+        }
+      ]
+    },
+    {
+      "kind": "union",
+      "members": [
+        {
+          "kind": "type",
+          "name": "CasterInfo"
+        },
+        {
+          "kind": "none"
         }
       ]
     },

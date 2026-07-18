@@ -1,9 +1,11 @@
 from typing import ClassVar
 from typing import Generic
 from typing import Literal
+from typing import TypeVar
 
 from pydantic import ConfigDict
 
+from dnd.character.blueprint.sentinels import AnyWizardLevel
 from dnd.character.blueprint.sentinels import _ARK_co
 from dnd.character.blueprint.sentinels import _BAK_co
 from dnd.character.blueprint.sentinels import _BDK_co
@@ -19,17 +21,22 @@ from dnd.character.blueprint.sentinels import _SkCK_co
 from dnd.character.blueprint.sentinels import _SOK_co
 from dnd.character.blueprint.sentinels import _StCK_co
 from dnd.character.blueprint.sentinels import _WAK_co
-from dnd.character.blueprint.sentinels import _WZK_co
+from dnd.character.blueprint.states._caster_info import CasterInfo
 from dnd.character.blueprint.states.convertible_blueprint import ConvertibleBlueprint
 from dnd.character.blueprint.states.sorcerer.base import SorcererBlueprint
+from dnd.character.blueprint.states.wizard._info import WizardInfo
 from dnd.character.presentable_character import PresentableCharacter
+
+_WIK_co = TypeVar("_WIK_co", bound=WizardInfo[AnyWizardLevel] | None, covariant=True)
+_CK_co = TypeVar("_CK_co", bound=CasterInfo | None, covariant=True)
 
 
 class PresentableSorcererBlueprint(
     SorcererBlueprint[
         _StCK_co,
         _SkCK_co,
-        _WZK_co,
+        _WIK_co,
+        _CK_co,
         _SOK_co,
         _FGK_co,
         _BAK_co,
@@ -49,7 +56,8 @@ class PresentableSorcererBlueprint(
     Generic[
         _StCK_co,
         _SkCK_co,
-        _WZK_co,
+        _WIK_co,
+        _CK_co,
         _SOK_co,
         _FGK_co,
         _BAK_co,

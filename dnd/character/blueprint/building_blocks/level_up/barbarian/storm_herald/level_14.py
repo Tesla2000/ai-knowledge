@@ -10,8 +10,8 @@ from dnd.character.blueprint.sentinels import ClassSubclassLevel
 from dnd.character.blueprint.sentinels import ThirdSubclassPostLevel
 from dnd.choices.class_creation.character_class import BarbarianSubclass
 from dnd.character.blueprint.states.state import _BPT
-from dnd.choices.abilities.action import BasicAction
-from dnd.choices.abilities.action_type import ActionType
+
+from dnd.character._ability_name import AbilityName
 
 
 class BarbarianLevel14StormHerald(
@@ -34,25 +34,6 @@ class BarbarianLevel14StormHerald(
         return blueprint.model_copy(
             update={
                 "classes": blueprint.classes.model_copy(update={"barbarian": 14}),
-                "actions": blueprint.actions
-                + (
-                    BasicAction(
-                        action_type=ActionType.REACTION,
-                        name="Raging Storm",
-                        description=(
-                            "At 14th level, the power of the storm you channel grows "
-                            "mightier, lashing out at your foes. The effect is based on "
-                            "your chosen environment: Desert (when you hit with an attack, "
-                            "the target must succeed on a Dexterity saving throw or gain "
-                            "vulnerability to fire damage until the start of your next turn), "
-                            "Sea (when you hit a creature with an attack, you can use your "
-                            "reaction to force it to make a Strength saving throw or be "
-                            "knocked prone), Tundra (whenever the effect of your Storm Aura "
-                            "is activated, you can choose one creature you can see in the "
-                            "aura. That creature must succeed on a Strength saving throw or "
-                            "be restrained until the start of your next turn)."
-                        ),
-                    ),
-                ),
+                "actions": blueprint.actions + (AbilityName.RAGING_STORM,),
             }
         )

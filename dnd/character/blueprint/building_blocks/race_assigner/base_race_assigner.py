@@ -2,6 +2,8 @@ from abc import ABC
 from abc import abstractmethod
 from typing import Literal
 
+from typing import TypeVar
+
 from dnd.character.blueprint.building_blocks.building_block import BuildingBlock
 from dnd.character.blueprint.sentinels import (
     _ARK,
@@ -18,10 +20,15 @@ from dnd.character.blueprint.sentinels import (
     _ROK,
     _SOK,
     _WAK,
-    _WZK,
     _SkCK,
+    AnyWizardLevel,
 )
+from dnd.character.blueprint.states._caster_info import CasterInfo
 from dnd.character.blueprint.states.state import Blueprint
+from dnd.character.blueprint.states.wizard._info import WizardInfo
+
+_WIK = TypeVar("_WIK", bound=WizardInfo[AnyWizardLevel] | None)
+_CK = TypeVar("_CK", bound=CasterInfo | None)
 from dnd.character.feature.feats import FeatName
 from dnd.character.race.race import Race
 from dnd.character.race.subrace_stats.subrace_to_stats import _get_subrace_stats
@@ -54,7 +61,8 @@ class BaseRaceAssigner(BuildingBlock, ABC):
             _HeK,
             Literal[0],
             _SkCK,
-            _WZK,
+            _WIK,
+            _CK,
             _SOK,
             _FGK,
             _BAK,
@@ -75,7 +83,8 @@ class BaseRaceAssigner(BuildingBlock, ABC):
         _HeK,
         int,
         int,
-        _WZK,
+        _WIK,
+        _CK,
         _SOK,
         _FGK,
         _BAK,
@@ -108,7 +117,8 @@ class BaseRaceAssigner(BuildingBlock, ABC):
             _HeK,
             int,
             int,
-            _WZK,
+            _WIK,
+            _CK,
             _SOK,
             _FGK,
             _BAK,
@@ -161,7 +171,8 @@ class BaseRaceAssigner(BuildingBlock, ABC):
             _HeK,
             Literal[0],
             _SkCK,
-            _WZK,
+            _WIK,
+            _CK,
             _SOK,
             _FGK,
             _BAK,
@@ -182,7 +193,8 @@ class BaseRaceAssigner(BuildingBlock, ABC):
         _HeK,
         Literal[0],
         Literal[0],
-        _WZK,
+        _WIK,
+        _CK,
         _SOK,
         _FGK,
         _BAK,
@@ -204,7 +216,8 @@ class BaseRaceAssigner(BuildingBlock, ABC):
             _HeK,
             Literal[0],
             Literal[0],
-            _WZK,
+            _WIK,
+            _CK,
             _SOK,
             _FGK,
             _BAK,

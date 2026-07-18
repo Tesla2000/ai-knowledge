@@ -24,10 +24,16 @@ from dnd.character.blueprint.sentinels import (
     _StK,
     _SkCK,
     _WAK,
-    _WZK,
     _RK,
+    AnyWizardLevel,
 )
+from dnd.character.blueprint.states._caster_info import CasterInfo
 from dnd.character.blueprint.states.state import Blueprint
+from dnd.character.blueprint.states.wizard._info import WizardInfo
+from typing import TypeVar
+
+_WIK = TypeVar("_WIK", bound=WizardInfo[AnyWizardLevel] | None)
+_CK = TypeVar("_CK", bound=CasterInfo | None)
 from pydantic import ConfigDict
 from pydantic import Field
 
@@ -57,7 +63,8 @@ class CharacterDataAssigner(BuildingBlock):
             _HeK,
             _StCK,
             _SkCK,
-            _WZK,
+            _WIK,
+            _CK,
             _SOK,
             _FGK,
             _BAK,
@@ -78,7 +85,8 @@ class CharacterDataAssigner(BuildingBlock):
         _HeK,
         _StCK,
         _SkCK,
-        _WZK,
+        _WIK,
+        _CK,
         _SOK,
         _FGK,
         _BAK,
@@ -99,7 +107,8 @@ class CharacterDataAssigner(BuildingBlock):
             _HeK,
             _StCK,
             _SkCK,
-            _WZK,
+            _WIK,
+            _CK,
             _SOK,
             _FGK,
             _BAK,

@@ -8,7 +8,9 @@ from dnd.character.blueprint.character_data import CharacterData
 from dnd.character.blueprint.sentinels import AnyClassLevel
 from dnd.character.blueprint.sentinels import AnySorcererLevel
 from dnd.character.blueprint.sentinels import AnyWizardLevel
+from dnd.character.blueprint.states._caster_info import CasterInfo
 from dnd.character.blueprint.states.state import Blueprint
+from dnd.character.blueprint.states.wizard._info import WizardInfo
 from dnd.character.feature.feats import FeatName
 from dnd.character.race.race import Race
 from dnd.character.spells import SPELLCASTING_ABILITY_MAP
@@ -36,7 +38,8 @@ class PresentableCharacter(
         PositiveInt,
         Literal[0],
         Literal[0],
-        AnyWizardLevel,
+        WizardInfo[AnyWizardLevel] | None,
+        CasterInfo | None,
         AnySorcererLevel,
         AnyClassLevel,
         AnyClassLevel,
@@ -132,25 +135,10 @@ class PresentableCharacter(
         )
 
     @_cf
-    def spell_save_dc(self) -> int | None:
-        if self.spellcasting_ability is None:
-            return None
-        return (
-            8
-            + self.proficiency_bonus
-            + self._get_modifier(self.spellcasting_ability)
-            + self.spell_save_dc_bonus
-        )
-
-    @_cf
     def spell_attack_bonus(self) -> int | None:
-        if self.spellcasting_ability is None:
+        if not self.spell_attack_bonus_modifiers:
             return None
-        return (
-            self._get_spellcasting_modifier()
-            + self.proficiency_bonus
-            + self.spellcasting_ability_bonus
-        )
+        return sum(m.apply(self) for m in self.spell_attack_bonus_modifiers)
 
     @_cf
     def n_prepared_spells(self) -> NonNegativeInt:

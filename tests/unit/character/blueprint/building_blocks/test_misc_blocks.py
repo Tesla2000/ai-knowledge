@@ -43,6 +43,7 @@ from dnd.character.blueprint.building_blocks.stats_builder.standard_array import
     StandardArray,
 )
 from dnd.character.blueprint.building_blocks.stats_priority import StatsPriority
+from dnd.character.blueprint.states._caster_info import CasterInfo
 from dnd.character.blueprint.states.sorcerer.base import SorcererBlueprint
 from dnd.character.blueprint.states.state import Blueprint
 from dnd.character.blueprint.states.wizard.base import WizardBlueprint
@@ -200,7 +201,8 @@ class TestSpellAssignerEdgeCases:
     ) -> None:
         monkeypatch.setattr(spell_base, "_get_available_spells", lambda query: [])
         state = WizardBlueprint(
-            classes=ClassLevels(wizard=1), spell_slots=FULL_CASTER_SPELL_SLOTS[0]
+            classes=ClassLevels(wizard=1),
+            caster=CasterInfo(spell_slots=FULL_CASTER_SPELL_SLOTS[0]),
         )
         assigner = WizardRandomSpellAssigner()
         result = assigner.apply(state)
@@ -224,7 +226,7 @@ class TestSpellAssignerEdgeCases:
         )
         state = WizardBlueprint(
             classes=ClassLevels(wizard=1),
-            spell_slots=FULL_CASTER_SPELL_SLOTS[0],
+            caster=CasterInfo(spell_slots=FULL_CASTER_SPELL_SLOTS[0]),
             spells=pre_spells,
         )
         assigner = WizardRandomSpellAssigner()
@@ -268,7 +270,8 @@ class TestBuildingBlockApplyException:
 class TestWizardSpellAssignerLevel2:
     def test_wizard_level_2_assigns_spells(self) -> None:
         state = WizardBlueprint(
-            classes=ClassLevels(wizard=2), spell_slots=FULL_CASTER_SPELL_SLOTS[1]
+            classes=ClassLevels(wizard=2),
+            caster=CasterInfo(spell_slots=FULL_CASTER_SPELL_SLOTS[1]),
         )
         assigner = WizardRandomSpellAssigner()
         result = assigner.apply(state)
@@ -276,7 +279,8 @@ class TestWizardSpellAssignerLevel2:
 
     def test_wizard_random_spell_assigner_select_spells(self) -> None:
         state = WizardBlueprint(
-            classes=ClassLevels(wizard=2), spell_slots=FULL_CASTER_SPELL_SLOTS[1]
+            classes=ClassLevels(wizard=2),
+            caster=CasterInfo(spell_slots=FULL_CASTER_SPELL_SLOTS[1]),
         )
         assigner = WizardRandomSpellAssigner(seed=42)
         result = assigner.apply(state)

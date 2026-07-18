@@ -9,9 +9,9 @@ from dnd.character.blueprint.building_blocks.level_up.sorcerer.base import (
 from dnd.character.blueprint.sentinels import FirstSubclassPostLevel
 from dnd.character.blueprint.sentinels import SorcererSubclassLevel
 from dnd.character.blueprint.states.state import _BPT
-from dnd.choices.abilities.action import BasicAction
-from dnd.choices.abilities.action_type import ActionType
 from dnd.choices.class_creation.character_class import SorcererSubclass
+
+from dnd.character._ability_name import AbilityName
 
 
 class SorcererLevel18LunarSorcery(
@@ -36,20 +36,6 @@ class SorcererLevel18LunarSorcery(
         return blueprint.model_copy(
             update={
                 "classes": blueprint.classes.model_copy(update={"sorcerer": 18}),
-                "actions": blueprint.actions
-                + (
-                    BasicAction(
-                        action_type=ActionType.BONUS_ACTION,
-                        name="Lunar Phenomenon",
-                        description=(
-                            "Evoke your current lunar phase. Full Moon: creatures of your "
-                            "choice within 30 feet must make a Constitution save or be "
-                            "blinded until your next turn. New Moon: one creature within "
-                            "60 feet must make a Dexterity save or take 3d10 necrotic damage "
-                            "and be cursed. Crescent Moon: you or a creature within 60 feet "
-                            "gains 4d6 temporary HP. Recharge: long rest or 5 sorcery points."
-                        ),
-                    ),
-                ),
+                "actions": blueprint.actions + (AbilityName.LUNAR_PHENOMENON,),
             }
         )

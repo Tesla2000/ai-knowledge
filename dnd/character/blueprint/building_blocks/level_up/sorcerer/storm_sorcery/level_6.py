@@ -9,9 +9,9 @@ from dnd.character.blueprint.building_blocks.level_up.sorcerer.base import (
 from dnd.character.blueprint.sentinels import FirstSubclassPostLevel
 from dnd.character.blueprint.sentinels import SorcererSubclassLevel
 from dnd.character.blueprint.states.state import _BPT
-from dnd.choices.abilities.action import BasicAction
-from dnd.choices.abilities.action_type import ActionType
 from dnd.choices.class_creation.character_class import SorcererSubclass
+
+from dnd.character._ability_name import AbilityName
 
 
 class SorcererLevel6StormSorcery(
@@ -36,18 +36,6 @@ class SorcererLevel6StormSorcery(
         return blueprint.model_copy(
             update={
                 "classes": blueprint.classes.model_copy(update={"sorcerer": 6}),
-                "actions": blueprint.actions
-                + (
-                    BasicAction(
-                        action_type=ActionType.PASSIVE,
-                        name="Heart of the Storm",
-                        description=(
-                            "You gain resistance to lightning and thunder damage. When you "
-                            "cast a spell of 1st level or higher dealing lightning or thunder "
-                            "damage, each creature within 10 feet takes lightning or thunder "
-                            "damage (your choice) equal to half your sorcerer level."
-                        ),
-                    ),
-                ),
+                "actions": blueprint.actions + (AbilityName.HEART_OF_THE_STORM,),
             }
         )

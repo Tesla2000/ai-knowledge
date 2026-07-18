@@ -2,7 +2,6 @@ from typing import ClassVar
 from typing import Generic
 
 from pydantic import ConfigDict
-from pydantic import Field
 from pydantic import PositiveInt
 
 from dnd.character.blueprint.sentinels import _ARK_co
@@ -21,22 +20,22 @@ from dnd.character.blueprint.sentinels import _SOK_co
 from dnd.character.blueprint.sentinels import _StCK_co
 from dnd.character.blueprint.sentinels import _WAK_co
 from dnd.character.blueprint.sentinels import _WZK_co
-from dnd.character.blueprint.states.caster_blueprint import CasterBlueprint
+from dnd.character.blueprint.states._caster_info import CasterInfo
 from dnd.character.blueprint.states.state import Blueprint
+from dnd.character.blueprint.states.wizard._info import WizardInfo
 from dnd.character.race.race import Race
-from dnd.character.spells.spell_slots import Spell
 from dnd.character.stats import Stats
 
 
 class WizardBlueprint(
-    CasterBlueprint,
     Blueprint[
         Race,
         Stats,
         PositiveInt,
         _StCK_co,
         _SkCK_co,
-        _WZK_co,
+        WizardInfo[_WZK_co],
+        CasterInfo,
         _SOK_co,
         _FGK_co,
         _BAK_co,
@@ -71,5 +70,3 @@ class WizardBlueprint(
     ],
 ):
     model_config: ClassVar[ConfigDict] = ConfigDict(frozen=True)
-
-    prepared_spells: tuple[Spell, ...] = Field(default=())

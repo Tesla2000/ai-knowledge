@@ -236,6 +236,7 @@ dependencies = [
     { name = "structured-output-creator" },
     { name = "tiktoken" },
     { name = "typing-protocol-intersection" },
+    { name = "uuid-string" },
     { name = "uvicorn" },
 ]
 
@@ -265,6 +266,7 @@ requires-dist = [
     { name = "structured-output-creator", specifier = ">=0.1.1" },
     { name = "tiktoken", specifier = "==0.8.0" },
     { name = "typing-protocol-intersection", specifier = ">=0.6.4" },
+    { name = "uuid-string", specifier = ">=0.1.13" },
     { name = "uvicorn", specifier = ">=0.40.0" },
 ]
 
@@ -1281,6 +1283,15 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/53/0c/06f8b233b8fd13b9e5ee11424ef85419ba0d8ba0b3138bf360be2ff56953/urllib3-2.7.0.tar.gz", hash = "sha256:231e0ec3b63ceb14667c67be60f2f2c40a518cb38b03af60abc813da26505f4c", size = 433602, upload-time = "2026-05-07T16:13:18.596Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/7f/3e/5db95bcf282c52709639744ca2a8b149baccf648e39c8cc87553df9eae0c/urllib3-2.7.0-py3-none-any.whl", hash = "sha256:9fb4c81ebbb1ce9531cce37674bbc6f1360472bc18ca9a553ede278ef7276897", size = 131087, upload-time = "2026-05-07T16:13:17.151Z" },
+]
+
+[[package]]
+name = "uuid-string"
+version = "0.1.13"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/a8/16/d52413eda8d062bc570a2857ae1e8ff2d5292471c2fa4ddf74a9ca1619e6/uuid_string-0.1.13.tar.gz", hash = "sha256:16de86ca4f4909bab61c02f0808597495dea13924aac14b6bc3ddb01f62a421e", size = 50995, upload-time = "2026-04-29T20:12:48.724Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/68/6d/bfa54dd6dd3e3bcb86f36bb98ea36ba2f3d052f0db75813a6563cefbb035/uuid_string-0.1.13-py3-none-any.whl", hash = "sha256:92c38ca5a8c9cd5258ebe8f283231d9b9a97a21faa675cb0c3e56290767f7346", size = 2905, upload-time = "2026-04-29T20:12:49.986Z" },
 ]
 
 [[package]]

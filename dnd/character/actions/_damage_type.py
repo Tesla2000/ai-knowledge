@@ -15,3 +15,4 @@ class DamageType(StrEnum):
     RADIANT = auto()
     PSYCHIC = auto()
     FORCE = auto()
+    ELEMENTAL = auto()

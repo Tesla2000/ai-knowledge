@@ -7,9 +7,9 @@ from dnd.character.blueprint.building_blocks.level_up.barbarian.base import (
     BarbarianSubclassAssignLevelBase,
 )
 from dnd.character.blueprint.states.state import _BPT
-from dnd.choices.abilities.action import BasicAction
-from dnd.choices.abilities.action_type import ActionType
 from dnd.choices.class_creation.character_class import BarbarianSubclass
+
+from dnd.character._ability_name import AbilityName
 
 
 class BarbarianLevel3Beast(
@@ -26,21 +26,6 @@ class BarbarianLevel3Beast(
             update={
                 "classes": blueprint.classes.model_copy(update={"barbarian": 3}),
                 "subclasses": blueprint.subclasses + (BarbarianSubclass.BEAST,),
-                "actions": blueprint.actions
-                + (
-                    BasicAction(
-                        action_type=ActionType.BONUS_ACTION,
-                        name="Form of the Beast",
-                        description=(
-                            "Starting at 3rd level, when you enter your rage, you can "
-                            "transform, revealing the bestial power within you. Until the "
-                            "rage ends, you manifest a natural weapon. Choose one: Bite "
-                            "(1d8 piercing, you can regain HP equal to the damage on one "
-                            "hit per rage), Claws (two attacks when you use the Attack "
-                            "action, 1d6 slashing each), or Tail (1d8 piercing, reaction "
-                            "to add +1d8 to AC against one attack)."
-                        ),
-                    ),
-                ),
+                "actions": blueprint.actions + (AbilityName.FORM_OF_THE_BEAST,),
             }
         )

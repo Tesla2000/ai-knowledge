@@ -2,7 +2,7 @@ from typing import ClassVar
 from typing import Generic
 
 from pydantic import ConfigDict
-from pydantic import Field
+from pydantic import PositiveInt
 
 from dnd.character.blueprint.sentinels import _ARK_co
 from dnd.character.blueprint.sentinels import _BAK_co
@@ -20,15 +20,22 @@ from dnd.character.blueprint.sentinels import _SOK_co
 from dnd.character.blueprint.sentinels import _StCK_co
 from dnd.character.blueprint.sentinels import _WAK_co
 from dnd.character.blueprint.sentinels import _WZK_co
-from dnd.character.blueprint.states.wizard.base import WizardBlueprint
-from dnd.character.spells.spell_slots import Spell
+from dnd.character.blueprint.states._caster_info import CasterInfo
+from dnd.character.blueprint.states.state import Blueprint
+from dnd.character.blueprint.states.wizard._info import WizardLevel18Info
+from dnd.character.race.race import Race
+from dnd.character.stats import Stats
 
 
 class WizardLevel18Blueprint(
-    WizardBlueprint[
+    Blueprint[
+        Race,
+        Stats,
+        PositiveInt,
         _StCK_co,
         _SkCK_co,
-        _WZK_co,
+        WizardLevel18Info[_WZK_co],
+        CasterInfo,
         _SOK_co,
         _FGK_co,
         _BAK_co,
@@ -63,5 +70,3 @@ class WizardLevel18Blueprint(
     ],
 ):
     model_config: ClassVar[ConfigDict] = ConfigDict(frozen=True)
-
-    spell_mastery_spells: tuple[Spell, ...] = Field(default=())

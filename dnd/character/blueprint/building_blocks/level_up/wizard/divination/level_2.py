@@ -11,9 +11,9 @@ from dnd.character.blueprint.sentinels import SecondSubclassPreLevel
 from dnd.character.blueprint.sentinels import WizardPreSubclassLevel
 from dnd.character.blueprint.sentinels import WizardSubclassLevel
 from dnd.character.blueprint.states.state import _BPT
-from dnd.choices.abilities.action import BasicAction
-from dnd.choices.abilities.action_type import ActionType
 from dnd.choices.class_creation.character_class import WizardSubclass
+
+from dnd.character._ability_name import AbilityName
 
 
 class WizardLevel2Divination(
@@ -36,25 +36,6 @@ class WizardLevel2Divination(
                 "classes": blueprint.classes.model_copy(update={"wizard": 2}),
                 "subclasses": blueprint.subclasses + (WizardSubclass.DIVINATION,),
                 "actions": blueprint.actions
-                + (
-                    BasicAction(
-                        action_type=ActionType.PASSIVE,
-                        name="Divination Savant",
-                        description=(
-                            "The gold and time you must spend to copy a divination spell "
-                            "into your spellbook is halved."
-                        ),
-                    ),
-                    BasicAction(
-                        action_type=ActionType.PASSIVE,
-                        name="Portent",
-                        description=(
-                            "When you finish a long rest, roll two d20s. Before a long rest, "
-                            "you can replace any attack roll, saving throw, or ability check "
-                            "made by you or a creature you can see with one of these results. "
-                            "Each Portent die can only be used once."
-                        ),
-                    ),
-                ),
+                + (AbilityName.DIVINATION_SAVANT, AbilityName.PORTENT),
             }
         )

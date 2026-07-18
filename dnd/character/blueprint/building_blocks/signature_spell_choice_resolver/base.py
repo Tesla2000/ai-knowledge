@@ -4,16 +4,45 @@ from abc import abstractmethod
 from dnd.character.blueprint.building_blocks.building_block import BuildingBlock
 from dnd.character.blueprint.sentinels import AnyClassLevel
 from dnd.character.blueprint.sentinels import AnySorcererLevel
-from dnd.character.blueprint.sentinels import AnySignatureSpellChoices
 from dnd.character.blueprint.sentinels import AnyStatChoices
 from dnd.character.blueprint.sentinels import AnyWizardLevel
 from dnd.character.blueprint.sentinels import MaybeCharacterData
-from dnd.character.blueprint.states.wizard.level20 import AnyWizardLevel20Blueprint
-from dnd.character.blueprint.states.wizard.level20 import WizardLevel20Blueprint
+from dnd.character.blueprint.sentinels import MaybeHealth
+from dnd.character.blueprint.sentinels import MaybeRace
+from dnd.character.blueprint.sentinels import MaybeStats
+from dnd.character.blueprint.states._caster_info import CasterInfo
+from dnd.character.blueprint.states.state import Blueprint
+from dnd.character.blueprint.states.wizard._info import WizardLevel20Info
 from dnd.character.blueprint.states.wizard.presentable import (
     PresentableWizardLevel20Blueprint,
 )
+from dnd.character.race.race import Race
 from dnd.character.spells.spell_slots import Spell
+from dnd.character.stats import Stats
+from pydantic import PositiveInt
+
+type AnyWizardLevel20Blueprint = Blueprint[
+    MaybeRace,
+    MaybeStats,
+    MaybeHealth,
+    AnyStatChoices,
+    AnyStatChoices,
+    WizardLevel20Info[AnyWizardLevel],
+    CasterInfo,
+    AnySorcererLevel,
+    AnyClassLevel,
+    AnyClassLevel,
+    AnyClassLevel,
+    AnyClassLevel,
+    AnyClassLevel,
+    AnyClassLevel,
+    AnyClassLevel,
+    AnyClassLevel,
+    AnyClassLevel,
+    AnyClassLevel,
+    AnyClassLevel,
+    MaybeCharacterData,
+]
 
 
 class SignatureSpellChoiceResolver(BuildingBlock, ABC):
@@ -25,9 +54,9 @@ class SignatureSpellChoiceResolver(BuildingBlock, ABC):
     ) -> tuple[Spell, ...]: ...
 
     def apply[
+        _WZK_: AnyWizardLevel,
         _StCK_: AnyStatChoices,
         _SkCK_: AnyStatChoices,
-        _WZK_: AnyWizardLevel,
         _SOK_: AnySorcererLevel,
         _FGK_: AnyClassLevel,
         _BAK_: AnyClassLevel,
@@ -41,13 +70,16 @@ class SignatureSpellChoiceResolver(BuildingBlock, ABC):
         _WAK_: AnyClassLevel,
         _ARK_: AnyClassLevel,
         _CDK_: MaybeCharacterData,
-        _SigK_: AnySignatureSpellChoices,
     ](
         self,
-        blueprint: WizardLevel20Blueprint[
+        blueprint: Blueprint[
+            Race,
+            Stats,
+            PositiveInt,
             _StCK_,
             _SkCK_,
-            _WZK_,
+            WizardLevel20Info[_WZK_],
+            CasterInfo,
             _SOK_,
             _FGK_,
             _BAK_,
@@ -61,7 +93,6 @@ class SignatureSpellChoiceResolver(BuildingBlock, ABC):
             _WAK_,
             _ARK_,
             _CDK_,
-            _SigK_,
         ],
     ) -> PresentableWizardLevel20Blueprint[
         _StCK_,
@@ -81,7 +112,7 @@ class SignatureSpellChoiceResolver(BuildingBlock, ABC):
         _ARK_,
         _CDK_,
     ]:
-        if blueprint.n_signature_spell_choices == 0:
+        if blueprint.wizard.n_signature_spell_choices == 0:
             return PresentableWizardLevel20Blueprint[
                 _StCK_,
                 _SkCK_,
@@ -101,7 +132,13 @@ class SignatureSpellChoiceResolver(BuildingBlock, ABC):
                 _CDK_,
             ].model_validate(dict(blueprint))
         selected = self._select_signature_spells(
-            blueprint, blueprint.n_signature_spell_choices
+            blueprint, blueprint.wizard.n_signature_spell_choices
+        )
+        updated_wizard = blueprint.wizard.model_copy(
+            update={
+                "signature_spells": blueprint.wizard.signature_spells + selected,
+                "n_signature_spell_choices": 0,
+            }
         )
         return PresentableWizardLevel20Blueprint[
             _StCK_,
@@ -120,10 +157,4 @@ class SignatureSpellChoiceResolver(BuildingBlock, ABC):
             _WAK_,
             _ARK_,
             _CDK_,
-        ].model_validate(
-            dict(blueprint)
-            | {
-                "signature_spells": blueprint.signature_spells + selected,
-                "n_signature_spell_choices": 0,
-            }
-        )
+        ].model_validate(dict(blueprint) | {"wizard": updated_wizard})

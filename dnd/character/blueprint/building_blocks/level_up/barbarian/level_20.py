@@ -9,8 +9,8 @@ from dnd.character.blueprint.building_blocks.level_up.barbarian.base import (
 from dnd.character.blueprint.sentinels import ThirdSubclassPostLevel
 from dnd.character.blueprint.states.state import _BPT
 from dnd.character.stats import Stats
-from dnd.choices.abilities.action import BasicAction
-from dnd.choices.abilities.action_type import ActionType
+
+from dnd.character._ability_name import AbilityName
 
 
 class BarbarianLevel20(
@@ -39,17 +39,6 @@ class BarbarianLevel20(
             update={
                 "classes": blueprint.classes.model_copy(update={"barbarian": 20}),
                 "stats_cup": new_cup,
-                "actions": blueprint.actions
-                + (
-                    BasicAction(
-                        action_type=ActionType.PASSIVE,
-                        name="Primal Champion",
-                        description=(
-                            "At 20th level, you embody the power of the wilds. Your Strength "
-                            "and Constitution scores increase by 4. Your maximum for those "
-                            "scores is now 24."
-                        ),
-                    ),
-                ),
+                "actions": blueprint.actions + (AbilityName.PRIMAL_CHAMPION,),
             }
         )

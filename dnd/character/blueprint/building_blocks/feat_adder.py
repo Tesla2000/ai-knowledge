@@ -17,7 +17,9 @@ from dnd.character.blueprint.sentinels import (
     MaybeHealth,
     MaybeRace,
 )
+from dnd.character.blueprint.states._caster_info import CasterInfo
 from dnd.character.blueprint.states.state import Blueprint
+from dnd.character.blueprint.states.wizard._info import WizardInfo
 from dnd.character.feature.feats import FeatName
 from dnd.character.stats import Stats
 from pydantic import Field
@@ -35,7 +37,8 @@ class FeatAdder(AbstractFeatBlock):
         _HeK_: MaybeHealth,
         _StCK_: AnyStatChoices,
         _SkCK_: AnyStatChoices,
-        _WZK_: AnyWizardLevel,
+        _WIK_: WizardInfo[AnyWizardLevel] | None,
+        _CK_: CasterInfo | None,
         _SOK_: AnySorcererLevel,
         _FGK_: AnyClassLevel,
         _BAK_: AnyClassLevel,
@@ -57,7 +60,8 @@ class FeatAdder(AbstractFeatBlock):
             _HeK_,
             _StCK_,
             _SkCK_,
-            _WZK_,
+            _WIK_,
+            _CK_,
             _SOK_,
             _FGK_,
             _BAK_,
@@ -78,7 +82,8 @@ class FeatAdder(AbstractFeatBlock):
         _HeK_,
         _StCK_,
         _SkCK_,
-        _WZK_,
+        _WIK_,
+        _CK_,
         _SOK_,
         _FGK_,
         _BAK_,

@@ -24,9 +24,10 @@ from dnd.character.blueprint.building_blocks.tool_proficiency_choice_resolver.ra
     RandomToolProficiencyChoiceResolver,
 )
 from dnd.character.class_levels import ClassLevels
+from dnd.character.blueprint.states._caster_info import CasterInfo
 from dnd.character.blueprint.states.sorcerer.base import SorcererBlueprint
 from dnd.character.blueprint.states.state import Blueprint
-from dnd.character.blueprint.states.wizard.level20 import WizardLevel20Blueprint
+from dnd.character.blueprint.states.wizard import WizardLevel20Info
 from dnd.character.race.race import Race
 from dnd.character.spells.max_spell_levels import FULL_CASTER_SPELL_SLOTS
 from dnd.character.spells.spell_slots import WizardThirdLevel as ThirdLevel
@@ -230,13 +231,12 @@ _WIZ_STATS = Stats(
     wisdom=10,
     charisma=10,
 )
-_WIZ_L20_BP = WizardLevel20Blueprint(
+_WIZ_L20_BP = Blueprint.model_construct(
     race=Race.HUMAN,
     stats=_WIZ_STATS,
     health_base=6,
-    spell_slots=FULL_CASTER_SPELL_SLOTS[19],
-    caster_level=20,
-    n_signature_spell_choices=2,
+    wizard=WizardLevel20Info(n_signature_spell_choices=2),
+    caster=CasterInfo(spell_slots=FULL_CASTER_SPELL_SLOTS[19], caster_level=20),
     spells=Spells(
         third_level_spells=(
             ThirdLevel.FIREBALL,
@@ -252,24 +252,30 @@ class TestSignatureSpellChoiceResolver:
     def test_selects_n_spells(self) -> None:
         resolver = RandomSignatureSpellChoiceResolver(seed=0)
         result = resolver.apply(_WIZ_L20_BP)
-        assert len(result.signature_spells) == 2
-        assert result.n_signature_spell_choices == 0
+        assert len(result.wizard.signature_spells) == 2
+        assert result.wizard.n_signature_spell_choices == 0
 
     def test_no_duplicates_with_existing(self) -> None:
         bp = _WIZ_L20_BP.model_copy(
             update={
-                "signature_spells": (ThirdLevel.FIREBALL,),
-                "n_signature_spell_choices": 1,
+                "wizard": _WIZ_L20_BP.wizard.model_copy(
+                    update={
+                        "signature_spells": (ThirdLevel.FIREBALL,),
+                        "n_signature_spell_choices": 1,
+                    }
+                )
             }
         )
         resolver = RandomSignatureSpellChoiceResolver(seed=1)
         result = resolver.apply(bp)
-        assert ThirdLevel.FIREBALL in result.signature_spells
-        assert len(set(result.signature_spells)) == len(result.signature_spells)
+        assert ThirdLevel.FIREBALL in result.wizard.signature_spells
+        assert len(set(result.wizard.signature_spells)) == len(result.wizard.signature_spells)
 
     def test_skips_when_no_choices(self) -> None:
-        bp = _WIZ_L20_BP.model_copy(update={"n_signature_spell_choices": 0})
+        bp = _WIZ_L20_BP.model_copy(
+            update={"wizard": _WIZ_L20_BP.wizard.model_copy(update={"n_signature_spell_choices": 0})}
+        )
         resolver = RandomSignatureSpellChoiceResolver()
         result = resolver.apply(bp)
-        assert result.n_signature_spell_choices == 0
-        assert result.signature_spells == bp.signature_spells
+        assert result.wizard.n_signature_spell_choices == 0
+        assert result.wizard.signature_spells == bp.wizard.signature_spells

@@ -18,9 +18,7 @@ from dnd.character.ac_modifier import BarbarianUnarmoredDefenseAcModifier
 from dnd.character.blueprint.sentinels import ClassPreSubclassLevel
 from dnd.character.blueprint.sentinels import ThirdSubclassPreLevel
 from dnd.character.blueprint.states.state import _BPT
-from dnd.choices.abilities.action import BasicAction
-from dnd.choices.abilities.action_type import ActionType
-from dnd.character.actions._ability_name import AbilityName
+from dnd.character._ability_name import AbilityName
 from dnd.choices.stats_creation.statistic import Statistic
 from dnd.other_profficiencies import ArmorProficiency
 from dnd.other_profficiencies import WeaponProficiency
@@ -64,29 +62,7 @@ class BarbarianLevel1(
             "ac_modifiers": blueprint.ac_modifiers
             + (BarbarianUnarmoredDefenseAcModifier(),),
             "actions": blueprint.actions
-            + (
-                BasicAction(
-                    action_type=ActionType.BONUS_ACTION,
-                    name=AbilityName.RAGE,
-                    range_tails=0,
-                    description=(
-                        "You can enter a rage as a bonus action. While raging, you gain "
-                        "advantage on Strength checks and saving throws, a bonus to melee "
-                        "damage rolls using Strength (starting at +2), and resistance to "
-                        "bludgeoning, piercing, and slashing damage. Your rage lasts for "
-                        "1 minute. You have a limited number of rages per long rest."
-                    ),
-                ),
-                BasicAction(
-                    action_type=ActionType.PASSIVE,
-                    name="Unarmored Defense",
-                    description=(
-                        "While you are not wearing any armor, your Armor Class equals "
-                        "10 + your Dexterity modifier + your Constitution modifier. "
-                        "You can use a shield and still gain this benefit."
-                    ),
-                ),
-            ),
+            + (AbilityName.RAGE, AbilityName.UNARMORED_DEFENSE),
         }
         if is_first_class:
             update["saving_throw_proficiencies"] = (

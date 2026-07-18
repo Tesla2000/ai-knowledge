@@ -10,8 +10,8 @@ from dnd.character.blueprint.sentinels import ClassSubclassLevel
 from dnd.character.blueprint.sentinels import ThirdSubclassPostLevel
 from dnd.choices.class_creation.character_class import BarbarianSubclass
 from dnd.character.blueprint.states.state import _BPT
-from dnd.choices.abilities.action import BasicAction
-from dnd.choices.abilities.action_type import ActionType
+
+from dnd.character._ability_name import AbilityName
 
 
 class BarbarianLevel10AncestralGuardian(
@@ -30,22 +30,6 @@ class BarbarianLevel10AncestralGuardian(
         return blueprint.model_copy(
             update={
                 "classes": blueprint.classes.model_copy(update={"barbarian": 10}),
-                "actions": blueprint.actions
-                + (
-                    BasicAction(
-                        action_type=ActionType.ACTION,
-                        name="Consult the Spirits",
-                        description=(
-                            "At 10th level, you gain the ability to consult with your ancestral "
-                            "spirits. When you do so, you cast the augury or clairvoyance spell, "
-                            "without using a spell slot or material components. Rather than "
-                            "creating a spherical sensor, this use of clairvoyance invisibly "
-                            "summons one of your ancestral spirits to the chosen location. "
-                            "Wisdom is your spellcasting ability for these spells. After you "
-                            "cast either spell in this way, you can't use this feature again "
-                            "until you finish a short or long rest."
-                        ),
-                    ),
-                ),
+                "actions": blueprint.actions + (AbilityName.CONSULT_THE_SPIRITS,),
             }
         )

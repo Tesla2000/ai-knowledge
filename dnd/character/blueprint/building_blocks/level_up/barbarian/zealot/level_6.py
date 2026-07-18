@@ -10,8 +10,8 @@ from dnd.character.blueprint.sentinels import ClassSubclassLevel
 from dnd.character.blueprint.sentinels import ThirdSubclassPostLevel
 from dnd.choices.class_creation.character_class import BarbarianSubclass
 from dnd.character.blueprint.states.state import _BPT
-from dnd.choices.abilities.action import BasicAction
-from dnd.choices.abilities.action_type import ActionType
+
+from dnd.character._ability_name import AbilityName
 
 
 class BarbarianLevel6Zealot(
@@ -30,18 +30,6 @@ class BarbarianLevel6Zealot(
         return blueprint.model_copy(
             update={
                 "classes": blueprint.classes.model_copy(update={"barbarian": 6}),
-                "actions": blueprint.actions
-                + (
-                    BasicAction(
-                        action_type=ActionType.FREE_ACTION,
-                        name="Fanatical Focus",
-                        description=(
-                            "Starting at 6th level, the divine power that fuels your rage "
-                            "can protect you. If you fail a saving throw while you're raging, "
-                            "you can reroll it, and you must use the new roll. You can use "
-                            "this feature only once per rage."
-                        ),
-                    ),
-                ),
+                "actions": blueprint.actions + (AbilityName.FANATICAL_FOCUS,),
             }
         )

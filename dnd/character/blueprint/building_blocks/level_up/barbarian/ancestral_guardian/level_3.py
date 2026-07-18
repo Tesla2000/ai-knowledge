@@ -7,9 +7,9 @@ from dnd.character.blueprint.building_blocks.level_up.barbarian.base import (
     BarbarianSubclassAssignLevelBase,
 )
 from dnd.character.blueprint.states.state import _BPT
-from dnd.choices.abilities.action import BasicAction
-from dnd.choices.abilities.action_type import ActionType
 from dnd.choices.class_creation.character_class import BarbarianSubclass
+
+from dnd.character._ability_name import AbilityName
 
 
 class BarbarianLevel3AncestralGuardian(
@@ -27,23 +27,6 @@ class BarbarianLevel3AncestralGuardian(
                 "classes": blueprint.classes.model_copy(update={"barbarian": 3}),
                 "subclasses": blueprint.subclasses
                 + (BarbarianSubclass.ANCESTRAL_GUARDIAN,),
-                "actions": blueprint.actions
-                + (
-                    BasicAction(
-                        action_type=ActionType.PASSIVE,
-                        name="Ancestral Protectors",
-                        description=(
-                            "Starting when you choose this path at 3rd level, spectral warriors "
-                            "appear when you enter your rage. While you're raging, the first "
-                            "creature you hit with an attack on your turn becomes the target of "
-                            "the warriors, which hinder its attacks. Until the start of your "
-                            "next turn, that target has disadvantage on any attack roll that "
-                            "isn't against you, and when the target hits a creature other than "
-                            "you with an attack, that creature has resistance to the damage "
-                            "dealt by the attack. The effect on the target ends early if your "
-                            "rage ends."
-                        ),
-                    ),
-                ),
+                "actions": blueprint.actions + (AbilityName.ANCESTRAL_PROTECTORS,),
             }
         )

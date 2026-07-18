@@ -9,8 +9,6 @@ from dnd.character.blueprint.building_blocks.level_up.wizard.base import (
 from dnd.character.blueprint.sentinels import SecondSubclassPreLevel
 from dnd.character.blueprint.sentinels import WizardPreSubclassLevel
 from dnd.character.blueprint.states.state import _BPT
-from dnd.choices.abilities.action import BasicAction
-from dnd.choices.abilities.action_type import ActionType
 from dnd.choices.equipment_creation.weapons import WeaponName
 from dnd.choices.stats_creation.statistic import Statistic
 from dnd.other_profficiencies import WeaponProficiency
@@ -23,10 +21,11 @@ from dnd.character.blueprint.building_blocks.skill_choice_resolver.random import
 )
 from pydantic import Field
 
+from dnd.character._ability_name import AbilityName
+
 
 class WizardLevel1(
     WizardUpgradeLevelBase[
-        WizardPreSubclassLevel[Literal[SecondSubclassPreLevel.ZEROTH], None],
         WizardPreSubclassLevel[Literal[SecondSubclassPreLevel.FIRST], None],
     ]
 ):
@@ -51,19 +50,7 @@ class WizardLevel1(
                     WeaponProficiency.LIGHT_CROSSBOW,
                 }
             ),
-            "actions": blueprint.actions
-            + (
-                BasicAction(
-                    action_type=ActionType.FREE_ACTION,
-                    name="Arcane Recovery",
-                    description=(
-                        "Once per day when you finish a short rest, you can choose "
-                        "expended spell slots to recover. The slots can have a combined "
-                        "level equal to or less than half your wizard level (rounded up), "
-                        "and none can be 6th level or higher."
-                    ),
-                ),
-            ),
+            "actions": blueprint.actions + (AbilityName.ARCANE_RECOVERY,),
         }
         if is_first_class:
             update["n_skill_choices"] = blueprint.n_skill_choices + 2

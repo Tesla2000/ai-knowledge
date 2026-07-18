@@ -9,9 +9,9 @@ from dnd.character.blueprint.building_blocks.level_up.wizard.base import (
 from dnd.character.blueprint.sentinels import SecondSubclassPostLevel
 from dnd.character.blueprint.sentinels import WizardSubclassLevel
 from dnd.character.blueprint.states.state import _BPT
-from dnd.choices.abilities.action import BasicAction
-from dnd.choices.abilities.action_type import ActionType
 from dnd.choices.class_creation.character_class import WizardSubclass
+
+from dnd.character._ability_name import AbilityName
 
 
 class WizardLevel10Scribes(
@@ -34,19 +34,6 @@ class WizardLevel10Scribes(
         return blueprint.model_copy(
             update={
                 "classes": blueprint.classes.model_copy(update={"wizard": 10}),
-                "actions": blueprint.actions
-                + (
-                    BasicAction(
-                        action_type=ActionType.PASSIVE,
-                        name="Awakened Spellbook",
-                        description=(
-                            "Your spellbook becomes a living tome. Once per long rest when "
-                            "casting a spell using a spell slot, you can replace its damage "
-                            "type with one from another spell in your spellbook. Once per "
-                            "turn when casting a 1st-level-or-higher spell, you can add a "
-                            "ritual tag for that casting only."
-                        ),
-                    ),
-                ),
+                "actions": blueprint.actions + (AbilityName.AWAKENED_SPELLBOOK,),
             }
         )

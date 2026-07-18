@@ -9,7 +9,9 @@ from dnd.character.blueprint.building_blocks.building_block_type import (
 from dnd.character.blueprint.building_blocks.signature_spell_choice_resolver.base import (
     SignatureSpellChoiceResolver,
 )
-from dnd.character.blueprint.states.wizard.level20 import AnyWizardLevel20Blueprint
+from dnd.character.blueprint.building_blocks.signature_spell_choice_resolver.base import (
+    AnyWizardLevel20Blueprint,
+)
 from dnd.character.spells.spell_slots import Spell
 
 
@@ -29,6 +31,6 @@ class RandomSignatureSpellChoiceResolver(SignatureSpellChoiceResolver):
         available = [
             s
             for s in state.spells.third_level_spells
-            if s not in state.signature_spells
+            if s not in state.wizard.signature_spells
         ]
         return tuple(random.sample(available, min(n, len(available))))

@@ -54,10 +54,6 @@ class TestPresentableCharacterNonCaster:
         char = PresentableCharacter(**_BASE_KWARGS)
         assert char.spellcasting_ability is None
 
-    def test_no_classes_spell_save_dc_is_none(self) -> None:
-        char = PresentableCharacter(**_BASE_KWARGS)
-        assert char.spell_save_dc is None
-
     def test_no_classes_spell_attack_bonus_is_none(self) -> None:
         char = PresentableCharacter(**_BASE_KWARGS)
         assert char.spell_attack_bonus is None

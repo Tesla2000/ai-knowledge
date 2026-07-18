@@ -10,8 +10,8 @@ from dnd.character.blueprint.sentinels import ClassSubclassLevel
 from dnd.character.blueprint.sentinels import ThirdSubclassPostLevel
 from dnd.choices.class_creation.character_class import BarbarianSubclass
 from dnd.character.blueprint.states.state import _BPT
-from dnd.choices.abilities.action import BasicAction
-from dnd.choices.abilities.action_type import ActionType
+
+from dnd.character._ability_name import AbilityName
 
 
 class BarbarianLevel6Battlerager(
@@ -30,18 +30,6 @@ class BarbarianLevel6Battlerager(
         return blueprint.model_copy(
             update={
                 "classes": blueprint.classes.model_copy(update={"barbarian": 6}),
-                "actions": blueprint.actions
-                + (
-                    BasicAction(
-                        action_type=ActionType.PASSIVE,
-                        name="Reckless Abandon",
-                        description=(
-                            "Beginning at 6th level, when you use Reckless Attack while "
-                            "raging, you also gain temporary hit points equal to your "
-                            "Constitution modifier (minimum of 1). They vanish if any of "
-                            "them are left when your rage ends."
-                        ),
-                    ),
-                ),
+                "actions": blueprint.actions + (AbilityName.RECKLESS_ABANDON,),
             }
         )

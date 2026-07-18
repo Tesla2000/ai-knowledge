@@ -5,10 +5,15 @@ from typing import TYPE_CHECKING, Literal, Protocol, runtime_checkable
 from pydantic import InstanceOf
 from typing import Self
 
-from dnd.character.actions._ability_name import AbilityName
+from dnd.character._ability_name import AbilityName
+from dnd.character.actions._any_modifier import AnyModifier
 from dnd.character.actions._base_action import BonusAction
-from dnd.character.actions._damage_type import DamageType
 from dnd.character.actions._fight_resource import ResourceName
+from dnd.character.actions.attack_bonus_modifier import RageAttackBonusModifier
+from dnd.character.actions.conditional_immunity_modifier import (
+    MindlessRageConditionalImmunityModifier,
+)
+from dnd.character.actions.damage_resistance_modifier import RageDamageResistanceModifier
 
 if TYPE_CHECKING:
     from dnd.fight.battlemap import Battlemap
@@ -30,17 +35,19 @@ class UseRage(BonusAction):
     def create(cls, fighter: FightCharacter) -> tuple[Self, ...]:
         class _Performer:
             def apply_rage(self, battlemap: Battlemap) -> Battlemap:
+                rage_mods: tuple[AnyModifier, ...] = (
+                    RageAttackBonusModifier(owner_id=fighter.id),
+                    RageDamageResistanceModifier(owner_id=fighter.id),
+                )
+                if AbilityName.MINDLESS_RAGE in fighter.character.actions:
+                    rage_mods = rage_mods + (
+                        MindlessRageConditionalImmunityModifier(owner_id=fighter.id),
+                    )
                 updated = fighter.model_copy(
                     update={
                         "has_bonus_action": False,
-                        "attack_bonus": fighter.attack_bonus + 2,
-                        "damage_resistance": fighter.damage_resistance
-                        | {
-                            DamageType.BLUDGEONING,
-                            DamageType.PIERCING,
-                            DamageType.SLASHING,
-                        },
                         "active_features": fighter.active_features | {AbilityName.RAGE},
+                        "modifiers": fighter.modifiers + rage_mods,
                     }
                 ).use_resource(ResourceName.RAGE)
                 return battlemap.replace_combatant(fighter.position, updated)

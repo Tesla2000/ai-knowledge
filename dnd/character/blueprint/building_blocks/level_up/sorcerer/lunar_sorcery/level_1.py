@@ -9,8 +9,6 @@ from dnd.character.blueprint.building_blocks.level_up.sorcerer.base import (
 from dnd.character.blueprint.states.state import _BPT
 from dnd.choices.class_creation.character_class import SorcererSubclass
 from dnd.choices.equipment_creation.weapons import WeaponName
-from dnd.choices.abilities.action import BasicAction
-from dnd.choices.abilities.action_type import ActionType
 from dnd.choices.stats_creation.statistic import Statistic
 from dnd.other_profficiencies import WeaponProficiency
 from dnd.skill_proficiency import Skill
@@ -21,6 +19,8 @@ from dnd.character.blueprint.building_blocks.skill_choice_resolver.random import
     RandomSkillChoiceResolver,
 )
 from pydantic import Field
+
+from dnd.character._ability_name import AbilityName
 
 
 class SorcererLevel1LunarSorcery(
@@ -49,18 +49,7 @@ class SorcererLevel1LunarSorcery(
                     WeaponProficiency.LIGHT_CROSSBOW,
                 }
             ),
-            "actions": blueprint.actions
-            + (
-                BasicAction(
-                    action_type=ActionType.SHORT_OR_LONG_REST,
-                    name="Lunar Embodiment",
-                    description=(
-                        "You manifest lunar magic each long rest. Choose Full Moon, "
-                        "New Moon, or Crescent Moon phase. Each phase grants different "
-                        "features and access to additional spells."
-                    ),
-                ),
-            ),
+            "actions": blueprint.actions + (AbilityName.LUNAR_EMBODIMENT,),
         }
         if is_first_class:
             update["n_skill_choices"] = blueprint.n_skill_choices + 2

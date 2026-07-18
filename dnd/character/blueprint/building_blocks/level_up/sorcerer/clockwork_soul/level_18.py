@@ -9,9 +9,9 @@ from dnd.character.blueprint.building_blocks.level_up.sorcerer.base import (
 from dnd.character.blueprint.sentinels import FirstSubclassPostLevel
 from dnd.character.blueprint.sentinels import SorcererSubclassLevel
 from dnd.character.blueprint.states.state import _BPT
-from dnd.choices.abilities.action import BasicAction
-from dnd.choices.abilities.action_type import ActionType
 from dnd.choices.class_creation.character_class import SorcererSubclass
+
+from dnd.character._ability_name import AbilityName
 
 
 class SorcererLevel18ClockworkSoul(
@@ -36,18 +36,6 @@ class SorcererLevel18ClockworkSoul(
         return blueprint.model_copy(
             update={
                 "classes": blueprint.classes.model_copy(update={"sorcerer": 18}),
-                "actions": blueprint.actions
-                + (
-                    BasicAction(
-                        action_type=ActionType.ACTION,
-                        name="Clockwork Cavalcade",
-                        description=(
-                            "Summon spirits of order in a 30-foot cube: restore up to 100 "
-                            "HP among chosen creatures (any distribution), end ongoing spells "
-                            "of 3rd level or lower, and repair all damaged objects. Recharge: "
-                            "long rest or 7 sorcery points."
-                        ),
-                    ),
-                ),
+                "actions": blueprint.actions + (AbilityName.CLOCKWORK_CAVALCADE,),
             }
         )

@@ -12,6 +12,8 @@ from dnd.character.blueprint.building_blocks.feat_choice_resolver.random import 
     RandomFeatChoiceResolver,
 )
 from dnd.character.blueprint.building_blocks.stats_priority import StatsPriority
+from typing import TypeVar
+
 from dnd.character.blueprint.sentinels import (
     _ARK,
     _BAK,
@@ -30,9 +32,14 @@ from dnd.character.blueprint.sentinels import (
     _SOK,
     _StCK,
     _WAK,
-    _WZK,
+    AnyWizardLevel,
 )
+from dnd.character.blueprint.states._caster_info import CasterInfo
 from dnd.character.blueprint.states.state import Blueprint
+from dnd.character.blueprint.states.wizard._info import WizardInfo
+
+_WIK = TypeVar("_WIK", bound=WizardInfo[AnyWizardLevel] | None)
+_CK = TypeVar("_CK", bound=CasterInfo | None)
 from dnd.character.feature.feats import FeatName
 from dnd.character.stats import Stats
 from dnd.choices.stats_creation.statistic import Statistic
@@ -78,7 +85,8 @@ class MaxFirstResolver(FeatChoiceResolver):
             _HeK,
             _StCK,
             _SkCK,
-            _WZK,
+            _WIK,
+            _CK,
             _SOK,
             _FGK,
             _BAK,
@@ -99,7 +107,8 @@ class MaxFirstResolver(FeatChoiceResolver):
         _HeK,
         _StCK,
         _SkCK,
-        _WZK,
+        _WIK,
+        _CK,
         _SOK,
         _FGK,
         _BAK,

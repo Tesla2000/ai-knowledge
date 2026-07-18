@@ -29,12 +29,16 @@ from dnd.character.blueprint.sentinels import _SkCK_co
 from dnd.character.blueprint.sentinels import _SOK_co
 from dnd.character.blueprint.sentinels import _StCK_co
 from dnd.character.blueprint.sentinels import _WAK_co
-from dnd.character.blueprint.sentinels import _WZK_co
+from dnd.character.blueprint.states._caster_info import CasterInfo
 from dnd.character.blueprint.states.caster_blueprint import CasterBlueprint
 from dnd.character.blueprint.states.state import Blueprint
+from dnd.character.blueprint.states.wizard._info import WizardInfo
 from dnd.character.race.race import Race
 from dnd.character.stats import Stats
 from dnd.choices.abilities.metamagic import MetamagicOption
+
+_WIK_co = TypeVar("_WIK_co", bound=WizardInfo[AnyWizardLevel] | None, covariant=True)
+_CK_co = TypeVar("_CK_co", bound=CasterInfo | None, covariant=True)
 
 
 class SorcererBlueprint(
@@ -45,7 +49,8 @@ class SorcererBlueprint(
         PositiveInt,
         _StCK_co,
         _SkCK_co,
-        _WZK_co,
+        _WIK_co,
+        _CK_co,
         _SOK_co,
         _FGK_co,
         _BAK_co,
@@ -63,7 +68,8 @@ class SorcererBlueprint(
     Generic[
         _StCK_co,
         _SkCK_co,
-        _WZK_co,
+        _WIK_co,
+        _CK_co,
         _SOK_co,
         _FGK_co,
         _BAK_co,
@@ -88,7 +94,8 @@ class SorcererBlueprint(
 type AnySorcererBlueprint = SorcererBlueprint[
     AnyStatChoices,
     AnyStatChoices,
-    AnyWizardLevel,
+    WizardInfo[AnyWizardLevel] | None,
+    CasterInfo | None,
     AnySorcererLevel,
     AnyClassLevel,
     AnyClassLevel,

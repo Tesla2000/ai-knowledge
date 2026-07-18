@@ -2,6 +2,8 @@ from abc import ABC
 from abc import abstractmethod
 from typing import Protocol
 
+from collections.abc import Callable
+
 from dnd.character.blueprint.building_blocks.building_block import (
     BuildingBlock,
     _WideBlueprint,
@@ -16,10 +18,13 @@ from dnd.character.blueprint.sentinels import (
     AnyWizardLevel,
     MaybeCharacterData,
 )
-from collections.abc import Callable
-
+from dnd.character.blueprint.states._caster_info import CasterInfo
 from dnd.character.blueprint.states.sorcerer.base import SorcererBlueprint
-from dnd.character.blueprint.states.wizard.base import WizardBlueprint
+from dnd.character.blueprint.states.state import Blueprint
+from dnd.character.blueprint.states.wizard._info import WizardInfo
+from dnd.character.race.race import Race
+from dnd.character.stats import Stats
+from pydantic import PositiveInt
 from dnd.character.spells import ClassSpellLevel
 from dnd.character.spells import get_class_spells_set
 from dnd.character.spells import SpellLevel
@@ -96,7 +101,7 @@ class WizardSpellAssigner(BuildingBlock, ABC):
     def _get_spells_to_learn(
         self,
         class_level: int,
-        spell_slots: SpellSlots[int, int, int, int, int, int, int, int, int],
+        spell_slots: SpellSlots,
     ) -> dict[SpellLevel, int]:
         if class_level == 1:
             return {0: 3, 1: 6}
@@ -108,9 +113,9 @@ class WizardSpellAssigner(BuildingBlock, ABC):
         }
 
     def apply[
+        _WZK_: AnyNonZeroWizardLevel,
         _StCK_: AnyStatChoices,
         _SkCK_: AnyStatChoices,
-        _WZK_: AnyNonZeroWizardLevel,
         _SOK_: AnySorcererLevel,
         _FGK_: AnyClassLevel,
         _BAK_: AnyClassLevel,
@@ -126,10 +131,14 @@ class WizardSpellAssigner(BuildingBlock, ABC):
         _CDK_: MaybeCharacterData,
     ](
         self,
-        blueprint: WizardBlueprint[
+        blueprint: Blueprint[
+            Race,
+            Stats,
+            PositiveInt,
             _StCK_,
             _SkCK_,
-            _WZK_,
+            WizardInfo[_WZK_],
+            CasterInfo,
             _SOK_,
             _FGK_,
             _BAK_,
@@ -144,10 +153,14 @@ class WizardSpellAssigner(BuildingBlock, ABC):
             _ARK_,
             _CDK_,
         ],
-    ) -> WizardBlueprint[
+    ) -> Blueprint[
+        Race,
+        Stats,
+        PositiveInt,
         _StCK_,
         _SkCK_,
-        _WZK_,
+        WizardInfo[_WZK_],
+        CasterInfo,
         _SOK_,
         _FGK_,
         _BAK_,
@@ -164,7 +177,7 @@ class WizardSpellAssigner(BuildingBlock, ABC):
     ]:
         spells_to_learn = self._get_spells_to_learn(
             blueprint.classes.get_level(Class.WIZARD),
-            blueprint.spell_slots,
+            blueprint.caster.spell_slots,
         )
         if not spells_to_learn:
             return blueprint
@@ -201,7 +214,7 @@ class SorcererSpellAssigner(BuildingBlock, ABC):
     def _get_spells_to_learn(
         self,
         class_level: int,
-        spell_slots: SpellSlots[int, int, int, int, int, int, int, int, int],
+        spell_slots: SpellSlots,
     ) -> dict[SpellLevel, int]:
         if class_level == 1:
             return {0: 4, 1: 2}
@@ -215,7 +228,8 @@ class SorcererSpellAssigner(BuildingBlock, ABC):
     def apply[
         _StCK_: AnyStatChoices,
         _SkCK_: AnyStatChoices,
-        _WZK_: AnyWizardLevel,
+        _WIK_: WizardInfo[AnyWizardLevel] | None,
+        _CK_: CasterInfo | None,
         _SOK_: AnyNonZeroSorcererLevel,
         _FGK_: AnyClassLevel,
         _BAK_: AnyClassLevel,
@@ -235,7 +249,8 @@ class SorcererSpellAssigner(BuildingBlock, ABC):
         blueprint: SorcererBlueprint[
             _StCK_,
             _SkCK_,
-            _WZK_,
+            _WIK_,
+            _CK_,
             _SOK_,
             _FGK_,
             _BAK_,
@@ -254,7 +269,8 @@ class SorcererSpellAssigner(BuildingBlock, ABC):
     ) -> SorcererBlueprint[
         _StCK_,
         _SkCK_,
-        _WZK_,
+        _WIK_,
+        _CK_,
         _SOK_,
         _FGK_,
         _BAK_,

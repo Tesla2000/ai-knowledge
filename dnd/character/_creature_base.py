@@ -2,6 +2,8 @@ from typing import ClassVar
 
 from pydantic import BaseModel, ConfigDict, Field, NonNegativeInt, PositiveInt
 
+from dnd.character.spell_attack_bonus_modifier import AnySpellAttackBonusModifier
+from dnd.character.spell_save_dc_modifier import AnySpellSaveDcModifier
 from dnd.character.stats import Stats
 from dnd.choices.stats_creation.statistic import Statistic
 
@@ -14,8 +16,10 @@ class _CreatureBase(BaseModel):
     speed: PositiveInt
     dark_vision_range: NonNegativeInt
     ac_bonus: NonNegativeInt = Field(0, exclude=True)
-    spell_save_dc_bonus: NonNegativeInt = Field(0, exclude=True)
-    spellcasting_ability_bonus: NonNegativeInt = Field(0, exclude=True)
+    spell_save_dc_modifiers: tuple[AnySpellSaveDcModifier, ...] = Field(default=())
+    spell_attack_bonus_modifiers: tuple[AnySpellAttackBonusModifier, ...] = Field(
+        default=()
+    )
     saving_throw_bonuses: Stats = Field(
         default=Stats(
             strength=0,

@@ -9,12 +9,13 @@ from dnd.character.stats import Stats
 from dnd.character.blueprint.building_blocks.building_block_type import (
     BuildingBlockType,
 )
+from typing import TypeVar
+
 from dnd.character.blueprint.sentinels import (
     _RK,
     _HeK,
     _StCK,
     _SkCK,
-    _WZK,
     _SOK,
     _FGK,
     _BAK,
@@ -28,7 +29,13 @@ from dnd.character.blueprint.sentinels import (
     _WAK,
     _ARK,
     _CDK,
+    AnyWizardLevel,
 )
+from dnd.character.blueprint.states._caster_info import CasterInfo
+from dnd.character.blueprint.states.wizard._info import WizardInfo
+
+_WIK = TypeVar("_WIK", bound=WizardInfo[AnyWizardLevel] | None)
+_CK = TypeVar("_CK", bound=CasterInfo | None)
 
 
 class StandardArray(StatsBuilder):
@@ -62,7 +69,8 @@ class StandardArray(StatsBuilder):
             _HeK,
             _StCK,
             _SkCK,
-            _WZK,
+            _WIK,
+            _CK,
             _SOK,
             _FGK,
             _BAK,
@@ -83,7 +91,8 @@ class StandardArray(StatsBuilder):
         _HeK,
         _StCK,
         _SkCK,
-        _WZK,
+        _WIK,
+        _CK,
         _SOK,
         _FGK,
         _BAK,
@@ -107,7 +116,8 @@ class StandardArray(StatsBuilder):
             _HeK,
             _StCK,
             _SkCK,
-            _WZK,
+            _WIK,
+            _CK,
             _SOK,
             _FGK,
             _BAK,

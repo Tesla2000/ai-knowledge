@@ -8,8 +8,8 @@ from dnd.character.blueprint.building_blocks.level_up.barbarian.base import (
 )
 from dnd.character.blueprint.sentinels import ThirdSubclassPostLevel
 from dnd.character.blueprint.states.state import _BPT
-from dnd.choices.abilities.action import BasicAction
-from dnd.choices.abilities.action_type import ActionType
+
+from dnd.character._ability_name import AbilityName
 
 
 class BarbarianLevel15(
@@ -28,16 +28,6 @@ class BarbarianLevel15(
         return blueprint.model_copy(
             update={
                 "classes": blueprint.classes.model_copy(update={"barbarian": 15}),
-                "actions": blueprint.actions
-                + (
-                    BasicAction(
-                        action_type=ActionType.PASSIVE,
-                        name="Persistent Rage",
-                        description=(
-                            "Beginning at 15th level, your rage is so fierce that it ends "
-                            "early only if you fall unconscious or if you choose to end it."
-                        ),
-                    ),
-                ),
+                "actions": blueprint.actions + (AbilityName.PERSISTENT_RAGE,),
             }
         )

@@ -6,6 +6,8 @@ from typing import TypeVar
 from typing import cast
 
 from dnd.character.ac_modifier import AnyAcModifier
+from dnd.character.spell_attack_bonus_modifier import AnySpellAttackBonusModifier
+from dnd.character.spell_save_dc_modifier import AnySpellSaveDcModifier
 from dnd.character.armor.armors import ARMORS
 from dnd.character.armor.names import ArmorName
 from dnd.character.magical_item.item import MagicalItem
@@ -24,8 +26,8 @@ from dnd.other_profficiencies import MusicalInstrument
 from dnd.other_profficiencies import ToolProficiency
 from dnd.other_profficiencies import WeaponProficiency
 from dnd.skill_proficiency import Skill
+from dnd.character._ability_name import AbilityName
 from dnd.character.class_levels import ClassLevels
-from dnd.choices.abilities.action import AnyAction
 from pydantic import Field
 from pydantic import NonNegativeInt, BaseModel, ConfigDict
 from pydantic import PositiveInt
@@ -34,7 +36,6 @@ from dnd.character.blueprint.sentinels import FirstSubclassPreLevel
 from dnd.character.blueprint.sentinels import SecondSubclassPreLevel
 from dnd.character.blueprint.sentinels import SorcererPreSubclassLevel
 from dnd.character.blueprint.sentinels import ThirdSubclassPreLevel
-from dnd.character.blueprint.sentinels import WizardPreSubclassLevel
 from dnd.character.blueprint.sentinels import _ARK_co
 from dnd.character.blueprint.sentinels import _BAK_co
 from dnd.character.blueprint.sentinels import _BDK_co
@@ -53,7 +54,6 @@ from dnd.character.blueprint.sentinels import _SkCK_co
 from dnd.character.blueprint.sentinels import _StCK_co
 from dnd.character.blueprint.sentinels import _StK_co
 from dnd.character.blueprint.sentinels import _WAK_co
-from dnd.character.blueprint.sentinels import _WZK_co
 from dnd.character.blueprint.sentinels import AnyClassLevel
 from dnd.character.blueprint.sentinels import AnySorcererLevel
 from dnd.character.blueprint.sentinels import AnyStatChoices
@@ -62,8 +62,13 @@ from dnd.character.blueprint.sentinels import MaybeCharacterData
 from dnd.character.blueprint.sentinels import MaybeHealth
 from dnd.character.blueprint.sentinels import MaybeRace
 from dnd.character.blueprint.sentinels import MaybeStats
+from dnd.character.blueprint.states._caster_info import CasterInfo
+from dnd.character.blueprint.states.wizard._info import WizardInfo
 
 type Equipment = WeaponName | ArmorName | str
+
+_WIK_co = TypeVar("_WIK_co", bound=WizardInfo[AnyWizardLevel] | None, covariant=True)
+_CK_co = TypeVar("_CK_co", bound=CasterInfo | None, covariant=True)
 
 
 class Blueprint(
@@ -74,7 +79,8 @@ class Blueprint(
         _HeK_co,
         _StCK_co,
         _SkCK_co,
-        _WZK_co,
+        _WIK_co,
+        _CK_co,
         _SOK_co,
         _FGK_co,
         _BAK_co,
@@ -107,8 +113,10 @@ class Blueprint(
 
     classes: ClassLevels = Field(default_factory=ClassLevels)
 
-    spell_save_dc_bonus: NonNegativeInt = Field(0, exclude=True)
-    spellcasting_ability_bonus: NonNegativeInt = Field(0, exclude=True)
+    spell_save_dc_modifiers: tuple[AnySpellSaveDcModifier, ...] = Field(default=())
+    spell_attack_bonus_modifiers: tuple[AnySpellAttackBonusModifier, ...] = Field(
+        default=()
+    )
     saving_throw_bonuses: Stats = Field(
         default=Stats(
             strength=0,
@@ -153,15 +161,16 @@ class Blueprint(
     magical_items: tuple[MagicalItem, ...] = ()
     saving_throw_proficiencies: tuple[Statistic, ...] = ()
     other_active_abilities: tuple[str, ...] = ()
-    actions: tuple[AnyAction, ...] = Field(default=())
+    actions: tuple[AbilityName, ...] = Field(default=())
     n_stat_choices: _StCK_co = Field(default=cast(_StCK_co, 0))
     n_skill_choices: _SkCK_co = Field(default=cast(_SkCK_co, 0))
     skills_to_choose_from: frozenset[Skill] = Field(default_factory=frozenset)
     equipment_choices: tuple[tuple[Equipment, ...], ...] = ()
     character_data: _CDK_co = Field(default=cast(_CDK_co, None))
+    wizard: _WIK_co = Field(default=cast(_WIK_co, None))
+    caster: _CK_co = Field(default=cast(_CK_co, None))
 
 
-_Z = Literal[SecondSubclassPreLevel.ZEROTH]
 _SZ = Literal[FirstSubclassPreLevel.ZEROTH]
 _TZ = Literal[ThirdSubclassPreLevel.ZEROTH]
 
@@ -171,7 +180,8 @@ EmptyBlueprint: TypeAlias = Blueprint[
     None,
     Literal[0],
     Literal[0],
-    WizardPreSubclassLevel[_Z, None],
+    None,
+    None,
     SorcererPreSubclassLevel[_SZ, None],
     ClassPreSubclassLevel[_TZ, None],
     ClassPreSubclassLevel[_TZ, None],
@@ -192,7 +202,8 @@ type AnyBluprint = Blueprint[
     MaybeHealth,
     AnyStatChoices,
     AnyStatChoices,
-    AnyWizardLevel,
+    WizardInfo[AnyWizardLevel] | None,
+    CasterInfo | None,
     AnySorcererLevel,
     AnyClassLevel,
     AnyClassLevel,

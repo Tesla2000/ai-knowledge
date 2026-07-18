@@ -18,6 +18,8 @@ from dnd.character.blueprint.sentinels import AnySorcererLevel
 from dnd.character.blueprint.sentinels import AnyStatChoices
 from dnd.character.blueprint.sentinels import AnyWizardLevel
 from dnd.character.blueprint.sentinels import ClassPreSubclassLevel
+from dnd.character.blueprint.states._caster_info import CasterInfo
+from dnd.character.blueprint.states.wizard._info import WizardInfo
 from dnd.character.blueprint.sentinels import ClassSubclassLevel
 from dnd.character.blueprint.sentinels import MaybeCharacterData
 from dnd.character.blueprint.sentinels import MaybeHealth
@@ -47,7 +49,8 @@ class BarbarianUpgradeLevelBase[LevelIn: AnyClassLevel, LevelOut: AnyClassLevel]
         _HeK_: MaybeHealth,
         _StCK_: AnyStatChoices,
         _SkCK_: AnyStatChoices,
-        _WZK_: AnyWizardLevel,
+        _WIK_: WizardInfo[AnyWizardLevel] | None,
+        _CK_: CasterInfo | None,
         _SOK_: AnySorcererLevel,
         _FGK_: AnyClassLevel,
         _ROK_: AnyClassLevel,
@@ -68,7 +71,8 @@ class BarbarianUpgradeLevelBase[LevelIn: AnyClassLevel, LevelOut: AnyClassLevel]
             _HeK_,
             _StCK_,
             _SkCK_,
-            _WZK_,
+            _WIK_,
+            _CK_,
             _SOK_,
             _FGK_,
             LevelIn,
@@ -86,7 +90,8 @@ class BarbarianUpgradeLevelBase[LevelIn: AnyClassLevel, LevelOut: AnyClassLevel]
     ) -> BarbarianBlueprint[
         _StCK_,
         _SkCK_,
-        _WZK_,
+        _WIK_,
+        _CK_,
         _SOK_,
         _FGK_,
         LevelOut,
@@ -106,7 +111,8 @@ class BarbarianUpgradeLevelBase[LevelIn: AnyClassLevel, LevelOut: AnyClassLevel]
         return BarbarianBlueprint[
             _StCK_,
             _SkCK_,
-            _WZK_,
+            _WIK_,
+            _CK_,
             _SOK_,
             _FGK_,
             LevelOut,
@@ -139,7 +145,8 @@ class BarbarianPreSubclassLevelBase[
     def apply[
         _StCK_: AnyStatChoices,
         _SkCK_: AnyStatChoices,
-        _WZK_: AnyWizardLevel,
+        _WIK_: WizardInfo[AnyWizardLevel] | None,
+        _CK_: CasterInfo | None,
         _SOK_: AnySorcererLevel,
         _FGK_: AnyClassLevel,
         _ROK_: AnyClassLevel,
@@ -157,7 +164,8 @@ class BarbarianPreSubclassLevelBase[
         blueprint: BarbarianBlueprint[
             _StCK_,
             _SkCK_,
-            _WZK_,
+            _WIK_,
+            _CK_,
             _SOK_,
             _FGK_,
             ClassPreSubclassLevel[LevelIn, None],
@@ -175,7 +183,8 @@ class BarbarianPreSubclassLevelBase[
     ) -> BarbarianBlueprint[
         _StCK_,
         _SkCK_,
-        _WZK_,
+        _WIK_,
+        _CK_,
         _SOK_,
         _FGK_,
         ClassPreSubclassLevel[LevelOut, None],
@@ -195,7 +204,8 @@ class BarbarianPreSubclassLevelBase[
         return BarbarianBlueprint[
             _StCK_,
             _SkCK_,
-            _WZK_,
+            _WIK_,
+            _CK_,
             _SOK_,
             _FGK_,
             ClassPreSubclassLevel[LevelOut, None],
@@ -227,7 +237,8 @@ class BarbarianSubclassAssignLevelBase[SubclassOut: BarbarianSubclass](
     def apply[
         _StCK_: AnyStatChoices,
         _SkCK_: AnyStatChoices,
-        _WZK_: AnyWizardLevel,
+        _WIK_: WizardInfo[AnyWizardLevel] | None,
+        _CK_: CasterInfo | None,
         _SOK_: AnySorcererLevel,
         _FGK_: AnyClassLevel,
         _ROK_: AnyClassLevel,
@@ -245,7 +256,8 @@ class BarbarianSubclassAssignLevelBase[SubclassOut: BarbarianSubclass](
         blueprint: BarbarianBlueprint[
             _StCK_,
             _SkCK_,
-            _WZK_,
+            _WIK_,
+            _CK_,
             _SOK_,
             _FGK_,
             ClassPreSubclassLevel[ThirdSubclassPreLevel, None],
@@ -263,7 +275,8 @@ class BarbarianSubclassAssignLevelBase[SubclassOut: BarbarianSubclass](
     ) -> BarbarianBlueprint[
         _StCK_,
         _SkCK_,
-        _WZK_,
+        _WIK_,
+        _CK_,
         _SOK_,
         _FGK_,
         ClassSubclassLevel[Literal[ThirdSubclassPostLevel.THIRD], SubclassOut],
@@ -283,7 +296,8 @@ class BarbarianSubclassAssignLevelBase[SubclassOut: BarbarianSubclass](
         return BarbarianBlueprint[
             _StCK_,
             _SkCK_,
-            _WZK_,
+            _WIK_,
+            _CK_,
             _SOK_,
             _FGK_,
             ClassSubclassLevel[Literal[ThirdSubclassPostLevel.THIRD], SubclassOut],
@@ -317,7 +331,8 @@ class BarbarianSharedLevelBase[
         SubclassT: BarbarianSubclass,
         _StCK_: AnyStatChoices,
         _SkCK_: AnyStatChoices,
-        _WZK_: AnyWizardLevel,
+        _WIK_: WizardInfo[AnyWizardLevel] | None,
+        _CK_: CasterInfo | None,
         _SOK_: AnySorcererLevel,
         _FGK_: AnyClassLevel,
         _ROK_: AnyClassLevel,
@@ -335,7 +350,8 @@ class BarbarianSharedLevelBase[
         blueprint: BarbarianBlueprint[
             _StCK_,
             _SkCK_,
-            _WZK_,
+            _WIK_,
+            _CK_,
             _SOK_,
             _FGK_,
             ClassSubclassLevel[LevelIn, SubclassT],
@@ -353,7 +369,8 @@ class BarbarianSharedLevelBase[
     ) -> BarbarianBlueprint[
         _StCK_,
         _SkCK_,
-        _WZK_,
+        _WIK_,
+        _CK_,
         _SOK_,
         _FGK_,
         ClassSubclassLevel[LevelOut, SubclassT],
@@ -373,7 +390,8 @@ class BarbarianSharedLevelBase[
         return BarbarianBlueprint[
             _StCK_,
             _SkCK_,
-            _WZK_,
+            _WIK_,
+            _CK_,
             _SOK_,
             _FGK_,
             ClassSubclassLevel[LevelOut, SubclassT],
@@ -402,7 +420,8 @@ class BarbarianFeatGrantingLevelBase[
         SubclassT: BarbarianSubclass,
         _StCK_: AnyStatChoices,
         _SkCK_: AnyStatChoices,
-        _WZK_: AnyWizardLevel,
+        _WIK_: WizardInfo[AnyWizardLevel] | None,
+        _CK_: CasterInfo | None,
         _SOK_: AnySorcererLevel,
         _FGK_: AnyClassLevel,
         _ROK_: AnyClassLevel,
@@ -420,7 +439,8 @@ class BarbarianFeatGrantingLevelBase[
         blueprint: BarbarianBlueprint[
             _StCK_,
             _SkCK_,
-            _WZK_,
+            _WIK_,
+            _CK_,
             _SOK_,
             _FGK_,
             ClassSubclassLevel[LevelIn, SubclassT],
@@ -438,7 +458,8 @@ class BarbarianFeatGrantingLevelBase[
     ) -> BarbarianBlueprint[
         _StCK_,
         _SkCK_,
-        _WZK_,
+        _WIK_,
+        _CK_,
         _SOK_,
         _FGK_,
         ClassSubclassLevel[LevelOut, SubclassT],
@@ -480,7 +501,8 @@ class BarbarianSubclassFeatureLevelBase[
     def apply[
         _StCK_: AnyStatChoices,
         _SkCK_: AnyStatChoices,
-        _WZK_: AnyWizardLevel,
+        _WIK_: WizardInfo[AnyWizardLevel] | None,
+        _CK_: CasterInfo | None,
         _SOK_: AnySorcererLevel,
         _FGK_: AnyClassLevel,
         _ROK_: AnyClassLevel,
@@ -498,7 +520,8 @@ class BarbarianSubclassFeatureLevelBase[
         blueprint: BarbarianBlueprint[
             _StCK_,
             _SkCK_,
-            _WZK_,
+            _WIK_,
+            _CK_,
             _SOK_,
             _FGK_,
             LevelIn,
@@ -516,7 +539,8 @@ class BarbarianSubclassFeatureLevelBase[
     ) -> BarbarianBlueprint[
         _StCK_,
         _SkCK_,
-        _WZK_,
+        _WIK_,
+        _CK_,
         _SOK_,
         _FGK_,
         LevelOut,
@@ -536,7 +560,8 @@ class BarbarianSubclassFeatureLevelBase[
         return BarbarianBlueprint[
             _StCK_,
             _SkCK_,
-            _WZK_,
+            _WIK_,
+            _CK_,
             _SOK_,
             _FGK_,
             LevelOut,

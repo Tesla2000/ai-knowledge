@@ -8,8 +8,8 @@ from dnd.character.blueprint.building_blocks.level_up.barbarian.base import (
 )
 from dnd.character.blueprint.sentinels import ThirdSubclassPostLevel
 from dnd.character.blueprint.states.state import _BPT
-from dnd.choices.abilities.action import BasicAction
-from dnd.choices.abilities.action_type import ActionType
+
+from dnd.character._ability_name import AbilityName
 
 
 class BarbarianLevel18(
@@ -28,17 +28,6 @@ class BarbarianLevel18(
         return blueprint.model_copy(
             update={
                 "classes": blueprint.classes.model_copy(update={"barbarian": 18}),
-                "actions": blueprint.actions
-                + (
-                    BasicAction(
-                        action_type=ActionType.PASSIVE,
-                        name="Indomitable Might",
-                        description=(
-                            "Beginning at 18th level, if your total for a Strength check is "
-                            "less than your Strength score, you can use that score in place "
-                            "of the total."
-                        ),
-                    ),
-                ),
+                "actions": blueprint.actions + (AbilityName.INDOMITABLE_MIGHT,),
             }
         )

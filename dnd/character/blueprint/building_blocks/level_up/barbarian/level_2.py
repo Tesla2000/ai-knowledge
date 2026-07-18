@@ -8,8 +8,8 @@ from dnd.character.blueprint.building_blocks.level_up.barbarian.base import (
 )
 from dnd.character.blueprint.sentinels import ThirdSubclassPreLevel
 from dnd.character.blueprint.states.state import _BPT
-from dnd.choices.abilities.action import BasicAction
-from dnd.choices.abilities.action_type import ActionType
+
+from dnd.character._ability_name import AbilityName
 
 
 class BarbarianLevel2(
@@ -29,26 +29,6 @@ class BarbarianLevel2(
             update={
                 "classes": blueprint.classes.model_copy(update={"barbarian": 2}),
                 "actions": blueprint.actions
-                + (
-                    BasicAction(
-                        action_type=ActionType.PASSIVE,
-                        name="Reckless Attack",
-                        description=(
-                            "When you make your first attack on your turn, you can decide to "
-                            "attack recklessly. Doing so gives you advantage on melee weapon "
-                            "attack rolls using Strength during this turn, but attack rolls "
-                            "against you have advantage until your next turn."
-                        ),
-                    ),
-                    BasicAction(
-                        action_type=ActionType.PASSIVE,
-                        name="Danger Sense",
-                        description=(
-                            "You have advantage on Dexterity saving throws against effects "
-                            "that you can see, such as traps and spells. To gain this benefit, "
-                            "you cannot be blinded, deafened, or incapacitated."
-                        ),
-                    ),
-                ),
+                + (AbilityName.RECKLESS_ATTACK, AbilityName.DANGER_SENSE),
             }
         )

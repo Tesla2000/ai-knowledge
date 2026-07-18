@@ -2,6 +2,8 @@ from abc import ABC
 from abc import abstractmethod
 from typing import Literal
 
+from typing import TypeVar
+
 from dnd.character.blueprint.building_blocks.building_block import BuildingBlock
 from dnd.character.blueprint.building_blocks.building_block import _WideBlueprint
 from dnd.character.blueprint.sentinels import (
@@ -9,7 +11,6 @@ from dnd.character.blueprint.sentinels import (
     _HeK,
     _StCK,
     _SkCK,
-    _WZK,
     _SOK,
     _FGK,
     _BAK,
@@ -23,8 +24,14 @@ from dnd.character.blueprint.sentinels import (
     _WAK,
     _ARK,
     _CDK,
+    AnyWizardLevel,
 )
+from dnd.character.blueprint.states._caster_info import CasterInfo
 from dnd.character.blueprint.states.state import Blueprint
+from dnd.character.blueprint.states.wizard._info import WizardInfo
+
+_WIK = TypeVar("_WIK", bound=WizardInfo[AnyWizardLevel] | None)
+_CK = TypeVar("_CK", bound=CasterInfo | None)
 from dnd.character.stats import Stats
 from dnd.choices.stats_creation.statistic import Statistic
 from pydantic import ConfigDict
@@ -52,7 +59,8 @@ class StatChoiceResolver(BuildingBlock, ABC):
             _HeK,
             _StCK,
             _SkCK,
-            _WZK,
+            _WIK,
+            _CK,
             _SOK,
             _FGK,
             _BAK,
@@ -73,7 +81,8 @@ class StatChoiceResolver(BuildingBlock, ABC):
         _HeK,
         Literal[0],
         _SkCK,
-        _WZK,
+        _WIK,
+        _CK,
         _SOK,
         _FGK,
         _BAK,
@@ -95,7 +104,8 @@ class StatChoiceResolver(BuildingBlock, ABC):
                 _HeK,
                 Literal[0],
                 _SkCK,
-                _WZK,
+                _WIK,
+                _CK,
                 _SOK,
                 _FGK,
                 _BAK,
@@ -131,7 +141,8 @@ class StatChoiceResolver(BuildingBlock, ABC):
             _HeK,
             Literal[0],
             _SkCK,
-            _WZK,
+            _WIK,
+            _CK,
             _SOK,
             _FGK,
             _BAK,

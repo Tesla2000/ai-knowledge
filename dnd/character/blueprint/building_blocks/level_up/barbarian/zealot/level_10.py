@@ -10,8 +10,8 @@ from dnd.character.blueprint.sentinels import ClassSubclassLevel
 from dnd.character.blueprint.sentinels import ThirdSubclassPostLevel
 from dnd.choices.class_creation.character_class import BarbarianSubclass
 from dnd.character.blueprint.states.state import _BPT
-from dnd.choices.abilities.action import BasicAction
-from dnd.choices.abilities.action_type import ActionType
+
+from dnd.character._ability_name import AbilityName
 
 
 class BarbarianLevel10Zealot(
@@ -30,21 +30,6 @@ class BarbarianLevel10Zealot(
         return blueprint.model_copy(
             update={
                 "classes": blueprint.classes.model_copy(update={"barbarian": 10}),
-                "actions": blueprint.actions
-                + (
-                    BasicAction(
-                        action_type=ActionType.BONUS_ACTION,
-                        name="Zealous Presence",
-                        description=(
-                            "At 10th level, you learn to channel divine power to inspire "
-                            "zealotry in others. As a bonus action, you unleash a battle cry "
-                            "infused with divine energy. Up to ten other creatures of your "
-                            "choice within 60 feet of you that can hear you gain advantage on "
-                            "attack rolls and saving throws until the start of your next turn. "
-                            "Once you use this feature, you can't use it again until you "
-                            "finish a long rest."
-                        ),
-                    ),
-                ),
+                "actions": blueprint.actions + (AbilityName.ZEALOUS_PRESENCE,),
             }
         )

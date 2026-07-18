@@ -11,9 +11,9 @@ from dnd.character.blueprint.sentinels import SecondSubclassPreLevel
 from dnd.character.blueprint.sentinels import WizardPreSubclassLevel
 from dnd.character.blueprint.sentinels import WizardSubclassLevel
 from dnd.character.blueprint.states.state import _BPT
-from dnd.choices.abilities.action import BasicAction
-from dnd.choices.abilities.action_type import ActionType
 from dnd.choices.class_creation.character_class import WizardSubclass
+
+from dnd.character._ability_name import AbilityName
 
 
 class WizardLevel2Conjuration(
@@ -36,25 +36,6 @@ class WizardLevel2Conjuration(
                 "classes": blueprint.classes.model_copy(update={"wizard": 2}),
                 "subclasses": blueprint.subclasses + (WizardSubclass.CONJURATION,),
                 "actions": blueprint.actions
-                + (
-                    BasicAction(
-                        action_type=ActionType.PASSIVE,
-                        name="Conjuration Savant",
-                        description=(
-                            "The gold and time you must spend to copy a conjuration spell "
-                            "into your spellbook is halved."
-                        ),
-                    ),
-                    BasicAction(
-                        action_type=ActionType.ACTION,
-                        name="Minor Conjuration",
-                        description=(
-                            "Conjure a Small or smaller inanimate object you have seen. "
-                            "It appears in an unoccupied space within 10 feet, lasts 1 hour, "
-                            "weighs no more than 10 lbs, and disappears if it takes any "
-                            "damage or if you use this feature again."
-                        ),
-                    ),
-                ),
+                + (AbilityName.CONJURATION_SAVANT, AbilityName.MINOR_CONJURATION),
             }
         )

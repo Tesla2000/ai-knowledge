@@ -10,8 +10,8 @@ from dnd.character.blueprint.sentinels import ClassSubclassLevel
 from dnd.character.blueprint.sentinels import ThirdSubclassPostLevel
 from dnd.choices.class_creation.character_class import BarbarianSubclass
 from dnd.character.blueprint.states.state import _BPT
-from dnd.choices.abilities.action import BasicAction
-from dnd.choices.abilities.action_type import ActionType
+
+from dnd.character._ability_name import AbilityName
 
 
 class BarbarianLevel14Battlerager(
@@ -35,18 +35,6 @@ class BarbarianLevel14Battlerager(
             update={
                 "classes": blueprint.classes.model_copy(update={"barbarian": 14}),
                 "actions": blueprint.actions
-                + (
-                    BasicAction(
-                        action_type=ActionType.PASSIVE,
-                        name="Spiked Retribution (Improved)",
-                        description=(
-                            "Starting at 14th level, when a creature within 5 feet of you "
-                            "hits you with a melee attack, the attacker takes 3 piercing "
-                            "damage if you are wearing spiked armor and are raging. In "
-                            "addition, the spiked armor bonus action attack now deals 2d4 "
-                            "piercing damage instead of 1d4."
-                        ),
-                    ),
-                ),
+                + (AbilityName.SPIKED_RETRIBUTION_IMPROVED,),
             }
         )

@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, ClassVar
 
 from pydantic import BaseModel, ConfigDict, NonNegativeInt
 
-from dnd.character.actions._ability_name import AbilityName
+from dnd.character._ability_name import AbilityName
 
 if TYPE_CHECKING:
     from dnd.fight.battlemap import Battlemap
@@ -31,4 +31,8 @@ class Action(CombatAction, ABC):
 
 
 class BonusAction(CombatAction, ABC):
+    pass
+
+
+class FreeAction(CombatAction, ABC):
     pass

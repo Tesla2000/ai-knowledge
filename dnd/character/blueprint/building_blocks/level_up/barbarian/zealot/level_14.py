@@ -10,8 +10,8 @@ from dnd.character.blueprint.sentinels import ClassSubclassLevel
 from dnd.character.blueprint.sentinels import ThirdSubclassPostLevel
 from dnd.choices.class_creation.character_class import BarbarianSubclass
 from dnd.character.blueprint.states.state import _BPT
-from dnd.choices.abilities.action import BasicAction
-from dnd.choices.abilities.action_type import ActionType
+
+from dnd.character._ability_name import AbilityName
 
 
 class BarbarianLevel14Zealot(
@@ -34,21 +34,6 @@ class BarbarianLevel14Zealot(
         return blueprint.model_copy(
             update={
                 "classes": blueprint.classes.model_copy(update={"barbarian": 14}),
-                "actions": blueprint.actions
-                + (
-                    BasicAction(
-                        action_type=ActionType.PASSIVE,
-                        name="Rage Beyond Death",
-                        description=(
-                            "Beginning at 14th level, the divine power that fuels your rage "
-                            "allows you to shrug off fatal blows. While you're raging, having "
-                            "0 hit points doesn't knock you unconscious. You still must make "
-                            "death saving throws, and you suffer the normal effects of taking "
-                            "damage while at 0 hit points. However, if you would die due to "
-                            "failing death saving throws, you don't die until your rage ends, "
-                            "and you die then only if you still have 0 hit points."
-                        ),
-                    ),
-                ),
+                "actions": blueprint.actions + (AbilityName.RAGE_BEYOND_DEATH,),
             }
         )

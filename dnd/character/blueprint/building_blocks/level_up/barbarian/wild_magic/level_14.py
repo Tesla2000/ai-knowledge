@@ -10,8 +10,8 @@ from dnd.character.blueprint.sentinels import ClassSubclassLevel
 from dnd.character.blueprint.sentinels import ThirdSubclassPostLevel
 from dnd.choices.class_creation.character_class import BarbarianSubclass
 from dnd.character.blueprint.states.state import _BPT
-from dnd.choices.abilities.action import BasicAction
-from dnd.choices.abilities.action_type import ActionType
+
+from dnd.character._ability_name import AbilityName
 
 
 class BarbarianLevel14WildMagic(
@@ -34,18 +34,6 @@ class BarbarianLevel14WildMagic(
         return blueprint.model_copy(
             update={
                 "classes": blueprint.classes.model_copy(update={"barbarian": 14}),
-                "actions": blueprint.actions
-                + (
-                    BasicAction(
-                        action_type=ActionType.PASSIVE,
-                        name="Controlled Surge",
-                        description=(
-                            "At 14th level, whenever you roll on the Wild Magic table, you "
-                            "can roll the die twice and choose which of the two effects to "
-                            "unleash. If you roll the same number on both dice, you can "
-                            "ignore the number and choose any effect on the table."
-                        ),
-                    ),
-                ),
+                "actions": blueprint.actions + (AbilityName.CONTROLLED_SURGE,),
             }
         )

@@ -1,9 +1,9 @@
-from dnd.character.actions.combat_action import (
+from dnd.character.actions.combat import (
+    Action,
     AnyCombatAction,
     AttackWithAxe,
     BaseAction,
     BonusAction,
-    Action,
     CombatAction,
     UseRage,
 )

@@ -9,9 +9,9 @@ from dnd.character.blueprint.building_blocks.level_up.sorcerer.base import (
 from dnd.character.blueprint.sentinels import FirstSubclassPostLevel
 from dnd.character.blueprint.sentinels import SorcererSubclassLevel
 from dnd.character.blueprint.states.state import _BPT
-from dnd.choices.abilities.action import BasicAction
-from dnd.choices.abilities.action_type import ActionType
 from dnd.choices.class_creation.character_class import SorcererSubclass
+
+from dnd.character._ability_name import AbilityName
 
 
 class SorcererLevel14ClockworkSoul(
@@ -36,18 +36,6 @@ class SorcererLevel14ClockworkSoul(
         return blueprint.model_copy(
             update={
                 "classes": blueprint.classes.model_copy(update={"sorcerer": 14}),
-                "actions": blueprint.actions
-                + (
-                    BasicAction(
-                        action_type=ActionType.BONUS_ACTION,
-                        name="Trance of Order",
-                        description=(
-                            "Enter a regulated mind state for 1 minute. Attack rolls against "
-                            "you can't benefit from advantage, and whenever you roll ≤ 9 on "
-                            "an attack, ability check, or saving throw, it becomes a 10. "
-                            "Recharge: long rest."
-                        ),
-                    ),
-                ),
+                "actions": blueprint.actions + (AbilityName.TRANCE_OF_ORDER,),
             }
         )

@@ -9,9 +9,9 @@ from dnd.character.blueprint.building_blocks.level_up.sorcerer.base import (
 from dnd.character.blueprint.sentinels import FirstSubclassPostLevel
 from dnd.character.blueprint.sentinels import SorcererSubclassLevel
 from dnd.character.blueprint.states.state import _BPT
-from dnd.choices.abilities.action import BasicAction
-from dnd.choices.abilities.action_type import ActionType
 from dnd.choices.class_creation.character_class import SorcererSubclass
+
+from dnd.character._ability_name import AbilityName
 
 
 class SorcererLevel18WildMagic(
@@ -36,18 +36,6 @@ class SorcererLevel18WildMagic(
         return blueprint.model_copy(
             update={
                 "classes": blueprint.classes.model_copy(update={"sorcerer": 18}),
-                "actions": blueprint.actions
-                + (
-                    BasicAction(
-                        action_type=ActionType.PASSIVE,
-                        name="Spell Bombardment",
-                        description=(
-                            "When you roll damage for a spell and roll the highest number "
-                            "possible on any damage die, choose another die of the same type "
-                            "and add its result to the damage. You can do this only once "
-                            "per turn."
-                        ),
-                    ),
-                ),
+                "actions": blueprint.actions + (AbilityName.SPELL_BOMBARDMENT,),
             }
         )

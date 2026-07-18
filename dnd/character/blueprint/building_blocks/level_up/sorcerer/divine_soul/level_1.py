@@ -9,8 +9,6 @@ from dnd.character.blueprint.building_blocks.level_up.sorcerer.base import (
 from dnd.character.blueprint.states.state import _BPT
 from dnd.choices.class_creation.character_class import SorcererSubclass
 from dnd.choices.equipment_creation.weapons import WeaponName
-from dnd.choices.abilities.action import BasicAction
-from dnd.choices.abilities.action_type import ActionType
 from dnd.choices.stats_creation.statistic import Statistic
 from dnd.other_profficiencies import WeaponProficiency
 from dnd.skill_proficiency import Skill
@@ -21,6 +19,8 @@ from dnd.character.blueprint.building_blocks.skill_choice_resolver.random import
     RandomSkillChoiceResolver,
 )
 from pydantic import Field
+
+from dnd.character._ability_name import AbilityName
 
 
 class SorcererLevel1DivineSoul(
@@ -49,18 +49,7 @@ class SorcererLevel1DivineSoul(
                     WeaponProficiency.LIGHT_CROSSBOW,
                 }
             ),
-            "actions": blueprint.actions
-            + (
-                BasicAction(
-                    action_type=ActionType.FREE_ACTION,
-                    name="Favored by the Gods",
-                    description=(
-                        "When you fail a saving throw or miss with an attack roll, "
-                        "you can roll 2d4 and add it to the total, possibly changing "
-                        "the outcome. You can use this feature once per short rest."
-                    ),
-                ),
-            ),
+            "actions": blueprint.actions + (AbilityName.FAVORED_BY_THE_GODS,),
         }
         if is_first_class:
             update["n_skill_choices"] = blueprint.n_skill_choices + 2

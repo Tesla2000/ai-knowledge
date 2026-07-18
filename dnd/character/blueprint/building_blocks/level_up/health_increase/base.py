@@ -5,15 +5,15 @@ from typing import TypeVar
 from typing import cast
 from typing import get_args
 
+from pydantic import PositiveInt
+
 from dnd.character.blueprint.building_blocks.building_block import BuildingBlock
-from dnd.character.blueprint.states.state import Blueprint
 from dnd.character.blueprint.sentinels import (
     _RK,
     _StK,
     _HeK,
     _StCK,
     _SkCK,
-    _WZK,
     _SOK,
     _FGK,
     _BAK,
@@ -27,9 +27,15 @@ from dnd.character.blueprint.sentinels import (
     _WAK,
     _ARK,
     _CDK,
+    AnyWizardLevel,
 )
+from dnd.character.blueprint.states._caster_info import CasterInfo
+from dnd.character.blueprint.states.state import Blueprint
+from dnd.character.blueprint.states.wizard._info import WizardInfo
 from dnd.choices.equipment_creation.weapons import HitDieSize
-from pydantic import PositiveInt
+
+_WIK = TypeVar("_WIK", bound=WizardInfo[AnyWizardLevel] | None)
+_CK = TypeVar("_CK", bound=CasterInfo | None)
 
 _DH = TypeVar("_DH", bound=HitDieSize)
 
@@ -58,7 +64,8 @@ class HealthIncrease(BuildingBlock, Generic[_DH], ABC):
             _HeK,
             _StCK,
             _SkCK,
-            _WZK,
+            _WIK,
+            _CK,
             _SOK,
             _FGK,
             _BAK,
@@ -79,7 +86,8 @@ class HealthIncrease(BuildingBlock, Generic[_DH], ABC):
         PositiveInt,
         _StCK,
         _SkCK,
-        _WZK,
+        _WIK,
+        _CK,
         _SOK,
         _FGK,
         _BAK,
@@ -108,7 +116,8 @@ class HealthIncrease(BuildingBlock, Generic[_DH], ABC):
             PositiveInt,
             _StCK,
             _SkCK,
-            _WZK,
+            _WIK,
+            _CK,
             _SOK,
             _FGK,
             _BAK,

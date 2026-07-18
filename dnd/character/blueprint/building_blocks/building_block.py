@@ -9,7 +9,9 @@ from dnd.character.blueprint.sentinels import MaybeCharacterData
 from dnd.character.blueprint.sentinels import MaybeHealth
 from dnd.character.blueprint.sentinels import MaybeRace
 from dnd.character.blueprint.sentinels import MaybeStats
+from dnd.character.blueprint.states._caster_info import CasterInfo
 from dnd.character.blueprint.states.state import Blueprint
+from dnd.character.blueprint.states.wizard._info import WizardInfo
 
 _WideBlueprint = Blueprint[
     MaybeRace,
@@ -17,7 +19,8 @@ _WideBlueprint = Blueprint[
     MaybeHealth,
     AnyStatChoices,
     AnyStatChoices,
-    AnyWizardLevel,
+    WizardInfo[AnyWizardLevel] | None,
+    CasterInfo | None,
     AnySorcererLevel,
     AnyClassLevel,
     AnyClassLevel,

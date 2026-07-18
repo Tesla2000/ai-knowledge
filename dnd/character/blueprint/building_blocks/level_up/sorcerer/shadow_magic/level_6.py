@@ -9,9 +9,9 @@ from dnd.character.blueprint.building_blocks.level_up.sorcerer.base import (
 from dnd.character.blueprint.sentinels import FirstSubclassPostLevel
 from dnd.character.blueprint.sentinels import SorcererSubclassLevel
 from dnd.character.blueprint.states.state import _BPT
-from dnd.choices.abilities.action import BasicAction
-from dnd.choices.abilities.action_type import ActionType
 from dnd.choices.class_creation.character_class import SorcererSubclass
+
+from dnd.character._ability_name import AbilityName
 
 
 class SorcererLevel6ShadowMagic(
@@ -36,19 +36,6 @@ class SorcererLevel6ShadowMagic(
         return blueprint.model_copy(
             update={
                 "classes": blueprint.classes.model_copy(update={"sorcerer": 6}),
-                "actions": blueprint.actions
-                + (
-                    BasicAction(
-                        action_type=ActionType.BONUS_ACTION,
-                        name="Hound of Ill Omen",
-                        description=(
-                            "Spend 3 sorcery points to summon a hound of ill omen (dire "
-                            "wolf) targeting a creature within 120 feet. The hound can "
-                            "move through solid objects and has advantage on attacks against "
-                            "the target. Disappears after 5 minutes, upon reducing the "
-                            "target to 0 HP, or upon your death."
-                        ),
-                    ),
-                ),
+                "actions": blueprint.actions + (AbilityName.HOUND_OF_ILL_OMEN,),
             }
         )

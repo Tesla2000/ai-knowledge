@@ -8,11 +8,13 @@ from dnd.character.blueprint.sentinels import AnySorcererLevel
 from dnd.character.blueprint.sentinels import AnyStatChoices
 from dnd.character.blueprint.sentinels import AnyWizardLevel
 from dnd.character.blueprint.sentinels import MaybeCharacterData
+from dnd.character.blueprint.states._caster_info import CasterInfo
 from dnd.character.blueprint.states.sorcerer.base import AnySorcererBlueprint
 from dnd.character.blueprint.states.sorcerer.base import SorcererBlueprint
 from dnd.character.blueprint.states.sorcerer.presentable import (
     PresentableSorcererBlueprint,
 )
+from dnd.character.blueprint.states.wizard._info import WizardInfo
 from dnd.choices.abilities.metamagic import MetamagicOption
 
 
@@ -27,7 +29,8 @@ class MetamagicChoiceResolver(BuildingBlock, ABC):
     def apply[
         _StCK_: AnyStatChoices,
         _SkCK_: AnyStatChoices,
-        _WZK_: AnyWizardLevel,
+        _WIK_: WizardInfo[AnyWizardLevel] | None,
+        _CK_: CasterInfo | None,
         _SOK_: AnySorcererLevel,
         _FGK_: AnyClassLevel,
         _BAK_: AnyClassLevel,
@@ -47,7 +50,8 @@ class MetamagicChoiceResolver(BuildingBlock, ABC):
         blueprint: SorcererBlueprint[
             _StCK_,
             _SkCK_,
-            _WZK_,
+            _WIK_,
+            _CK_,
             _SOK_,
             _FGK_,
             _BAK_,
@@ -66,7 +70,8 @@ class MetamagicChoiceResolver(BuildingBlock, ABC):
     ) -> PresentableSorcererBlueprint[
         _StCK_,
         _SkCK_,
-        _WZK_,
+        _WIK_,
+        _CK_,
         _SOK_,
         _FGK_,
         _BAK_,
@@ -85,7 +90,8 @@ class MetamagicChoiceResolver(BuildingBlock, ABC):
             return PresentableSorcererBlueprint[
                 _StCK_,
                 _SkCK_,
-                _WZK_,
+                _WIK_,
+                _CK_,
                 _SOK_,
                 _FGK_,
                 _BAK_,
@@ -104,7 +110,8 @@ class MetamagicChoiceResolver(BuildingBlock, ABC):
         return PresentableSorcererBlueprint[
             _StCK_,
             _SkCK_,
-            _WZK_,
+            _WIK_,
+            _CK_,
             _SOK_,
             _FGK_,
             _BAK_,

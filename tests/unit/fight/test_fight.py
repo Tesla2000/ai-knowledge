@@ -9,18 +9,18 @@ from pathlib import Path
 
 import pytest
 
-import dnd.character.actions.attack_with_axe as attack_with_axe_module
+import dnd.character.actions._melee_attack as melee_attack_module
+import dnd.character.actions.combat.cast_fireball as cast_fireball_module
 import dnd.fight._attack as attack_module
 import dnd.fight._creature as creature_module
 import dnd.fight._saving_throw as saving_throw_module
 import dnd.fight._spell_attack as spell_attack_module
 import scripts.fight as fight_module
 from dnd.character.presentable_character import PresentableCharacter
+from dnd.character.spells.max_spell_levels import SpellSlots
 from dnd.character.stats import Stats
-from dnd.choices.abilities.action import AttackAction, BasicAction
-from dnd.choices.abilities.action_type import ActionType
 from dnd.choices.stats_creation.statistic import Statistic
-from dnd.character.actions._ability_name import AbilityName
+from dnd.character._ability_name import AbilityName
 from dnd.fight._action_group import _And, _Or
 from dnd.fight._attack import _Attack
 from dnd.fight._attack_result import _AttackResult
@@ -32,9 +32,20 @@ from dnd.fight._non_attack import _NonAttack
 from dnd.fight._saving_throw import _SavingThrow
 from dnd.fight._saving_throw_result import _SavingThrowResult
 from dnd.fight._spell_attack import _SpellAttack
-from dnd.character.actions.combat_action import AttackWithAxe, UseRage
+from dnd.character.actions.attack_bonus_modifier import RageAttackBonusModifier
+from dnd.character.actions.damage_resistance_modifier import RageDamageResistanceModifier
+from dnd.character.actions.combat import AttackWithAxe, CastFireball, UseRage
+from dnd._combat_event import (
+    CombatEventType,
+    CreatureAttackedEvent,
+    CreatureTargetedEvent,
+    MeleeDamageEvent,
+    RageEndsEvent,
+    TurnStartEvent,
+)
+from dnd.character.actions.get_actions import get_actions
 from dnd.fight.battlemap import Battlemap
-from dnd.fight.fight_character import FightCharacter
+from dnd.fight.fight_character import FightCharacter, SpellcasterFightCharacter
 from scripts.fight import (
     _EncounterEntry,
     _FightCli,
@@ -366,7 +377,7 @@ def _make_fc(**kwargs: object) -> FightCharacter:
 
 def _make_fc_with_attack(**kwargs: object) -> FightCharacter:
     pc = PresentableCharacter.model_validate(
-        {**_BASE_PC_DATA, "actions": [_ATTACK_ACTION.model_dump()]}
+        {**_BASE_PC_DATA, "actions": [AbilityName.ATTACK_WITH_AXE]}
     )
     return FightCharacter.from_presentable(pc, initiative=14).model_copy(update=kwargs)
 
@@ -383,30 +394,6 @@ def _make_adjacent_target() -> FightCharacter:
 
 
 _RAGE_RESOURCE = _FightResource(name=ResourceName.RAGE, max_uses=3, remaining_uses=2)
-
-_ATTACK_ACTION = AttackAction(
-    action_type=ActionType.ACTION,
-    name=AbilityName.ATTACK_WITH_AXE,
-    description="A melee weapon attack.",
-    n_dice=1,
-    dice_size=8,
-    attack_bonus=3,
-    damage_bonus=2,
-    range_tails=1,
-)
-
-_RAGE_ACTION = BasicAction(
-    action_type=ActionType.BONUS_ACTION,
-    name=AbilityName.RAGE,
-    description="Enter a rage.",
-    range_tails=0,
-)
-
-_UNKNOWN_ACTION = BasicAction(
-    action_type=ActionType.BONUS_ACTION,
-    name="Bladesong",
-    description="A bladesinger ability.",
-)
 
 
 @pytest.mark.unit
@@ -425,21 +412,21 @@ class TestFightCharacter:
     def test_get_actions_skips_unknown_names(self) -> None:
         fc = _make_fc(
             character=PresentableCharacter.model_validate(
-                {**_BASE_PC_DATA, "actions": [_UNKNOWN_ACTION.model_dump()]}
+                {**_BASE_PC_DATA, "actions": [AbilityName.BLADESONG]}
             )
         )
         bm = _make_battlemap(fc)
-        assert fc.get_actions(bm) == ()
+        assert get_actions(fc, bm) == ()
 
     def test_get_actions_returns_rage_when_resource_available(self) -> None:
         fc = _make_fc(
             character=PresentableCharacter.model_validate(
-                {**_BASE_PC_DATA, "actions": [_RAGE_ACTION.model_dump()]}
+                {**_BASE_PC_DATA, "actions": [AbilityName.RAGE]}
             ),
             resources=(_RAGE_RESOURCE,),
         )
         bm = _make_battlemap(fc)
-        action_groups = fc.get_actions(bm)
+        action_groups = get_actions(fc, bm)
         assert len(action_groups) == 1
         assert len(action_groups[0]) == 1
         assert isinstance(action_groups[0][0], UseRage)
@@ -447,43 +434,43 @@ class TestFightCharacter:
     def test_get_actions_no_rage_when_already_raging(self) -> None:
         fc = _make_fc(
             character=PresentableCharacter.model_validate(
-                {**_BASE_PC_DATA, "actions": [_RAGE_ACTION.model_dump()]}
+                {**_BASE_PC_DATA, "actions": [AbilityName.RAGE]}
             ),
             resources=(_RAGE_RESOURCE,),
             active_features=frozenset({AbilityName.RAGE}),
         )
         bm = _make_battlemap(fc)
-        assert fc.get_actions(bm) == ()
+        assert get_actions(fc, bm) == ()
 
     def test_get_actions_no_rage_when_no_resource(self) -> None:
         fc = _make_fc(
             character=PresentableCharacter.model_validate(
-                {**_BASE_PC_DATA, "actions": [_RAGE_ACTION.model_dump()]}
+                {**_BASE_PC_DATA, "actions": [AbilityName.RAGE]}
             ),
         )
         bm = _make_battlemap(fc)
-        assert fc.get_actions(bm) == ()
+        assert get_actions(fc, bm) == ()
 
     def test_get_actions_no_rage_when_no_bonus_action(self) -> None:
         fc = _make_fc(
             character=PresentableCharacter.model_validate(
-                {**_BASE_PC_DATA, "actions": [_RAGE_ACTION.model_dump()]}
+                {**_BASE_PC_DATA, "actions": [AbilityName.RAGE]}
             ),
             resources=(_RAGE_RESOURCE,),
             has_bonus_action=False,
         )
         bm = _make_battlemap(fc)
-        assert fc.get_actions(bm) == ()
+        assert get_actions(fc, bm) == ()
 
     def test_get_actions_returns_attack_when_has_action(self) -> None:
         fc = _make_fc(
             character=PresentableCharacter.model_validate(
-                {**_BASE_PC_DATA, "actions": [_ATTACK_ACTION.model_dump()]}
+                {**_BASE_PC_DATA, "actions": [AbilityName.ATTACK_WITH_AXE]}
             ),
         )
         target = _make_adjacent_target()
         bm = _make_battlemap(fc, target)
-        action_groups = fc.get_actions(bm)
+        action_groups = get_actions(fc, bm)
         assert len(action_groups) == 1
         assert len(action_groups[0]) == 1
         assert isinstance(action_groups[0][0], AttackWithAxe)
@@ -494,28 +481,29 @@ class TestFightCharacter:
                 {
                     **_BASE_PC_DATA,
                     "actions": [
-                        _ATTACK_ACTION.model_dump(),
-                        _ATTACK_ACTION.model_dump(),
+                        AbilityName.ATTACK_WITH_AXE,
+                        AbilityName.ATTACK_WITH_AXE,
                     ],
                 }
             ),
         )
         target = _make_adjacent_target()
         bm = _make_battlemap(fc, target)
-        action_groups = fc.get_actions(bm)
+        action_groups = get_actions(fc, bm)
         assert len(action_groups) == 2
         assert all(isinstance(g[0], AttackWithAxe) for g in action_groups)
 
     def test_get_actions_no_attack_when_action_spent(self) -> None:
         fc = _make_fc(
             character=PresentableCharacter.model_validate(
-                {**_BASE_PC_DATA, "actions": [_ATTACK_ACTION.model_dump()]}
+                {**_BASE_PC_DATA, "actions": [AbilityName.ATTACK_WITH_AXE]}
             ),
             has_action=False,
+            attacks_remaining=0,
         )
         target = _make_adjacent_target()
         bm = _make_battlemap(fc, target)
-        assert fc.get_actions(bm) == ()
+        assert get_actions(fc, bm) == ()
 
 
 @pytest.mark.unit
@@ -528,10 +516,8 @@ class TestUseRage:
         new_bm = rages[0].perform(bm)
         new_fc = new_bm.combatants[0]
         assert isinstance(new_fc, FightCharacter)
-        assert DamageType.BLUDGEONING in new_fc.damage_resistance
-        assert DamageType.PIERCING in new_fc.damage_resistance
-        assert DamageType.SLASHING in new_fc.damage_resistance
-        assert new_fc.attack_bonus == 2
+        assert any(isinstance(m, RageDamageResistanceModifier) for m in new_fc.modifiers)
+        assert any(isinstance(m, RageAttackBonusModifier) for m in new_fc.modifiers)
         assert AbilityName.RAGE in new_fc.active_features
         assert not new_fc.has_bonus_action
 
@@ -546,21 +532,126 @@ class TestUseRage:
         remaining = next(r for r in new_fc.resources if r.name == ResourceName.RAGE)
         assert remaining.remaining_uses == _RAGE_RESOURCE.remaining_uses - 1
 
-    def test_perform_stacks_attack_bonus(self) -> None:
-        fc = _make_fc(resources=(_RAGE_RESOURCE,), attack_bonus=1)
+    def test_perform_appends_rage_modifier_without_replacing_existing(self) -> None:
+        existing = RageAttackBonusModifier(owner_id=_make_fc().id)
+        fc = _make_fc(
+            resources=(_RAGE_RESOURCE,),
+            modifiers=(existing,),
+        )
         bm = _make_battlemap(fc)
         rages = UseRage.create(fc)
         assert len(rages) == 1
         new_bm = rages[0].perform(bm)
         new_fc = new_bm.combatants[0]
         assert isinstance(new_fc, FightCharacter)
-        assert new_fc.attack_bonus == 3
+        # existing + RageAttackBonusModifier + RageDamageResistanceModifier
+        assert len(new_fc.modifiers) == 3
+        assert new_fc.modifiers[0] is existing
+
+
+@pytest.mark.unit
+class TestBattlemapEmit:
+    def test_emit_turn_start_resets_actions(self) -> None:
+        fc = _make_fc(
+            has_action=False,
+            has_bonus_action=False,
+            has_reaction=False,
+            has_free_action=False,
+            attacks_remaining=0,
+        )
+        bm = _make_battlemap(fc)
+        new_bm = bm.emit(TurnStartEvent(target_id=fc.id))
+        new_fc = new_bm.combatants[0]
+        assert isinstance(new_fc, FightCharacter)
+        assert new_fc.has_action is True
+        assert new_fc.has_bonus_action is True
+        assert new_fc.has_reaction is True
+        assert new_fc.has_free_action is True
+        assert new_fc.attacks_remaining == new_fc.number_of_attacks
+
+    def test_emit_turn_start_only_affects_target(self) -> None:
+        fc1 = _make_fc(has_action=False)
+        fc2 = _make_fc_with_attack(has_action=False)
+        bm = _make_battlemap(fc1, fc2)
+        new_bm = bm.emit(TurnStartEvent(target_id=fc1.id))
+        assert isinstance(new_bm.combatants[0], FightCharacter)
+        assert new_bm.combatants[0].has_action is True
+        assert isinstance(new_bm.combatants[1], FightCharacter)
+        assert new_bm.combatants[1].has_action is False
+
+    def test_emit_rage_ends_removes_rage_state(self) -> None:
+        fc_base = _make_fc(resources=(_RAGE_RESOURCE,))
+        fc = fc_base.model_copy(
+            update={
+                "active_features": frozenset({AbilityName.RAGE}),
+                "modifiers": (
+                    RageAttackBonusModifier(owner_id=fc_base.id),
+                    RageDamageResistanceModifier(owner_id=fc_base.id),
+                ),
+            }
+        )
+        bm = _make_battlemap(fc)
+        new_bm = bm.emit(RageEndsEvent(target_id=fc.id))
+        new_fc = new_bm.combatants[0]
+        assert isinstance(new_fc, FightCharacter)
+        assert AbilityName.RAGE not in new_fc.active_features
+        assert not any(isinstance(m, RageAttackBonusModifier) for m in new_fc.modifiers)
+        assert not any(isinstance(m, RageDamageResistanceModifier) for m in new_fc.modifiers)
+
+    def test_emit_rage_ends_only_affects_target(self) -> None:
+        fc1 = _make_fc(
+            active_features=frozenset({AbilityName.RAGE}),
+            damage_resistance=frozenset({DamageType.BLUDGEONING}),
+        )
+        fc2 = _make_fc_with_attack(
+            active_features=frozenset({AbilityName.RAGE}),
+            damage_resistance=frozenset({DamageType.BLUDGEONING}),
+        )
+        bm = _make_battlemap(fc1, fc2)
+        new_bm = bm.emit(RageEndsEvent(target_id=fc1.id))
+        assert isinstance(new_bm.combatants[0], FightCharacter)
+        assert AbilityName.RAGE not in new_bm.combatants[0].active_features
+        assert isinstance(new_bm.combatants[1], FightCharacter)
+        assert AbilityName.RAGE in new_bm.combatants[1].active_features
+
+    def test_emit_appends_event_to_log(self) -> None:
+        fc = _make_fc()
+        bm = _make_battlemap(fc)
+        assert len(bm.event_log) == 0
+        event = TurnStartEvent(target_id=fc.id)
+        new_bm = bm.emit(event)
+        assert new_bm.event_log == (event,)
+
+    def test_emit_chained_events_all_appear_in_log(self) -> None:
+        fc = _make_fc()
+        bm = _make_battlemap(fc)
+        e1 = TurnStartEvent(target_id=fc.id)
+        e2 = RageEndsEvent(target_id=fc.id)
+        new_bm = bm.emit(e1)
+        new_bm = new_bm.emit(e2)
+        assert new_bm.event_log == (e1, e2)
+
+    def test_emit_rage_ends_removes_rage_bonus_modifier_only_for_owner(self) -> None:
+        fc1 = _make_fc()
+        fc2 = _make_fc_with_attack()
+        modifier_for_fc1 = RageAttackBonusModifier(owner_id=fc1.id)
+        modifier_for_fc2 = RageAttackBonusModifier(owner_id=fc2.id)
+        fc1 = fc1.model_copy(update={"modifiers": (modifier_for_fc1,)})
+        fc2 = fc2.model_copy(update={"modifiers": (modifier_for_fc2,)})
+        bm = _make_battlemap(fc1, fc2)
+        new_bm = bm.emit(RageEndsEvent(target_id=fc1.id))
+        result_fc1 = new_bm.combatants[0]
+        result_fc2 = new_bm.combatants[1]
+        assert isinstance(result_fc1, FightCharacter)
+        assert isinstance(result_fc2, FightCharacter)
+        assert len(result_fc1.modifiers) == 0
+        assert len(result_fc2.modifiers) == 1
 
 
 @pytest.mark.unit
 class TestAttackWithAxe:
     def test_create_returns_empty_when_no_action(self) -> None:
-        fc = _make_fc_with_attack(has_action=False)
+        fc = _make_fc_with_attack(has_action=False, attacks_remaining=0)
         target = _make_adjacent_target()
         bm = _make_battlemap(fc, target)
         assert AttackWithAxe.create(fc, bm) == ()
@@ -571,20 +662,10 @@ class TestAttackWithAxe:
         bm = _make_battlemap(fc, target)
         assert AttackWithAxe.create(fc, bm) == ()
 
-    def test_create_returns_empty_when_ranged_attack(self) -> None:
-        ranged = AttackAction(
-            action_type=ActionType.ACTION,
-            name="bow",
-            description="A ranged attack.",
-            n_dice=1,
-            dice_size=6,
-            attack_bonus=3,
-            damage_bonus=0,
-            range_tails=6,
-        )
+    def test_create_returns_empty_when_no_attack_with_axe_ability(self) -> None:
         fc = _make_fc(
             character=PresentableCharacter.model_validate(
-                {**_BASE_PC_DATA, "actions": [ranged.model_dump()]}
+                {**_BASE_PC_DATA, "actions": [AbilityName.EXTRA_ATTACK]}
             ),
         )
         target = _make_adjacent_target()
@@ -608,7 +689,7 @@ class TestAttackWithAxe:
         assert positions == {(1, 0), (0, 1)}
 
     def test_perform_spends_action(self, monkeypatch: pytest.MonkeyPatch) -> None:
-        monkeypatch.setattr(attack_with_axe_module, "randint", lambda *a: 10)
+        monkeypatch.setattr(melee_attack_module, "randint", lambda *a: 10)
         fc = _make_fc_with_attack()
         target = _make_adjacent_target()
         bm = _make_battlemap(fc, target)
@@ -626,14 +707,226 @@ class TestAttackWithAxe:
             rolls.append(a)
             return 5
 
-        monkeypatch.setattr(attack_with_axe_module, "randint", fake_randint)
-        fc = _make_fc_with_attack(attack_bonus=3)
+        monkeypatch.setattr(melee_attack_module, "randint", fake_randint)
+        fc = _make_fc_with_attack()
         target = _make_adjacent_target()
         bm = _make_battlemap(fc, target)
         attacks = AttackWithAxe.create(fc, bm)
         assert len(attacks) == 1
         attacks[0].perform(bm)
         assert len(rolls) > 0
+
+
+@pytest.mark.unit
+class TestAttackEventPhases:
+    def test_hit_emits_all_three_events(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        monkeypatch.setattr(melee_attack_module, "randint", lambda *a: 20)
+        fc = _make_fc_with_attack()
+        target = _make_adjacent_target()
+        bm = _make_battlemap(fc, target)
+        attacks = AttackWithAxe.create(fc, bm)
+        assert len(attacks) == 1
+        new_bm = attacks[0].perform(bm)
+        event_types = [e.type for e in new_bm.event_log]
+        assert CombatEventType.CREATURE_TARGETED in event_types
+        assert CombatEventType.CREATURE_ATTACKED in event_types
+        assert CombatEventType.MELEE_DAMAGE in event_types
+
+    def test_miss_omits_melee_damage_event(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        monkeypatch.setattr(melee_attack_module, "randint", lambda *a: 1)
+        fc = _make_fc_with_attack()
+        target = _make_adjacent_target().model_copy(update={"base_ac": 30})
+        bm = _make_battlemap(fc, target)
+        attacks = AttackWithAxe.create(fc, bm)
+        assert len(attacks) == 1
+        new_bm = attacks[0].perform(bm)
+        event_types = [e.type for e in new_bm.event_log]
+        assert CombatEventType.CREATURE_TARGETED in event_types
+        assert CombatEventType.CREATURE_ATTACKED in event_types
+        assert CombatEventType.MELEE_DAMAGE not in event_types
+
+    def test_events_carry_correct_attacker_and_defender_ids(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        monkeypatch.setattr(melee_attack_module, "randint", lambda *a: 20)
+        fc = _make_fc_with_attack()
+        target = _make_adjacent_target()
+        bm = _make_battlemap(fc, target)
+        attacks = AttackWithAxe.create(fc, bm)
+        new_bm = attacks[0].perform(bm)
+        targeted = next(
+            e for e in new_bm.event_log if isinstance(e, CreatureTargetedEvent)
+        )
+        attacked = next(
+            e for e in new_bm.event_log if isinstance(e, CreatureAttackedEvent)
+        )
+        damage = next(e for e in new_bm.event_log if isinstance(e, MeleeDamageEvent))
+        assert targeted.attacker_id == fc.id
+        assert targeted.defender_id == target.id
+        assert attacked.attacker_id == fc.id
+        assert attacked.defender_id == target.id
+        assert damage.attacker_id == fc.id
+        assert damage.defender_id == target.id
+
+    def test_all_three_phases_share_same_attack_id(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        monkeypatch.setattr(melee_attack_module, "randint", lambda *a: 20)
+        fc = _make_fc_with_attack()
+        target = _make_adjacent_target()
+        bm = _make_battlemap(fc, target)
+        attacks = AttackWithAxe.create(fc, bm)
+        new_bm = attacks[0].perform(bm)
+        targeted = next(
+            e for e in new_bm.event_log if isinstance(e, CreatureTargetedEvent)
+        )
+        attacked = next(
+            e for e in new_bm.event_log if isinstance(e, CreatureAttackedEvent)
+        )
+        damage = next(e for e in new_bm.event_log if isinstance(e, MeleeDamageEvent))
+        assert targeted.attack_id == attacked.attack_id == damage.attack_id
+
+
+_SPELL_SLOTS_WITH_L3 = SpellSlots(
+    level_1=4,
+    level_2=3,
+    level_3=2,
+    level_4=0,
+    level_5=0,
+    level_6=0,
+    level_7=0,
+    level_8=0,
+    level_9=0,
+)
+_SPELL_SLOTS_NO_L3 = SpellSlots(
+    level_1=4,
+    level_2=3,
+    level_3=0,
+    level_4=0,
+    level_5=0,
+    level_6=0,
+    level_7=0,
+    level_8=0,
+    level_9=0,
+)
+
+
+def _make_sfc(**kwargs: object) -> SpellcasterFightCharacter:
+    pc = PresentableCharacter.model_validate(
+        {**_BASE_PC_DATA, "actions": [AbilityName.FIREBALL]}
+    )
+    return SpellcasterFightCharacter(
+        character=pc,
+        initiative=14,
+        max_health=pc.health,
+        current_health=pc.health,
+        remaining_spell_slots=_SPELL_SLOTS_WITH_L3,
+    ).model_copy(update=kwargs)
+
+
+@pytest.mark.unit
+class TestCastFireball:
+    def test_create_returns_empty_for_non_spellcaster(self) -> None:
+        fc = _make_fc_with_attack()
+        target = _make_adjacent_target()
+        bm = _make_battlemap(fc, target)
+        assert CastFireball.create(fc, bm) == ()
+
+    def test_create_returns_empty_when_no_action(self) -> None:
+        sfc = _make_sfc(has_action=False)
+        target = _make_adjacent_target()
+        bm = _make_battlemap(sfc, target)
+        assert CastFireball.create(sfc, bm) == ()
+
+    def test_create_returns_empty_when_no_level3_slots(self) -> None:
+        sfc = _make_sfc(remaining_spell_slots=_SPELL_SLOTS_NO_L3)
+        target = _make_adjacent_target()
+        bm = _make_battlemap(sfc, target)
+        assert CastFireball.create(sfc, bm) == ()
+
+    def test_create_returns_empty_when_no_fireball_ability(self) -> None:
+        pc = PresentableCharacter.model_validate(
+            {**_BASE_PC_DATA, "actions": [AbilityName.EXTRA_ATTACK]}
+        )
+        sfc = SpellcasterFightCharacter(
+            character=pc,
+            initiative=14,
+            max_health=pc.health,
+            current_health=pc.health,
+            remaining_spell_slots=_SPELL_SLOTS_WITH_L3,
+        )
+        target = _make_adjacent_target()
+        bm = _make_battlemap(sfc, target)
+        assert CastFireball.create(sfc, bm) == ()
+
+    def test_create_returns_one_per_enemy(self) -> None:
+        sfc = _make_sfc()
+        t1 = _make_fc().model_copy(update={"position": (1, 0)})
+        t2 = _make_fc().model_copy(update={"position": (2, 0)})
+        bm = _make_battlemap(sfc, t1, t2)
+        fireballs = CastFireball.create(sfc, bm)
+        assert len(fireballs) == 2
+        centers = {f.center_position for f in fireballs}
+        assert centers == {(1, 0), (2, 0)}
+
+    def test_perform_spends_action_and_slot(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        monkeypatch.setattr(cast_fireball_module, "randint", lambda *_: 3)
+        sfc = _make_sfc()
+        target = _make_fc().model_copy(update={"position": (6, 0)})
+        bm = _make_battlemap(sfc, target)
+        fireballs = CastFireball.create(sfc, bm)
+        assert len(fireballs) == 1
+        new_bm = fireballs[0].perform(bm)
+        new_sfc = new_bm.combatants[0]
+        assert isinstance(new_sfc, SpellcasterFightCharacter)
+        assert not new_sfc.has_action
+        assert new_sfc.remaining_spell_slots.level_3 == _SPELL_SLOTS_WITH_L3.level_3 - 1
+
+    def test_perform_applies_full_damage_on_failed_save(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        monkeypatch.setattr(cast_fireball_module, "randint", lambda *_: 1)
+        sfc = _make_sfc()
+        target = _make_fc().model_copy(
+            update={"position": (6, 0), "max_health": 200, "current_health": 200}
+        )
+        bm = _make_battlemap(sfc, target)
+        fireballs = CastFireball.create(sfc, bm)
+        new_bm = fireballs[0].perform(bm)
+        new_target = next(c for c in new_bm.combatants if c.position == target.position)
+        expected_damage = 8 * 1
+        assert new_target.current_health == target.current_health - expected_damage
+
+    def test_perform_applies_half_damage_on_successful_save(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        monkeypatch.setattr(cast_fireball_module, "randint", lambda *_: 20)
+        sfc = _make_sfc()
+        target = _make_fc().model_copy(
+            update={"position": (6, 0), "max_health": 200, "current_health": 200}
+        )
+        bm = _make_battlemap(sfc, target)
+        fireballs = CastFireball.create(sfc, bm)
+        new_bm = fireballs[0].perform(bm)
+        new_target = next(c for c in new_bm.combatants if c.position == target.position)
+        expected_damage = (8 * 20) // 2
+        assert new_target.current_health == target.current_health - expected_damage
+
+    def test_perform_skips_combatants_outside_radius(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        monkeypatch.setattr(cast_fireball_module, "randint", lambda *_: 1)
+        sfc = _make_sfc()
+        close = _make_fc().model_copy(update={"position": (1, 0)})
+        far = _make_fc().model_copy(update={"position": (10, 10)})
+        bm = _make_battlemap(sfc, close, far)
+        fireballs = CastFireball.create(sfc, bm)
+        close_fireball = next(f for f in fireballs if f.center_position == (1, 0))
+        new_bm = close_fireball.perform(bm)
+        new_far = next(c for c in new_bm.combatants if c.position == (10, 10))
+        assert new_far.current_health == far.current_health
 
 
 @pytest.mark.unit

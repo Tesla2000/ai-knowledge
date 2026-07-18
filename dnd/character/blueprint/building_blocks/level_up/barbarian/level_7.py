@@ -8,8 +8,8 @@ from dnd.character.blueprint.building_blocks.level_up.barbarian.base import (
 )
 from dnd.character.blueprint.sentinels import ThirdSubclassPostLevel
 from dnd.character.blueprint.states.state import _BPT
-from dnd.choices.abilities.action import BasicAction
-from dnd.choices.abilities.action_type import ActionType
+
+from dnd.character._ability_name import AbilityName
 
 
 class BarbarianLevel7(
@@ -28,18 +28,6 @@ class BarbarianLevel7(
         return blueprint.model_copy(
             update={
                 "classes": blueprint.classes.model_copy(update={"barbarian": 7}),
-                "actions": blueprint.actions
-                + (
-                    BasicAction(
-                        action_type=ActionType.PASSIVE,
-                        name="Feral Instinct",
-                        description=(
-                            "Your instincts are so honed that you have advantage on initiative "
-                            "rolls. Additionally, if you are surprised at the beginning of "
-                            "combat and aren't incapacitated, you can act normally on your "
-                            "first turn, but only if you enter your rage before doing anything else."
-                        ),
-                    ),
-                ),
+                "actions": blueprint.actions + (AbilityName.FERAL_INSTINCT,),
             }
         )

@@ -338,14 +338,15 @@ from dnd.character.blueprint.building_blocks.level_up.sorcerer.wild_magic.level_
 from dnd.character.blueprint.building_blocks.level_up.sorcerer.wild_magic.level_18 import (
     SorcererLevel18WildMagic,
 )
+from dnd.character.blueprint.states._caster_info import CasterInfo
 from dnd.character.blueprint.states.sorcerer.base import SorcererBlueprint
 from dnd.character.blueprint.states.state import Blueprint
-from dnd.character.blueprint.states.wizard.base import WizardBlueprint
-from dnd.character.blueprint.states.wizard.level18 import WizardLevel18Blueprint
+from dnd.character.blueprint.states.wizard import WizardInfo
+from dnd.character.blueprint.states.wizard import WizardLevel18Info
+from dnd.character.blueprint.states.wizard import WizardLevel20Info
 from dnd.character.race.race import Race
 from dnd.character.spells.max_spell_levels import FULL_CASTER_SPELL_SLOTS
 from dnd.character.stats import Stats
-from dnd.character.blueprint.states.wizard.level20 import WizardLevel20Blueprint
 
 _WIZ_HEALTH = D6HealthIncreaseAverage()
 _WIZ_SPELLS = WizardRandomSpellAssigner()
@@ -360,26 +361,26 @@ _STATS = Stats(
     wisdom=12,
     charisma=8,
 )
-_WIZ_BP = WizardBlueprint(
+_WIZ_BP = Blueprint(
     race=Race.HUMAN,
     stats=_STATS,
     health_base=6,
-    spell_slots=FULL_CASTER_SPELL_SLOTS[16],
-    caster_level=17,
+    wizard=WizardInfo(),
+    caster=CasterInfo(spell_slots=FULL_CASTER_SPELL_SLOTS[16], caster_level=17),
 )
-_WIZ_L18_BP = WizardLevel18Blueprint(
+_WIZ_L18_BP = Blueprint.model_construct(
     race=Race.HUMAN,
     stats=_STATS,
     health_base=6,
-    spell_slots=FULL_CASTER_SPELL_SLOTS[17],
-    caster_level=18,
+    wizard=WizardLevel18Info(),
+    caster=CasterInfo(spell_slots=FULL_CASTER_SPELL_SLOTS[17], caster_level=18),
 )
-_WIZ_L19_BP = WizardLevel18Blueprint(
+_WIZ_L19_BP = Blueprint.model_construct(
     race=Race.HUMAN,
     stats=_STATS,
     health_base=6,
-    spell_slots=FULL_CASTER_SPELL_SLOTS[18],
-    caster_level=19,
+    wizard=WizardLevel18Info(),
+    caster=CasterInfo(spell_slots=FULL_CASTER_SPELL_SLOTS[18], caster_level=19),
 )
 _SORC_BP = SorcererBlueprint(
     race=Race.HUMAN,
@@ -419,8 +420,8 @@ def test_wizard_level18_apply() -> None:
     block = WizardLevel18(health_increase=_WIZ_HEALTH, spell_assigner=_WIZ_SPELLS)
     result = block.apply(_WIZ_BP)
     assert result is not None
-    assert isinstance(result, WizardLevel18Blueprint)
-    assert result.spell_slots == FULL_CASTER_SPELL_SLOTS[17]
+    assert isinstance(result.wizard, WizardLevel18Info)
+    assert result.caster.spell_slots == FULL_CASTER_SPELL_SLOTS[17]
 
 
 @pytest.mark.unit
@@ -428,8 +429,8 @@ def test_wizard_level19_apply() -> None:
     block = WizardLevel19(health_increase=_WIZ_HEALTH, spell_assigner=_WIZ_SPELLS)
     result = block.apply(_WIZ_L18_BP)
     assert result is not None
-    assert isinstance(result, WizardLevel18Blueprint)
-    assert result.spell_slots == FULL_CASTER_SPELL_SLOTS[18]
+    assert isinstance(result.wizard, WizardLevel18Info)
+    assert result.caster.spell_slots == FULL_CASTER_SPELL_SLOTS[18]
 
 
 @pytest.mark.unit
@@ -437,8 +438,8 @@ def test_wizard_level20_apply() -> None:
     block = WizardLevel20(health_increase=_WIZ_HEALTH, spell_assigner=_WIZ_SPELLS)
     result = block.apply(_WIZ_L19_BP)
     assert result is not None
-    assert isinstance(result, WizardLevel20Blueprint)
-    assert result.spell_slots == FULL_CASTER_SPELL_SLOTS[19]
+    assert isinstance(result.wizard, WizardLevel20Info)
+    assert result.caster.spell_slots == FULL_CASTER_SPELL_SLOTS[19]
 
 
 @pytest.mark.unit

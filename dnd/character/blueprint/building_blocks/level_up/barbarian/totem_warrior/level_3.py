@@ -15,8 +15,7 @@ from dnd.character.blueprint.building_blocks.totem_choice_resolver.random import
     RandomTotemChoiceResolver,
 )
 from dnd.character.blueprint.states.state import _BPT
-from dnd.choices.abilities.action import BasicAction
-from dnd.choices.abilities.action_type import ActionType
+from dnd.character._ability_name import AbilityName
 from dnd.choices.abilities.totem_animal import TotemAnimal
 from dnd.choices.class_creation.character_class import BarbarianSubclass
 
@@ -62,29 +61,11 @@ class BarbarianLevel3TotemWarrior(
         return descriptions[totem]
 
     def _update_blueprint(self, blueprint: _BPT) -> _BPT:
-        totem = self.totem_spirit_resolver.resolve()
-        spirit_description = self._totem_spirit_description(totem)
         return blueprint.model_copy(
             update={
                 "classes": blueprint.classes.model_copy(update={"barbarian": 3}),
                 "subclasses": blueprint.subclasses + (BarbarianSubclass.TOTEM_WARRIOR,),
                 "actions": blueprint.actions
-                + (
-                    BasicAction(
-                        action_type=ActionType.PASSIVE,
-                        name="Spirit Seeker",
-                        description=(
-                            "Yours is a path that seeks attunement with the natural world, "
-                            "giving you a kinship with beasts. At 3rd level when you adopt "
-                            "this path, you gain the ability to cast the beast sense and speak "
-                            "with animals spells, but only as rituals."
-                        ),
-                    ),
-                    BasicAction(
-                        action_type=ActionType.PASSIVE,
-                        name=f"Totem Spirit ({totem.name.title()})",
-                        description=spirit_description,
-                    ),
-                ),
+                + (AbilityName.SPIRIT_SEEKER, AbilityName.TOTEM_SPIRIT),
             }
         )

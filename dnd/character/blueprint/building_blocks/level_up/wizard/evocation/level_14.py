@@ -9,9 +9,9 @@ from dnd.character.blueprint.building_blocks.level_up.wizard.base import (
 from dnd.character.blueprint.sentinels import SecondSubclassPostLevel
 from dnd.character.blueprint.sentinels import WizardSubclassLevel
 from dnd.character.blueprint.states.state import _BPT
-from dnd.choices.abilities.action import BasicAction
-from dnd.choices.abilities.action_type import ActionType
 from dnd.choices.class_creation.character_class import WizardSubclass
+
+from dnd.character._ability_name import AbilityName
 
 
 class WizardLevel14Evocation(
@@ -36,19 +36,6 @@ class WizardLevel14Evocation(
         return blueprint.model_copy(
             update={
                 "classes": blueprint.classes.model_copy(update={"wizard": 14}),
-                "actions": blueprint.actions
-                + (
-                    BasicAction(
-                        action_type=ActionType.PASSIVE,
-                        name="Overchannel",
-                        description=(
-                            "When you cast a wizard spell of 1st–5th level that deals "
-                            "damage, you can deal maximum damage. The first time per long "
-                            "rest you do so, you suffer no ill effect. Each subsequent time, "
-                            "you take 2d12 necrotic damage per spell level. This damage "
-                            "cannot be reduced or prevented."
-                        ),
-                    ),
-                ),
+                "actions": blueprint.actions + (AbilityName.OVERCHANNEL,),
             }
         )

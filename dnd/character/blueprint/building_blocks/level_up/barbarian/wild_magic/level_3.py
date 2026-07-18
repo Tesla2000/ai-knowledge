@@ -7,9 +7,9 @@ from dnd.character.blueprint.building_blocks.level_up.barbarian.base import (
     BarbarianSubclassAssignLevelBase,
 )
 from dnd.character.blueprint.states.state import _BPT
-from dnd.choices.abilities.action import BasicAction
-from dnd.choices.abilities.action_type import ActionType
 from dnd.choices.class_creation.character_class import BarbarianSubclass
+
+from dnd.character._ability_name import AbilityName
 
 
 class BarbarianLevel3WildMagic(
@@ -27,32 +27,6 @@ class BarbarianLevel3WildMagic(
                 "classes": blueprint.classes.model_copy(update={"barbarian": 3}),
                 "subclasses": blueprint.subclasses + (BarbarianSubclass.WILD_MAGIC,),
                 "actions": blueprint.actions
-                + (
-                    BasicAction(
-                        action_type=ActionType.ACTION,
-                        name="Magic Awareness",
-                        description=(
-                            "As an action, you can open your awareness to the presence of "
-                            "concentrated magic. Until the end of your next turn, you know "
-                            "the location of any spell, magic item, or other magical phenomenon "
-                            "within 60 feet of you that isn't behind total cover. When you "
-                            "sense a spell, you learn which school of magic it belongs to. "
-                            "You can use this feature a number of times equal to your "
-                            "proficiency bonus, and you regain all expended uses when you "
-                            "finish a long rest."
-                        ),
-                    ),
-                    BasicAction(
-                        action_type=ActionType.PASSIVE,
-                        name="Wild Surge",
-                        description=(
-                            "Also at 3rd level, the magical energy roiling inside you "
-                            "sometimes erupts from you. Immediately after you enter your "
-                            "rage, roll on the Wild Magic table to determine the magical "
-                            "effect produced. If the effect requires a saving throw, the DC "
-                            "equals 8 + your proficiency bonus + your Constitution modifier."
-                        ),
-                    ),
-                ),
+                + (AbilityName.MAGIC_AWARENESS, AbilityName.WILD_SURGE),
             }
         )

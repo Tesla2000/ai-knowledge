@@ -9,9 +9,9 @@ from dnd.character.blueprint.building_blocks.level_up.sorcerer.base import (
 from dnd.character.blueprint.sentinels import FirstSubclassPostLevel
 from dnd.character.blueprint.sentinels import SorcererSubclassLevel
 from dnd.character.blueprint.states.state import _BPT
-from dnd.choices.abilities.action import BasicAction
-from dnd.choices.abilities.action_type import ActionType
 from dnd.choices.class_creation.character_class import SorcererSubclass
+
+from dnd.character._ability_name import AbilityName
 
 
 class SorcererLevel6DraconicBloodline(
@@ -36,17 +36,6 @@ class SorcererLevel6DraconicBloodline(
         return blueprint.model_copy(
             update={
                 "classes": blueprint.classes.model_copy(update={"sorcerer": 6}),
-                "actions": blueprint.actions
-                + (
-                    BasicAction(
-                        action_type=ActionType.PASSIVE,
-                        name="Elemental Affinity",
-                        description=(
-                            "When you cast a spell dealing your dragon ancestor's damage "
-                            "type, add your Charisma modifier to the damage. Spend 1 sorcery "
-                            "point to gain resistance to that damage type for 1 hour."
-                        ),
-                    ),
-                ),
+                "actions": blueprint.actions + (AbilityName.ELEMENTAL_AFFINITY,),
             }
         )

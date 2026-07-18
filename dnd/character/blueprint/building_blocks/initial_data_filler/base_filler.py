@@ -1,6 +1,8 @@
 from abc import ABC
 from abc import abstractmethod
 
+from typing import TypeVar
+
 from dnd.character.blueprint.building_blocks.building_block import BuildingBlock
 from dnd.character.blueprint.building_blocks.building_block import _WideBlueprint
 from dnd.character.blueprint.character_data import CharacterData
@@ -22,9 +24,14 @@ from dnd.character.blueprint.sentinels import (
     _StCK,
     _StK,
     _WAK,
-    _WZK,
+    AnyWizardLevel,
 )
+from dnd.character.blueprint.states._caster_info import CasterInfo
 from dnd.character.blueprint.states.state import Blueprint
+from dnd.character.blueprint.states.wizard._info import WizardInfo
+
+_WIK = TypeVar("_WIK", bound=WizardInfo[AnyWizardLevel] | None)
+_CK = TypeVar("_CK", bound=CasterInfo | None)
 from pydantic import ConfigDict
 
 
@@ -42,7 +49,8 @@ class InitialDataFiller(BuildingBlock, ABC):
             _HeK,
             _StCK,
             _SkCK,
-            _WZK,
+            _WIK,
+            _CK,
             _SOK,
             _FGK,
             _BAK,
@@ -63,7 +71,8 @@ class InitialDataFiller(BuildingBlock, ABC):
         _HeK,
         _StCK,
         _SkCK,
-        _WZK,
+        _WIK,
+        _CK,
         _SOK,
         _FGK,
         _BAK,
@@ -84,7 +93,8 @@ class InitialDataFiller(BuildingBlock, ABC):
             _HeK,
             _StCK,
             _SkCK,
-            _WZK,
+            _WIK,
+            _CK,
             _SOK,
             _FGK,
             _BAK,

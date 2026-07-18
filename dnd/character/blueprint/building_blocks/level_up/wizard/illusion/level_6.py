@@ -9,9 +9,9 @@ from dnd.character.blueprint.building_blocks.level_up.wizard.base import (
 from dnd.character.blueprint.sentinels import SecondSubclassPostLevel
 from dnd.character.blueprint.sentinels import WizardSubclassLevel
 from dnd.character.blueprint.states.state import _BPT
-from dnd.choices.abilities.action import BasicAction
-from dnd.choices.abilities.action_type import ActionType
 from dnd.choices.class_creation.character_class import WizardSubclass
+
+from dnd.character._ability_name import AbilityName
 
 
 class WizardLevel6Illusion(
@@ -34,17 +34,6 @@ class WizardLevel6Illusion(
         return blueprint.model_copy(
             update={
                 "classes": blueprint.classes.model_copy(update={"wizard": 6}),
-                "actions": blueprint.actions
-                + (
-                    BasicAction(
-                        action_type=ActionType.PASSIVE,
-                        name="Malleable Illusions",
-                        description=(
-                            "When you cast an illusion spell with a duration of 1 minute or "
-                            "longer, you can use your action to change the nature of that "
-                            "illusion using the spell's normal effect."
-                        ),
-                    ),
-                ),
+                "actions": blueprint.actions + (AbilityName.MALLEABLE_ILLUSIONS,),
             }
         )

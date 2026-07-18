@@ -9,8 +9,6 @@ from dnd.character.blueprint.building_blocks.level_up.sorcerer.base import (
 from dnd.character.blueprint.states.state import _BPT
 from dnd.choices.class_creation.character_class import SorcererSubclass
 from dnd.choices.equipment_creation.weapons import WeaponName
-from dnd.choices.abilities.action import BasicAction
-from dnd.choices.abilities.action_type import ActionType
 from dnd.choices.stats_creation.statistic import Statistic
 from dnd.other_profficiencies import WeaponProficiency
 from dnd.skill_proficiency import Skill
@@ -48,27 +46,7 @@ class SorcererLevel1WildMagic(SorcererLevel1Base[Literal[SorcererSubclass.WILD_M
                 }
             ),
             "actions": blueprint.actions
-            + (
-                BasicAction(
-                    action_type=ActionType.PASSIVE,
-                    name="Wild Magic Surge",
-                    description=(
-                        "Once per turn when you cast a spell of 1st level or higher, "
-                        "the DM can have you roll a d20. On a 1, roll on the Wild Magic "
-                        "Surge table for a random magical effect."
-                    ),
-                ),
-                BasicAction(
-                    action_type=ActionType.FREE_ACTION,
-                    name="Tides of Chaos",
-                    description=(
-                        "Gain advantage on one attack roll, ability check, or saving "
-                        "throw. After use, you must roll on the Wild Magic Surge table "
-                        "before using this again unless the DM triggers a surge first. "
-                        "Recharge: long rest."
-                    ),
-                ),
-            ),
+            + (AbilityName.WILD_MAGIC_SURGE, AbilityName.TIDES_OF_CHAOS),
         }
         if is_first_class:
             update["n_skill_choices"] = blueprint.n_skill_choices + 2
@@ -97,3 +75,6 @@ class SorcererLevel1WildMagic(SorcererLevel1Base[Literal[SorcererSubclass.WILD_M
             )
         result = blueprint.model_copy(update=update)
         return self.skill_choice_resolver.apply(result) if is_first_class else result
+
+
+from dnd.character._ability_name import AbilityName

@@ -9,9 +9,9 @@ from dnd.character.blueprint.building_blocks.level_up.sorcerer.base import (
 from dnd.character.blueprint.sentinels import FirstSubclassPostLevel
 from dnd.character.blueprint.sentinels import SorcererSubclassLevel
 from dnd.character.blueprint.states.state import _BPT
-from dnd.choices.abilities.action import BasicAction
-from dnd.choices.abilities.action_type import ActionType
 from dnd.choices.class_creation.character_class import SorcererSubclass
+
+from dnd.character._ability_name import AbilityName
 
 
 class SorcererLevel6WildMagic(
@@ -34,17 +34,6 @@ class SorcererLevel6WildMagic(
         return blueprint.model_copy(
             update={
                 "classes": blueprint.classes.model_copy(update={"sorcerer": 6}),
-                "actions": blueprint.actions
-                + (
-                    BasicAction(
-                        action_type=ActionType.REACTION,
-                        name="Bend Luck",
-                        description=(
-                            "Spend 2 sorcery points to roll 1d4 and add or subtract the "
-                            "result from an attack roll, ability check, or saving throw of "
-                            "a creature you can see."
-                        ),
-                    ),
-                ),
+                "actions": blueprint.actions + (AbilityName.BEND_LUCK,),
             }
         )

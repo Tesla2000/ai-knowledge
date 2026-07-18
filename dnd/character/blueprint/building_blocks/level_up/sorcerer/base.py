@@ -22,6 +22,8 @@ from dnd.character.blueprint.sentinels import AnyMetamagicChoices
 from dnd.character.blueprint.sentinels import AnyNonZeroSorcererLevel
 from dnd.character.blueprint.sentinels import AnyStatChoices
 from dnd.character.blueprint.sentinels import AnyWizardLevel
+from dnd.character.blueprint.states._caster_info import CasterInfo
+from dnd.character.blueprint.states.wizard._info import WizardInfo
 from dnd.character.blueprint.sentinels import FirstSubclassPostLevel
 from dnd.character.blueprint.sentinels import FirstSubclassPreLevel
 from dnd.character.blueprint.sentinels import MaybeCharacterData
@@ -55,7 +57,8 @@ class SorcererLevel1Base[SubclassOut: SorcererSubclass](BuildingBlock, ABC):
         _HeK_: MaybeHealth,
         _StCK_: AnyStatChoices,
         _SkCK_: AnyStatChoices,
-        _WZK_: AnyWizardLevel,
+        _WIK_: WizardInfo[AnyWizardLevel] | None,
+        _CK_: CasterInfo | None,
         _FGK_: AnyClassLevel,
         _BAK_: AnyClassLevel,
         _ROK_: AnyClassLevel,
@@ -76,7 +79,8 @@ class SorcererLevel1Base[SubclassOut: SorcererSubclass](BuildingBlock, ABC):
             _HeK_,
             _StCK_,
             _SkCK_,
-            _WZK_,
+            _WIK_,
+            _CK_,
             SorcererPreSubclassLevel[FirstSubclassPreLevel, None],
             _FGK_,
             _BAK_,
@@ -94,7 +98,8 @@ class SorcererLevel1Base[SubclassOut: SorcererSubclass](BuildingBlock, ABC):
     ) -> SorcererBlueprint[
         _StCK_,
         _SkCK_,
-        _WZK_,
+        _WIK_,
+        _CK_,
         SorcererSubclassLevel[Literal[FirstSubclassPostLevel.FIRST], SubclassOut],
         _FGK_,
         _BAK_,
@@ -115,7 +120,8 @@ class SorcererLevel1Base[SubclassOut: SorcererSubclass](BuildingBlock, ABC):
         sorc_r2 = SorcererBlueprint[
             _StCK_,
             _SkCK_,
-            _WZK_,
+            _WIK_,
+            _CK_,
             SorcererSubclassLevel[Literal[FirstSubclassPostLevel.FIRST], SubclassOut],
             _FGK_,
             _BAK_,
@@ -158,7 +164,8 @@ class SorcererSharedLevelBase[
         SubclassT: SorcererSubclass,
         _StCK_: AnyStatChoices,
         _SkCK_: AnyStatChoices,
-        _WZK_: AnyWizardLevel,
+        _WIK_: WizardInfo[AnyWizardLevel] | None,
+        _CK_: CasterInfo | None,
         _FGK_: AnyClassLevel,
         _BAK_: AnyClassLevel,
         _ROK_: AnyClassLevel,
@@ -177,7 +184,8 @@ class SorcererSharedLevelBase[
         blueprint: SorcererBlueprint[
             _StCK_,
             _SkCK_,
-            _WZK_,
+            _WIK_,
+            _CK_,
             SorcererSubclassLevel[LevelIn, SubclassT],
             _FGK_,
             _BAK_,
@@ -196,7 +204,8 @@ class SorcererSharedLevelBase[
     ) -> SorcererBlueprint[
         _StCK_,
         _SkCK_,
-        _WZK_,
+        _WIK_,
+        _CK_,
         SorcererSubclassLevel[LevelOut, SubclassT],
         _FGK_,
         _BAK_,
@@ -217,7 +226,8 @@ class SorcererSharedLevelBase[
         sorc_r2 = SorcererBlueprint[
             _StCK_,
             _SkCK_,
-            _WZK_,
+            _WIK_,
+            _CK_,
             SorcererSubclassLevel[LevelOut, SubclassT],
             _FGK_,
             _BAK_,
@@ -256,7 +266,8 @@ class SorcererFeatGrantingLevelBase[
         SubclassT: SorcererSubclass,
         _StCK_: AnyStatChoices,
         _SkCK_: AnyStatChoices,
-        _WZK_: AnyWizardLevel,
+        _WIK_: WizardInfo[AnyWizardLevel] | None,
+        _CK_: CasterInfo | None,
         _FGK_: AnyClassLevel,
         _BAK_: AnyClassLevel,
         _ROK_: AnyClassLevel,
@@ -275,7 +286,8 @@ class SorcererFeatGrantingLevelBase[
         blueprint: SorcererBlueprint[
             _StCK_,
             _SkCK_,
-            _WZK_,
+            _WIK_,
+            _CK_,
             SorcererSubclassLevel[LevelIn, SubclassT],
             _FGK_,
             _BAK_,
@@ -294,7 +306,8 @@ class SorcererFeatGrantingLevelBase[
     ) -> SorcererBlueprint[
         _StCK_,
         _SkCK_,
-        _WZK_,
+        _WIK_,
+        _CK_,
         SorcererSubclassLevel[LevelOut, SubclassT],
         _FGK_,
         _BAK_,
@@ -340,7 +353,8 @@ class SorcererSubclassFeatureLevelBase[
     def apply[
         _StCK_: AnyStatChoices,
         _SkCK_: AnyStatChoices,
-        _WZK_: AnyWizardLevel,
+        _WIK_: WizardInfo[AnyWizardLevel] | None,
+        _CK_: CasterInfo | None,
         _FGK_: AnyClassLevel,
         _BAK_: AnyClassLevel,
         _ROK_: AnyClassLevel,
@@ -359,7 +373,8 @@ class SorcererSubclassFeatureLevelBase[
         blueprint: SorcererBlueprint[
             _StCK_,
             _SkCK_,
-            _WZK_,
+            _WIK_,
+            _CK_,
             LevelIn,
             _FGK_,
             _BAK_,
@@ -378,7 +393,8 @@ class SorcererSubclassFeatureLevelBase[
     ) -> SorcererBlueprint[
         _StCK_,
         _SkCK_,
-        _WZK_,
+        _WIK_,
+        _CK_,
         LevelOut,
         _FGK_,
         _BAK_,
@@ -399,7 +415,8 @@ class SorcererSubclassFeatureLevelBase[
         sorc_r2 = SorcererBlueprint[
             _StCK_,
             _SkCK_,
-            _WZK_,
+            _WIK_,
+            _CK_,
             LevelOut,
             _FGK_,
             _BAK_,

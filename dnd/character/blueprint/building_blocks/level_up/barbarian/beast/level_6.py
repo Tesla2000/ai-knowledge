@@ -10,8 +10,8 @@ from dnd.character.blueprint.sentinels import ClassSubclassLevel
 from dnd.character.blueprint.sentinels import ThirdSubclassPostLevel
 from dnd.choices.class_creation.character_class import BarbarianSubclass
 from dnd.character.blueprint.states.state import _BPT
-from dnd.choices.abilities.action import BasicAction
-from dnd.choices.abilities.action_type import ActionType
+
+from dnd.character._ability_name import AbilityName
 
 
 class BarbarianLevel6Beast(
@@ -30,22 +30,6 @@ class BarbarianLevel6Beast(
         return blueprint.model_copy(
             update={
                 "classes": blueprint.classes.model_copy(update={"barbarian": 6}),
-                "actions": blueprint.actions
-                + (
-                    BasicAction(
-                        action_type=ActionType.PASSIVE,
-                        name="Bestial Soul",
-                        description=(
-                            "Beginning at 6th level, the feral power within you increases, "
-                            "causing the natural weapons of your Form of the Beast to count "
-                            "as magical for the purpose of overcoming immunity and resistance "
-                            "to nonmagical attacks and damage. You can also alter your form "
-                            "to help you adapt to your surroundings: a swim speed equal to "
-                            "your walking speed and the ability to breathe underwater, or a "
-                            "climbing speed equal to your walking speed, or the ability to "
-                            "jump three times the normal distance."
-                        ),
-                    ),
-                ),
+                "actions": blueprint.actions + (AbilityName.BESTIAL_SOUL,),
             }
         )

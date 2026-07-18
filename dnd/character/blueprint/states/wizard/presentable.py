@@ -1,6 +1,5 @@
 from typing import ClassVar
 from typing import Generic
-from typing import Literal
 
 from pydantic import ConfigDict
 
@@ -20,16 +19,25 @@ from dnd.character.blueprint.sentinels import _SOK_co
 from dnd.character.blueprint.sentinels import _StCK_co
 from dnd.character.blueprint.sentinels import _WAK_co
 from dnd.character.blueprint.sentinels import _WZK_co
+from dnd.character.blueprint.states._caster_info import CasterInfo
 from dnd.character.blueprint.states.convertible_blueprint import ConvertibleBlueprint
-from dnd.character.blueprint.states.wizard.level20 import WizardLevel20Blueprint
+from dnd.character.blueprint.states.state import Blueprint
+from dnd.character.blueprint.states.wizard._info import WizardLevel20Info
 from dnd.character.presentable_character import PresentableCharacter
+from dnd.character.race.race import Race
+from dnd.character.stats import Stats
+from pydantic import PositiveInt
 
 
 class PresentableWizardLevel20Blueprint(
-    WizardLevel20Blueprint[
+    Blueprint[
+        Race,
+        Stats,
+        PositiveInt,
         _StCK_co,
         _SkCK_co,
-        _WZK_co,
+        WizardLevel20Info[_WZK_co],
+        CasterInfo,
         _SOK_co,
         _FGK_co,
         _BAK_co,
@@ -43,7 +51,6 @@ class PresentableWizardLevel20Blueprint(
         _WAK_co,
         _ARK_co,
         _CDK_co,
-        Literal[0],
     ],
     ConvertibleBlueprint,
     Generic[

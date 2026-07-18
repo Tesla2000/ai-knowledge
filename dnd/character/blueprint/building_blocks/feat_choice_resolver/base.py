@@ -1,6 +1,8 @@
 from abc import ABC
 from abc import abstractmethod
 
+from typing import TypeVar
+
 from dnd.character.blueprint.building_blocks.building_block import BuildingBlock
 from dnd.character.blueprint.sentinels import (
     _ARK,
@@ -20,9 +22,14 @@ from dnd.character.blueprint.sentinels import (
     _SOK,
     _StCK,
     _WAK,
-    _WZK,
+    AnyWizardLevel,
 )
+from dnd.character.blueprint.states._caster_info import CasterInfo
 from dnd.character.blueprint.states.state import Blueprint
+from dnd.character.blueprint.states.wizard._info import WizardInfo
+
+_WIK = TypeVar("_WIK", bound=WizardInfo[AnyWizardLevel] | None)
+_CK = TypeVar("_CK", bound=CasterInfo | None)
 from dnd.character.stats import Stats
 from dnd.character.feature.feats import FeatName
 from pydantic import ConfigDict
@@ -55,7 +62,8 @@ class FeatChoiceResolver(BuildingBlock, ABC):
             _HeK,
             _StCK,
             _SkCK,
-            _WZK,
+            _WIK,
+            _CK,
             _SOK,
             _FGK,
             _BAK,
@@ -76,7 +84,8 @@ class FeatChoiceResolver(BuildingBlock, ABC):
         _HeK,
         _StCK,
         _SkCK,
-        _WZK,
+        _WIK,
+        _CK,
         _SOK,
         _FGK,
         _BAK,

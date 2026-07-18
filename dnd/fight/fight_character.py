@@ -1,13 +1,12 @@
 from __future__ import annotations
 
+from random import randint
 from typing import (
     TYPE_CHECKING,
     Annotated,
     ClassVar,
-    Protocol,
-    assert_never,
-    runtime_checkable,
 )
+from uuid import uuid4
 
 from pydantic import (
     BaseModel,
@@ -18,39 +17,35 @@ from pydantic import (
     PositiveInt,
 )
 from typing import Self
+from uuid_string import UUIDString
 
 if TYPE_CHECKING:
-    from dnd.fight.battlemap import Battlemap
+    pass
 
-from dnd.character.blueprint.character_data import CharacterData
-from dnd.character.class_levels import ClassLevels
-from dnd.character.spells.max_spell_levels import SpellSlots
-from dnd.character.actions._ability_name import AbilityName
+from dnd.character._ability_name import AbilityName
+from dnd.character.actions._any_modifier import AnyModifier
 from dnd.character.actions._damage_type import DamageType
-from dnd.choices.abilities.action import AttackAction, AnyAction
+from dnd.character.actions.advantage_modifier import (
+    AdvantageModifier,
+    DisadvantageModifier,
+    GrantsAdvantageModifier,
+)
+from dnd.fight._combat_event import (
+    AnyCombatEvent,
+    RageEndsEvent,
+    TurnStartEvent,
+)
+from dnd.character.presentable_character import PresentableCharacter
+from dnd.character.spells.max_spell_levels import SpellSlots
+from dnd.choices.stats_creation.statistic import Statistic
 from dnd.fight._condition import Condition
 from dnd.fight._fight_resource import _FightResource, ResourceName
-
-_KNOWN_ABILITIES: frozenset[str] = frozenset(AbilityName)
-
-
-@runtime_checkable
-class _CombatCharacter(Protocol):
-    health: int
-    classes: ClassLevels
-    actions: tuple[AnyAction, ...]
-    character_data: CharacterData
-
-
-@runtime_checkable
-class _SpellcasterCharacter(_CombatCharacter, Protocol):
-    spell_slots: SpellSlots[int, int, int, int, int, int, int, int, int]
 
 
 class _CombatantBase[HealthType: NonNegativeInt](BaseModel):
     model_config: ClassVar[ConfigDict] = ConfigDict(frozen=True)
 
-    character: InstanceOf[_CombatCharacter]
+    character: InstanceOf[PresentableCharacter]
     initiative: int
     max_health: PositiveInt
     current_health: HealthType
@@ -82,17 +77,10 @@ class _CombatantBase[HealthType: NonNegativeInt](BaseModel):
         new_temp = max(self.temporary_health, amount)
         return self.model_copy(update={"temporary_health": new_temp})
 
-    def on_character_turn_start(self) -> Self:
-        return self
-
-    def on_character_turn_end(self) -> Self:
-        return self
-
-    def on_round_start(self) -> Self:
-        return self
-
-    def on_round_end(self) -> Self:
-        return self
+    def on_event(
+        self, event: AnyCombatEvent
+    ) -> tuple[Self, tuple[AnyCombatEvent, ...]]:
+        return self, ()
 
 
 class FightCharacter(_CombatantBase[PositiveInt]):
@@ -100,32 +88,91 @@ class FightCharacter(_CombatantBase[PositiveInt]):
     has_bonus_action: bool = True
     has_reaction: bool = True
     has_free_action: bool = True
-    attack_bonus: int = 0
+    base_ac: int = 10
+    modifiers: tuple[AnyModifier, ...] = ()
     damage_resistance: frozenset[DamageType] = frozenset()
+    condition_immunities: frozenset[Condition] = frozenset()
     active_features: frozenset[AbilityName] = frozenset()
+    id: UUIDString = Field(default_factory=lambda: UUIDString(str(uuid4())))
+    number_of_attacks: int = 1
+    attacks_remaining: int = 1
+    brutal_critical_dice: int = 0
+    con_save_bonus: int = 0
+
+    @property
+    def ac(self) -> int:
+        return self.base_ac
 
     @classmethod
     def from_presentable(
         cls,
-        character: _CombatCharacter,
+        character: PresentableCharacter,
         initiative: int,
         resources: tuple[_FightResource, ...] = (),
     ) -> FightCharacter:
+        number_of_attacks = 2 if AbilityName.EXTRA_ATTACK in character.actions else 1
+        brutal_critical_dice = (
+            3
+            if AbilityName.BRUTAL_CRITICAL_3_DICE in character.actions
+            else 2
+            if AbilityName.BRUTAL_CRITICAL_2_DICE in character.actions
+            else 1
+            if AbilityName.BRUTAL_CRITICAL_1_DIE in character.actions
+            else 0
+        )
+        con_save_bonus = character.stats.get_modifier(Statistic.CONSTITUTION)
         return cls(
             character=character,
             initiative=initiative,
             max_health=character.health,
             current_health=character.health,
+            base_ac=character.ac,
             resources=resources,
+            number_of_attacks=number_of_attacks,
+            attacks_remaining=number_of_attacks,
+            brutal_critical_dice=brutal_critical_dice,
+            con_save_bonus=con_save_bonus,
         )
 
-    def on_character_turn_start(self) -> Self:
+    def on_event(
+        self, event: AnyCombatEvent
+    ) -> tuple[Self, tuple[AnyCombatEvent, ...]]:
+        pending: list[AnyCombatEvent] = []
+        surviving: list[AnyModifier] = []
+        for m in self.modifiers:
+            r, emitted = m.on_event(event)
+            pending.extend(emitted)
+            if r is not None:
+                surviving.append(r)
+
+        update: dict[str, object] = {}
+
+        match event:
+            case TurnStartEvent() if event.target_id == self.id:
+                update["has_action"] = True
+                update["has_bonus_action"] = True
+                update["has_reaction"] = True
+                update["has_free_action"] = True
+                update["attacks_remaining"] = self.number_of_attacks
+                surviving = [
+                    m for m in surviving
+                    if not isinstance(
+                        m, (AdvantageModifier, DisadvantageModifier, GrantsAdvantageModifier)
+                    )
+                ]
+            case RageEndsEvent() if event.target_id == self.id:
+                update["active_features"] = self.active_features - {AbilityName.RAGE}
+            case _:
+                pass
+
+        update["modifiers"] = tuple(surviving)
+        return self.model_copy(update=update), tuple(pending)
+
+    def spend_attack(self) -> Self:
         return self.model_copy(
             update={
-                "has_action": True,
-                "has_bonus_action": True,
-                "has_reaction": True,
-                "has_free_action": True,
+                "attacks_remaining": self.attacks_remaining - 1,
+                "has_action": False,
             }
         )
 
@@ -150,6 +197,18 @@ class FightCharacter(_CombatantBase[PositiveInt]):
             remaining -= absorbed
         new_hp = self.current_health - remaining
         if new_hp <= 0:
+            if (
+                self.has_reaction
+                and AbilityName.RELENTLESS_RAGE in self.character.actions
+                and randint(1, 20) + self.con_save_bonus >= 10
+            ):
+                return self.model_copy(
+                    update={
+                        "current_health": 1,
+                        "temporary_health": new_temp,
+                        "has_reaction": False,
+                    }
+                )
             return DownedFightCharacter.from_active(
                 self.model_copy(
                     update={"current_health": 1, "temporary_health": new_temp}
@@ -166,48 +225,54 @@ class FightCharacter(_CombatantBase[PositiveInt]):
         new_hp = min(self.current_health + amount, self.max_health)
         return self.model_copy(update={"current_health": new_hp})
 
-    def get_actions(
-        self, battlemap: Battlemap
-    ) -> tuple[tuple[AnyCombatAction, ...], ...]:
-        candidates: list[tuple[AnyCombatAction, ...]] = []
-        for action in self.character.actions:
-            if isinstance(action, AttackAction):
-                for attack_cls in (AttackWithAxe,):
-                    attack_options = attack_cls.create(self, battlemap)
-                    if attack_options:
-                        candidates.append(attack_options)
-                        break
-            elif action.name in _KNOWN_ABILITIES:
-                ability = AbilityName(action.name)
-                match ability:
-                    case AbilityName.RAGE:
-                        rage_options = UseRage.create(self)
-                        if rage_options:
-                            candidates.append(rage_options)
-                    case AbilityName.ATTACK_WITH_AXE:
-                        pass
-                    case _ as unreachable:
-                        assert_never(unreachable)
-        return tuple(candidates)
-
 
 class SpellcasterFightCharacter(FightCharacter):
-    remaining_spell_slots: SpellSlots[int, int, int, int, int, int, int, int, int]
+    remaining_spell_slots: SpellSlots
 
     @classmethod
     def from_presentable(
         cls,
-        character: _SpellcasterCharacter,
+        character: PresentableCharacter,
         initiative: int,
         resources: tuple[_FightResource, ...] = (),
     ) -> SpellcasterFightCharacter:
+        number_of_attacks = 2 if AbilityName.EXTRA_ATTACK in character.actions else 1
+        brutal_critical_dice = (
+            3
+            if AbilityName.BRUTAL_CRITICAL_3_DICE in character.actions
+            else 2
+            if AbilityName.BRUTAL_CRITICAL_2_DICE in character.actions
+            else 1
+            if AbilityName.BRUTAL_CRITICAL_1_DIE in character.actions
+            else 0
+        )
+        con_save_bonus = character.stats.get_modifier(Statistic.CONSTITUTION)
         return cls(
             character=character,
             initiative=initiative,
             max_health=character.health,
             current_health=character.health,
+            base_ac=character.ac,
             remaining_spell_slots=character.spell_slots,
             resources=resources,
+            number_of_attacks=number_of_attacks,
+            attacks_remaining=number_of_attacks,
+            brutal_critical_dice=brutal_critical_dice,
+            con_save_bonus=con_save_bonus,
+        )
+
+    def spend_level_1_slot(self) -> Self:
+        return self.model_copy(
+            update={
+                "remaining_spell_slots": self.remaining_spell_slots.spend_level_1_slot()
+            }
+        )
+
+    def spend_level_3_slot(self) -> Self:
+        return self.model_copy(
+            update={
+                "remaining_spell_slots": self.remaining_spell_slots.spend_level_3_slot()
+            }
         )
 
 
@@ -320,11 +385,4 @@ AnyActiveCombatant = (
     | DownedFightCharacter
     | StabilizedFightCharacter
     | DeadFightCharacter
-)
-
-# Bottom imports after all classes are defined to resolve circular dependency
-from dnd.character.actions.combat_action import (  # noqa: E402
-    AnyCombatAction,
-    AttackWithAxe,
-    UseRage,
 )

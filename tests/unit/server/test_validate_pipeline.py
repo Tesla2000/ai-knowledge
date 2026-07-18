@@ -78,9 +78,9 @@ class TestGenericHelpers:
         origin = _generic_origin(type(EmptyBlueprint()))
         assert issubclass(origin, Blueprint)
 
-    def test_generic_args_of_empty_blueprint_has_19_params(self) -> None:
+    def test_generic_args_of_empty_blueprint_has_20_params(self) -> None:
         args = _generic_args(type(EmptyBlueprint()))
-        assert len(args) == 19
+        assert len(args) == 20
 
 
 @pytest.mark.unit

@@ -51,6 +51,7 @@ from dnd.character.blueprint.building_blocks.stat_choice_resolver.ai import (
     AIStatChoiceResolver,
     StatIncreaseSelection,
 )
+from dnd.character.blueprint.states._caster_info import CasterInfo
 from dnd.character.blueprint.states.sorcerer.base import SorcererBlueprint
 from dnd.character.blueprint.states.state import Blueprint
 from dnd.character.blueprint.states.wizard.base import WizardBlueprint
@@ -348,7 +349,8 @@ class TestWizardLLMSpellAssigner:
             llm=mock_llm, character_description=None, class_=Class.WIZARD
         )
         state = WizardBlueprint(
-            classes=_Level1ClassLevels(), spell_slots=FULL_CASTER_SPELL_SLOTS[0]
+            classes=_Level1ClassLevels(),
+            caster=CasterInfo(spell_slots=FULL_CASTER_SPELL_SLOTS[0]),
         )
         result = block.apply(state)
         assert result is not None
@@ -404,7 +406,8 @@ class TestWizardLLMSpellAssignerErrors:
             llm=mock_llm, character_description=None, class_=Class.WIZARD
         )
         state = WizardBlueprint(
-            classes=_Level1ClassLevels(), spell_slots=FULL_CASTER_SPELL_SLOTS[0]
+            classes=_Level1ClassLevels(),
+            caster=CasterInfo(spell_slots=FULL_CASTER_SPELL_SLOTS[0]),
         )
         with pytest.raises(LLMRefusalError):
             block.apply(state)
@@ -800,7 +803,8 @@ class TestSpellAssignerEmptySpellsToLearn:
             )
             result = block.apply(
                 WizardBlueprint(
-                    classes=_Level1ClassLevels(), spell_slots=FULL_CASTER_SPELL_SLOTS[0]
+                    classes=_Level1ClassLevels(),
+                    caster=CasterInfo(spell_slots=FULL_CASTER_SPELL_SLOTS[0]),
                 )
             )
         assert result is not None

@@ -10,8 +10,8 @@ from dnd.character.blueprint.sentinels import ClassSubclassLevel
 from dnd.character.blueprint.sentinels import ThirdSubclassPostLevel
 from dnd.choices.class_creation.character_class import BarbarianSubclass
 from dnd.character.blueprint.states.state import _BPT
-from dnd.choices.abilities.action import BasicAction
-from dnd.choices.abilities.action_type import ActionType
+
+from dnd.character._ability_name import AbilityName
 
 
 class BarbarianLevel10StormHerald(
@@ -30,18 +30,6 @@ class BarbarianLevel10StormHerald(
         return blueprint.model_copy(
             update={
                 "classes": blueprint.classes.model_copy(update={"barbarian": 10}),
-                "actions": blueprint.actions
-                + (
-                    BasicAction(
-                        action_type=ActionType.PASSIVE,
-                        name="Shielding Storm",
-                        description=(
-                            "At 10th level, you learn to use your mastery of the storm to "
-                            "protect others. Each creature of your choice has the damage "
-                            "resistance you gained from the Storm Soul feature while the "
-                            "creature is in your Storm Aura."
-                        ),
-                    ),
-                ),
+                "actions": blueprint.actions + (AbilityName.SHIELDING_STORM,),
             }
         )

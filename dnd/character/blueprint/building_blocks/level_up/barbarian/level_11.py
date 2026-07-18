@@ -8,8 +8,8 @@ from dnd.character.blueprint.building_blocks.level_up.barbarian.base import (
 )
 from dnd.character.blueprint.sentinels import ThirdSubclassPostLevel
 from dnd.character.blueprint.states.state import _BPT
-from dnd.choices.abilities.action import BasicAction
-from dnd.choices.abilities.action_type import ActionType
+
+from dnd.character._ability_name import AbilityName
 
 
 class BarbarianLevel11(
@@ -28,20 +28,6 @@ class BarbarianLevel11(
         return blueprint.model_copy(
             update={
                 "classes": blueprint.classes.model_copy(update={"barbarian": 11}),
-                "actions": blueprint.actions
-                + (
-                    BasicAction(
-                        action_type=ActionType.PASSIVE,
-                        name="Relentless Rage",
-                        description=(
-                            "Starting at 11th level, your rage can keep you fighting despite "
-                            "grievous wounds. If you drop to 0 hit points while you're raging "
-                            "and don't die outright, you can make a DC 10 Constitution saving "
-                            "throw. If you succeed, you drop to 1 hit point instead. Each time "
-                            "you use this feature after the first, the DC increases by 5. When "
-                            "you finish a short or long rest, the DC resets to 10."
-                        ),
-                    ),
-                ),
+                "actions": blueprint.actions + (AbilityName.RELENTLESS_RAGE,),
             }
         )

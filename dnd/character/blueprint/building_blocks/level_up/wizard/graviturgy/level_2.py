@@ -11,9 +11,9 @@ from dnd.character.blueprint.sentinels import SecondSubclassPreLevel
 from dnd.character.blueprint.sentinels import WizardPreSubclassLevel
 from dnd.character.blueprint.sentinels import WizardSubclassLevel
 from dnd.character.blueprint.states.state import _BPT
-from dnd.choices.abilities.action import BasicAction
-from dnd.choices.abilities.action_type import ActionType
 from dnd.choices.class_creation.character_class import WizardSubclass
+
+from dnd.character._ability_name import AbilityName
 
 
 class WizardLevel2Graviturgy(
@@ -35,20 +35,6 @@ class WizardLevel2Graviturgy(
             update={
                 "classes": blueprint.classes.model_copy(update={"wizard": 2}),
                 "subclasses": blueprint.subclasses + (WizardSubclass.GRAVITURGY,),
-                "actions": blueprint.actions
-                + (
-                    BasicAction(
-                        action_type=ActionType.ACTION,
-                        name="Adjust Density",
-                        description=(
-                            "Alter the weight of one creature or object within 30 feet, "
-                            "halving or doubling it for up to 1 minute. Halving causes the "
-                            "target's speed to be halved and gives disadvantage on Strength "
-                            "checks/saves; doubling halves speed and gives advantage on "
-                            "Strength checks/saves. Unwilling creatures can save against "
-                            "your spell save DC. Uses = proficiency bonus per long rest."
-                        ),
-                    ),
-                ),
+                "actions": blueprint.actions + (AbilityName.ADJUST_DENSITY,),
             }
         )

@@ -9,9 +9,9 @@ from dnd.character.blueprint.building_blocks.level_up.sorcerer.base import (
 from dnd.character.blueprint.sentinels import FirstSubclassPostLevel
 from dnd.character.blueprint.sentinels import SorcererSubclassLevel
 from dnd.character.blueprint.states.state import _BPT
-from dnd.choices.abilities.action import BasicAction
-from dnd.choices.abilities.action_type import ActionType
 from dnd.choices.class_creation.character_class import SorcererSubclass
+
+from dnd.character._ability_name import AbilityName
 
 
 class SorcererLevel14DivineSoul(
@@ -36,16 +36,6 @@ class SorcererLevel14DivineSoul(
         return blueprint.model_copy(
             update={
                 "classes": blueprint.classes.model_copy(update={"sorcerer": 14}),
-                "actions": blueprint.actions
-                + (
-                    BasicAction(
-                        action_type=ActionType.FREE_ACTION,
-                        name="Otherworldly Wings",
-                        description=(
-                            "Grow a pair of magical wings granting a fly speed of 30 feet "
-                            "while not wearing armor."
-                        ),
-                    ),
-                ),
+                "actions": blueprint.actions + (AbilityName.OTHERWORLDLY_WINGS,),
             }
         )

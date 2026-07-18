@@ -11,9 +11,9 @@ from dnd.character.blueprint.sentinels import SecondSubclassPreLevel
 from dnd.character.blueprint.sentinels import WizardPreSubclassLevel
 from dnd.character.blueprint.sentinels import WizardSubclassLevel
 from dnd.character.blueprint.states.state import _BPT
-from dnd.choices.abilities.action import BasicAction
-from dnd.choices.abilities.action_type import ActionType
 from dnd.choices.class_creation.character_class import WizardSubclass
+
+from dnd.character._ability_name import AbilityName
 
 
 class WizardLevel2WarMagic(
@@ -36,23 +36,6 @@ class WizardLevel2WarMagic(
                 "classes": blueprint.classes.model_copy(update={"wizard": 2}),
                 "subclasses": blueprint.subclasses + (WizardSubclass.WAR_MAGIC,),
                 "actions": blueprint.actions
-                + (
-                    BasicAction(
-                        action_type=ActionType.REACTION,
-                        name="Arcane Deflection",
-                        description=(
-                            "When hit by an attack or you fail a saving throw, gain +2 AC "
-                            "against that attack or +4 to that save. If you do, you can only "
-                            "cast cantrips until your next turn."
-                        ),
-                    ),
-                    BasicAction(
-                        action_type=ActionType.PASSIVE,
-                        name="Tactical Wit",
-                        description=(
-                            "Add your Intelligence modifier to your initiative rolls."
-                        ),
-                    ),
-                ),
+                + (AbilityName.ARCANE_DEFLECTION, AbilityName.TACTICAL_WIT),
             }
         )

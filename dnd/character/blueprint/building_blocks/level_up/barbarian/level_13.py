@@ -8,8 +8,8 @@ from dnd.character.blueprint.building_blocks.level_up.barbarian.base import (
 )
 from dnd.character.blueprint.sentinels import ThirdSubclassPostLevel
 from dnd.character.blueprint.states.state import _BPT
-from dnd.choices.abilities.action import BasicAction
-from dnd.choices.abilities.action_type import ActionType
+
+from dnd.character._ability_name import AbilityName
 
 
 class BarbarianLevel13(
@@ -28,17 +28,6 @@ class BarbarianLevel13(
         return blueprint.model_copy(
             update={
                 "classes": blueprint.classes.model_copy(update={"barbarian": 13}),
-                "actions": blueprint.actions
-                + (
-                    BasicAction(
-                        action_type=ActionType.PASSIVE,
-                        name="Brutal Critical (2 dice)",
-                        description=(
-                            "At 13th level, you can roll two additional weapon damage dice "
-                            "when determining the extra damage for a critical hit with a "
-                            "melee attack."
-                        ),
-                    ),
-                ),
+                "actions": blueprint.actions + (AbilityName.BRUTAL_CRITICAL_2_DICE,),
             }
         )

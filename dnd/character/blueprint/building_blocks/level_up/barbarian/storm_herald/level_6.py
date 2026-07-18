@@ -10,8 +10,8 @@ from dnd.character.blueprint.sentinels import ClassSubclassLevel
 from dnd.character.blueprint.sentinels import ThirdSubclassPostLevel
 from dnd.choices.class_creation.character_class import BarbarianSubclass
 from dnd.character.blueprint.states.state import _BPT
-from dnd.choices.abilities.action import BasicAction
-from dnd.choices.abilities.action_type import ActionType
+
+from dnd.character._ability_name import AbilityName
 
 
 class BarbarianLevel6StormHerald(
@@ -30,20 +30,6 @@ class BarbarianLevel6StormHerald(
         return blueprint.model_copy(
             update={
                 "classes": blueprint.classes.model_copy(update={"barbarian": 6}),
-                "actions": blueprint.actions
-                + (
-                    BasicAction(
-                        action_type=ActionType.PASSIVE,
-                        name="Storm Soul",
-                        description=(
-                            "At 6th level, the storm grants you benefits even when your aura "
-                            "isn't active. The benefits are based on the environment you chose "
-                            "at 3rd level: Desert (fire resistance, no harm from extreme heat), "
-                            "Sea (lightning resistance, can breathe underwater, swim speed "
-                            "equal to walking speed), Tundra (cold resistance, no harm from "
-                            "extreme cold, ground within 10 feet is difficult terrain for enemies)."
-                        ),
-                    ),
-                ),
+                "actions": blueprint.actions + (AbilityName.STORM_SOUL,),
             }
         )

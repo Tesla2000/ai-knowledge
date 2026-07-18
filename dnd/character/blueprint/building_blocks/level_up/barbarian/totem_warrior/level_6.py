@@ -18,8 +18,7 @@ from dnd.character.blueprint.sentinels import ClassSubclassLevel
 from dnd.character.blueprint.sentinels import ThirdSubclassPostLevel
 from dnd.choices.class_creation.character_class import BarbarianSubclass
 from dnd.character.blueprint.states.state import _BPT
-from dnd.choices.abilities.action import BasicAction
-from dnd.choices.abilities.action_type import ActionType
+from dnd.character._ability_name import AbilityName
 from dnd.choices.abilities.totem_animal import TotemAnimal
 
 
@@ -69,18 +68,9 @@ class BarbarianLevel6TotemWarrior(
         return descriptions[totem]
 
     def _update_blueprint(self, blueprint: _BPT) -> _BPT:
-        totem = self.aspect_resolver.resolve()
-        aspect_description = self._aspect_description(totem)
         return blueprint.model_copy(
             update={
                 "classes": blueprint.classes.model_copy(update={"barbarian": 6}),
-                "actions": blueprint.actions
-                + (
-                    BasicAction(
-                        action_type=ActionType.PASSIVE,
-                        name=f"Aspect of the Beast ({totem.name.title()})",
-                        description=aspect_description,
-                    ),
-                ),
+                "actions": blueprint.actions + (AbilityName.ASPECT_OF_THE_BEAST,),
             }
         )

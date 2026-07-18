@@ -11,9 +11,9 @@ from dnd.character.blueprint.sentinels import SecondSubclassPreLevel
 from dnd.character.blueprint.sentinels import WizardPreSubclassLevel
 from dnd.character.blueprint.sentinels import WizardSubclassLevel
 from dnd.character.blueprint.states.state import _BPT
-from dnd.choices.abilities.action import BasicAction
-from dnd.choices.abilities.action_type import ActionType
 from dnd.choices.class_creation.character_class import WizardSubclass
+
+from dnd.character._ability_name import AbilityName
 
 
 class WizardLevel2Transmutation(
@@ -37,25 +37,6 @@ class WizardLevel2Transmutation(
                 "classes": blueprint.classes.model_copy(update={"wizard": 2}),
                 "subclasses": blueprint.subclasses + (WizardSubclass.TRANSMUTATION,),
                 "actions": blueprint.actions
-                + (
-                    BasicAction(
-                        action_type=ActionType.PASSIVE,
-                        name="Transmutation Savant",
-                        description=(
-                            "The gold and time you must spend to copy a transmutation spell "
-                            "into your spellbook is halved."
-                        ),
-                    ),
-                    BasicAction(
-                        action_type=ActionType.PASSIVE,
-                        name="Minor Alchemy",
-                        description=(
-                            "Temporarily alter the physical properties of a nonmagical "
-                            "object, transforming it into another material. One hour of work "
-                            "transforms one cubic foot. The transformation lasts until you "
-                            "take a short or long rest."
-                        ),
-                    ),
-                ),
+                + (AbilityName.TRANSMUTATION_SAVANT, AbilityName.MINOR_ALCHEMY),
             }
         )

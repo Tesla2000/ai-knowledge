@@ -9,9 +9,9 @@ from dnd.character.blueprint.building_blocks.level_up.sorcerer.base import (
 from dnd.character.blueprint.sentinels import FirstSubclassPostLevel
 from dnd.character.blueprint.sentinels import SorcererSubclassLevel
 from dnd.character.blueprint.states.state import _BPT
-from dnd.choices.abilities.action import BasicAction
-from dnd.choices.abilities.action_type import ActionType
 from dnd.choices.class_creation.character_class import SorcererSubclass
+
+from dnd.character._ability_name import AbilityName
 
 
 class SorcererLevel18AberrantMind(
@@ -36,20 +36,6 @@ class SorcererLevel18AberrantMind(
         return blueprint.model_copy(
             update={
                 "classes": blueprint.classes.model_copy(update={"sorcerer": 18}),
-                "actions": blueprint.actions
-                + (
-                    BasicAction(
-                        action_type=ActionType.ACTION,
-                        name="Warping Implosion",
-                        description=(
-                            "Teleport up to 120 feet to an unoccupied space you can see. "
-                            "Each creature within 30 feet of your departure point must make "
-                            "a Strength saving throw: on failure, take 3d10 force damage and "
-                            "be pulled to the nearest unoccupied space adjacent to your "
-                            "destination; on success, half damage only. Recharge: long rest "
-                            "or 5 sorcery points."
-                        ),
-                    ),
-                ),
+                "actions": blueprint.actions + (AbilityName.WARPING_IMPLOSION,),
             }
         )

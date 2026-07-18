@@ -9,8 +9,6 @@ from dnd.character.blueprint.building_blocks.level_up.sorcerer.base import (
 from dnd.character.blueprint.states.state import _BPT
 from dnd.choices.class_creation.character_class import SorcererSubclass
 from dnd.choices.equipment_creation.weapons import WeaponName
-from dnd.choices.abilities.action import BasicAction
-from dnd.choices.abilities.action_type import ActionType
 from dnd.choices.stats_creation.statistic import Statistic
 from dnd.other_profficiencies import WeaponProficiency
 from dnd.skill_proficiency import Skill
@@ -21,6 +19,8 @@ from dnd.character.blueprint.building_blocks.skill_choice_resolver.random import
     RandomSkillChoiceResolver,
 )
 from pydantic import Field
+
+from dnd.character._ability_name import AbilityName
 
 
 class SorcererLevel1DraconicBloodline(
@@ -50,25 +50,7 @@ class SorcererLevel1DraconicBloodline(
                 }
             ),
             "actions": blueprint.actions
-            + (
-                BasicAction(
-                    action_type=ActionType.PASSIVE,
-                    name="Dragon Ancestor",
-                    description=(
-                        "You have a draconic ancestor of a specific dragon type, "
-                        "granting you resistance to that ancestor's damage type."
-                    ),
-                ),
-                BasicAction(
-                    action_type=ActionType.PASSIVE,
-                    name="Draconic Resilience",
-                    description=(
-                        "Your hit point maximum increases by 1 per sorcerer level. "
-                        "When you are not wearing armor, your AC equals "
-                        "13 + your Dexterity modifier."
-                    ),
-                ),
-            ),
+            + (AbilityName.DRAGON_ANCESTOR, AbilityName.DRACONIC_RESILIENCE),
         }
         if is_first_class:
             update["n_skill_choices"] = blueprint.n_skill_choices + 2

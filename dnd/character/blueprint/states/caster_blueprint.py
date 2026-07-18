@@ -12,7 +12,7 @@ from dnd.character.spells.max_spell_levels import SpellSlots
 class CasterBlueprint(BaseModel):
     model_config: ClassVar[ConfigDict] = ConfigDict(frozen=True)
 
-    spell_slots: SpellSlots[int, int, int, int, int, int, int, int, int]
+    spell_slots: SpellSlots
     caster_level: NonNegativeInt = 0
 
     def increase_full_caster(self) -> Self:

@@ -9,9 +9,9 @@ from dnd.character.blueprint.building_blocks.level_up.sorcerer.base import (
 from dnd.character.blueprint.sentinels import FirstSubclassPostLevel
 from dnd.character.blueprint.sentinels import SorcererSubclassLevel
 from dnd.character.blueprint.states.state import _BPT
-from dnd.choices.abilities.action import BasicAction
-from dnd.choices.abilities.action_type import ActionType
 from dnd.choices.class_creation.character_class import SorcererSubclass
+
+from dnd.character._ability_name import AbilityName
 
 
 class SorcererLevel18DraconicBloodline(
@@ -36,19 +36,6 @@ class SorcererLevel18DraconicBloodline(
         return blueprint.model_copy(
             update={
                 "classes": blueprint.classes.model_copy(update={"sorcerer": 18}),
-                "actions": blueprint.actions
-                + (
-                    BasicAction(
-                        action_type=ActionType.ACTION,
-                        name="Draconic Presence",
-                        description=(
-                            "Spend 5 sorcery points to radiate an aura of dread or awe "
-                            "(your choice) in a 60-foot radius for 1 minute. Each hostile "
-                            "creature in the aura must succeed on a Wisdom saving throw or "
-                            "be frightened (dread) or charmed (awe) by you until the aura "
-                            "ends."
-                        ),
-                    ),
-                ),
+                "actions": blueprint.actions + (AbilityName.DRACONIC_PRESENCE,),
             }
         )

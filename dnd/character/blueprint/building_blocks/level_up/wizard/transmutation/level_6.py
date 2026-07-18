@@ -9,8 +9,7 @@ from dnd.character.blueprint.building_blocks.level_up.wizard.base import (
 from dnd.character.blueprint.sentinels import SecondSubclassPostLevel
 from dnd.character.blueprint.sentinels import WizardSubclassLevel
 from dnd.character.blueprint.states.state import _BPT
-from dnd.choices.abilities.action import BasicAction
-from dnd.choices.abilities.action_type import ActionType
+from dnd.character._ability_name import AbilityName
 from dnd.choices.class_creation.character_class import WizardSubclass
 
 
@@ -36,19 +35,6 @@ class WizardLevel6Transmutation(
         return blueprint.model_copy(
             update={
                 "classes": blueprint.classes.model_copy(update={"wizard": 6}),
-                "actions": blueprint.actions
-                + (
-                    BasicAction(
-                        action_type=ActionType.ACTION,
-                        name="Transmuter's Stone",
-                        description=(
-                            "Create a transmuter's stone that grants a bearer one benefit: "
-                            "darkvision 60 ft, +10 ft speed, proficiency in Constitution "
-                            "saves, or resistance to acid/cold/fire/lightning/thunder. Only "
-                            "one stone can exist at a time. You can change the benefit as "
-                            "an action."
-                        ),
-                    ),
-                ),
+                "actions": blueprint.actions + (AbilityName.TRANSMUTERS_STONE,),
             }
         )

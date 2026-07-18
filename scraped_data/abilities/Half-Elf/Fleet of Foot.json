@@ -1,8 +1,0 @@
-{
-  "name": "Fleet of Foot",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Your base walking speed increases to 35 feet.",
-  "required_level": 0
-}

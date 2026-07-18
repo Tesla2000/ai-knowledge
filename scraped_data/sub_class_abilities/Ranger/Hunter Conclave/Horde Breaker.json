@@ -1,8 +1,0 @@
-{
-  "name": "Horde Breaker",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Once on each of your turns when you make a weapon attack, you can make another attack with the same weapon against a different creature that is within 5 feet of the original target and within range of your weapon.",
-  "required_level": 3
-}

@@ -1,8 +1,0 @@
-{
-  "name": "Aura of Hate",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Starting at 7th level, you and any fiends and undead within 10 feet of you gain a bonus to melee weapon damage rolls equal to your Charisma modifier (minimum of +1). At 18th level, the range of this aura increases to 30 feet.",
-  "required_level": 7
-}

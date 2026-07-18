@@ -1,8 +1,0 @@
-{
-  "name": "The Right Tool for the Job",
-  "ability_type": "action",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "At 3rd level, you've learned how to produce exactly the tool you need. You can magically create one set of artisan's tools with 1 hour of uninterrupted work.",
-  "required_level": 3
-}

@@ -1,8 +1,0 @@
-{
-  "name": "Sorcerous Versatility",
-  "ability_type": "action",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "At levels that grant Ability Score Improvement, you can replace a Metamagic option or cantrip.",
-  "required_level": 4
-}

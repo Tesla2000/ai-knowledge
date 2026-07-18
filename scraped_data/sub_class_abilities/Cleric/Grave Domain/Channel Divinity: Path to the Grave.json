@@ -1,8 +1,0 @@
-{
-  "name": "Channel Divinity: Path to the Grave",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Starting at 2nd level, you can use your Channel Divinity to mark another creature\u2019s life force for termination. As an action, you choose one creature you can see within 30 feet of you, cursing it until the end of your next turn. The next time you or an ally hits the cursed creature with an attack, the creature has vulnerability to all of that attack's damage, and then the curse ends.",
-  "required_level": 2
-}

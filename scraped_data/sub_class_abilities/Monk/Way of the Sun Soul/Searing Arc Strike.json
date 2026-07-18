@@ -1,8 +1,0 @@
-{
-  "name": "Searing Arc Strike",
-  "ability_type": "bonus_action",
-  "combat_related": true,
-  "spell_grant": true,
-  "description": "Immediately after you take the Attack action on your turn, you can spend 2 ki points to cast the Burning Hands spell as a bonus action, and you can spend additional ki points to cast it as a higher level spell, with the maximum number of ki points equaling half your monk level.",
-  "required_level": 6
-}

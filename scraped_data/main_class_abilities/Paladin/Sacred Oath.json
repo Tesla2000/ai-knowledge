@@ -1,8 +1,0 @@
-{
-  "name": "Sacred Oath",
-  "ability_type": "action",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "When you reach 3rd level, you swear the oath that binds you as a paladin forever. Your choice grants you features at 3rd level and again at 7th, 15th, and 20th level. Those features include oath spells and the Channel Divinity feature.",
-  "required_level": 3
-}

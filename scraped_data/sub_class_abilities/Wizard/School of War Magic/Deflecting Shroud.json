@@ -1,8 +1,0 @@
-{
-  "name": "Deflecting Shroud",
-  "ability_type": "reaction",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "When you use your Arcane Deflection feature, you can cause magical energy to arc from you. Up to three creatures of your choice within 60 feet of you each take force damage equal to half your wizard level.",
-  "required_level": 14
-}

@@ -1,8 +1,0 @@
-{
-  "name": "Age",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "Aarakocra reach maturity by age 3. Compared to humans, aarakocra don\u2019t usually live longer than 30 years.",
-  "required_level": 0
-}

@@ -1,8 +1,0 @@
-{
-  "name": "Cantrip",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": true,
-  "description": "You know one cantrip of your choice from the Wizard spell list. Intelligence is your spellcasting ability for it.",
-  "required_level": 0
-}

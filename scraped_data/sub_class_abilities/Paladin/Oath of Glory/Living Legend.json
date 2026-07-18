@@ -1,8 +1,0 @@
-{
-  "name": "Living Legend",
-  "ability_type": "bonus_action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "At 20th level, you can empower yourself with the legends \u2014 whether true or exaggerated \u2014 of your great deeds. As a bonus action, you gain the following benefits for 1 minute: You are blessed with an otherworldly presence, gaining advantage on all Charisma checks; Once on each of your turns when you make a weapon attack and miss, you can cause that attack to hit instead; If you fail a saving throw, you can use your reaction to reroll it. You must use this new roll. Once you use this feature, you can\u2019t use it again until you finish a long rest, unless you expend a 5th-level spell slot to use it again.",
-  "required_level": 20
-}

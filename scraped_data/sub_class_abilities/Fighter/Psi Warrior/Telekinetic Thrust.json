@@ -1,8 +1,0 @@
-{
-  "name": "Telekinetic Thrust",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "When you deal damage with Psionic Strike, you can force the target to make a Strength saving throw. If they fail, you can knock them prone or move them up to 10 feet.",
-  "required_level": 7
-}

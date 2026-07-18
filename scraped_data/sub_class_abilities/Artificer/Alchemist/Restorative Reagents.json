@@ -1,8 +1,0 @@
-{
-  "name": "Restorative Reagents",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": true,
-  "description": "Creatures drinking your experimental elixirs gain temporary hit points equal to 2d6 + your Intelligence modifier. Can cast Lesser Restoration without expending a spell slot a number of times equal to your Intelligence modifier (minimum of once).",
-  "required_level": 9
-}

@@ -1,8 +1,0 @@
-{
-  "name": "Relentless Avenger",
-  "ability_type": "reaction",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "When you hit a creature with an opportunity attack, you can move up to half your speed immediately after the attack and as part of the same reaction. This movement doesn't provoke opportunity attacks.",
-  "required_level": 7
-}

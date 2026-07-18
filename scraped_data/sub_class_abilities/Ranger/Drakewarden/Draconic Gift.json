@@ -1,8 +1,0 @@
-{
-  "name": "Draconic Gift",
-  "ability_type": "action",
-  "combat_related": false,
-  "spell_grant": true,
-  "description": "At 3rd level, the bond you share with your drake creates a connection to dragonkind, granting you understanding and empowering your presence. You learn the Thaumaturgy cantrip, which is a ranger spell for you, and you learn to speak, read, and write Draconic or one other language of your choice.",
-  "required_level": 3
-}

@@ -1,8 +1,0 @@
-{
-  "name": "Metamagic",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "At 3rd level, you gain the ability to twist your spells to suit your needs and gain two Metamagic options.",
-  "required_level": 3
-}

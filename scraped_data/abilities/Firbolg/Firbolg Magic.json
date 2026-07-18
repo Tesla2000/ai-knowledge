@@ -1,8 +1,0 @@
-{
-  "name": "Firbolg Magic",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": true,
-  "description": "You can cast the Detect Magic and Disguise Self spells with this trait. When you use this version of Disguise Self, you can seem up to 3 feet shorter or taller. Once you cast either of these spells with this trait, you can\u2019t cast that spell with it again until you finish a long rest. You can also cast these spells using any spell slots you have. Intelligence, Wisdom, or Charisma is your spellcasting ability for these spells when you cast them with this trait (choose when you select this race).",
-  "required_level": 1
-}

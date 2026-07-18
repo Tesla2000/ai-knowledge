@@ -1,8 +1,0 @@
-{
-  "name": "Multiattack Defense",
-  "ability_type": "reaction",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "When a creature hits you with an attack, you gain a +4 bonus to AC against all subsequent attacks made by that creature for the rest of the turn.",
-  "required_level": 7
-}

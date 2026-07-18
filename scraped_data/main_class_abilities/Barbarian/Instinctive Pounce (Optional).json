@@ -1,8 +1,0 @@
-{
-  "name": "Instinctive Pounce (Optional)",
-  "ability_type": "bonus_action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "At 7th level, as part of the bonus action to enter your rage, you can move up to half your speed.",
-  "required_level": 7
-}

@@ -1,8 +1,0 @@
-{
-  "name": "Survivor",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "At the start of each of your turns, you regain hit points equal to 5 + your Constitution modifier if you have no more than half of your hit points left.",
-  "required_level": 18
-}

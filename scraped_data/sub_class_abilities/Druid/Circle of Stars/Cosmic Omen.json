@@ -1,8 +1,0 @@
-{
-  "name": "Cosmic Omen",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "At 6th level, you can consult your Star Map for omens after a long rest. Roll a die to gain a special reaction until your next long rest: Weal (add a d6 to a creature's roll) for even rolls, and Woe (subtract a d6 from a creature's roll) for odd rolls. You can use this reaction a number of times equal to your proficiency bonus, regaining all uses after a long rest.",
-  "required_level": 6
-}

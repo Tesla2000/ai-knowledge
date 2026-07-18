@@ -1,8 +1,0 @@
-{
-  "name": "Armorer Spells",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": true,
-  "description": "Always have certain spells prepared that count as artificer spells but don\u2019t count against the number you prepare.",
-  "required_level": 3
-}

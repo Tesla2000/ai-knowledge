@@ -1,8 +1,0 @@
-{
-  "name": "Unyielding Saint",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "You have advantage on saving throws to avoid becoming paralyzed or stunned.",
-  "required_level": 15
-}

@@ -1,8 +1,0 @@
-{
-  "name": "Perfect Self",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "At initiative roll, if you have no ki points, you regain 4 ki points.",
-  "required_level": 20
-}

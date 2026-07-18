@@ -1,8 +1,0 @@
-{
-  "name": "Ear for Deceit",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "Whenever you make a Wisdom (Insight) check to determine whether a creature is lying, treat a roll of 7 or lower on the d20 as an 8.",
-  "required_level": 3
-}

@@ -1,8 +1,0 @@
-{
-  "name": "Arcane Charge",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "At 15th level, you gain the ability to teleport up to 30 feet to an unoccupied space you can see when you use your Action Surge.",
-  "required_level": 15
-}

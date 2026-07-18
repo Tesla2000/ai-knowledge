@@ -1,8 +1,0 @@
-{
-  "name": "Grit",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "You have resistance to fire damage and psychic damage. In addition, when you are wearing no armor, your AC is equal to 11 + your Dexterity modifier.",
-  "required_level": 0
-}

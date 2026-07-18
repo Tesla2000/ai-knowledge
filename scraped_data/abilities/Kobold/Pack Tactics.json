@@ -1,8 +1,0 @@
-{
-  "name": "Pack Tactics",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "You have advantage on an attack roll against a creature if at least one of your allies is within 5 feet of the creature and the ally isn't incapacitated.",
-  "required_level": 0
-}

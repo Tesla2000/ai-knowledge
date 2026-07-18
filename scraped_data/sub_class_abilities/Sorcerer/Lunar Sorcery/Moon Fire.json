@@ -1,8 +1,0 @@
-{
-  "name": "Moon Fire",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": true,
-  "description": "Starting at 1st level, you can call down the radiant light of the moon on command. You learn the Sacred Flame spell, which doesn\u2019t count against the number of sorcerer cantrips you know. When you cast the spell, you can target one creature as normal or target two creatures within range that are within 5 feet of each other.",
-  "required_level": 1
-}

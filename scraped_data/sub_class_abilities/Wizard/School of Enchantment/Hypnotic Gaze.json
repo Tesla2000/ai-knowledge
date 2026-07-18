@@ -1,8 +1,0 @@
-{
-  "name": "Hypnotic Gaze",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "You can magically enthrall another creature. As an action, choose one creature that you can see within 5 feet of you. The target must succeed on a Wisdom saving throw or be charmed by you until the end of your next turn. The charmed creature's speed drops to 0 and it is incapacitated.",
-  "required_level": 2
-}

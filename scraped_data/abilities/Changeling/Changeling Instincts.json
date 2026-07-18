@@ -1,8 +1,0 @@
-{
-  "name": "Changeling Instincts",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "Thanks to your connection to the fey realm, you gain proficiency with two of the following skills of your choice: Deception, Insight, Intimidation, Performance, or Persuasion.",
-  "required_level": 0
-}

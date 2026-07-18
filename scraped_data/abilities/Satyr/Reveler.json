@@ -1,8 +1,0 @@
-{
-  "name": "Reveler",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "As an embodiment of revelry, you have proficiency in the Performance and Persuasion skills, and you have proficiency with one musical instrument of your choice.",
-  "required_level": 0
-}

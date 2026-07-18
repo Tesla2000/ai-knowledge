@@ -1,8 +1,0 @@
-{
-  "name": "Giant\u2019s Havoc",
-  "ability_type": "free_action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Your rages pull strength from the primal might of giants, transforming you into a hulking force of destruction. While raging, you gain benefits including Crushing Throw and Giant Stature.",
-  "required_level": 3
-}

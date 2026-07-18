@@ -1,8 +1,0 @@
-{
-  "name": "Spellcasting",
-  "ability_type": "free_action",
-  "combat_related": true,
-  "spell_grant": true,
-  "description": "You have learned to use the magical essence of nature to cast spells, similar to a druid. Wisdom is your spellcasting ability.",
-  "required_level": 2
-}

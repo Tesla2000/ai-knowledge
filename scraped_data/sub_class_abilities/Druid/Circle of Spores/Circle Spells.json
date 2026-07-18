@@ -1,8 +1,0 @@
-{
-  "name": "Circle Spells",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": true,
-  "description": "Your symbiotic link to fungi and your ability to tap into the cycle of life and death grants you access to certain spells. At 2nd level, you learn the Chill Touch cantrip. At 3rd, 5th, 7th, and 9th level you gain access to specific spells from the Circle of Spores Spells table, which are always prepared and do not count against the number of spells you can prepare each day.",
-  "required_level": 2
-}

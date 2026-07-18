@@ -1,8 +1,0 @@
-{
-  "name": "Greater Portent",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "You roll three d20s for your Portent feature instead of two.",
-  "required_level": 14
-}

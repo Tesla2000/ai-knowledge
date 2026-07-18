@@ -1,8 +1,0 @@
-{
-  "name": "Superior Inspiration",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "At 20th level, when you roll initiative and have no uses of Bardic Inspiration left, you regain one use.",
-  "required_level": 20
-}

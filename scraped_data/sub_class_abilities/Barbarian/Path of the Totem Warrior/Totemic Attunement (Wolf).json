@@ -1,8 +1,0 @@
-{
-  "name": "Totemic Attunement (Wolf)",
-  "ability_type": "free_action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "While raging, you can use a bonus action to knock a Large or smaller creature prone when you hit it with a melee weapon attack.",
-  "required_level": 14
-}

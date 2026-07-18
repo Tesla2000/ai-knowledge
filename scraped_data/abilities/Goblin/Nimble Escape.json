@@ -1,8 +1,0 @@
-{
-  "name": "Nimble Escape",
-  "ability_type": "bonus_action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "You can take the Disengage or Hide action as a bonus action on each of your turns.",
-  "required_level": 0
-}

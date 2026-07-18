@@ -1,8 +1,0 @@
-{
-  "name": "Storm's Fury",
-  "ability_type": "reaction",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "When hit by a melee attack, you can use your reaction to deal lightning damage to the attacker equal to your sorcerer level and force them to make a Strength saving throw. On a failed save, they are pushed 20 feet away from you.",
-  "required_level": 14
-}

@@ -1,8 +1,0 @@
-{
-  "name": "Bonus Cantrip",
-  "ability_type": "free_action",
-  "combat_related": false,
-  "spell_grant": true,
-  "description": "When you choose this circle at 2nd level, you learn one additional druid cantrip of your choice. This cantrip doesn\u2019t count against the number of druid cantrips you know.",
-  "required_level": 2
-}

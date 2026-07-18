@@ -1,8 +1,0 @@
-{
-  "name": "Shadow Lore",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "As an action, you can magically whisper a phrase to a creature within 30 feet. The target must make a Wisdom saving throw. If it fails, it is charmed by you for 8 hours, believing you know its most mortifying secret and obeying your commands, unless it risks its life.",
-  "required_level": 14
-}

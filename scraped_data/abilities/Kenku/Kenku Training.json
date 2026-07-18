@@ -1,8 +1,0 @@
-{
-  "name": "Kenku Training",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "You are proficient in your choice of two of the following skills: Acrobatics, Deception, Stealth, and Sleight of Hand.",
-  "required_level": 0
-}

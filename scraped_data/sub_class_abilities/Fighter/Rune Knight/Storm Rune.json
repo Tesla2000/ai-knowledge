@@ -1,8 +1,0 @@
-{
-  "name": "Storm Rune",
-  "ability_type": "bonus_action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "This rune gives you advantage on Intelligence (Arcana) checks and prevents you from being surprised. You can invoke it to grant advantage or disadvantage on an attack roll, saving throw, or ability check within 60 feet for 1 minute. Once invoked, it can't be used again until a short or long rest.",
-  "required_level": 7
-}

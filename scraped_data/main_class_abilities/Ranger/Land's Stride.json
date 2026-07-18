@@ -1,8 +1,0 @@
-{
-  "name": "Land's Stride",
-  "ability_type": "free_action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Moving through nonmagical difficult terrain costs you no extra movement, and you have advantage on saving throws against certain magical effects.",
-  "required_level": 8
-}

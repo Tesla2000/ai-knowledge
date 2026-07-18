@@ -1,8 +1,0 @@
-{
-  "name": "Fey Ancestry",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "You have advantage on saving throws you make to avoid or end the charmed condition on yourself.",
-  "required_level": 0
-}

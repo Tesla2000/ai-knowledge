@@ -1,8 +1,0 @@
-{
-  "name": "Oath Spells",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": true,
-  "description": "You gain oath spells at the paladin levels listed: 3rd: Command, Compelled Duel; 5th: Warding Bond, Zone of Truth; 9th: Aura of Vitality, Spirit Guardians; 13th: Banishment, Guardian of Faith; 17th: Circle of Power, Geas.",
-  "required_level": 3
-}

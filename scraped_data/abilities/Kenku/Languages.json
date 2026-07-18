@@ -1,8 +1,0 @@
-{
-  "name": "Languages",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "You can read and write Common and Auran, but you can speak only by using your Mimicry trait.",
-  "required_level": 0
-}

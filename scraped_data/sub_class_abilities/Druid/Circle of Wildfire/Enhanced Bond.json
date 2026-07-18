@@ -1,8 +1,0 @@
-{
-  "name": "Enhanced Bond",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "At 6th level, the bond with your wildfire spirit enhances your fire damage or healing spells. You can roll a d8 to gain a bonus to one damage or healing roll of the spell, and the spell can originate from you or your wildfire spirit.",
-  "required_level": 6
-}

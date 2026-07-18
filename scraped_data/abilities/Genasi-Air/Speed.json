@@ -1,8 +1,0 @@
-{
-  "name": "Speed",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "Your walking speed is 35 feet.",
-  "required_level": 0
-}

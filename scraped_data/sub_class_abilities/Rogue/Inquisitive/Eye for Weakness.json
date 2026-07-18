@@ -1,8 +1,0 @@
-{
-  "name": "Eye for Weakness",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "While your Insightful Fighting feature applies to a creature, your Sneak Attack damage against that creature increases by 3d6.",
-  "required_level": 17
-}

@@ -1,8 +1,0 @@
-{
-  "name": "Grave Touched",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "At 6th level, you don\u2019t need to eat, drink, or breathe. Additionally, you can replace the damage type of your attacks with necrotic damage, and while using Form of Dread, you can roll one additional damage die for necrotic damage.",
-  "required_level": 6
-}

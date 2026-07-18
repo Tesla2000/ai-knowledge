@@ -1,8 +1,0 @@
-{
-  "name": "Weapon Bond",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "At 3rd level, you learn a ritual that creates a magical bond between yourself and one weapon. You can't be disarmed of that weapon unless you are incapacitated. You can summon that weapon as a bonus action on your turn.",
-  "required_level": 3
-}

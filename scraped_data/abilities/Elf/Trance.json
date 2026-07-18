@@ -1,8 +1,0 @@
-{
-  "name": "Trance",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "You meditate deeply for 4 hours a day instead of sleeping. After resting in this way, you gain the same benefit a human would from 8 hours of sleep.",
-  "required_level": 0
-}

@@ -1,8 +1,0 @@
-{
-  "name": "Dwarven Combat Training",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "You have proficiency with the battleaxe, handaxe, light hammer, and warhammer.",
-  "required_level": 0
-}

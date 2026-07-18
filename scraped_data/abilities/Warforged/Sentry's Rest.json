@@ -1,8 +1,0 @@
-{
-  "name": "Sentry's Rest",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "When you take a long rest, you must spend at least six hours in an inactive, motionless state, rather than sleeping. In this state, you appear inert, but it doesn\u2019t render you unconscious, and you can see and hear as normal.",
-  "required_level": 1
-}

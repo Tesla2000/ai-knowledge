@@ -1,8 +1,0 @@
-{
-  "name": "Sanctuary Vessel",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "At 10th level, when you enter your Genie's Vessel, you can choose up to five willing creatures within 30 feet to be drawn into the vessel with you. Anyone who remains within the vessel for at least 10 minutes gains the benefit of finishing a short rest, and can add your proficiency bonus to the number of hit points regained if they spend Hit Dice as part of a short rest.",
-  "required_level": 10
-}

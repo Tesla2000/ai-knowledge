@@ -1,8 +1,0 @@
-{
-  "name": "Beguiling Twist",
-  "ability_type": "reaction",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "At 7th level, you have advantage on saving throws against being charmed or frightened. After a successful save by you or a creature you can see, you can use your reaction to force another creature to make a Wisdom saving throw against your spell save DC, charmed or frightened for 1 minute on failure.",
-  "required_level": 7
-}

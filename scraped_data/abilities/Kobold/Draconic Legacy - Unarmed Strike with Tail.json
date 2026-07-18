@@ -1,8 +1,0 @@
-{
-  "name": "Draconic Legacy - Unarmed Strike with Tail",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "You can make unarmed strikes with your tail. When you hit with it, the strike deals 1d6 + your Strength modifier bludgeoning damage, instead of the bludgeoning damage normal for an unarmed strike.",
-  "required_level": 0
-}

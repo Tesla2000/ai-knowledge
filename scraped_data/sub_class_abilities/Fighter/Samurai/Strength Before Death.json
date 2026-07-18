@@ -1,8 +1,0 @@
-{
-  "name": "Strength Before Death",
-  "ability_type": "reaction",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Starting at 18th level, if you take damage that reduces you to 0 hit points, you can use your reaction to delay falling unconscious and take an extra turn. While at 0 hit points during that turn, damage causes death saving throw failures as normal. Once used, this feature can't be used again until after a long rest.",
-  "required_level": 18
-}

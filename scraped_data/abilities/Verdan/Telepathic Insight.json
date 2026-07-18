@@ -1,8 +1,0 @@
-{
-  "name": "Telepathic Insight",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "You have advantage on all Wisdom and Charisma saving throws.",
-  "required_level": 0
-}

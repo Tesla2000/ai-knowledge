@@ -1,8 +1,0 @@
-{
-  "name": "Tool Proficiency",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "Gain proficiency with alchemist's supplies. If already proficient, gain proficiency with another type of artisan's tools of your choice.",
-  "required_level": 3
-}

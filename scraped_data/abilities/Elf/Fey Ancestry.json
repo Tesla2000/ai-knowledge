@@ -1,8 +1,0 @@
-{
-  "name": "Fey Ancestry",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "You have advantage on saving throws against being charmed, and magic can't put you to sleep.",
-  "required_level": 0
-}

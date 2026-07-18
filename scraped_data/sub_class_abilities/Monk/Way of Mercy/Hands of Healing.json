@@ -1,8 +1,0 @@
-{
-  "name": "Hands of Healing",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Spend 1 ki point to restore hit points equal to a roll of your Martial Arts die + your Wisdom modifier. Can replace one unarmed strike with this feature during Flurry of Blows without spending a ki point.",
-  "required_level": 3
-}

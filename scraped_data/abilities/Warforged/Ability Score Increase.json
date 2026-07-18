@@ -1,8 +1,0 @@
-{
-  "name": "Ability Score Increase",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "Your Constitution score increases by 2, and one other ability score of your choice increases by 1.",
-  "required_level": 1
-}

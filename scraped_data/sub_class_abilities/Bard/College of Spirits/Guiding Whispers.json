@@ -1,8 +1,0 @@
-{
-  "name": "Guiding Whispers",
-  "ability_type": "free_action",
-  "combat_related": false,
-  "spell_grant": true,
-  "description": "At 3rd level, you can reach out to spirits to guide you and others. You learn the Guidance cantrip, which doesn\u2019t count against the number of bard cantrips you know. For you, it has a range of 60 feet when you cast it.",
-  "required_level": 3
-}

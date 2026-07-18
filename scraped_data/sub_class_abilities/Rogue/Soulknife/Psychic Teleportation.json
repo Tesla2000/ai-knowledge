@@ -1,8 +1,0 @@
-{
-  "name": "Psychic Teleportation",
-  "ability_type": "bonus_action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "As a bonus action, you manifest one of your Psychic Blades, expend one Psionic Energy die, and throw the blade at an unoccupied space you can see. You then teleport to that space, and the blade vanishes.",
-  "required_level": 9
-}

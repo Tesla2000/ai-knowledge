@@ -1,8 +1,0 @@
-{
-  "name": "Arcane Trickster Spellcasting",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": true,
-  "description": "When you reach 3rd level, you augment your martial prowess with the ability to cast spells. You learn three cantrips: Mage Hand and two other cantrips of your choice from the wizard spell list. You learn another wizard cantrip of your choice at 10th level. You know three 1st-level wizard spells of your choice, two of which you must choose from the enchantment and illusion spells on the wizard spell list.",
-  "required_level": 3
-}

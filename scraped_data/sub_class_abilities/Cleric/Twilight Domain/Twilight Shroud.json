@@ -1,8 +1,0 @@
-{
-  "name": "Twilight Shroud",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "At 17th level, you and your allies have half cover while in the sphere created by your Twilight Sanctuary.",
-  "required_level": 17
-}

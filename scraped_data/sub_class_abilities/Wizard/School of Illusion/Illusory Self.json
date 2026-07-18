@@ -1,8 +1,0 @@
-{
-  "name": "Illusory Self",
-  "ability_type": "reaction",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "You can create an illusory duplicate of yourself as a reaction to danger. The attack automatically misses you, then the illusion dissipates. Can be used once per short or long rest.",
-  "required_level": 10
-}

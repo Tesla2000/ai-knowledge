@@ -3,6 +3,8 @@
 ## Rules
 
 - Use pytest exclusively.
+- Tests must be adjusted to match production code, never the other way around. Never add types to a union, make a field optional, or expose a private class just to make a test pass.
+- Never use `Any` in test functions or fixtures. Use the actual type (e.g. `BuildingBlock`) or `object` if the type is genuinely unknown.
 - Never rewrite implementation code in tests. Tests only supply mock inputs and clean up.
 - Never skip tests. If a value is unavailable, fail the test.
 - Never use `# pragma: no cover` unless the user explicitly allows it.

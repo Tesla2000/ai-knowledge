@@ -1,8 +1,0 @@
-{
-  "name": "Legacy of Malbolge",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": true,
-  "description": "You know the Minor Illusion cantrip. Once you reach 3rd level, you can cast the Disguise Self spell once as a 2nd-level spell. Once you reach 5th level, you can also cast the Invisibility spell once as a 2nd-level spell. You must finish a long rest to cast these spells again with this trait. Charisma is your spellcasting ability for these spells.",
-  "required_level": 0
-}

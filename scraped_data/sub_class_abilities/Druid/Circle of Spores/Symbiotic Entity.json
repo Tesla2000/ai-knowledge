@@ -1,8 +1,0 @@
-{
-  "name": "Symbiotic Entity",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "At 2nd level, you can expend a use of your Wild Shape feature to awaken your spores, gaining temporary hit points and additional benefits, including increased Halo of Spores damage and extra necrotic damage on melee attacks. These effects last for 10 minutes or until you lose all temporary hit points or use Wild Shape again.",
-  "required_level": 2
-}

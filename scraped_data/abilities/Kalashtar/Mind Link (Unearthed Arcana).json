@@ -1,8 +1,0 @@
-{
-  "name": "Mind Link (Unearthed Arcana)",
-  "ability_type": "bonus_action",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "You can speak telepathically to any creature you can see within 60 feet of you. As a bonus action, you can give that creature the ability to speak telepathically to you until the start of your next turn.",
-  "required_level": 0
-}

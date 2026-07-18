@@ -1,8 +1,0 @@
-{
-  "name": "Alchemical Savant",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "When casting a spell using alchemist's supplies as the spellcasting focus, gain a bonus to one roll of the spell that restores hit points or deals acid, fire, necrotic, or poison damage, equal to your Intelligence modifier (minimum of +1).",
-  "required_level": 5
-}

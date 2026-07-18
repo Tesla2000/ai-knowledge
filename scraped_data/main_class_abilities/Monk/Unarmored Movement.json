@@ -1,8 +1,0 @@
-{
-  "name": "Unarmored Movement",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "Your speed increases by 10 feet while you are not wearing armor or wielding a shield. This bonus increases at certain monk levels.",
-  "required_level": 2
-}

@@ -1,8 +1,0 @@
-{
-  "name": "Cauterizing Flames",
-  "ability_type": "reaction",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "At 10th level, when a creature dies within 30 feet, you can use your reaction to extinguish a spectral flame and either heal or deal fire damage to a creature entering that space, equal to 2d10 + your Wisdom modifier. Usable a number of times equal to your proficiency bonus.",
-  "required_level": 10
-}

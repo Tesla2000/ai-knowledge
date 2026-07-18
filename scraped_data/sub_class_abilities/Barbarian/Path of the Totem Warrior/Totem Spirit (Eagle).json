@@ -1,8 +1,0 @@
-{
-  "name": "Totem Spirit (Eagle)",
-  "ability_type": "free_action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "While raging and not wearing heavy armor, other creatures have disadvantage on opportunity attack rolls against you, and you can use the Dash action as a bonus action on your turn.",
-  "required_level": 3
-}

@@ -1,8 +1,0 @@
-{
-  "name": "Beasthide",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "You gain 1d6 additional temporary hit points. While shifted, you have a +1 bonus to your Armor Class.",
-  "required_level": 1
-}

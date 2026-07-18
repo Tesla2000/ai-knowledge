@@ -1,8 +1,0 @@
-{
-  "name": "Infuse Item",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "At 2nd level, you've gained the ability to imbue mundane items with certain magical infusions, turning those objects into magic items. You can infuse nonmagical objects at the end of a long rest, with a limit based on your level.",
-  "required_level": 2
-}

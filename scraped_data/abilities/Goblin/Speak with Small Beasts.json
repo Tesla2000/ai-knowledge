@@ -1,8 +1,0 @@
-{
-  "name": "Speak with Small Beasts",
-  "ability_type": "action",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "Through sounds and gestures you can communicate simple ideas with Small or smaller beasts. Dankwood goblins love animals and often keep squirrels, badgers, rabbits, moles, woodpeckers, and other creatures as beloved pets.",
-  "required_level": 0
-}

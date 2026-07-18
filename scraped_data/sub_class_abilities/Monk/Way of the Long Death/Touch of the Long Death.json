@@ -1,8 +1,0 @@
-{
-  "name": "Touch of the Long Death",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "As an action, you touch one creature within 5 feet of you, and you expend 1 to 10 ki points. The target must make a Constitution saving throw, and it takes 2d10 necrotic damage per ki point spent on a failed save, or half as much damage on a successful one.",
-  "required_level": 17
-}

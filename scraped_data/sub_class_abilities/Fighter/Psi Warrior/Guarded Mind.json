@@ -1,8 +1,0 @@
-{
-  "name": "Guarded Mind",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "You have resistance to psychic damage. If you start your turn charmed or frightened, you can expend a Psionic Energy die to end the effect on yourself.",
-  "required_level": 10
-}

@@ -1,8 +1,0 @@
-{
-  "name": "Bonus Proficiencies",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "When you choose this archetype at 3rd level, you gain proficiency with smith\u2019s tools, and you learn to speak, read, and write Giant.",
-  "required_level": 3
-}

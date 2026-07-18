@@ -1,8 +1,0 @@
-{
-  "name": "Integrated Tool",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Choose one tool you\u2019re proficient with. This tool is integrated into your body, and you double your proficiency bonus for any ability checks you make with it.",
-  "required_level": 1
-}

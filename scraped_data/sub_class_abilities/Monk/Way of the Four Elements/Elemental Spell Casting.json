@@ -1,8 +1,0 @@
-{
-  "name": "Elemental Spell Casting",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": true,
-  "description": "Once you reach 5th level in this class, you can spend additional ki points to increase the level of an elemental discipline spell that you cast, provided that the spell has an enhanced effect at a higher level.",
-  "required_level": 5
-}

@@ -1,8 +1,0 @@
-{
-  "name": "Relentless",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "When you roll initiative and have no superiority dice remaining, you regain 1 superiority die.",
-  "required_level": 15
-}

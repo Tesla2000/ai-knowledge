@@ -1,8 +1,0 @@
-{
-  "name": "Form of Dread",
-  "ability_type": "bonus_action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "At 1st level, you manifest an aspect of your patron\u2019s dreadful power for 1 minute. You gain temporary hit points equal to 1d10 + your warlock level, can frighten a creature with an attack, and are immune to the frightened condition. You can transform a number of times equal to your proficiency bonus, regaining all uses after a long rest.",
-  "required_level": 1
-}

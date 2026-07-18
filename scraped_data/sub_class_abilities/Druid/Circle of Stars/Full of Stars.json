@@ -1,8 +1,0 @@
-{
-  "name": "Full of Stars",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "At 14th level, while in your Starry Form, you become partially incorporeal, giving you resistance to bludgeoning, piercing, and slashing damage.",
-  "required_level": 14
-}

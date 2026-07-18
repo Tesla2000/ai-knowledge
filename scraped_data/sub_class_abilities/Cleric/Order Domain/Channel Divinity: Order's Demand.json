@@ -1,8 +1,0 @@
-{
-  "name": "Channel Divinity: Order's Demand",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Exert an intimidating presence; creatures must succeed on a Wisdom saving throw or be charmed until the end of your next turn.",
-  "required_level": 2
-}

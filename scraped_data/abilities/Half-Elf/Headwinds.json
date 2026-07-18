@@ -1,8 +1,0 @@
-{
-  "name": "Headwinds",
-  "ability_type": "action",
-  "combat_related": false,
-  "spell_grant": true,
-  "description": "You know the Gust cantrip. Starting at 3rd level, you can also cast Gust of Wind spell with it.",
-  "required_level": 1
-}

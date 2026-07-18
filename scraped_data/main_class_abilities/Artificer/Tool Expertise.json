@@ -1,8 +1,0 @@
-{
-  "name": "Tool Expertise",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "At 6th level, your proficiency bonus is doubled for any ability check you make that uses your proficiency with a tool.",
-  "required_level": 6
-}

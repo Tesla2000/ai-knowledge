@@ -1,8 +1,0 @@
-{
-  "name": "Indomitable Might",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "Beginning at 18th level, if your total for a Strength check is less than your Strength score, you can use that score instead.",
-  "required_level": 18
-}

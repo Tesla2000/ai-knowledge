@@ -1,8 +1,0 @@
-{
-  "name": "Aspect of the Beast (Eagle)",
-  "ability_type": "free_action",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "You can see up to 1 mile away with no difficulty, and dim light doesn't impose disadvantage on your Wisdom (Perception) checks.",
-  "required_level": 6
-}

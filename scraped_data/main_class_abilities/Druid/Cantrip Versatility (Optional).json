@@ -1,8 +1,0 @@
-{
-  "name": "Cantrip Versatility (Optional)",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "Whenever you reach a level in this class that grants Ability Score Improvement, you can replace one cantrip you learned from this class's Spellcasting feature with another cantrip from the druid spell list.",
-  "required_level": 4
-}

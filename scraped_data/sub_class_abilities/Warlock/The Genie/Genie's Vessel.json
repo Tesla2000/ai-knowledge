@@ -1,8 +1,0 @@
-{
-  "name": "Genie's Vessel",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": true,
-  "description": "At 1st level, your patron gifts you a magical vessel that grants you a measure of the genie's power. You can use it as a spellcasting focus for your warlock spells. You can magically vanish and enter your vessel, which remains in the space you left. While inside, you can hear the area around your vessel. You can remain inside for a number of hours equal to twice your proficiency bonus. Once you enter the vessel, you can't enter again until you finish a long rest. You deal extra damage equal to your proficiency bonus when you hit with an attack roll, the type of damage is determined by your patron.",
-  "required_level": 1
-}

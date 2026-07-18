@@ -1,8 +1,0 @@
-{
-  "name": "Abjure the Extraplanar",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "You can use your Channel Divinity to turn aberrations, celestials, elementals, fey, or fiends within 30 feet of you for 1 minute or until they take damage.",
-  "required_level": 3
-}

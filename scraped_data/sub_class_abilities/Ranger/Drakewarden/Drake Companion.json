@@ -1,8 +1,0 @@
-{
-  "name": "Drake Companion",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "At 3rd level, as an action, you can magically summon the drake that is bound to you. It appears in an unoccupied space of your choice within 30 feet of you. The drake is friendly to you and your companions, and it obeys your commands. Once you summon the drake, you can\u2019t do so again until you finish a long rest, unless you expend a spell slot of 1st level or higher to summon it.",
-  "required_level": 3
-}

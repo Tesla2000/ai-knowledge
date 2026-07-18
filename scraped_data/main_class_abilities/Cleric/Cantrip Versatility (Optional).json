@@ -1,8 +1,0 @@
-{
-  "name": "Cantrip Versatility (Optional)",
-  "ability_type": "action",
-  "combat_related": false,
-  "spell_grant": true,
-  "description": "Whenever you reach a level in this class that grants the Ability Score Improvement feature, you can replace one cantrip you learned from this class's Spellcasting feature with another cantrip from the cleric spell list.",
-  "required_level": 4
-}

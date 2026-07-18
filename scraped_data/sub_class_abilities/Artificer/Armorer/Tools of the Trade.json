@@ -1,8 +1,0 @@
-{
-  "name": "Tools of the Trade",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "Gain proficiency with heavy armor and smith's tools. If already proficient with smith's tools, gain proficiency with another artisan's tool of choice.",
-  "required_level": 3
-}

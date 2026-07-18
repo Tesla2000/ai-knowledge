@@ -1,8 +1,0 @@
-{
-  "name": "Hands of Harm",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Spend 1 ki point to deal extra necrotic damage equal to one roll of your Martial Arts die + your Wisdom modifier when you hit a creature with an unarmed strike. Can be used once per turn.",
-  "required_level": 3
-}

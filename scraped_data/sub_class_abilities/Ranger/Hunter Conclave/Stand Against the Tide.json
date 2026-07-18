@@ -1,8 +1,0 @@
-{
-  "name": "Stand Against the Tide",
-  "ability_type": "reaction",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "When a hostile creature misses you with a melee attack, you can use your reaction to force that creature to repeat the same attack against another creature (other than itself) of your choice.",
-  "required_level": 15
-}

@@ -1,8 +1,0 @@
-{
-  "name": "Primal Intuition",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "You have proficiency in two of the following skills of your choice: Animal Handling, Insight, Intimidation, Medicine, Nature, Perception, and Survival.",
-  "required_level": 0
-}

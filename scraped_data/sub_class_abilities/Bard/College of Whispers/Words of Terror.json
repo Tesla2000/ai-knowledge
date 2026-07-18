@@ -1,8 +1,0 @@
-{
-  "name": "Words of Terror",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "If you speak to a humanoid alone for at least 1 minute, you can attempt to seed paranoia and fear into its mind. The target must succeed on a Wisdom saving throw against your spell save DC or be frightened for 1 hour, until it is attacked, or until it witnesses its allies being attacked.",
-  "required_level": 3
-}

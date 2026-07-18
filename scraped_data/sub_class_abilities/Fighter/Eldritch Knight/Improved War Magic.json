@@ -1,8 +1,0 @@
-{
-  "name": "Improved War Magic",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Starting at 18th level, when you use your action to cast a spell, you can make one weapon attack as a bonus action.",
-  "required_level": 18
-}

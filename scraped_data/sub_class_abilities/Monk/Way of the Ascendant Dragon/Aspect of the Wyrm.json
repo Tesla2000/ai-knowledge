@@ -1,8 +1,0 @@
-{
-  "name": "Aspect of the Wyrm",
-  "ability_type": "bonus_action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "You can create an aura of draconic power that radiates 10 feet from you for 1 minute. You gain one of the following effects: Frightful Presence - Choose a creature within the aura to make a Wisdom saving throw against your ki save DC or become frightened of you for 1 minute. Resistance - Choose a damage type when you activate this aura: acid, cold, fire, lightning, or poison. You and your allies within the aura have resistance to that damage. Once you create this aura, you can\u2019t create it again until you finish a long rest, unless you expend 3 ki points to create it again.",
-  "required_level": 11
-}

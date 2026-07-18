@@ -1,8 +1,0 @@
-{
-  "name": "Wildhunt",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "While shifted, you have advantage on Wisdom checks, and no creature within 30 feet of you can make an attack roll with advantage against you unless you\u2019re incapacitated.",
-  "required_level": 1
-}

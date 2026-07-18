@@ -1,8 +1,0 @@
-{
-  "name": "Protective Field",
-  "ability_type": "reaction",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "When you or another creature within 30 feet takes damage, you can use your reaction to expend one Psionic Energy die and reduce the damage taken by the number rolled plus your Intelligence modifier.",
-  "required_level": 3
-}

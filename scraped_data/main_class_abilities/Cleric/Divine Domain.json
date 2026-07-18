@@ -1,8 +1,0 @@
-{
-  "name": "Divine Domain",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": true,
-  "description": "At 1st level, you choose a domain shaped by your choice of Deity and the gifts they grant you. Your choice grants you domain spells and other features when you choose it at 1st level.",
-  "required_level": 1
-}

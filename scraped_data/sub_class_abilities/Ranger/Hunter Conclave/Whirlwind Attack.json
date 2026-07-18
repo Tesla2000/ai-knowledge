@@ -1,8 +1,0 @@
-{
-  "name": "Whirlwind Attack",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "You can use your action to make melee attacks against any number of creatures within 5 feet of you, with a separate attack roll for each target.",
-  "required_level": 11
-}

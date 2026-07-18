@@ -1,8 +1,0 @@
-{
-  "name": "Perfected Armor - Guardian",
-  "ability_type": "reaction",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Use reaction to pull a Huge or smaller creature within 30 feet towards you and make a melee attack against it if within 5 feet.",
-  "required_level": 15
-}

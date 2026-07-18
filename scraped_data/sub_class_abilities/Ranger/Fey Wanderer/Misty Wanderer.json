@@ -1,8 +1,0 @@
-{
-  "name": "Misty Wanderer",
-  "ability_type": "bonus_action",
-  "combat_related": true,
-  "spell_grant": true,
-  "description": "At 15th level, you can cast Misty Step without expending a spell slot, a number of times equal to your Wisdom modifier (minimum of once), regaining all uses after a long rest. You can also bring one willing creature with you when you cast Misty Step.",
-  "required_level": 15
-}

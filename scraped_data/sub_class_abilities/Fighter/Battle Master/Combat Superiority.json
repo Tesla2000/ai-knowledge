@@ -1,8 +1,0 @@
-{
-  "name": "Combat Superiority",
-  "ability_type": "action",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "You learn maneuvers that are fueled by special dice called superiority dice. You learn three maneuvers of your choice and can use one per attack. You gain additional maneuvers at higher levels and can replace known maneuvers when learning new ones.",
-  "required_level": 3
-}

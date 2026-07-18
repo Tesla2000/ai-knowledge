@@ -1,8 +1,0 @@
-{
-  "name": "Fighting Style",
-  "ability_type": "free_action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Choose one style of fighting as your specialty from options like Archery, Defense, or Dueling, each providing different combat bonuses.",
-  "required_level": 2
-}

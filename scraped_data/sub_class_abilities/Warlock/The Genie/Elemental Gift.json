@@ -1,8 +1,0 @@
-{
-  "name": "Elemental Gift",
-  "ability_type": "bonus_action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "At 6th level, you gain resistance to a damage type determined by your patron's kind and can give yourself a flying speed of 30 feet that lasts for 10 minutes. You can use this bonus action a number of times equal to your proficiency bonus, regaining all expended uses after a long rest.",
-  "required_level": 6
-}

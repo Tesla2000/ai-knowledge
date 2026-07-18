@@ -1,8 +1,0 @@
-{
-  "name": "Watcher's Will",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "You can use your Channel Divinity to grant advantage on Intelligence, Wisdom, and Charisma saving throws to yourself and a number of creatures equal to your Charisma modifier for 1 minute.",
-  "required_level": 3
-}

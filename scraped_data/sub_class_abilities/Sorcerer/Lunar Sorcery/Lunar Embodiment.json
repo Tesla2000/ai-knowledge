@@ -1,8 +1,0 @@
-{
-  "name": "Lunar Embodiment",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": true,
-  "description": "You learn additional spells when you reach certain levels in this class, as shown on the Lunar Spells table. Each of these spells counts as a sorcerer spell for you, but it doesn\u2019t count against the number of sorcerer spells you know. Whenever you finish a long rest, you can choose what lunar phase manifests its power through your magic: Full Moon, New Moon, or Crescent Moon. While in the chosen phase, you can cast one 1st-level spell of the associated phase in the Lunar Spells table once without expending a spell slot. Once you cast a spell in this way, you can\u2019t do so again until you finish a long rest.",
-  "required_level": 1
-}

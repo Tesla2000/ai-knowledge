@@ -1,8 +1,0 @@
-{
-  "name": "Improved Abjuration",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Beginning at 10th level, when you cast an abjuration spell that requires you to make an ability check as a part of casting that spell, you add your proficiency bonus to that ability check.",
-  "required_level": 10
-}

@@ -1,8 +1,0 @@
-{
-  "name": "Fey Reinforcements",
-  "ability_type": "bonus_action",
-  "combat_related": true,
-  "spell_grant": true,
-  "description": "At 11th level, you know the spell Summon Fey, which does not count against your known spells. You can cast it without a material component, once without using a spell slot, and regain this ability after a long rest. You can modify the spell to not require concentration, changing its duration to 1 minute.",
-  "required_level": 11
-}

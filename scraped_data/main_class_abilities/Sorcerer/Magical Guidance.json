@@ -1,8 +1,0 @@
-{
-  "name": "Magical Guidance",
-  "ability_type": "action",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "At 5th level, you can spend 1 sorcery point to reroll a failed ability check.",
-  "required_level": 5
-}

@@ -1,8 +1,0 @@
-{
-  "name": "Ever Hospitable",
-  "ability_type": "action",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "Whenever you roll a Charisma (Persuasion) check or an ability check involving Brewer's Tools or Cook's Utensils, roll a d4 and add the number rolled to the total ability check.",
-  "required_level": 1
-}

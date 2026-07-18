@@ -1,8 +1,0 @@
-{
-  "name": "Courier's Speed (Mark of Passage)",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "You gain a base walking speed of 35ft.",
-  "required_level": 1
-}

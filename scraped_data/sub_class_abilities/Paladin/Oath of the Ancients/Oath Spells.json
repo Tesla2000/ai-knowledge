@@ -1,8 +1,0 @@
-{
-  "name": "Oath Spells",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": true,
-  "description": "You gain oath spells at the paladin levels listed: 3rd: Ensnaring Strike, Speak with Animals; 5th: Moonbeam, Misty Step; 9th: Plant Growth, Protection from Energy; 13th: Ice Storm, Stoneskin; 17th: Commune with Nature, Tree Stride.",
-  "required_level": 3
-}

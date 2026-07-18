@@ -1,8 +1,0 @@
-{
-  "name": "Training in War and Song",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "Gain proficiency with light armor and one type of one-handed melee weapon. Gain proficiency in the Performance skill if not already proficient.",
-  "required_level": 2
-}

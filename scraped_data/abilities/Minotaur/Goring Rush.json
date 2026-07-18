@@ -1,8 +1,0 @@
-{
-  "name": "Goring Rush",
-  "ability_type": "bonus_action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Immediately after you take the Dash action on your turn and move at least 20 feet, you can make one melee attack with your Horns as a bonus action.",
-  "required_level": 1
-}

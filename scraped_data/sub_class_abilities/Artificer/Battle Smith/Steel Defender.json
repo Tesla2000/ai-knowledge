@@ -1,8 +1,0 @@
-{
-  "name": "Steel Defender",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "By 3rd level, your tinkering has borne you a faithful companion, a steel defender that is friendly and obeys your commands. It shares your initiative count and can take actions on its own unless commanded otherwise.",
-  "required_level": 3
-}

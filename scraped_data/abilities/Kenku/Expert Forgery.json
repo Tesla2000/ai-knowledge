@@ -1,8 +1,0 @@
-{
-  "name": "Expert Forgery",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "You can duplicate other creatures' handwriting and craftwork. You have advantage on all checks made to produce forgeries or duplicates of existing objects.",
-  "required_level": 0
-}

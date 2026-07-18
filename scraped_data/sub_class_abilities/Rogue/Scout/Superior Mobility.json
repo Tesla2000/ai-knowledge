@@ -1,8 +1,0 @@
-{
-  "name": "Superior Mobility",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "Your walking speed increases by 10 feet. If you have a climbing or swimming speed, this increase applies to that speed as well.",
-  "required_level": 9
-}

@@ -1,8 +1,0 @@
-{
-  "name": "Pact Boon",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "At 3rd level, your otherworldly patron bestows a gift upon you for your loyal service. You gain one of the following features of your choice: Pact of the Blade, Pact of the Chain, Pact of the Tome, or Pact of the Talisman.",
-  "required_level": 3
-}

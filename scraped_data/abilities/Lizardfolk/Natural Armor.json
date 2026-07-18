@@ -1,8 +1,0 @@
-{
-  "name": "Natural Armor",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "You have tough, scaly skin. When you aren\u2019t wearing armor, your base AC is 13 + your Dexterity modifier. You can use your natural armor to determine your AC if the armor you wear would leave you with a lower AC. A shield\u2019s benefits apply as normal while you use your natural armor.",
-  "required_level": 1
-}

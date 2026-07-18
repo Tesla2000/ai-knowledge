@@ -1,8 +1,0 @@
-{
-  "name": "Pact Magic",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": true,
-  "description": "Your arcane research and the magic bestowed on you by your patron have given you facility with spells.",
-  "required_level": 1
-}

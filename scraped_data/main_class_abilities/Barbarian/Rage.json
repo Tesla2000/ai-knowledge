@@ -1,8 +1,0 @@
-{
-  "name": "Rage",
-  "ability_type": "bonus_action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "In battle, you fight with primal ferocity. On your turn, you can enter a rage as a bonus action. While raging, you have advantage on Strength checks and saving throws, gain a bonus to damage rolls that increases as you gain levels, and have resistance to bludgeoning, piercing, and slashing damage. Your rage lasts for 1 minute and can end early under certain conditions.",
-  "required_level": 1
-}

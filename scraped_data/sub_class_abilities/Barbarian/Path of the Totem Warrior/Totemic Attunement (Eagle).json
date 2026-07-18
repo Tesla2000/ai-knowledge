@@ -1,8 +1,0 @@
-{
-  "name": "Totemic Attunement (Eagle)",
-  "ability_type": "free_action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "While raging, you have a flying speed equal to your current walking speed, but you fall if you end your turn in the air.",
-  "required_level": 14
-}

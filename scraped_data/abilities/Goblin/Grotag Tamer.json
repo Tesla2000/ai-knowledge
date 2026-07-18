@@ -1,8 +1,0 @@
-{
-  "name": "Grotag Tamer",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "You have proficiency in the Animal Handling skill.",
-  "required_level": 0
-}

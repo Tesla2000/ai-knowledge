@@ -1,8 +1,0 @@
-{
-  "name": "Mul Daya Magic",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": true,
-  "description": "You know the chill touch cantrip. At 3rd level, you can cast hex once per long rest. At 5th level, you can cast darkness once per long rest. Wisdom is your spellcasting ability for these spells.",
-  "required_level": 0
-}

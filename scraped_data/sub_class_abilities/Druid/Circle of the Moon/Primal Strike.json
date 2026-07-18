@@ -1,8 +1,0 @@
-{
-  "name": "Primal Strike",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Your attacks in beast form count as magical for the purpose of overcoming resistance and immunity to nonmagical attacks and damage.",
-  "required_level": 6
-}

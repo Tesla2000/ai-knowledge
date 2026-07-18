@@ -1,8 +1,0 @@
-{
-  "name": "Standing Leap",
-  "ability_type": "action",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "Your long jump is up to 25 feet and your high jump is up to 15 feet, with or without a running start.",
-  "required_level": 0
-}

@@ -1,8 +1,0 @@
-{
-  "name": "Awakened Astral Self",
-  "ability_type": "bonus_action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "As a bonus action, you can spend 5 ki points to summon the arms, visage, and body of your astral self for 10 minutes. While awakened, you gain a +2 bonus to Armor Class and can attack three times instead of twice using the Extra Attack feature if all attacks are made with your astral arms.",
-  "required_level": 17
-}

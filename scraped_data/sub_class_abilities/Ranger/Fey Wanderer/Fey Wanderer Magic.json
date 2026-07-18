@@ -1,8 +1,0 @@
-{
-  "name": "Fey Wanderer Magic",
-  "ability_type": "bonus_action",
-  "combat_related": true,
-  "spell_grant": true,
-  "description": "At 3rd level, you learn an additional ranger spell at certain levels, which does not count against the number of ranger spells you know. The spells learned are: Charm Person (3rd), Misty Step (5th), Dispel Magic (9th), Dimension Door (13th), Mislead (17th).",
-  "required_level": 3
-}

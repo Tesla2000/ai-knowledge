@@ -1,8 +1,0 @@
-{
-  "name": "Arboreal Alertness",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "You have proficiency in the Perception skill.",
-  "required_level": 0
-}

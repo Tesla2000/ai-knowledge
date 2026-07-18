@@ -1,8 +1,0 @@
-{
-  "name": "Starry Form",
-  "ability_type": "bonus_action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "At 2nd level, you can expend a use of your Wild Shape feature to take on a starry form. Your body becomes luminous and sheds bright light in a 10-foot radius and dim light for an additional 10 feet. The form lasts for 10 minutes, ending early if dismissed, incapacitated, or if you use this feature again. While in this form, you can choose a constellation to grant you benefits: Archer (ranged spell attack), Chalice (healing bonus), or Dragon (intelligence/wisdom check bonus).",
-  "required_level": 2
-}

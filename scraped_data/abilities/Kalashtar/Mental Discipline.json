@@ -1,8 +1,0 @@
-{
-  "name": "Mental Discipline",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "You have resistance to psychic damage.",
-  "required_level": 0
-}

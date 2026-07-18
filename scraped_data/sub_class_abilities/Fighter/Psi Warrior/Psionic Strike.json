@@ -1,8 +1,0 @@
-{
-  "name": "Psionic Strike",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Once per turn, after hitting a target with a weapon attack, you can expend one Psionic Energy die to deal force damage equal to the roll plus your Intelligence modifier.",
-  "required_level": 3
-}

@@ -1,8 +1,0 @@
-{
-  "name": "Homing Strikes",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "If you make an attack roll with your Psychic Blades and miss, you can roll one Psionic Energy die and add the number rolled to the attack roll. If this causes the attack to hit, you expend the Psionic Energy die.",
-  "required_level": 9
-}

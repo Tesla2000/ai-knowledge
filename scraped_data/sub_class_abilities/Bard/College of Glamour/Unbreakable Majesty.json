@@ -1,8 +1,0 @@
-{
-  "name": "Unbreakable Majesty",
-  "ability_type": "bonus_action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "As a bonus action, you can assume a magically majestic presence for 1 minute or until incapacitated. Whenever a creature tries to attack you for the first time on a turn, it must make a Charisma saving throw against your spell save DC. On a failed save, it can't attack you and must choose a new target, or the attack is wasted. On a successful save, it can attack you but has disadvantage on any saving throw against your spells on its next turn. This feature can be used once per short or long rest.",
-  "required_level": 14
-}

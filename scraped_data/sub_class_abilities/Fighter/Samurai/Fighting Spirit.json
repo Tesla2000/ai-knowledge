@@ -1,8 +1,0 @@
-{
-  "name": "Fighting Spirit",
-  "ability_type": "bonus_action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Starting at 3rd level, as a bonus action on your turn, you can give yourself advantage on all weapon attack rolls until the end of the current turn. You also gain 5 temporary hit points, which increases to 10 at 10th level and 15 at 15th level. You can use this feature three times, regaining all expended uses after a long rest.",
-  "required_level": 3
-}

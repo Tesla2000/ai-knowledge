@@ -1,8 +1,0 @@
-{
-  "name": "Long-Limbed",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "When you make a melee attack on your turn, your reach for it is 5 feet greater than normal.",
-  "required_level": 0
-}

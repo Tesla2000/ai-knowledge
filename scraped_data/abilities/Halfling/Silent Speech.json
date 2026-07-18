@@ -1,8 +1,0 @@
-{
-  "name": "Silent Speech",
-  "ability_type": "action",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "You can speak telepathically to any creature within 30 feet of you. The creature understands you only if the two of you share a language. You can speak telepathically in this way to one creature at a time.",
-  "required_level": 1
-}

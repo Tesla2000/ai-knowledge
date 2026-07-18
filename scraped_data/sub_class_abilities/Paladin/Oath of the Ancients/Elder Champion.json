@@ -1,8 +1,0 @@
-{
-  "name": "Elder Champion",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "You can assume the form of an ancient force of nature, taking on an appearance you choose. For 1 minute, you gain benefits such as regaining 10 hit points at the start of each turn, casting paladin spells that have a casting time of 1 action using a bonus action instead, and causing enemy creatures within 10 feet of you to have disadvantage on saving throws against your paladin spells and Channel Divinity options. Once you use this feature, you can't use it again until you finish a long rest.",
-  "required_level": 20
-}

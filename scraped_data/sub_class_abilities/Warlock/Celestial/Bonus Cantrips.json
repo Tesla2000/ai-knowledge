@@ -1,8 +1,0 @@
-{
-  "name": "Bonus Cantrips",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": true,
-  "description": "At 1st level, you learn the Light and Sacred Flame cantrips. They count as warlock cantrips for you, but they don\u2019t count against your number of cantrips known.",
-  "required_level": 1
-}

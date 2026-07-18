@@ -1,8 +1,0 @@
-{
-  "name": "Explosive Cannon",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Starting at 9th level, every eldritch cannon you create has increased damage rolls. You can command the cannon to detonate, forcing each creature within 20 feet to make a Dexterity saving throw, taking 3d8 force damage on a failed save.",
-  "required_level": 9
-}

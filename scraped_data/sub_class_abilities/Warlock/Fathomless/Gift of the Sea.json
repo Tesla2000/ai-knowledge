@@ -1,8 +1,0 @@
-{
-  "name": "Gift of the Sea",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "Also at 1st level, you gain a swimming speed of 40 feet, and you can breathe underwater.",
-  "required_level": 1
-}

@@ -1,8 +1,0 @@
-{
-  "name": "Power Surge",
-  "ability_type": "free_action",
-  "combat_related": true,
-  "spell_grant": true,
-  "description": "You can store magical energy within yourself to later empower your damaging spells. You can store a maximum number of power surges equal to your Intelligence modifier (minimum of one). Whenever you finish a long rest, your number of power surges resets to one. Whenever you successfully end a spell with Dispel Magic or Counterspell, you gain one power surge. Once per turn when you deal damage to a creature or object with a wizard spell, you can spend one power surge to deal extra force damage to that target. The extra damage equals half your wizard level.",
-  "required_level": 6
-}

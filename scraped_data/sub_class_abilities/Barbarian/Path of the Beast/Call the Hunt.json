@@ -1,8 +1,0 @@
-{
-  "name": "Call the Hunt",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "At 14th level, when you enter your rage, you can choose other willing creatures within 30 feet to gain 5 temporary hit points for each chosen creature. They also gain a damage bonus on their attacks. You can use this feature a number of times equal to your proficiency bonus.",
-  "required_level": 14
-}

@@ -1,8 +1,0 @@
-{
-  "name": "Sunlight Sensitivity",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "You have disadvantage on attack rolls and Wisdom (Perception) checks that rely on sight in direct sunlight.",
-  "required_level": 0
-}

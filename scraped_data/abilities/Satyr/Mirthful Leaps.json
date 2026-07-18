@@ -1,8 +1,0 @@
-{
-  "name": "Mirthful Leaps",
-  "ability_type": "action",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "Whenever you make a long jump or a high jump, you can roll a d8 and add the number rolled to the number of feet you cover, even when making a standing jump. This extra distance costs movement as normal.",
-  "required_level": 0
-}

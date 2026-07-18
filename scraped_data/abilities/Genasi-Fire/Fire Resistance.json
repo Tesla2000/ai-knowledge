@@ -1,8 +1,0 @@
-{
-  "name": "Fire Resistance",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "You have resistance to fire damage.",
-  "required_level": 0
-}

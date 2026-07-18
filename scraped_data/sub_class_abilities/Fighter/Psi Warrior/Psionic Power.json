@@ -1,8 +1,0 @@
-{
-  "name": "Psionic Power",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "You harbor a wellspring of psionic energy represented by your Psionic Energy dice (d6). You regain all expended Psionic Energy dice after a long rest and can regain one as a bonus action.",
-  "required_level": 3
-}

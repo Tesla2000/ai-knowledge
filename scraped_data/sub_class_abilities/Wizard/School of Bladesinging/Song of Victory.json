@@ -1,8 +1,0 @@
-{
-  "name": "Song of Victory",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Add your Intelligence modifier (minimum of +1) to the damage of your melee weapon attacks while your Bladesong is active.",
-  "required_level": 14
-}

@@ -1,8 +1,0 @@
-{
-  "name": "Perfected Armor - Infiltrator",
-  "ability_type": "reaction",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Creatures taking lightning damage from Lightning Launcher glimmer, shedding light, suffering disadvantage against you, and granting advantage on the next attack against them.",
-  "required_level": 15
-}

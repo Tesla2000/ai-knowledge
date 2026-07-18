@@ -1,8 +1,0 @@
-{
-  "name": "Abyssal Fortitude",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "Your hit point maximum increases by half your level (minimum 1).",
-  "required_level": 0
-}

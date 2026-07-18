@@ -1,8 +1,0 @@
-{
-  "name": "Way of the Brush",
-  "ability_type": "free_action",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "You gain proficiency with your choice of calligrapher's supplies or painter's supplies.",
-  "required_level": 3
-}

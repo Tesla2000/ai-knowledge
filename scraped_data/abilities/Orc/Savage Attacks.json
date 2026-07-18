@@ -1,8 +1,0 @@
-{
-  "name": "Savage Attacks",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "When you score a critical hit with a melee weapon attack, you can roll one of the weapon\u2019s damage dice one additional time and add it to the extra damage of the critical hit.",
-  "required_level": 0
-}

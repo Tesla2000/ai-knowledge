@@ -1,8 +1,0 @@
-{
-  "name": "Soul of Artifice",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "At 20th level, you gain a +1 bonus to all saving throws per magic item you are attuned to, and you can avoid being reduced to 0 hit points.",
-  "required_level": 20
-}

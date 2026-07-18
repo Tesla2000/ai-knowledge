@@ -1,8 +1,0 @@
-{
-  "name": "Totem Spirit (Bear)",
-  "ability_type": "free_action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "While raging, you have resistance to all damage except psychic damage.",
-  "required_level": 3
-}

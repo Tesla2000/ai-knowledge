@@ -1,8 +1,0 @@
-{
-  "name": "Elf Weapon Training",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "You have proficiency with the longsword, shortsword, shortbow, and longbow.",
-  "required_level": 0
-}

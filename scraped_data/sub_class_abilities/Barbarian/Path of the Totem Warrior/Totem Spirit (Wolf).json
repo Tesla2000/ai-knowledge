@@ -1,8 +1,0 @@
-{
-  "name": "Totem Spirit (Wolf)",
-  "ability_type": "free_action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "While raging, your friends have advantage on melee attack rolls against any creature within 5 feet of you that is hostile to you.",
-  "required_level": 3
-}

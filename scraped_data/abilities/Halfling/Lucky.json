@@ -1,8 +1,0 @@
-{
-  "name": "Lucky",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "When you roll a 1 on an attack roll, ability check, or saving throw, you can reroll the die. You must use the new result, even if it is a 1.",
-  "required_level": 1
-}

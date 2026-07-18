@@ -1,8 +1,0 @@
-{
-  "name": "Mantle of Inspiration",
-  "ability_type": "bonus_action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "As a bonus action, you can expend one use of your Bardic Inspiration to grant yourself a wondrous appearance. Choose a number of creatures you can see within 60 feet, up to a number equal to your Charisma modifier (minimum of one). Each of them gains 5 temporary hit points and can immediately use its reaction to move up to its speed without provoking opportunity attacks. The temporary hit points increase to 8 at 5th level, 11 at 10th level, and 14 at 15th level.",
-  "required_level": 3
-}

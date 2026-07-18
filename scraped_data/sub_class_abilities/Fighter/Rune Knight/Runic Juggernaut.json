@@ -1,8 +1,0 @@
-{
-  "name": "Runic Juggernaut",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "At 18th level, the extra damage from your Giant's Might feature increases to 1d10, and you can increase to Huge size, which also increases your reach by 5 feet while in that size.",
-  "required_level": 18
-}

@@ -1,8 +1,0 @@
-{
-  "name": "Mask of the Wild",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "You can attempt to hide even when you are only lightly obscured by foliage, heavy rain, falling snow, mist, and other natural phenomena.",
-  "required_level": 0
-}

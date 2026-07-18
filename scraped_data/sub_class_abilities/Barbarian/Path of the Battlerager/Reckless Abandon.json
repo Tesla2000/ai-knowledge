@@ -1,8 +1,0 @@
-{
-  "name": "Reckless Abandon",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "When you use Reckless Attack while raging, you gain temporary hit points equal to your Constitution modifier (minimum of 1). They vanish if any of them are left when your rage ends.",
-  "required_level": 6
-}

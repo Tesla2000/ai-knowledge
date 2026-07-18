@@ -1,8 +1,0 @@
-{
-  "name": "Exceptional Training",
-  "ability_type": "bonus_action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Beginning at 7th level, you can use a bonus action to command your beast to take the Dash, Disengage, or Help action. The beast's attacks now count as magical for overcoming resistance and immunity to nonmagical attacks and damage.",
-  "required_level": 7
-}

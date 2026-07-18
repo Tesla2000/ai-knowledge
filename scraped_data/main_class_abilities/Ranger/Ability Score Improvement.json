@@ -1,8 +1,0 @@
-{
-  "name": "Ability Score Improvement",
-  "ability_type": "free_action",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "Increase one ability score of your choice by 2, or increase two ability scores by 1.",
-  "required_level": 4
-}

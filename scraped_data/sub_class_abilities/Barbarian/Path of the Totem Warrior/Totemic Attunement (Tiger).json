@@ -1,8 +1,0 @@
-{
-  "name": "Totemic Attunement (Tiger)",
-  "ability_type": "free_action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "While raging, if you move at least 20 feet in a straight line toward a target before making a melee weapon attack against it, you can use a bonus action to make an additional melee weapon attack against it.",
-  "required_level": 14
-}

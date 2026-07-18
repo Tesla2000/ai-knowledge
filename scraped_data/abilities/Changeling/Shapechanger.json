@@ -1,8 +1,0 @@
-{
-  "name": "Shapechanger",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "As an action, you can change your appearance and your voice. You determine the specifics of the changes, including your coloration, hair length, and sex. You can also adjust your height and weight and can change your size between Medium and Small. You can make yourself appear as a member of another race, though none of your game statistics change. You can\u2019t duplicate the appearance of an individual you\u2019ve never seen, and you must adopt a form that has the same basic arrangement of limbs that you have. Your clothing and equipment aren\u2019t changed by this trait. You stay in the new form until you use an action to revert to your true form or until you die.",
-  "required_level": 0
-}

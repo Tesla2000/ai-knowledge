@@ -1,8 +1,0 @@
-{
-  "name": "Escape the Horde",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "Opportunity attacks against you are made with disadvantage.",
-  "required_level": 7
-}

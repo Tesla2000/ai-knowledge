@@ -1,8 +1,0 @@
-{
-  "name": "Indestructible Life",
-  "ability_type": "bonus_action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "When you reach 14th level, you can use a bonus action to regain hit points equal to 1d8 + your warlock level. If you put a severed body part of yours back in place when you use this feature, the part reattaches. Once you use this feature, you can't use it again until you finish a short or long rest.",
-  "required_level": 14
-}

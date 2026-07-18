@@ -1,8 +1,0 @@
-{
-  "name": "Channel Divinity: Sacred Weapon",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "As an action, you can imbue one weapon that you are holding with positive energy, adding your Charisma modifier to attack rolls made with that weapon for 1 minute. The weapon emits bright light in a 20-foot radius and dim light 20 feet beyond that. If the weapon is not magical, it becomes magical for the duration.",
-  "required_level": 3
-}

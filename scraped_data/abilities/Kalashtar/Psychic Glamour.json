@@ -1,8 +1,0 @@
-{
-  "name": "Psychic Glamour",
-  "ability_type": "action",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "Choose one of the following skills: Insight, Intimidation, Performance, or Persuasion. You have advantage on all ability checks you make with that skill.",
-  "required_level": 0
-}

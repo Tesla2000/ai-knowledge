@@ -1,8 +1,0 @@
-{
-  "name": "Integrated Protection",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Your body has built-in defensive layers, which can be enhanced with armor. You gain a +1 bonus to Armor Class. You can don only armor with which you have proficiency.",
-  "required_level": 1
-}

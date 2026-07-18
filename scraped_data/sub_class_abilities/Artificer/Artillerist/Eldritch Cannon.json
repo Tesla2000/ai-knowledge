@@ -1,8 +1,0 @@
-{
-  "name": "Eldritch Cannon",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "At 3rd level, you've learned how to create a magical cannon. Using woodcarver's tools or smith's tools, you can take an action to magically create a Small or Tiny eldritch cannon. The cannon has an AC of 18 and hit points equal to five times your artificer level, immune to poison and psychic damage. You can direct the cannon to activate and move as a bonus action.",
-  "required_level": 3
-}

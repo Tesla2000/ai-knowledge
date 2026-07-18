@@ -1,8 +1,0 @@
-{
-  "name": "Order's Wrath",
-  "ability_type": "reaction",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Curse a creature you hit with Divine Strike; the next ally attack on that creature deals an additional 2d8 psychic damage.",
-  "required_level": 17
-}

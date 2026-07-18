@@ -1,8 +1,0 @@
-{
-  "name": "Flurry of Healing and Harm",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "When using Flurry of Blows, can replace each unarmed strike with Hands of Healing without spending ki points. Can use Hands of Harm with an unarmed strike without spending a ki point, once per turn still applies.",
-  "required_level": 11
-}

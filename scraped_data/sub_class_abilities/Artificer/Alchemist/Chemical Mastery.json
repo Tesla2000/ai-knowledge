@@ -1,8 +1,0 @@
-{
-  "name": "Chemical Mastery",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": true,
-  "description": "Gain resistance to acid and poison damage, immunity to the poisoned condition. Can cast Greater Restoration and Heal without expending spell slots or components, once per long rest for each spell.",
-  "required_level": 15
-}

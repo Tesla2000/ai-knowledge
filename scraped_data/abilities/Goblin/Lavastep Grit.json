@@ -1,8 +1,0 @@
-{
-  "name": "Lavastep Grit",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "You have advantage on Dexterity (Stealth) checks made to hide in rocky or subterranean environments.",
-  "required_level": 0
-}

@@ -1,8 +1,0 @@
-{
-  "name": "Umbral Form",
-  "ability_type": "bonus_action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Starting at 18th level, you can spend 6 sorcery points as a bonus action to transform into a shadowy form, gaining resistance to all damage except force and radiant damage, and can move through other creatures and objects. You remain in this form for 1 minute, ending early if incapacitated, if you die, or if you dismiss it.",
-  "required_level": 18
-}

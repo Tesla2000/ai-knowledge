@@ -1,8 +1,0 @@
-{
-  "name": "Wild Companion (Optional)",
-  "ability_type": "action",
-  "combat_related": false,
-  "spell_grant": true,
-  "description": "At 2nd level, you can summon a spirit that assumes an animal form by using your Wild Shape feature to cast the Find Familiar spell without material components.",
-  "required_level": 2
-}

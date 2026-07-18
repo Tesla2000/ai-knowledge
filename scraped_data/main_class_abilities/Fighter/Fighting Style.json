@@ -1,8 +1,0 @@
-{
-  "name": "Fighting Style",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "You adopt a particular style of fighting as your specialty. Choose one of the following options. You can't take a Fighting Style option more than once, even if you later get to choose again.",
-  "required_level": 1
-}

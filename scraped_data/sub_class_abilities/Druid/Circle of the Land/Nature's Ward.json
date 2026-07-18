@@ -1,8 +1,0 @@
-{
-  "name": "Nature's Ward",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "When you reach 10th level, you can't be charmed or frightened by elementals or fey, and you are immune to poison and disease.",
-  "required_level": 10
-}

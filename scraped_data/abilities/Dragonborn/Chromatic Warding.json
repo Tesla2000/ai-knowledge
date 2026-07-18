@@ -1,8 +1,0 @@
-{
-  "name": "Chromatic Warding",
-  "ability_type": "action",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "Starting at 5th level, as an action, you can channel your draconic energy to protect yourself. For 1 minute, you become immune to the damage type associated with your Chromatic Ancestry. Once you use this trait, you can\u2019t do so again until you finish a long rest.",
-  "required_level": 5
-}

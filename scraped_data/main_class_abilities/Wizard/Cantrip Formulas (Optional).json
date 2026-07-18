@@ -1,8 +1,0 @@
-{
-  "name": "Cantrip Formulas (Optional)",
-  "ability_type": "action",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "At 3rd level, you have scribed a set of arcane formulas in your spellbook that you can use to formulate a cantrip in your mind.",
-  "required_level": 3
-}

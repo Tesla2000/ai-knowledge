@@ -1,8 +1,0 @@
-{
-  "name": "Natural Illusionist",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": true,
-  "description": "You know the Minor Illusion cantrip. Intelligence is your spellcasting modifier for it.",
-  "required_level": 0
-}

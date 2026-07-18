@@ -1,8 +1,0 @@
-{
-  "name": "Spirit Seeker",
-  "ability_type": "free_action",
-  "combat_related": false,
-  "spell_grant": true,
-  "description": "At 3rd level, you gain the ability to cast the Beast Sense and Speak with Animals spells, but only as rituals.",
-  "required_level": 3
-}

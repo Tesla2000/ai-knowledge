@@ -1,8 +1,0 @@
-{
-  "name": "Demiurgic Colossus",
-  "ability_type": "free_action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "The primordial power of your rage intensifies. When you rage, your reach increases by 10 feet, your size can increase to Large or Huge, and you can use your Mighty Impel to move creatures that are Large or smaller. The extra damage dealt by your Elemental Cleaver feature increases to 2d6.",
-  "required_level": 14
-}

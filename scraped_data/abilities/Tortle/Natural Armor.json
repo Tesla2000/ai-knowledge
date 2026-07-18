@@ -1,8 +1,0 @@
-{
-  "name": "Natural Armor",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Your shell provides you a base AC of 17 (your Dexterity modifier doesn\u2019t affect this number). You can\u2019t wear light, medium, or heavy armor, but if you are using a shield, you can apply the shield\u2019s bonus as normal.",
-  "required_level": 0
-}

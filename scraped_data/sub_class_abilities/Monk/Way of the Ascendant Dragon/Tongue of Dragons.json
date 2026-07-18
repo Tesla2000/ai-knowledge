@@ -1,8 +1,0 @@
-{
-  "name": "Tongue of Dragons",
-  "ability_type": "free_action",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "You learn to speak, read, and write Draconic or one other language of your choice.",
-  "required_level": 3
-}

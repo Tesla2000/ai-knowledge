@@ -1,8 +1,0 @@
-{
-  "name": "Storm Soul",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "At 6th level, the storm grants you benefits even when your aura isn't active. Benefits are based on the environment chosen for your Storm Aura: Desert grants resistance to fire damage and the ability to set flammable objects on fire; Sea grants resistance to lightning damage and underwater breathing; Tundra grants resistance to cold damage and the ability to freeze water.",
-  "required_level": 6
-}

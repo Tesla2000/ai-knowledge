@@ -1,8 +1,0 @@
-{
-  "name": "Relentless Endurance",
-  "ability_type": "reaction",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "When you are reduced to 0 hit points but not killed outright, you can drop to 1 hit point instead. Once you use this trait, you can\u2019t do so again until you finish a long rest.",
-  "required_level": 0
-}

@@ -1,8 +1,0 @@
-{
-  "name": "Spreading Spores",
-  "ability_type": "bonus_action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "At 10th level, you can hurl spores to create a 10-foot cube that lasts for 1 minute. Creatures that move into the area or start their turn there take your Halo of Spores damage unless they succeed on a Constitution saving throw. While the cube is active, you cannot use your Halo of Spores reaction.",
-  "required_level": 10
-}

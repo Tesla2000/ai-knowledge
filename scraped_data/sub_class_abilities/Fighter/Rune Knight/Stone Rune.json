@@ -1,8 +1,0 @@
-{
-  "name": "Stone Rune",
-  "ability_type": "reaction",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "This rune gives you advantage on Wisdom (Insight) checks and darkvision. You can invoke it to charm a creature within 30 feet unless it succeeds on a Wisdom saving throw. Once invoked, it can't be used again until a short or long rest.",
-  "required_level": 3
-}

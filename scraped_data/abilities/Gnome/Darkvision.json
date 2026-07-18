@@ -1,8 +1,0 @@
-{
-  "name": "Darkvision",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "You can see in dim light within 60 feet of you as if it were bright light, and in darkness as if it were dim light.",
-  "required_level": 0
-}

@@ -1,8 +1,0 @@
-{
-  "name": "Raging Storm",
-  "ability_type": "reaction",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "At 14th level, the power of the storm you channel grows mightier. Effects depend on the environment chosen for your Storm Aura: Desert allows you to force a creature that hits you to make a Dexterity saving throw or take fire damage; Sea allows you to force a creature you hit to make a Strength saving throw or be knocked prone; Tundra allows you to reduce a creature's speed to 0 until the start of your next turn.",
-  "required_level": 14
-}

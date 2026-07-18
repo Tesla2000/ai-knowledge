@@ -1,8 +1,0 @@
-{
-  "name": "Oath Spells",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": true,
-  "description": "You gain oath spells at the paladin levels listed. At 3rd level: Protection from Evil and Good, Sanctuary; At 5th level: Lesser Restoration, Zone of Truth; At 9th level: Beacon of Hope, Dispel Magic; At 13th level: Freedom of Movement, Guardian of Faith; At 17th level: Commune, Flame Strike.",
-  "required_level": 3
-}

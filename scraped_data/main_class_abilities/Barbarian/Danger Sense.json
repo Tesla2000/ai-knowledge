@@ -1,8 +1,0 @@
-{
-  "name": "Danger Sense",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "At 2nd level, you gain advantage on Dexterity saving throws against effects that you can see, such as traps and spells. To gain this benefit, you can't be blinded, deafened, or incapacitated.",
-  "required_level": 2
-}

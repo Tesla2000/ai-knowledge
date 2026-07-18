@@ -1,8 +1,0 @@
-{
-  "name": "Unending Breath",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "You can hold your breath indefinitely while you\u2019re not incapacitated.",
-  "required_level": 0
-}

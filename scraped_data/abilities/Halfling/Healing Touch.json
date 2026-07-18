@@ -1,8 +1,0 @@
-{
-  "name": "Healing Touch",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": true,
-  "description": "You can cast the Cure Wounds spell with this trait. Beginning at 3rd level, you can also cast the Lesser Restoration spell with this trait. Once you cast either spell with this trait, you can't cast that spell again until you finish a long rest. Wisdom is your Spellcasting Ability for these spells.",
-  "required_level": 3
-}

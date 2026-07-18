@@ -1,8 +1,0 @@
-{
-  "name": "Instinctive Charm",
-  "ability_type": "reaction",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "When a creature you can see within 30 feet of you makes an attack roll against you, you can use your reaction to divert the attack. The attacker must make a Wisdom saving throw, and on a failed save, they must target the closest creature instead.",
-  "required_level": 6
-}

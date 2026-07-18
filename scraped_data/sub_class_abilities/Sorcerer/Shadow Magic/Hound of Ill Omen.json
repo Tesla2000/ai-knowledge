@@ -1,8 +1,0 @@
-{
-  "name": "Hound of Ill Omen",
-  "ability_type": "bonus_action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "At 6th level, you can spend 3 sorcery points to summon a hound of ill omen to target one creature you can see within 120 feet of you. The hound uses dire wolf's statistics with specific changes, appears with temporary hit points equal to half your sorcerer level, can move through other creatures and objects, knows its target's location, appears within 30 feet of the target, and has special attack conditions against its target. It disappears if reduced to 0 hit points, if its target is reduced to 0 hit points, or after 5 minutes.",
-  "required_level": 6
-}

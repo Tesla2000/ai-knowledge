@@ -1,8 +1,0 @@
-{
-  "name": "Exalted Champion",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "You can use your action to gain resistance to bludgeoning, piercing, and slashing damage from nonmagical weapons, and grant advantage on death saving throws and Wisdom saving throws to allies within 30 feet for 1 hour.",
-  "required_level": 20
-}

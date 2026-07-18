@@ -1,8 +1,0 @@
-{
-  "name": "Tranquility",
-  "ability_type": "action",
-  "combat_related": false,
-  "spell_grant": true,
-  "description": "At the end of a long rest, you gain the effect of a Sanctuary spell that lasts until the start of your next long rest. The DC for the spell equals 8 + your Wisdom modifier + your proficiency bonus.",
-  "required_level": 11
-}

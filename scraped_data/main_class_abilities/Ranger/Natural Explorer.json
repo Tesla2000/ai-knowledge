@@ -1,8 +1,0 @@
-{
-  "name": "Natural Explorer",
-  "ability_type": "free_action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Choose one type of favored terrain: arctic, coast, desert, forest, grassland, mountain, swamp, or the Underdark. You gain several benefits while traveling in this terrain, including not being slowed by difficult terrain, not becoming lost except by magical means, and finding twice as much food when foraging.",
-  "required_level": 1
-}

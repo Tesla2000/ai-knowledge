@@ -1,8 +1,0 @@
-{
-  "name": "Flight",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "You have a flying speed of 30 feet. You can't use this speed while wearing medium or heavy armor.",
-  "required_level": 0
-}

@@ -1,8 +1,0 @@
-{
-  "name": "Draconic Ancestry",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "At 1st level, you choose one type of dragon as your ancestor. You can speak, read, and write Draconic. Whenever you make a Charisma check when interacting with dragons, your proficiency bonus is doubled if it applies to the check.",
-  "required_level": 1
-}

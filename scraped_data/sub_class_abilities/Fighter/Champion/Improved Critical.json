@@ -1,8 +1,0 @@
-{
-  "name": "Improved Critical",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Your weapon attacks score a critical hit on a roll of 19 or 20.",
-  "required_level": 3
-}

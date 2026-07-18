@@ -1,8 +1,0 @@
-{
-  "name": "Fungal Body",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "At 14th level, your body adapts to the spores, making you immune to blindness, deafness, fright, and poison, and critical hits against you count as normal hits unless you are incapacitated.",
-  "required_level": 14
-}

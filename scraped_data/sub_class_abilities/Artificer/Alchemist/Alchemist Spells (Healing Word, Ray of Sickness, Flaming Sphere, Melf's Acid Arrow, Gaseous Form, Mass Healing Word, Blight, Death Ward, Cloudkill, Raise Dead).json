@@ -1,8 +1,0 @@
-{
-  "name": "Alchemist Spells (Healing Word, Ray of Sickness, Flaming Sphere, Melf's Acid Arrow, Gaseous Form, Mass Healing Word, Blight, Death Ward, Cloudkill, Raise Dead)",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": true,
-  "description": "Always have certain spells prepared that count as artificer spells but don\u2019t count against the number of artificer spells you prepare.",
-  "required_level": 3
-}

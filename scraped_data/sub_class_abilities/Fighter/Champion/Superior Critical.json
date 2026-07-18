@@ -1,8 +1,0 @@
-{
-  "name": "Superior Critical",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Your weapon attacks score a critical hit on a roll of 18-20.",
-  "required_level": 15
-}

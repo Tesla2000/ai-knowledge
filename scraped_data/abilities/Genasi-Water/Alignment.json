@@ -1,8 +1,0 @@
-{
-  "name": "Alignment",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "Independent and self-reliant, genasi tend toward a neutral alignment.",
-  "required_level": 1
-}

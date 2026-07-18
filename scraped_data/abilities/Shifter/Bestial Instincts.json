@@ -1,8 +1,0 @@
-{
-  "name": "Bestial Instincts",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "Channeling the beast within, you have proficiency in one of the following skills of your choice: Acrobatics, Athletics, Intimidation, or Survival.",
-  "required_level": 1
-}

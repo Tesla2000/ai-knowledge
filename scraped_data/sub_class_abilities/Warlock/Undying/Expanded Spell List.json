@@ -1,8 +1,0 @@
-{
-  "name": "Expanded Spell List",
-  "ability_type": "free_action",
-  "combat_related": false,
-  "spell_grant": true,
-  "description": "The Undying lets you choose from an expanded list of spells when you learn a warlock spell. The following spells are added to the warlock spell list for you: 1st level - False Life, Ray of Sickness; 2nd level - Blindness/Deafness, Silence; 3rd level - Feign Death, Speak with Dead; 4th level - Aura of Life, Death Ward; 5th level - Contagion, Legend Lore.",
-  "required_level": 1
-}

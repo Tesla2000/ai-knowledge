@@ -1,8 +1,0 @@
-{
-  "name": "Artisan's Expertise",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "You gain proficiency with two kinds of artisan\u2019s tools of your choice. Your proficiency bonus is doubled for any ability check you make that uses either of the chosen proficiencies.",
-  "required_level": 0
-}

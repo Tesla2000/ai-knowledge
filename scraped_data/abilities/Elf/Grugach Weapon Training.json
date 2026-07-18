@@ -1,8 +1,0 @@
-{
-  "name": "Grugach Weapon Training",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "You have proficiency with the spear, shortbow, longbow, and net.",
-  "required_level": 0
-}

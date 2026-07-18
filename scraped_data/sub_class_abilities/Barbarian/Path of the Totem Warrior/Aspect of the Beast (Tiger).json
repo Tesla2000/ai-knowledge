@@ -1,8 +1,0 @@
-{
-  "name": "Aspect of the Beast (Tiger)",
-  "ability_type": "free_action",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "You gain proficiency in two skills from Athletics, Acrobatics, Stealth, and Survival.",
-  "required_level": 6
-}

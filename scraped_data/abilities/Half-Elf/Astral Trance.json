@@ -1,8 +1,0 @@
-{
-  "name": "Astral Trance",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "You don't need to sleep, and magic can't put you to sleep. You can finish a long rest in 4 hours if you spend those hours in a trancelike meditation.",
-  "required_level": 0
-}

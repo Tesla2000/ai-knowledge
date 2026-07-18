@@ -1,8 +1,0 @@
-{
-  "name": "Magic Kensei Weapons",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Your attacks with your kensei weapons count as magical for the purpose of overcoming resistance and immunity to nonmagical attacks and damage.",
-  "required_level": 6
-}

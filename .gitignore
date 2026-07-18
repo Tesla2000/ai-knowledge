@@ -1,3 +1,9 @@
+aws/
+awscliv2.zip
+.mypy_cache/
+__pycache__/
+hooks/.pytest_state.json
+*.swp
 /executor.py
 /sandbox.py
 /.idea

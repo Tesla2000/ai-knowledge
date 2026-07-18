@@ -13,3 +13,4 @@
 | [Git & Dependency Workflow](topics/workflow/git.md) | - Never commit unless explicitly asked. |
 | [Knowledge Base Maintenance](topics/workflow/knowledge-base.md) | ``` |
 | [Validation & Linting](topics/workflow/validation.md) | Pre-commit and tests are both code quality gates. The same principle applies to both: |
+| [Workflow](topics/workflow.md) | - When a task is impossible as stated, stop and ask for clarification before reverting any changes. Do not silently roll back and mark the task done. |

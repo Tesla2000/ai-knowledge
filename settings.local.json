@@ -1,0 +1,48 @@
+{
+  "permissions": {
+    "deny": [
+      "Bash(git commit *)",
+      "Bash(git commit)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "EnterPlanMode",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PostToolUse\",\"additionalContext\":\"Interview me to find the goal for this change and the acceptance criteria. The baseline acceptance criteria is pre-commit and github test workflows passing.\"}}'"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "if": "Bash(mypy *)",
+            "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"Do not run mypy directly. Run validation through the project pre-commit configuration instead, e.g. pre-commit run mypy (mypy is just an example, the same applies to any hook). All pre-commit hooks must pass, but mypy and any-hook are the most problematic: mypy errors must never be ignored or suppressed, and Any is forbidden.\"}}'"
+          },
+          {
+            "type": "command",
+            "if": "Bash(mypy)",
+            "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"Do not run mypy directly. Run validation through the project pre-commit configuration instead, e.g. pre-commit run mypy (mypy is just an example, the same applies to any hook). All pre-commit hooks must pass, but mypy and any-hook are the most problematic: mypy errors must never be ignored or suppressed, and Any is forbidden.\"}}'"
+          },
+          {
+            "type": "command",
+            "if": "Bash(git commit *)",
+            "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"Commits must be reviewed by the user before finalizing. Stage and prepare the change but do not run git commit without explicit go-ahead.\"}}'"
+          },
+          {
+            "type": "command",
+            "if": "Bash(git commit)",
+            "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"Commits must be reviewed by the user before finalizing. Stage and prepare the change but do not run git commit without explicit go-ahead.\"}}'"
+          }
+        ]
+      }
+    ]
+  }
+}

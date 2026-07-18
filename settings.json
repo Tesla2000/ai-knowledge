@@ -1,0 +1,56 @@
+{
+  "permissions": {
+    "deny": [
+      "Write(./.pre-commit-config.yaml)",
+      "Edit(./.pre-commit-config.yaml)",
+      "Write(./pyproject.toml)",
+      "Edit(./pyproject.toml)",
+      "Write(./mypy.ini)",
+      "Edit(./mypy.ini)",
+      "Write(./.claude/settings.json)",
+      "Edit(./.claude/settings.json)",
+      "Write(./.claude/settings.local.json)",
+      "Edit(./.claude/settings.local.json)",
+      "Write(./.coveragerc)",
+      "Edit(./.coveragerc)",
+      "Read(./.env)",
+      "Bash(cat .env)"
+    ]
+  },
+  "sandbox": {
+    "enabled": true,
+    "network": {
+      "allowedDomains": [
+        "api.anthropic.com",
+        "github.com",
+        "*.github.com",
+        "*.githubusercontent.com",
+        "pypi.org",
+        "files.pythonhosted.org",
+        "registry.npmjs.org"
+      ]
+    }
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.file_path // .tool_input.command // \"\"' | { read -r target; case \"$target\" in *pre-commit-config.yaml*) reason=\"Do not weaken or remove pre-commit hooks to make checks pass; fix the underlying code instead.\";; *pyproject.toml*) reason=\"Do not add/remove dependencies or loosen tool config directly; use uv add and keep constraints intact.\";; *mypy.ini*) reason=\"Do not loosen mypy strictness to dodge type errors; fix the code instead.\";; *.claude/settings*.json*) reason=\"Claude must not modify its own permission scope.\";; *) exit 0;; esac; jq -n --arg reason \"$reason\" '{hookSpecificOutput:{hookEventName:\"PreToolUse\",permissionDecision:\"deny\",permissionDecisionReason:$reason}}'; }"
+          }
+        ]
+      },
+      {
+        "matcher": "Read|Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.file_path // .tool_input.command // \"\"' | { read -r target; case \"$target\" in *.env*) reason=\".env contains secrets/credentials and must never be read into context.\";; *) exit 0;; esac; jq -n --arg reason \"$reason\" '{hookSpecificOutput:{hookEventName:\"PreToolUse\",permissionDecision:\"deny\",permissionDecisionReason:$reason}}'; }"
+          }
+        ]
+      }
+    ]
+  }
+}

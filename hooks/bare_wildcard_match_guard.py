@@ -10,7 +10,7 @@ _PATTERN = re.compile(r"^\s+case\s+_\s*:", re.MULTILINE)
 
 _DENIAL = (
     'Bare case _: on line {line}: use "case _ as never:" for exhaustive matching '
-    "-- the binding name \"never\" is excluded from coverage in pyproject.toml "
+    '-- the binding name "never" is excluded from coverage in pyproject.toml '
     "and signals to the type checker that this branch is unreachable."
 )
 

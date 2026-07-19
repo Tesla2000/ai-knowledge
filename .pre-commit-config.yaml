@@ -40,22 +40,22 @@ repos:
       - id: mypy
         exclude: ^(tests/|scripts/|main\.py)
         additional_dependencies:
-          - pydantic>=2.8.2
-          - pydantic-settings>=2.13.0
-          - frozendict
-          - types-requests
-          - subclass-getter
-          - PyPDF2
-          - uvicorn
-          - mangum
-          - pytest
           - fastapi
-          - starlette
+          - frozendict
           - langchain-openai
-          - typing_protocol_intersection
-          - structured_output_creator
+          - mangum
+          - pydantic-settings>=2.13.0
+          - pydantic>=2.8.2
           - pydantic_frozendict
+          - PyPDF2
+          - pytest
+          - starlette
+          - structured_output_creator
+          - subclass-getter
+          - types-requests
+          - typing_protocol_intersection
           - uuid-string
+          - uvicorn
         args: [ --strict, --config-file, pyproject.toml ]
   - repo: https://github.com/Tesla2000/any-hook
     rev: v3.21.0

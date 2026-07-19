@@ -1,8 +1,0 @@
-{
-  "name": "Magic Item Adept",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "When you reach 10th level, you can attune to up to four magic items at once, and crafting magic items takes less time and cost.",
-  "required_level": 10
-}

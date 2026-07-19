@@ -1,8 +1,0 @@
-{
-  "name": "Blade Flourish",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "At 3rd level, whenever you take the Attack action, your walking speed increases by 10 feet until the end of the turn. If a weapon attack hits, you can use one of the following Blade Flourish options: Defensive Flourish (extra damage and added AC), Slashing Flourish (extra damage to the target and another creature within 5 feet), Mobile Flourish (extra damage and push the target away, then move).",
-  "required_level": 3
-}

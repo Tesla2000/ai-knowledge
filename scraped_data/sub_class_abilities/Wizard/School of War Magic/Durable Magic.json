@@ -1,8 +1,0 @@
-{
-  "name": "Durable Magic",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "While you maintain concentration on a spell, you have a +2 bonus to AC and all saving throws.",
-  "required_level": 10
-}

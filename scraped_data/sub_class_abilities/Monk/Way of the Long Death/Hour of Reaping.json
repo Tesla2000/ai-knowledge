@@ -1,8 +1,0 @@
-{
-  "name": "Hour of Reaping",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Each creature within 30 feet of you that can see you must succeed on a Wisdom saving throw or be frightened of you until the end of your next turn.",
-  "required_level": 6
-}

@@ -1,8 +1,0 @@
-{
-  "name": "Share Spells",
-  "ability_type": "action",
-  "combat_related": false,
-  "spell_grant": true,
-  "description": "Beginning at 15th level, when you cast a spell targeting yourself, you can also affect your beast companion if it is within 30 feet of you.",
-  "required_level": 15
-}

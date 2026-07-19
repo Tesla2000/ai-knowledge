@@ -1,8 +1,0 @@
-{
-  "name": "Master Duelist",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "If you miss with an attack roll, you can roll it again with advantage. This can be used once per short or long rest.",
-  "required_level": 17
-}

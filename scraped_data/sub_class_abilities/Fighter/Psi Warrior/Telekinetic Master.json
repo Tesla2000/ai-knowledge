@@ -1,8 +1,0 @@
-{
-  "name": "Telekinetic Master",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": true,
-  "description": "You can cast the Telekinesis spell, requiring no components, with Intelligence as your spellcasting ability. You can make one weapon attack as a bonus action while concentrating on the spell.",
-  "required_level": 18
-}

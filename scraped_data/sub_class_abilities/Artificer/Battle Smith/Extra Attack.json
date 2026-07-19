@@ -1,8 +1,0 @@
-{
-  "name": "Extra Attack",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Starting at 5th level, you can attack twice whenever you take the Attack action on your turn.",
-  "required_level": 5
-}

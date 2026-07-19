@@ -1,8 +1,0 @@
-{
-  "name": "Divine Strike",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Add 1d8 psychic damage to weapon attacks; increases to 2d8 at level 14.",
-  "required_level": 8
-}

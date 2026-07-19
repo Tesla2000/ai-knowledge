@@ -1,8 +1,0 @@
-{
-  "name": "Great Stature",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "By 10th level, roll 3d4 to determine how many inches you grow in height. The extra damage from your Giant's Might feature increases to 1d8.",
-  "required_level": 10
-}

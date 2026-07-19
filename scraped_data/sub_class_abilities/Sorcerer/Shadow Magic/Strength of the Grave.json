@@ -1,8 +1,0 @@
-{
-  "name": "Strength of the Grave",
-  "ability_type": "reaction",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Starting at 1st level, when damage reduces you to 0 hit points, you can make a Charisma saving throw (DC 5 + the damage taken). On a success, you instead drop to 1 hit point. You can't use this feature if you are reduced to 0 hit points by radiant damage or by a critical hit. After the saving throw succeeds, you can't use this feature again until you finish a long rest.",
-  "required_level": 1
-}

@@ -1,8 +1,0 @@
-{
-  "name": "Avatar of Battle",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "At 17th level, you gain resistance to bludgeoning, piercing, and slashing damage from nonmagical attacks.",
-  "required_level": 17
-}

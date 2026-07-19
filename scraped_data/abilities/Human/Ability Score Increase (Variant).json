@@ -1,8 +1,0 @@
-{
-  "name": "Ability Score Increase (Variant)",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "Two different ability scores of your choice increase by 1.",
-  "required_level": 1
-}

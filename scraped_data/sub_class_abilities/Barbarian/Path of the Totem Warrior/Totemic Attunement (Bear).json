@@ -1,8 +1,0 @@
-{
-  "name": "Totemic Attunement (Bear)",
-  "ability_type": "free_action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "While raging, any creature within 5 feet of you that's hostile to you has disadvantage on attack rolls against targets other than you.",
-  "required_level": 14
-}

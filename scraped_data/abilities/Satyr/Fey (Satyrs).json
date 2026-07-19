@@ -1,8 +1,0 @@
-{
-  "name": "Fey (Satyrs)",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "Your creature type is fey, rather than humanoid.",
-  "required_level": 0
-}

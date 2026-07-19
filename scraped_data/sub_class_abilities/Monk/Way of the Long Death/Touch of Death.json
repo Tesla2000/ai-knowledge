@@ -1,8 +1,0 @@
-{
-  "name": "Touch of Death",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "When you reduce a creature within 5 feet of you to 0 hit points, you gain temporary hit points equal to your Wisdom modifier + your monk level (minimum of 1 temporary hit point).",
-  "required_level": 3
-}

@@ -1,8 +1,0 @@
-{
-  "name": "Protective Spirit",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "A holy presence mends your wounds in combat. You regain hit points equal to 1d6 + half your paladin level if you end your turn in combat with fewer than half of your hit points remaining and you aren\u2019t incapacitated.",
-  "required_level": 15
-}

@@ -1,8 +1,0 @@
-{
-  "name": "Lunar Phenomenon",
-  "ability_type": "bonus_action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "At 18th level, as a bonus action, you can tap into a special power of your current Lunar Embodiment phase. Alternatively, as part of the bonus action you take to change your lunar phase using the Waxing and Waning feature, you can immediately use the power of the lunar phase you are entering. Each phase has its own unique effects.",
-  "required_level": 18
-}

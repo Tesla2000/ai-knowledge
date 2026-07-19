@@ -1,8 +1,0 @@
-{
-  "name": "Mighty Summoner",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "At 6th level, beasts and fey that you conjure are more resilient than normal. Any beast or fey summoned or created by a spell that you cast gains two benefits: it appears with 2 extra hit points per Hit Die it has and its natural weapons are considered magical for overcoming immunity and resistance to nonmagical attacks.",
-  "required_level": 6
-}

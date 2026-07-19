@@ -1,8 +1,0 @@
-{
-  "name": "Warder's Intuition",
-  "ability_type": "action",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "Whenever you make an Intelligence (Investigation) check or an Ability Check involving Thieves' Tools, you can roll a d4 and add the number rolled to the total ability check.",
-  "required_level": 0
-}

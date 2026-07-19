@@ -1,8 +1,0 @@
-{
-  "name": "Channel Divinity: Preserve Life",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "You can use your Channel Divinity to heal. As an action, you present your holy symbol and evoke healing energy that can restore a number of hit points equal to five times your cleric level to any creatures within 30 feet, divided among them. This feature cannot be used on undead or constructs.",
-  "required_level": 2
-}

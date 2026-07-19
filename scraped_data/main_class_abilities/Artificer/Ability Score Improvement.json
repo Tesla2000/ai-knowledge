@@ -1,8 +1,0 @@
-{
-  "name": "Ability Score Improvement",
-  "ability_type": "free_action",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "When you reach certain levels, you can increase one ability score by 2, or two ability scores by 1, without exceeding 20.",
-  "required_level": 4
-}

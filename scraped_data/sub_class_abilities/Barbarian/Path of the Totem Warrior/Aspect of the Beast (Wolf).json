@@ -1,8 +1,0 @@
-{
-  "name": "Aspect of the Beast (Wolf)",
-  "ability_type": "free_action",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "You can track other creatures while traveling at a fast pace and can move stealthily while traveling at a normal pace.",
-  "required_level": 6
-}

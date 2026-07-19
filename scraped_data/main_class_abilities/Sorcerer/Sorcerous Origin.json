@@ -1,8 +1,0 @@
-{
-  "name": "Sorcerous Origin",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Choose a sorcerous origin that grants you features at 1st, 6th, 14th, and 18th levels.",
-  "required_level": 1
-}

@@ -1,8 +1,0 @@
-{
-  "name": "Iron Fists",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "When you make an unarmed strike, you can deal 1d4 + your Strength modifier bludgeoning damage instead of the normal damage.",
-  "required_level": 1
-}

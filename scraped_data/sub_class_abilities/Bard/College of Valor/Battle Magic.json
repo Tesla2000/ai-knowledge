@@ -1,8 +1,0 @@
-{
-  "name": "Battle Magic",
-  "ability_type": "bonus_action",
-  "combat_related": true,
-  "spell_grant": true,
-  "description": "At 14th level, when you use your action to cast a bard spell, you can make one weapon attack as a bonus action.",
-  "required_level": 14
-}

@@ -1,8 +1,0 @@
-{
-  "name": "Magical Detection",
-  "ability_type": "action",
-  "combat_related": false,
-  "spell_grant": true,
-  "description": "You can cast Detect Magic and Detect Poison and Disease spells. Starting at 3rd level, you can also cast See Invisibility spell with it.",
-  "required_level": 1
-}

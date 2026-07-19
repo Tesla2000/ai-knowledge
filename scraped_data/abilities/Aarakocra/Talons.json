@@ -1,8 +1,0 @@
-{
-  "name": "Talons",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "You have talons that you can use to make unarmed strikes. When you hit with them, the strike deals 1d6 + your Strength modifier slashing damage, instead of the bludgeoning damage normal for an unarmed strike.",
-  "required_level": 0
-}

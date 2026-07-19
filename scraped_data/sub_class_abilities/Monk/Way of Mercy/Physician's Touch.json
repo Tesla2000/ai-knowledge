@@ -1,8 +1,0 @@
-{
-  "name": "Physician's Touch",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "When using Hands of Healing, can also end one disease or condition (blinded, deafened, paralyzed, poisoned, or stunned). When using Hands of Harm, can inflict the poisoned condition until the end of your next turn.",
-  "required_level": 6
-}

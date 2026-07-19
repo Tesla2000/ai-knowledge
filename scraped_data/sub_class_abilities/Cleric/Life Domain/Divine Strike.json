@@ -1,8 +1,0 @@
-{
-  "name": "Divine Strike",
-  "ability_type": "bonus_action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "You can infuse your weapon strikes with divine energy. Once on each of your turns when you hit a creature with a weapon attack, you can cause the attack to deal an extra 1d8 radiant damage. At 14th level, the extra damage increases to 2d8.",
-  "required_level": 8
-}

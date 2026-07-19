@@ -1,8 +1,0 @@
-{
-  "name": "Rune Carver",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Starting at 3rd level, you can use magic runes to enhance your gear. You learn two runes of your choice, and each time you gain a level in this class, you can replace one rune you know with a different one. You can inscribe a number of objects equal to the number of runes you know with these runes after a long rest.",
-  "required_level": 3
-}

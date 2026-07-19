@@ -1,8 +1,0 @@
-{
-  "name": "Visage of the Astral Self",
-  "ability_type": "bonus_action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "As a bonus action, or as part of the bonus action for Arms of the Astral Self, you can spend 1 ki point to summon the visage for 10 minutes. While present, you can see in darkness up to 120 feet, have advantage on Wisdom (Insight) and Charisma (Intimidation) checks, and can direct your words to a creature you can see within 60 feet or amplify your voice to be heard by all within 600 feet.",
-  "required_level": 6
-}

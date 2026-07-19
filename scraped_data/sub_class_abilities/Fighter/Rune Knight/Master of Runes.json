@@ -1,8 +1,0 @@
-{
-  "name": "Master of Runes",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "At 15th level, you can invoke each rune you know from your Rune Carver feature twice, rather than once, and regain all uses after a short or long rest.",
-  "required_level": 15
-}

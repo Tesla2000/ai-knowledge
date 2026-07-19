@@ -1,8 +1,0 @@
-{
-  "name": "Dreadful Strikes",
-  "ability_type": "bonus_action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "At 3rd level, you can augment your weapon strikes with mind-scarring magic, dealing an extra 1d4 psychic damage to the target on a hit, which can only happen once per turn. This damage increases to 1d6 at 11th level.",
-  "required_level": 3
-}

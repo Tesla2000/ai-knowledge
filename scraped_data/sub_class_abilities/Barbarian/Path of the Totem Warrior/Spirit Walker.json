@@ -1,8 +1,0 @@
-{
-  "name": "Spirit Walker",
-  "ability_type": "free_action",
-  "combat_related": false,
-  "spell_grant": true,
-  "description": "At 10th level, you can cast the Commune with Nature spell, but only as a ritual.",
-  "required_level": 10
-}

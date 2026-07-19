@@ -1,8 +1,0 @@
-{
-  "name": "Inescapable Destruction",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Starting at 6th level, your ability to channel negative energy becomes more potent. Necrotic damage dealt by your cleric spells and Channel Divinity options ignores resistance to necrotic damage.",
-  "required_level": 6
-}

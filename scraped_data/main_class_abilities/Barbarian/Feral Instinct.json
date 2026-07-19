@@ -1,8 +1,0 @@
-{
-  "name": "Feral Instinct",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "By 7th level, you have advantage on initiative rolls. If you are surprised at the beginning of combat and aren't incapacitated, you can act normally on your first turn if you enter your rage before doing anything else.",
-  "required_level": 7
-}

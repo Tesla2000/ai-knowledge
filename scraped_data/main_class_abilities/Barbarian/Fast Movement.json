@@ -1,8 +1,0 @@
-{
-  "name": "Fast Movement",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Starting at 5th level, your speed increases by 10 feet while you aren't wearing heavy armor.",
-  "required_level": 5
-}

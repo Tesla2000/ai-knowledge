@@ -1,8 +1,0 @@
-{
-  "name": "Infectious Fury",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "At 10th level, when you hit a creature with your natural weapons while raging, you can curse your target with rabid fury. They must succeed on a Wisdom saving throw or suffer effects like making a melee attack against another creature or taking 2d12 psychic damage. You can use this feature a number of times equal to your proficiency bonus.",
-  "required_level": 10
-}

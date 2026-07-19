@@ -1,8 +1,0 @@
-{
-  "name": "Magical Tinkering",
-  "ability_type": "action",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "At 1st level, you've learned how to invest a spark of magic into mundane objects. You can give a Tiny nonmagical object one of several magical properties. The chosen property lasts indefinitely, and you can affect multiple objects up to your Intelligence modifier at a time.",
-  "required_level": 1
-}

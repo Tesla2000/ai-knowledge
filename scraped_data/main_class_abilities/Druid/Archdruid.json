@@ -1,8 +1,0 @@
-{
-  "name": "Archdruid",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "At 20th level, you can use your Wild Shape an unlimited number of times and ignore the components of your druid spells.",
-  "required_level": 20
-}

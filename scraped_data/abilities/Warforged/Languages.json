@@ -1,8 +1,0 @@
-{
-  "name": "Languages",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "You can speak, read, and write Common and one other language of your choice.",
-  "required_level": 1
-}

@@ -1,8 +1,0 @@
-{
-  "name": "Spirit Totem",
-  "ability_type": "bonus_action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Starting at 2nd level, you gain the ability to call forth nature spirits and use them to influence the world around you. As a bonus action, you can magically summon an incorporeal spirit to a point you can see within 60 feet of you. The spirit creates an aura in a 30-foot radius around that point, and its effects depend on the type of spirit you summon.",
-  "required_level": 2
-}

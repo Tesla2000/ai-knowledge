@@ -1,8 +1,0 @@
-{
-  "name": "Magic Item Master",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Starting at 18th level, you can attune to up to six magic items at once.",
-  "required_level": 18
-}

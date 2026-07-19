@@ -1,8 +1,0 @@
-{
-  "name": "Mountain Born",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "You have resistance to cold damage. You also naturally acclimate to high altitudes, even if you\u2019ve never been to one. This includes elevations above 20,000 feet.",
-  "required_level": 0
-}

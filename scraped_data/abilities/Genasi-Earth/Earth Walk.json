@@ -1,8 +1,0 @@
-{
-  "name": "Earth Walk",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "You can move across difficult terrain without expending extra movement if you are using your walking speed on the ground or a floor.",
-  "required_level": 0
-}

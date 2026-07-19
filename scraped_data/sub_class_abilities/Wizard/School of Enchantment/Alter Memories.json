@@ -1,8 +1,0 @@
-{
-  "name": "Alter Memories",
-  "ability_type": "action",
-  "combat_related": false,
-  "spell_grant": true,
-  "description": "You can make a creature unaware of your magical influence when you charm them. You can also make the creature forget some of the time it spent charmed, requiring an Intelligence saving throw to determine how much memory is lost.",
-  "required_level": 14
-}

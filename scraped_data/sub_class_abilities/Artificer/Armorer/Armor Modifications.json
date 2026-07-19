@@ -1,8 +1,0 @@
-{
-  "name": "Armor Modifications",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Use artificer infusions to modify Arcane Armor. Armor counts as separate items for infusions, maximum infusions increases by 2 for Arcane Armor.",
-  "required_level": 9
-}

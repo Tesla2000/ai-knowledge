@@ -1,8 +1,0 @@
-{
-  "name": "Restore Balance",
-  "ability_type": "reaction",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "When a creature you can see within 60 feet of you is about to roll a d20 with advantage or disadvantage, you can use your reaction to prevent the roll from being affected by advantage and disadvantage. You can use this feature a number of times equal to your proficiency bonus, and you regain all expended uses when you finish a long rest.",
-  "required_level": 1
-}

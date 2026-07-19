@@ -1,8 +1,0 @@
-{
-  "name": "Disciple of the Elements",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": true,
-  "description": "When you choose this tradition at 3rd level, you learn magical disciplines that harness the power of the four elements. A discipline requires you to spend ki points each time you use it. You know the Elemental Attunement discipline and one other elemental discipline of your choice. You learn one additional elemental discipline of your choice at 6th, 11th, and 17th level. Whenever you learn a new elemental discipline, you can also replace one elemental discipline that you already know with a different discipline. Some elemental disciplines allow you to cast spells. To cast one of these spells, you use its casting time and other rules, but you don't need to provide material components for it. Once you reach 5th level in this class, you can spend additional ki points to increase the level of an elemental discipline spell that you cast, provided that the spell has an enhanced effect at a higher level. The maximum number of ki points you can spend to cast a spell in this way is determined by your monk level.",
-  "required_level": 3
-}

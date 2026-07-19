@@ -1,8 +1,0 @@
-{
-  "name": "Creature Type",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "You are a Fey.",
-  "required_level": 0
-}

@@ -1,8 +1,0 @@
-{
-  "name": "Superior Darkvision",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Your darkvision has a range of 120 feet, instead of 60.",
-  "required_level": 0
-}

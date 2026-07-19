@@ -1,8 +1,0 @@
-{
-  "name": "Wild Shape",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Starting at 2nd level, you can magically assume the shape of a beast that you have seen before. You can use this feature twice and regain expended uses after a short or long rest.",
-  "required_level": 2
-}

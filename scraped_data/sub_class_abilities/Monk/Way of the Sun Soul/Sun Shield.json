@@ -1,8 +1,0 @@
-{
-  "name": "Sun Shield",
-  "ability_type": "reaction",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "You become wreathed in a luminous, magical aura that sheds bright light in a 30-foot radius. If a creature hits you with a melee attack while this light shines, you can use your reaction to deal radiant damage equal to 5 + your Wisdom modifier.",
-  "required_level": 17
-}

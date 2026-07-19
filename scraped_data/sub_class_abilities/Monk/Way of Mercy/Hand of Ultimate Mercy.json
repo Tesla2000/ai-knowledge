@@ -1,8 +1,0 @@
-{
-  "name": "Hand of Ultimate Mercy",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Touch a corpse that died within the past 24 hours and spend 5 ki points to return it to life with hit points equal to 4d10 + your Wisdom modifier. Conditions removed if they were present at death. Can't use again until a long rest.",
-  "required_level": 17
-}

@@ -1,8 +1,0 @@
-{
-  "name": "Wind Caller",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": true,
-  "description": "Starting at 3rd level, you can cast the Gust of Wind spell with this trait, without requiring a material component. Once you cast the spell with this trait, you can\u2019t do so again until you finish a long rest. You can also cast the spell using any spell slots you have of 2nd level or higher. Intelligence, Wisdom, or Charisma is your spellcasting ability for it when you cast Gust of Wind with this trait (choose when you select this race).",
-  "required_level": 3
-}

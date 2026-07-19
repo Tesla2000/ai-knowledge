@@ -1,8 +1,0 @@
-{
-  "name": "Body of the Astral Self",
-  "ability_type": "free_action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "When you have both your astral arms and visage summoned, you can cause the body of your astral self to appear. While present, you can deflect damage from acid, cold, fire, force, lightning, or thunder by using your reaction, reducing the damage by 1d10 + your Wisdom modifier. You can also deal extra damage equal to your Martial Arts die once per turn when you hit with the Arms of the Astral Self.",
-  "required_level": 11
-}

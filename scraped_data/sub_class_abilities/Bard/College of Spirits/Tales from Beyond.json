@@ -1,8 +1,0 @@
-{
-  "name": "Tales from Beyond",
-  "ability_type": "bonus_action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "At 3rd level, while holding your Spiritual Focus, you can use a bonus action to expend one use of your Bardic Inspiration and roll on the Spirit Tales table using your Bardic Inspiration die to determine the tale the spirits direct you to tell.",
-  "required_level": 3
-}

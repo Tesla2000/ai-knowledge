@@ -1,8 +1,0 @@
-{
-  "name": "Quivering Palm",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "When you hit a creature with an unarmed strike, you can spend 3 ki points to start lethal vibrations in their body, which last for a number of days equal to your monk level. You can end the vibrations with an action; if the target fails a Constitution saving throw, it is reduced to 0 hit points, otherwise it takes 10d10 necrotic damage.",
-  "required_level": 17
-}

@@ -1,8 +1,0 @@
-{
-  "name": "Surprise Attack",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "If you hit a creature with an attack roll, the creature takes an extra 2d6 damage if it hasn\u2019t taken a turn yet in the current combat.",
-  "required_level": 0
-}

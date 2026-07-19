@@ -1,8 +1,0 @@
-{
-  "name": "Telepathic Speech",
-  "ability_type": "bonus_action",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "Starting at 1st level, you can form a telepathic connection between your mind and the mind of another. As a bonus action, choose one creature you can see within 30 feet of you. You and the chosen creature can speak telepathically with each other while within a number of miles of each other equal to your Charisma modifier (minimum of 1 mile). The connection lasts a number of minutes equal to your sorcerer level.",
-  "required_level": 1
-}

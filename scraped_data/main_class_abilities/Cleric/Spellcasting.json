@@ -1,8 +1,0 @@
-{
-  "name": "Spellcasting",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": true,
-  "description": "As a conduit for divine power, you can cast cleric spells.",
-  "required_level": 1
-}

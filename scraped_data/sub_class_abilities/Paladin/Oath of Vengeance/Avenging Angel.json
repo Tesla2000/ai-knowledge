@@ -1,8 +1,0 @@
-{
-  "name": "Avenging Angel",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Using your action, you undergo a transformation. For 1 hour, you gain wings that grant you a flying speed of 60 feet and emanate an aura of menace in a 30-foot radius. The first time any enemy creature enters the aura or starts its turn there during a battle, the creature must succeed on a Wisdom saving throw or become frightened of you for 1 minute or until it takes any damage. Attack rolls against the frightened creature have advantage. Once you use this feature, you can't use it again until you finish a long rest.",
-  "required_level": 20
-}

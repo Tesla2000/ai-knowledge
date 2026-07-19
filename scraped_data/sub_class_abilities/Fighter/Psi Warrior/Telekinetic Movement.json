@@ -1,8 +1,0 @@
-{
-  "name": "Telekinetic Movement",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "You can move an object or creature (Large or smaller) within 30 feet up to 30 feet. You cannot use this ability again until you finish a short or long rest unless you expend a Psionic Energy die to take it again.",
-  "required_level": 3
-}

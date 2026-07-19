@@ -1,8 +1,0 @@
-{
-  "name": "Sentinel at Death's Door",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "At 6th level, you gain the ability to impede death\u2019s progress. As a reaction when you or an ally within 30 feet suffers a critical hit, you can turn that attack into a normal hit. Any effects triggered by a critical hit are canceled. You can use this feature a number of times equal to your Wisdom modifier (minimum of once). You regain all expended uses when you finish a long rest.",
-  "required_level": 6
-}

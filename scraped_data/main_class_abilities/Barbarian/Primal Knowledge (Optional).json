@@ -1,8 +1,0 @@
-{
-  "name": "Primal Knowledge (Optional)",
-  "ability_type": "action",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "When you reach 3rd level and again at 10th level, you gain proficiency in one skill of your choice from the list of skills available to barbarians at 1st level.",
-  "required_level": 3
-}

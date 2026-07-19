@@ -1,8 +1,0 @@
-{
-  "name": "Circle Spells",
-  "ability_type": "free_action",
-  "combat_related": true,
-  "spell_grant": true,
-  "description": "Your mystical connection to the land infuses you with the ability to cast certain spells. At 3rd, 5th, 7th, and 9th level you gain access to circle spells connected to the land where you became a druid. Choose that land \u2013 arctic, coast, desert, forest, grassland, mountain, swamp, or Underdark \u2013 and consult the associated list of spells.",
-  "required_level": 3
-}

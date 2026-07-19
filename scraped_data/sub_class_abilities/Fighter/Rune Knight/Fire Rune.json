@@ -1,8 +1,0 @@
-{
-  "name": "Fire Rune",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "This rune doubles your proficiency bonus for tool checks. When you hit a creature, you can deal an extra 2d6 fire damage and restrain it unless it succeeds on a Strength saving throw. Once invoked, it can't be used again until a short or long rest.",
-  "required_level": 3
-}

@@ -1,8 +1,0 @@
-{
-  "name": "Alignment",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "Centaurs are inclined toward neutrality. Those who join the Selesnya are more often neutral good, while those who join the Gruul are typically chaotic neutral.",
-  "required_level": 0
-}

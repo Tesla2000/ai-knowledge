@@ -1,8 +1,0 @@
-{
-  "name": "Agile Climber",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "You have a climbing speed of 25 feet. You can't use your climbing speed while you wear medium or heavy armor. (If your campaign uses the variant rule for encumbrance, you can't use your climbing speed if you are encumbered.)",
-  "required_level": 0
-}

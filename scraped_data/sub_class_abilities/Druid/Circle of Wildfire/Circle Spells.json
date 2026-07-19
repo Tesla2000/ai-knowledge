@@ -1,8 +1,0 @@
-{
-  "name": "Circle Spells",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": true,
-  "description": "At 2nd level, you have formed a bond with a wildfire spirit, granting you access to certain spells when you reach specific levels. The spells do not count against the number you can prepare each day.",
-  "required_level": 2
-}

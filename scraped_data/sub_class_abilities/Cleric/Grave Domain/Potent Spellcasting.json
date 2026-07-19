@@ -1,8 +1,0 @@
-{
-  "name": "Potent Spellcasting",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Starting at 8th level, you add your Wisdom modifier to the damage you deal with any cleric cantrip.",
-  "required_level": 8
-}

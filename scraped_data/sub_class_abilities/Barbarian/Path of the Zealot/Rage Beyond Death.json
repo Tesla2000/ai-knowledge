@@ -1,8 +1,0 @@
-{
-  "name": "Rage Beyond Death",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Beginning at 14th level, the divine power that fuels your rage allows you to shrug off fatal blows. While you're raging, having 0 hit points doesn\u2019t knock you unconscious. You still must make death saving throws, and you suffer the normal effects of taking damage while at 0 hit points. However, if you would die due to failing death saving throws, you don\u2019t die until your rage ends, and you die then only if you still have 0 hit points.",
-  "required_level": 14
-}

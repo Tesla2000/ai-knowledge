@@ -1,8 +1,0 @@
-{
-  "name": "Supernatural Resistance",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "At 15th level, you gain resistance to bludgeoning, piercing, and slashing damage from nonmagical weapons.",
-  "required_level": 15
-}

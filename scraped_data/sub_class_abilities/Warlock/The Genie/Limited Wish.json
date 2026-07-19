@@ -1,8 +1,0 @@
-{
-  "name": "Limited Wish",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": true,
-  "description": "At 14th level, you can request the effect of one spell that is 6th level or lower as an action. The spell can be from any class's spell list, and you don't need to meet the requirements in that spell. This can be used once until you finish 1d4 long rests.",
-  "required_level": 14
-}

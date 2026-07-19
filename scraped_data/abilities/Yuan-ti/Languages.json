@@ -1,8 +1,0 @@
-{
-  "name": "Languages",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "Your character can speak, read, and write Common and one other language that you and your DM agree is appropriate for the character.",
-  "required_level": 0
-}

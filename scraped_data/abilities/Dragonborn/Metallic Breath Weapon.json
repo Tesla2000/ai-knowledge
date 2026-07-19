@@ -1,8 +1,0 @@
-{
-  "name": "Metallic Breath Weapon",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "At 5th level, you gain a second breath weapon. When you take the Attack action, you can replace one of your attacks with an exhalation in a 15-foot cone. The save DC for this breath is 8 + your Constitution modifier + your proficiency bonus. Whenever you use this trait, choose one: Enervating Breath or Repulsion Breath. Once you use your Metallic Breath Weapon, you can\u2019t do so again until you finish a long rest.",
-  "required_level": 5
-}

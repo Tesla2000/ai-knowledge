@@ -1,8 +1,0 @@
-{
-  "name": "Eyes of Night",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Starting at 1st level, you can see through the deepest gloom. You have darkvision out to a range of 300 feet. You can share this darkvision with willing creatures within 10 feet of you for 1 hour, up to a number equal to your Wisdom modifier (minimum of one).",
-  "required_level": 1
-}

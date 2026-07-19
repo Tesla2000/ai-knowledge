@@ -1,8 +1,0 @@
-{
-  "name": "Relentless Rage",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Starting at 11th level, if you drop to 0 hit points while raging, you can make a DC 10 Constitution saving throw. If you succeed, you drop to 1 hit point instead. The DC increases by 5 each time you use this feature after the first.",
-  "required_level": 11
-}

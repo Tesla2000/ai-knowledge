@@ -1,8 +1,0 @@
-{
-  "name": "Divine Strike",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "At 8th level, when you hit a creature with a weapon attack, you can deal an extra 1d8 radiant damage. This increases to 2d8 at 14th level.",
-  "required_level": 8
-}

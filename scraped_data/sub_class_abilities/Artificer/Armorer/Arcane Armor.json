@@ -1,8 +1,0 @@
-{
-  "name": "Arcane Armor",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Turn a suit of armor into Arcane Armor as an action. This armor lacks Strength requirements, acts as a spellcasting focus, attaches to you, and can be donned or doffed as an action.",
-  "required_level": 3
-}

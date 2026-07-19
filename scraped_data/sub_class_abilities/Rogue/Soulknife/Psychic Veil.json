@@ -1,8 +1,0 @@
-{
-  "name": "Psychic Veil",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "You can magically become invisible, along with anything you are wearing or carrying, for 1 hour or until you dismiss this effect. This invisibility ends early after you deal damage to a creature or force a creature to make a saving throw. You can use this feature again only after a long rest, or if you expend a Psionic Energy die.",
-  "required_level": 13
-}

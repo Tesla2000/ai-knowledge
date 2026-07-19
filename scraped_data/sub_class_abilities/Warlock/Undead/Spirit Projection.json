@@ -1,8 +1,0 @@
-{
-  "name": "Spirit Projection",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "At 14th level, you can project your spirit from your body for up to 1 hour. Your spirit has game statistics but no possessions, and can move through creatures and objects. You gain resistance to certain damage types, and when casting conjuration or necromancy spells, components are not required. While using Form of Dread, you regain hit points equal to half the necrotic damage dealt.",
-  "required_level": 14
-}

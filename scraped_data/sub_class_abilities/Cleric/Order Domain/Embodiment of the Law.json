@@ -1,8 +1,0 @@
-{
-  "name": "Embodiment of the Law",
-  "ability_type": "bonus_action",
-  "combat_related": true,
-  "spell_grant": true,
-  "description": "Cast enchantment spells with a casting time of 1 action as a bonus action, a number of times equal to your Wisdom modifier per long rest.",
-  "required_level": 6
-}

@@ -1,8 +1,0 @@
-{
-  "name": "Psionic Spells",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": true,
-  "description": "Starting at 1st level, you learn additional spells when you reach certain levels in this class, each of these spells counts as a sorcerer spell for you, but it doesn't count against the number of sorcerer spells you know. Whenever you gain a sorcerer level, you can replace one spell you gained from this feature with another spell of the same level, which must be a divination or enchantment spell from the sorcerer, warlock, or wizard spell list.",
-  "required_level": 1
-}

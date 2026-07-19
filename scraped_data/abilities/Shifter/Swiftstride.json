@@ -1,8 +1,0 @@
-{
-  "name": "Swiftstride",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "While shifted, your walking speed increases by 10 feet. Additionally, you can move up to 10 feet as a reaction when a creature ends its turn within 5 feet of you. This reactive movement doesn\u2019t provoke opportunity attacks.",
-  "required_level": 1
-}

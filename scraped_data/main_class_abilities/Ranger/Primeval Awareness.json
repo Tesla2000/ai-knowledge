@@ -1,8 +1,0 @@
-{
-  "name": "Primeval Awareness",
-  "ability_type": "free_action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "You can use your action and expend one ranger spell slot to sense whether certain types of creatures are present within 1 mile of you (or 6 miles in favored terrain).",
-  "required_level": 3
-}

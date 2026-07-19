@@ -1,8 +1,0 @@
-{
-  "name": "Wild Intuition (Mark of Handling)",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Whenever you make a Wisdom (Animal Handling) or a Intelligence (Nature) check, you can roll a d4 and add the number rolled to the total ability check.",
-  "required_level": 1
-}

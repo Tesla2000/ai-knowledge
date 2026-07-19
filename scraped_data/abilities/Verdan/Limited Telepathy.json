@@ -1,8 +1,0 @@
-{
-  "name": "Limited Telepathy",
-  "ability_type": "action",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "You can telepathically speak to any creature within 30 feet. You do not have to share a language to speak, however, they must be able to speak a language. You can only communicate simple ideas.",
-  "required_level": 0
-}

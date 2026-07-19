@@ -1,8 +1,0 @@
-{
-  "name": "Fancy Footwork",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "When you make a melee attack against a creature, that creature can't make opportunity attacks against you for the rest of your turn.",
-  "required_level": 3
-}

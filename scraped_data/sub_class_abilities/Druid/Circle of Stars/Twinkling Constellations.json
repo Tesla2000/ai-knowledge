@@ -1,8 +1,0 @@
-{
-  "name": "Twinkling Constellations",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "At 10th level, the constellations of your Starry Form improve. The damage of Archer and Chalice increases to 2d8, and while Dragon is active, you gain a flying speed of 20 feet and can hover. You can also change which constellation glimmers on your body at the start of each turn while in Starry Form.",
-  "required_level": 10
-}

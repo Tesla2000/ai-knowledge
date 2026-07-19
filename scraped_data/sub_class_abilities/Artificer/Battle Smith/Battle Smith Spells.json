@@ -1,8 +1,0 @@
-{
-  "name": "Battle Smith Spells",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": true,
-  "description": "Starting at 3rd level, you always have certain spells prepared after you reach particular levels in this class, which count as artificer spells for you, but they don\u2019t count against the number of artificer spells you prepare.",
-  "required_level": 3
-}

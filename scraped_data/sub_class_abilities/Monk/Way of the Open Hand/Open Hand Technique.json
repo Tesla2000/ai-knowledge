@@ -1,8 +1,0 @@
-{
-  "name": "Open Hand Technique",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Whenever you hit a creature with one of the attacks granted by your Flurry of Blows, you can impose one of the following effects on that target: It must succeed on a Dexterity saving throw or be knocked prone, it must make a Strength saving throw (if it fails, you can push it up to 15 feet away), or it can't take reactions until the end of your next turn.",
-  "required_level": 3
-}

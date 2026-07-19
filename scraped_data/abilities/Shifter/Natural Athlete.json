@@ -1,8 +1,0 @@
-{
-  "name": "Natural Athlete",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "You have proficiency in the Athletics skill.",
-  "required_level": 1
-}

@@ -1,8 +1,0 @@
-{
-  "name": "Integrated Protection (Darkwood Core)",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "AC = 11 + your Dexterity modifier (add proficiency bonus if proficient with light armor).",
-  "required_level": 1
-}

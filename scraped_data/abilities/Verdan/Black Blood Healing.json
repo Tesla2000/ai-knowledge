@@ -1,8 +1,0 @@
-{
-  "name": "Black Blood Healing",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "When you roll either 1 or 2 on any Hit Die, you can instantly re-roll the die and take the new roll.",
-  "required_level": 0
-}

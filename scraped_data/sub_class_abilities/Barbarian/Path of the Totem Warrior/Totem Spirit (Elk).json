@@ -1,8 +1,0 @@
-{
-  "name": "Totem Spirit (Elk)",
-  "ability_type": "free_action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "While raging and not wearing heavy armor, your walking speed increases by 15 feet.",
-  "required_level": 3
-}

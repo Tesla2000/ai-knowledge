@@ -1,8 +1,0 @@
-{
-  "name": "Sorcerous Restoration",
-  "ability_type": "action",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "At 20th level, you regain 4 expended sorcery points whenever you finish a short rest.",
-  "required_level": 20
-}

@@ -1,8 +1,0 @@
-{
-  "name": "Foe Slayer",
-  "ability_type": "free_action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Once on each of your turns, you can add your Wisdom modifier to the attack roll or damage roll of an attack against one of your favored enemies.",
-  "required_level": 20
-}

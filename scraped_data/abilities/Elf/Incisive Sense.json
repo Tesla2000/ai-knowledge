@@ -1,8 +1,0 @@
-{
-  "name": "Incisive Sense",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "You have advantage on Investigation and Insight checks.",
-  "required_level": 0
-}

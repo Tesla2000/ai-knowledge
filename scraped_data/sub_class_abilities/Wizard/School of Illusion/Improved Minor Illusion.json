@@ -1,8 +1,0 @@
-{
-  "name": "Improved Minor Illusion",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": true,
-  "description": "You learn the Minor Illusion cantrip, and can create both a sound and an image with a single casting of the spell.",
-  "required_level": 2
-}

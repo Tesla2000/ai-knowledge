@@ -1,8 +1,0 @@
-{
-  "name": "Persuasive",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "Your people's lack of history makes you trustworthy and humble. You have proficiency in the Persuasion skill.",
-  "required_level": 0
-}

@@ -1,8 +1,0 @@
-{
-  "name": "Martial Training",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "You are proficient with two martial weapons of your choice and with light armor.",
-  "required_level": 0
-}

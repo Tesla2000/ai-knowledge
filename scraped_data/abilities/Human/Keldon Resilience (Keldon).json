@@ -1,8 +1,0 @@
-{
-  "name": "Keldon Resilience (Keldon)",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "You have proficiency in Strength saving throws.",
-  "required_level": 1
-}

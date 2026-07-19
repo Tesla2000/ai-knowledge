@@ -1,8 +1,0 @@
-{
-  "name": "Faithful Summons",
-  "ability_type": "reaction",
-  "combat_related": true,
-  "spell_grant": true,
-  "description": "Starting at 14th level, if you are reduced to 0 hit points or incapacitated, you can immediately gain the benefits of Conjure Animals as if it were cast with a 9th-level spell slot, summoning four beasts of your choice that are challenge rating 2 or lower. The spell lasts for 1 hour, requiring no concentration.",
-  "required_level": 14
-}

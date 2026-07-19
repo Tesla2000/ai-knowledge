@@ -1,8 +1,0 @@
-{
-  "name": "Channel Divinity (x1)",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "You gain the ability to channel divine energy directly from your deity, using that energy to fuel magical effects. You start with two such effects: Turn Undead and an effect determined by your domain.",
-  "required_level": 2
-}

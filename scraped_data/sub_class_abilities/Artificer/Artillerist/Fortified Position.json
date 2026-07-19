@@ -1,8 +1,0 @@
-{
-  "name": "Fortified Position",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "By 15th level, you and your allies have half cover while within 10 feet of a cannon you create. You can create two cannons at the same time and activate both with the same bonus action.",
-  "required_level": 15
-}

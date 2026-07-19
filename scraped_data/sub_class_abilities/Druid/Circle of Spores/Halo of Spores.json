@@ -1,8 +1,0 @@
-{
-  "name": "Halo of Spores",
-  "ability_type": "reaction",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Starting at 2nd level, you are surrounded by invisible, necrotic spores that deal necrotic damage to a creature within 10 feet when it moves into that space or starts its turn there, unless it succeeds on a Constitution saving throw. The damage scales with level: 1d4 at 2nd, 1d6 at 6th, 1d8 at 10th, and 1d10 at 14th level.",
-  "required_level": 2
-}

@@ -1,8 +1,0 @@
-{
-  "name": "Elemental Cleaver",
-  "ability_type": "free_action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Your bond with the elemental might of giants grows, and you learn to infuse weapons with primordial energy. You can choose a weapon to infuse with damage types which gives extra damage when you hit.",
-  "required_level": 6
-}

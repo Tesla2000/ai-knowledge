@@ -1,8 +1,0 @@
-{
-  "name": "Survival Instinct",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "You gain proficiency in the Survival skill. Tortles have finely honed survival instincts.",
-  "required_level": 0
-}

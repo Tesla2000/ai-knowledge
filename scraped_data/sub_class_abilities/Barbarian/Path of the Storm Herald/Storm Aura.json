@@ -1,8 +1,0 @@
-{
-  "name": "Storm Aura",
-  "ability_type": "bonus_action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "When you select this path at 3rd level, you emanate a stormy, magical aura while you rage. The aura extends 10 feet from you in every direction, but not through total cover. You can choose desert, sea, or tundra, and the effects depend on that chosen environment. If your aura's effects require a saving throw, the DC equals 8 + your proficiency bonus + your Constitution modifier.",
-  "required_level": 3
-}

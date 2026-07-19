@@ -1,8 +1,0 @@
-{
-  "name": "Infiltration Expertise",
-  "ability_type": "action",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "Starting at 9th level, you can unfailingly create false identities for yourself. You must spend seven days and 25 gp to establish the history, profession, and affiliations for an identity. You can't establish an identity that belongs to someone else. Thereafter, if you adopt the new identity as a disguise, other creatures believe you to be that person until given an obvious reason not to.",
-  "required_level": 9
-}

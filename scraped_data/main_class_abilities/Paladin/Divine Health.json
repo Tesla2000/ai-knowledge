@@ -1,8 +1,0 @@
-{
-  "name": "Divine Health",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "By 3rd level, the divine magic flowing through you makes you immune to disease.",
-  "required_level": 3
-}

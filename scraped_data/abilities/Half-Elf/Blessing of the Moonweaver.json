@@ -1,8 +1,0 @@
-{
-  "name": "Blessing of the Moonweaver",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": true,
-  "description": "You know the Light cantrip. At 3rd level, you can cast Sleep once per long rest. At 5th level, you can cast Invisibility (Self Only) once per long rest. Wisdom is your spellcasting ability for these spells.",
-  "required_level": 0
-}

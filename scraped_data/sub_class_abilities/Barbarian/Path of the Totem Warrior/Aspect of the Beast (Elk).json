@@ -1,8 +1,0 @@
-{
-  "name": "Aspect of the Beast (Elk)",
-  "ability_type": "free_action",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "Your travel pace is doubled, as is the travel pace of up to ten companions while they're within 60 feet of you.",
-  "required_level": 6
-}

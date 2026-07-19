@@ -1,8 +1,0 @@
-{
-  "name": "Severed from Dreams",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "You are immune to magical spells and effects that require you to dream, but not to spells and effects that put you to sleep.",
-  "required_level": 0
-}

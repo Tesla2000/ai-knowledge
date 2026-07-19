@@ -1,8 +1,0 @@
-{
-  "name": "Oath Spells",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": true,
-  "description": "You gain oath spells at the paladin levels listed: 3rd: Alarm, Detect Magic; 5th: Moonbeam, See Invisibility; 9th: Counterspell, Nondetection; 13th: Aura of Purity, Banishment; 17th: Hold Monster, Scrying.",
-  "required_level": 3
-}

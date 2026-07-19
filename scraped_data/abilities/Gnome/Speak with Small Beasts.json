@@ -1,8 +1,0 @@
-{
-  "name": "Speak with Small Beasts",
-  "ability_type": "action",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "Through sound and gestures, you may communicate simple ideas with Small or smaller beasts.",
-  "required_level": 0
-}

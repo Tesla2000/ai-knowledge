@@ -1,8 +1,0 @@
-{
-  "name": "Mote of Potential",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "When you join the College of Creation at 3rd level, whenever you give a creature a Bardic Inspiration die, you can utter a note from the Song of Creation to create a Tiny mote of potential, which orbits within 5 feet of that creature. The mote provides an additional effect based on whether the die benefits an ability check, an attack roll, or a saving throw.",
-  "required_level": 3
-}

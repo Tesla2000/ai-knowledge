@@ -1,8 +1,0 @@
-{
-  "name": "Draconic Strike",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "When you damage a target with an unarmed strike, you can change the damage type to acid, cold, fire, lightning, or poison.",
-  "required_level": 3
-}

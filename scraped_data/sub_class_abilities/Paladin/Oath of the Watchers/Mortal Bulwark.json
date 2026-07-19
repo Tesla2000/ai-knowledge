@@ -1,8 +1,0 @@
-{
-  "name": "Mortal Bulwark",
-  "ability_type": "bonus_action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "For 1 minute, you gain truesight, advantage on attack rolls against aberrations, celestials, elementals, fey, and fiends, and can banish a creature hit by your attack to its native plane on a failed Charisma saving throw.",
-  "required_level": 20
-}

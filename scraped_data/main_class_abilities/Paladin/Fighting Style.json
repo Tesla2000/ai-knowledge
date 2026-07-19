@@ -1,8 +1,0 @@
-{
-  "name": "Fighting Style",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Starting at 2nd level, you adopt a particular style of fighting as your specialty. Choose one of the following options: Blessed Warrior, Blind Fighting, Defense, Dueling, Great Weapon Fighting, Interception, Protection, Close Quarters Shooter, Mariner, Thrown Weapon Fighting, Tunnel Fighter, Unarmed Fighting.",
-  "required_level": 2
-}

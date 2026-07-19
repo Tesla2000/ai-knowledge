@@ -1,8 +1,0 @@
-{
-  "name": "Spellcasting",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": true,
-  "description": "By 2nd level, you have learned to draw on divine magic through meditation and prayer to cast spells as a cleric does. You prepare a number of paladin spells equal to your Charisma modifier + half your paladin level, rounded down (minimum of one spell). You regain all expended spell slots when you finish a long rest.",
-  "required_level": 2
-}

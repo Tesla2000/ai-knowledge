@@ -1,8 +1,0 @@
-{
-  "name": "Age",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "Centaurs mature and age at about the same rate as humans.",
-  "required_level": 0
-}

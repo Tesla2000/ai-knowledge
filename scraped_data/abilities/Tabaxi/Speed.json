@@ -1,8 +1,0 @@
-{
-  "name": "Speed",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "Your walking speed is 30 feet, and you have a climbing speed equal to your walking speed.",
-  "required_level": 0
-}

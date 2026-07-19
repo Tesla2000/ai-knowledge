@@ -1,8 +1,0 @@
-{
-  "name": "Ability Score Increase",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "Your Strength score increases by 2, and your Charisma score increases by 1.",
-  "required_level": 1
-}

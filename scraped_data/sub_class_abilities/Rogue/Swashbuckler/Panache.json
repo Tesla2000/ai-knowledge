@@ -1,8 +1,0 @@
-{
-  "name": "Panache",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "You can make a Charisma (Persuasion) check contested by a creature's Wisdom (Insight) check. If you succeed, hostile creatures have disadvantage on attack rolls against targets other than you, and non-hostile creatures are charmed by you for 1 minute.",
-  "required_level": 9
-}

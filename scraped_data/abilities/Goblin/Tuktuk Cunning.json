@@ -1,8 +1,0 @@
-{
-  "name": "Tuktuk Cunning",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "You have proficiency with thieves' tools.",
-  "required_level": 0
-}

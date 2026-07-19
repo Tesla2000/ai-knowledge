@@ -1,8 +1,0 @@
-{
-  "name": "Improved Combat Superiority",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Your superiority dice turn into d10s at 10th level and d12s at 18th level.",
-  "required_level": 10
-}

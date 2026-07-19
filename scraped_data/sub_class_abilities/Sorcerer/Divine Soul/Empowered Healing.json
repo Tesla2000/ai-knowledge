@@ -1,8 +1,0 @@
-{
-  "name": "Empowered Healing",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "You can spend 1 sorcery point to reroll any number of dice when you or an ally within 5 feet rolls to determine the number of hit points a spell restores. You can use this feature only once per turn.",
-  "required_level": 6
-}

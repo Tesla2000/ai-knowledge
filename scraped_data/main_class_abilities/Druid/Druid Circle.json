@@ -1,8 +1,0 @@
-{
-  "name": "Druid Circle",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "At 2nd level, you choose to identify with a circle of druids, granting you features at 2nd, 6th, 10th, and 14th level.",
-  "required_level": 2
-}

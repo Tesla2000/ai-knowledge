@@ -1,8 +1,0 @@
-{
-  "name": "Star Map",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": true,
-  "description": "At 2nd level, you've created a star chart as part of your heavenly studies. It is a Tiny object and can serve as a spellcasting focus for your druid spells. While holding this map, you know the Guidance cantrip, have the Guiding Bolt spell prepared (counts as a druid spell), and can cast Guiding Bolt without expending a spell slot a number of times equal to your proficiency bonus. You regain all expended uses when you finish a long rest. If you lose the map, you can perform a 1-hour ceremony to magically create a replacement.",
-  "required_level": 2
-}

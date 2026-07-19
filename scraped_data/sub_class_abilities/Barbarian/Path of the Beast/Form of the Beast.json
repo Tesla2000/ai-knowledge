@@ -1,8 +1,0 @@
-{
-  "name": "Form of the Beast",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Starting when you choose this path at 3rd level, when you enter your rage, you can transform, revealing the bestial power within you. Until the rage ends, you manifest a natural weapon. You choose the weapon\u2019s form each time you rage: Bite (1d8 piercing damage, regain hit points equal to your proficiency bonus if you hit a creature with it while below half hit points), Claws (1d6 slashing damage, make an additional claw attack when attacking with it), or Tail (1d8 piercing damage, swipe your tail to add a bonus to AC against an attack).",
-  "required_level": 3
-}

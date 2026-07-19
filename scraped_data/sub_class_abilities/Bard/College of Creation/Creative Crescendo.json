@@ -1,8 +1,0 @@
-{
-  "name": "Creative Crescendo",
-  "ability_type": "action",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "At 14th level, when you use your Performance of Creation feature, you can create more than one item at once. The number of items equals your Charisma modifier (minimum of two items). You are no longer limited by gp value when creating items with Performance of Creation.",
-  "required_level": 14
-}

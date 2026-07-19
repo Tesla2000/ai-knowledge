@@ -1,8 +1,0 @@
-{
-  "name": "Psi-Powered Leap",
-  "ability_type": "bonus_action",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "As a bonus action, you gain a flying speed equal to twice your walking speed until the end of the current turn. You cannot use this ability again until you finish a short or long rest unless you expend a Psionic Energy die to take it again.",
-  "required_level": 7
-}

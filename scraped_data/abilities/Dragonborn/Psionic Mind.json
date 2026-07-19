@@ -1,8 +1,0 @@
-{
-  "name": "Psionic Mind",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "You can telepathically speak to any creature you can see within 30 feet of you. You don\u2019t need to share a language with the creature, but the creature must be able to understand at least one language.",
-  "required_level": 1
-}

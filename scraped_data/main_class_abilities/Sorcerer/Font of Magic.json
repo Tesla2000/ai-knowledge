@@ -1,8 +1,0 @@
-{
-  "name": "Font of Magic",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "At 2nd level, you gain sorcery points you can use to create spell slots or gain additional sorcery points.",
-  "required_level": 2
-}

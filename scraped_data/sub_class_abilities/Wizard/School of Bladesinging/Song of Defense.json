@@ -1,8 +1,0 @@
-{
-  "name": "Song of Defense",
-  "ability_type": "reaction",
-  "combat_related": true,
-  "spell_grant": true,
-  "description": "Use your reaction to expend one spell slot and reduce damage by an amount equal to five times the spell slot's level while your Bladesong is active.",
-  "required_level": 10
-}

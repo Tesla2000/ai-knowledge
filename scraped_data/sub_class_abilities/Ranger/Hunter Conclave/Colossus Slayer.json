@@ -1,8 +1,0 @@
-{
-  "name": "Colossus Slayer",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Your tenacity can wear down the most potent foes. When you hit a creature with a weapon attack, the creature takes an extra 1d8 damage if it\u2019s below its hit point maximum. You can deal this extra damage only once per turn.",
-  "required_level": 3
-}

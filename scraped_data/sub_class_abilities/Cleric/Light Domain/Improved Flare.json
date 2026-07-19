@@ -1,8 +1,0 @@
-{
-  "name": "Improved Flare",
-  "ability_type": "reaction",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "You can also use your Warding Flare feature when a creature that you can see within 30 feet of you attacks a creature other than you.",
-  "required_level": 6
-}

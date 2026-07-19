@@ -1,8 +1,0 @@
-{
-  "name": "Gnome Cunning",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "You have advantage on all Intelligence, Wisdom, and Charisma saves against magic.",
-  "required_level": 0
-}

@@ -1,8 +1,0 @@
-{
-  "name": "Unarmored Defense",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "While you are wearing no armor and not wielding a shield, your AC equals 10 + your Dexterity modifier + your Wisdom modifier.",
-  "required_level": 1
-}

@@ -1,8 +1,0 @@
-{
-  "name": "Artificer's Lore",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "Whenever you make an Intelligence (History) check related to magical, alchemical, or technological items, you can add twice your proficiency bonus instead of any other proficiency bonus that may apply.",
-  "required_level": 0
-}

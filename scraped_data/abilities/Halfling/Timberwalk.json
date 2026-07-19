@@ -1,8 +1,0 @@
-{
-  "name": "Timberwalk",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "Ability checks made to track you are at disadvantage and you can move through difficult terrain made of non-magical plants and overgrowth without expending extra movement.",
-  "required_level": 1
-}

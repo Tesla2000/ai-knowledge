@@ -1,8 +1,0 @@
-{
-  "name": "Tempestuous Magic",
-  "ability_type": "bonus_action",
-  "combat_related": true,
-  "spell_grant": true,
-  "description": "You can use a bonus action on your turn to cause whirling gusts of elemental air to surround you, allowing you to fly up to 10 feet without provoking opportunity attacks, immediately before or after you cast a spell of 1st level or higher.",
-  "required_level": 1
-}

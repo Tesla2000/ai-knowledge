@@ -1,8 +1,0 @@
-{
-  "name": "Aura of Conquest",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "You constantly emanate a menacing aura while you're not incapacitated. The aura extends 10 feet from you in every direction. If a creature is frightened of you, its speed is reduced to 0 while in the aura, and that creature takes psychic damage equal to half your paladin level if it starts its turn there. At 18th level, the range of this aura increases to 30 feet.",
-  "required_level": 7
-}

@@ -1,8 +1,0 @@
-{
-  "name": "Gifted Scribe",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "Whenever you make an Intelligence (History) or an Ability Check involving Calligrapher's Supplies, you can roll a d4 and add the number rolled to the total ability check.",
-  "required_level": 0
-}

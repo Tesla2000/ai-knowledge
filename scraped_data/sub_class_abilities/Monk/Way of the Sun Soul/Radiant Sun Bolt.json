@@ -1,8 +1,0 @@
-{
-  "name": "Radiant Sun Bolt",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "You can hurl searing bolts of magical radiance as a ranged spell attack with a range of 30 feet. You add your Dexterity modifier to its attack and damage rolls. Its damage is radiant, and its damage die is a d4, which changes as you gain monk levels. You can spend 1 ki point to make this attack twice as a bonus action.",
-  "required_level": 3
-}

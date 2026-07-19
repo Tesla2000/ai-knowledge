@@ -1,8 +1,0 @@
-{
-  "name": "Skill Versatility",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "You gain proficiency in any combination of two skills or tools of your choice.",
-  "required_level": 0
-}

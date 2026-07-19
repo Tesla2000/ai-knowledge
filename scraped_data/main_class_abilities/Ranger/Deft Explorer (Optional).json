@@ -1,8 +1,0 @@
-{
-  "name": "Deft Explorer (Optional)",
-  "ability_type": "free_action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "You gain the Canny benefit, allowing you to double your proficiency bonus for one skill you choose. Additionally, you gain two extra languages.",
-  "required_level": 1
-}

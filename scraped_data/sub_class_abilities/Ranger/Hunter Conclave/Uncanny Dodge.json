@@ -1,8 +1,0 @@
-{
-  "name": "Uncanny Dodge",
-  "ability_type": "reaction",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "When an attacker that you can see hits you with an attack, you can use your reaction to halve the attack\u2019s damage against you.",
-  "required_level": 15
-}

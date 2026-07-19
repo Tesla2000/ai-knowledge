@@ -1,8 +1,0 @@
-{
-  "name": "Cunning Intuition",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Whenever you roll a Dexterity (Stealth) check or a Charisma (Performance) check, roll a d4 and add the number rolled to the total ability check.",
-  "required_level": 0
-}

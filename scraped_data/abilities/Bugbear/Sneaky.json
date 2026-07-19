@@ -1,8 +1,0 @@
-{
-  "name": "Sneaky",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "You are proficient in the Stealth skill. In addition, without squeezing, you can move through and stop in a space large enough for a Small creature.",
-  "required_level": 0
-}

@@ -1,8 +1,0 @@
-{
-  "name": "Draconic Resilience",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "At 1st level, your hit point maximum increases by 1 and increases by 1 again whenever you gain a level in this class. Your AC equals 13 + your Dexterity modifier when you aren't wearing armor.",
-  "required_level": 1
-}

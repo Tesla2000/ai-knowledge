@@ -1,8 +1,0 @@
-{
-  "name": "Alignment",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "Bugbears tend to be chaotic evil.",
-  "required_level": 0
-}

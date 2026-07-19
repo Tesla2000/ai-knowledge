@@ -1,8 +1,0 @@
-{
-  "name": "Draconic Presence",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Beginning at 18th level, you can spend 5 sorcery points to exude an aura of awe or fear to a distance of 60 feet for 1 minute. Hostile creatures in this aura must succeed on a Wisdom saving throw or be charmed or frightened until the aura ends.",
-  "required_level": 18
-}

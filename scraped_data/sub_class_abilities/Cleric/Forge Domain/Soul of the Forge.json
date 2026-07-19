@@ -1,8 +1,0 @@
-{
-  "name": "Soul of the Forge",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Starting at 6th level, your mastery of the forge grants you special abilities: You gain resistance to fire damage. While wearing heavy armor, you gain a +1 bonus to AC.",
-  "required_level": 6
-}

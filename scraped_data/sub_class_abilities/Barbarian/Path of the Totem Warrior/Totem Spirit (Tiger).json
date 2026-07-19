@@ -1,8 +1,0 @@
-{
-  "name": "Totem Spirit (Tiger)",
-  "ability_type": "free_action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "While raging, you can add 10 feet to your long jump distance and 3 feet to your high jump distance.",
-  "required_level": 3
-}

@@ -1,8 +1,0 @@
-{
-  "name": "Battle Ready",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "When you reach 3rd level, you gain proficiency with martial weapons and can use your Intelligence modifier for attack and damage rolls with magic weapons instead of Strength or Dexterity.",
-  "required_level": 3
-}

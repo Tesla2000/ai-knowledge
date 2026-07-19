@@ -1,8 +1,0 @@
-{
-  "name": "Wind Speaker",
-  "ability_type": "free_action",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "You can speak, read, and write Primordial. This allows you to understand and be understood by those who speak its dialects: Aquan, Auran, Ignan, and Terran.",
-  "required_level": 1
-}

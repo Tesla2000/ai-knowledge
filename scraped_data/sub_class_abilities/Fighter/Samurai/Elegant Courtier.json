@@ -1,8 +1,0 @@
-{
-  "name": "Elegant Courtier",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "Starting at 7th level, whenever you make a Charisma (Persuasion) check, you gain a bonus to the check equal to your Wisdom modifier. You also gain proficiency in Wisdom saving throws, or Intelligence or Charisma saving throws if you already have that proficiency.",
-  "required_level": 7
-}

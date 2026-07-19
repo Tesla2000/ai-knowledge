@@ -1,8 +1,0 @@
-{
-  "name": "Wholeness of Body",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "As an action, you can regain hit points equal to three times your monk level. You must finish a long rest before you can use this feature again.",
-  "required_level": 6
-}

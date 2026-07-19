@@ -1,8 +1,0 @@
-{
-  "name": "Ability Score Increase (Nephalia)",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "Your Intelligence and Charisma scores each increase by 1.",
-  "required_level": 1
-}

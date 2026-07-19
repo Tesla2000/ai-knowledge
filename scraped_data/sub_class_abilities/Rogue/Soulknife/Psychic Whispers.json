@@ -1,8 +1,0 @@
-{
-  "name": "Psychic Whispers",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "You can establish telepathic communication between yourself and others. As an action, choose one or more creatures you can see, up to a number of creatures equal to your proficiency bonus, and then roll one Psionic Energy die. For a number of hours equal to the number rolled, the chosen creatures can speak telepathically with you, and you can speak telepathically with them. The first time you use this power after each long rest, you don't expend the Psionic Energy die. All other times you use the power, you expend the die.",
-  "required_level": 3
-}

@@ -1,8 +1,0 @@
-{
-  "name": "Healing Hands",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "As an action, you can touch a creature and roll a number of d4s equal to your proficiency bonus. The creature regains a number of hit points equal to the total rolled. Once you use this trait, you can\u2019t use it again until you finish a long rest.",
-  "required_level": 1
-}

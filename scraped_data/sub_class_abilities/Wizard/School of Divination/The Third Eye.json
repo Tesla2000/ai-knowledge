@@ -1,8 +1,0 @@
-{
-  "name": "The Third Eye",
-  "ability_type": "action",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "You can use your action to increase your powers of perception. Choose one of the following benefits: Darkvision (60 feet), Ethereal Sight (see into the Ethereal Plane), Greater Comprehension (read any language), or See Invisibility (see invisible creatures and objects within 10 feet).",
-  "required_level": 10
-}

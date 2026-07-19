@@ -1,8 +1,0 @@
-{
-  "name": "Otherworldly Glamour",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "At 3rd level, you gain a bonus equal to your Wisdom modifier (minimum of +1) on Charisma checks, and proficiency in Deception, Performance, or Persuasion.",
-  "required_level": 3
-}

@@ -1,8 +1,0 @@
-{
-  "name": "Necromancy Savant",
-  "ability_type": "free_action",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "Beginning when you select this school at 2nd level, the gold and time you must spend to copy a Necromancy spell into your spellbook is halved.",
-  "required_level": 2
-}

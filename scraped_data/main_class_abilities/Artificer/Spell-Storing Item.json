@@ -1,8 +1,0 @@
-{
-  "name": "Spell-Storing Item",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": true,
-  "description": "At 11th level, you can store a spell in a simple or martial weapon or an item used as a spellcasting focus, allowing another creature to cast it.",
-  "required_level": 11
-}

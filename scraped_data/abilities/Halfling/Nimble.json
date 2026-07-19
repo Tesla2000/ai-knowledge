@@ -1,8 +1,0 @@
-{
-  "name": "Nimble",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "You can move through the space of any creature that is of a size larger than yours.",
-  "required_level": 1
-}

@@ -1,8 +1,0 @@
-{
-  "name": "Serpentine Spellcasting",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": true,
-  "description": "You know the Poison Spray cantrip. You can cast Animal Friendship an unlimited number of times with this trait, but you can target only snakes with it. Starting at 3rd level, you can also cast Suggestion with this trait. Once you cast it, you can\u2019t do so again until you finish a long rest. You can also cast it using any spell slots you have of 2nd level or higher. Intelligence, Wisdom, or Charisma is your spellcasting ability for these spells when you cast them with this trait (choose when you select this race).",
-  "required_level": 3
-}

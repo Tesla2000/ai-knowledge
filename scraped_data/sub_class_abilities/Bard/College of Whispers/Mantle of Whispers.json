@@ -1,8 +1,0 @@
-{
-  "name": "Mantle of Whispers",
-  "ability_type": "action",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "When a humanoid dies within 30 feet of you, you can magically capture its shadow using your reaction. You can use the shadow as an action to magically transform into a disguise that appears like the dead person, retaining information they would share with a casual acquaintance.",
-  "required_level": 6
-}

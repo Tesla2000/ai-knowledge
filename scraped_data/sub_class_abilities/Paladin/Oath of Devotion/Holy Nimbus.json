@@ -1,8 +1,0 @@
-{
-  "name": "Holy Nimbus",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "At 20th level, as an action, you can emanate an aura of sunlight for 1 minute, causing enemies that start their turn in the bright light to take 10 radiant damage. You have advantage on saving throws against spells cast by fiends or undead during this time.",
-  "required_level": 20
-}

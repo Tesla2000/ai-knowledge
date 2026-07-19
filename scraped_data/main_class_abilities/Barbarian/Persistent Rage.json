@@ -1,8 +1,0 @@
-{
-  "name": "Persistent Rage",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Beginning at 15th level, your rage ends early only if you fall unconscious or if you choose to end it.",
-  "required_level": 15
-}

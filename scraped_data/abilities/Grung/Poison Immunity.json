@@ -1,8 +1,0 @@
-{
-  "name": "Poison Immunity",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "You are immune to poison damage and the poisoned condition.",
-  "required_level": 0
-}

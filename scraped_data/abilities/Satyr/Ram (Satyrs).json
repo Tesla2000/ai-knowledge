@@ -1,8 +1,0 @@
-{
-  "name": "Ram (Satyrs)",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "You can use your head and horns to make unarmed strikes. If you hit with them, you deal bludgeoning damage equal to 1d4 + your Strength modifier.",
-  "required_level": 0
-}

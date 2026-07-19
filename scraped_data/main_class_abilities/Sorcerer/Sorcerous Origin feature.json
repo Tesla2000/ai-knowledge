@@ -1,8 +1,0 @@
-{
-  "name": "Sorcerous Origin feature",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "At 6th level, you gain a feature based on your chosen sorcerous origin.",
-  "required_level": 6
-}

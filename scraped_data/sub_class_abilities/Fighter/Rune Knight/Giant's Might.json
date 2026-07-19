@@ -1,8 +1,0 @@
-{
-  "name": "Giant's Might",
-  "ability_type": "bonus_action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "At 3rd level, as a bonus action, you magically gain benefits for 1 minute: If you are smaller than Large, you become Large; you have advantage on Strength checks and saves; and one attack can deal an extra 1d6 damage. You can use this feature a number of times equal to your proficiency bonus, regaining all uses after a long rest.",
-  "required_level": 3
-}

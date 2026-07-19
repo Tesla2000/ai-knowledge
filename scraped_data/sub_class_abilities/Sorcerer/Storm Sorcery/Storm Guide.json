@@ -1,8 +1,0 @@
-{
-  "name": "Storm Guide",
-  "ability_type": "action",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "You can subtly control the weather around you. You can stop rain in a 20-foot-radius sphere centered on you or choose the direction of the wind in a 100-foot-radius sphere centered on you as a bonus action each round.",
-  "required_level": 6
-}

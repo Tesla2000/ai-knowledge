@@ -1,8 +1,0 @@
-{
-  "name": "Bestial Fury",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Starting at 11th level, when you command your beast companion to take the Attack action, the beast can make two attacks or take the Multiattack action if it has that action.",
-  "required_level": 11
-}

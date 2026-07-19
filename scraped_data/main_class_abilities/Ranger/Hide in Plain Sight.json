@@ -1,8 +1,0 @@
-{
-  "name": "Hide in Plain Sight",
-  "ability_type": "free_action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Spend 1 minute creating camouflage for yourself, gaining a +10 bonus to Dexterity (Stealth) checks while camouflaged.",
-  "required_level": 10
-}

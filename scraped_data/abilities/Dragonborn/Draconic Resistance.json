@@ -1,8 +1,0 @@
-{
-  "name": "Draconic Resistance",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "You have resistance to the damage type associated with your Chromatic Ancestry.",
-  "required_level": 1
-}

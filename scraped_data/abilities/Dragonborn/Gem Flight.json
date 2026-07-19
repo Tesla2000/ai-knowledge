@@ -1,8 +1,0 @@
-{
-  "name": "Gem Flight",
-  "ability_type": "bonus_action",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "Starting at 5th level, you can use a bonus action to manifest spectral wings on your body. These wings last for 1 minute. For the duration, you gain a flying speed equal to your walking speed and can hover. Once you use this trait, you can\u2019t do so again until you finish a long rest.",
-  "required_level": 5
-}

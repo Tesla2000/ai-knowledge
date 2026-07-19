@@ -1,8 +1,0 @@
-{
-  "name": "Primal Companion (Optional)",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "This feature replaces the Ranger's Companion feature. You summon a primal beast that obeys your commands. It can take the Dodge action on its own, and you can command it to take other actions as a bonus action. You can also resurrect the beast if it died within the last hour by expending a spell slot.",
-  "required_level": 3
-}

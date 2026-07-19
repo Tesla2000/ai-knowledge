@@ -1,8 +1,0 @@
-{
-  "name": "Eldritch Strike",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "At 10th level, when you hit a creature with a weapon attack, that creature has disadvantage on the next saving throw it makes against a spell you cast before the end of your next turn.",
-  "required_level": 10
-}

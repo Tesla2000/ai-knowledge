@@ -1,8 +1,0 @@
-{
-  "name": "Fighting Style",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "At 3rd level, you adopt a particular style of fighting as your specialty. Choose one of the following options: Dueling (gain a +2 bonus to damage rolls with a melee weapon in one hand), or Two-Weapon Fighting (add your ability modifier to the damage of the second attack when engaging in two-weapon fighting).",
-  "required_level": 3
-}

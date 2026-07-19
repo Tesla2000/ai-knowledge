@@ -1,8 +1,0 @@
-{
-  "name": "Warping Implosion",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "At 18th level, you can teleport to an unoccupied space you can see within 120 feet. Creatures within 30 feet of your former space must make a Strength saving throw. On a failed save, they take damage and are pulled toward your previous location. You can use this feature again by spending sorcery points.",
-  "required_level": 18
-}

@@ -1,8 +1,0 @@
-{
-  "name": "Unarmored Defense",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "While you are not wearing any armor, your armor class equals 10 + your Dexterity modifier + your Constitution modifier. You can use a shield and still gain this benefit.",
-  "required_level": 1
-}

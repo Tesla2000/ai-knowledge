@@ -1,8 +1,0 @@
-{
-  "name": "Aura of the Sentinel",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "You emit an aura of alertness that grants a bonus to initiative equal to your proficiency bonus to you and creatures within 10 feet. At 18th level, the range increases to 30 feet.",
-  "required_level": 7
-}

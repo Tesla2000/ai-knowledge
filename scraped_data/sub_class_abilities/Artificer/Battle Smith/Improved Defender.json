@@ -1,8 +1,0 @@
-{
-  "name": "Improved Defender",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "At 15th level, the damage and healing of your Arcane Jolt increase to 4d6, your steel defender gains a +2 bonus to Armor Class, and attackers take damage when your defender uses Deflect Attack.",
-  "required_level": 15
-}

@@ -1,8 +1,0 @@
-{
-  "name": "War Magic",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Beginning at 7th level, when you use your action to cast a cantrip, you can make one weapon attack as a bonus action.",
-  "required_level": 7
-}

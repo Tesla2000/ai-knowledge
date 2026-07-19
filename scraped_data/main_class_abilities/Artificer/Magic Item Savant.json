@@ -1,8 +1,0 @@
-{
-  "name": "Magic Item Savant",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "At 14th level, you can attune to up to five magic items and ignore requirements on using magic items.",
-  "required_level": 14
-}

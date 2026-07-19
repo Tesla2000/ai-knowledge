@@ -1,8 +1,0 @@
-{
-  "name": "Starlight Step",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "As a bonus action, you can magically teleport up to 30 feet to an unoccupied space you can see. You can use this trait a number of times equal to your proficiency bonus, and regain all expended uses when you finish a long rest.",
-  "required_level": 0
-}

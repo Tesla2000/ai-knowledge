@@ -1,8 +1,0 @@
-{
-  "name": "Poison Resilience",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "You have advantage on saving throws you make to avoid or end the poisoned condition on yourself. You also have resistance to poison damage.",
-  "required_level": 0
-}

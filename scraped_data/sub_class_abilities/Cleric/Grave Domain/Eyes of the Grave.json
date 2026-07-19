@@ -1,8 +1,0 @@
-{
-  "name": "Eyes of the Grave",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "At 1st level, you gain the ability to occasionally sense the presence of the undead. As an action, you can open your awareness to magically detect undead within 60 feet of you that aren't behind total cover and aren't protected from divination magic. You can use this feature a number of times equal to your Wisdom modifier (minimum of once). You regain all expended uses when you finish a long rest.",
-  "required_level": 1
-}

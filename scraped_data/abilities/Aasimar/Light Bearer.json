@@ -1,8 +1,0 @@
-{
-  "name": "Light Bearer",
-  "ability_type": "free_action",
-  "combat_related": false,
-  "spell_grant": true,
-  "description": "You know the Light cantrip. Charisma is your spellcasting ability for it.",
-  "required_level": 1
-}

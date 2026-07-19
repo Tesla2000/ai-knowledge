@@ -1,8 +1,0 @@
-{
-  "name": "Legacy of Maladomini",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": true,
-  "description": "You know the Thaumaturgy cantrip. Once you reach 3rd level, you can cast the Ray of Sickness spell once as a 2nd-level spell. Once you reach 5th level, you can also cast the Crown of Madness spell once. You must finish a long rest to cast these spells again with this trait. Charisma is your spellcasting ability for these spells.",
-  "required_level": 0
-}

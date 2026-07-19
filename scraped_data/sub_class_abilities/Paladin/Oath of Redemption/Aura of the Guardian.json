@@ -1,8 +1,0 @@
-{
-  "name": "Aura of the Guardian",
-  "ability_type": "reaction",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "You can shield your allies from harm at the cost of your own health. When a creature within 10 feet of you takes damage, you can use your reaction to magically take that damage, instead of that creature taking it. This damage can't be reduced in any way. At 18th level, the range of this aura increases to 30 feet.",
-  "required_level": 7
-}

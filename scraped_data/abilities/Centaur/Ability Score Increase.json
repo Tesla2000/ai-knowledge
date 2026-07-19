@@ -1,8 +1,0 @@
-{
-  "name": "Ability Score Increase",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "When determining your character\u2019s ability scores, increase one score by 2 and increase a different score by 1, or increase three different scores by 1. You can't raise any of your scores above 20.",
-  "required_level": 0
-}

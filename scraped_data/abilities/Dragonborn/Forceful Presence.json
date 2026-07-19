@@ -1,8 +1,0 @@
-{
-  "name": "Forceful Presence",
-  "ability_type": "action",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "When you make an Intimidation or Persuasion check, you can do so with advantage once per long rest.",
-  "required_level": 1
-}

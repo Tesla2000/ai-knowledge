@@ -1,8 +1,0 @@
-{
-  "name": "Spells of the Mark",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": true,
-  "description": "If you have the Spellcasting or Pact Magic class feature, the spells on the Mark of Warding Spells table are added to the spell list of your Spellcasting class.",
-  "required_level": 0
-}

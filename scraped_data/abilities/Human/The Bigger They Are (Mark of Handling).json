@@ -1,8 +1,0 @@
-{
-  "name": "The Bigger They Are (Mark of Handling)",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Starting at 3rd level, you can target a Beast or a Monstrosity when you cast Animal Friendship or Speak With Animals.",
-  "required_level": 3
-}

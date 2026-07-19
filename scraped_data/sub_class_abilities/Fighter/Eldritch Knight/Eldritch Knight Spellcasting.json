@@ -1,8 +1,0 @@
-{
-  "name": "Eldritch Knight Spellcasting",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": true,
-  "description": "When you reach 3rd level, you augment your martial prowess with the ability to cast spells. You know three 1st-level wizard spells of your choice, two of which you must choose from the abjuration and evocation spells on the wizard spell list. Intelligence is your spellcasting ability for your wizard spells, since you learn your spells through study and memorization.",
-  "required_level": 3
-}

@@ -1,8 +1,0 @@
-{
-  "name": "Experimental Elixir",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Produce an experimental elixir in an empty flask after a long rest, which can be consumed for various effects. Can create additional elixirs by expending spell slots.",
-  "required_level": 3
-}

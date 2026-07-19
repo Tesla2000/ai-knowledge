@@ -1,8 +1,0 @@
-{
-  "name": "Martial Arts",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "You gain mastery of combat styles that use unarmed strikes and monk weapons. You can use Dexterity instead of Strength for the attack and damage rolls of your unarmed strikes and monk weapons. You can roll a d4 in place of the normal damage of your unarmed strike or monk weapon. You can make one unarmed strike as a bonus action after using the Attack action with an unarmed strike or a monk weapon.",
-  "required_level": 1
-}

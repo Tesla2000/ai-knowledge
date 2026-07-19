@@ -1,8 +1,0 @@
-{
-  "name": "Dwarven Toughness",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Your hit point maximum increases by 1, and it increases by 1 every time you gain a level.",
-  "required_level": 0
-}

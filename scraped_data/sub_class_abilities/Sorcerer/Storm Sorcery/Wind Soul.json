@@ -1,8 +1,0 @@
-{
-  "name": "Wind Soul",
-  "ability_type": "free_action",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "You gain immunity to lightning and thunder damage and a magical flying speed of 60 feet. You can grant magical flying speed to creatures equal to 3 + your Charisma modifier for 1 hour.",
-  "required_level": 18
-}

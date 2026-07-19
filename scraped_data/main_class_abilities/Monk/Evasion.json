@@ -1,8 +1,0 @@
-{
-  "name": "Evasion",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "You can dodge out of the way of certain area effects, taking no damage on a successful Dexterity saving throw.",
-  "required_level": 7
-}

@@ -1,8 +1,0 @@
-{
-  "name": "Hurl Through Hell",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "When you hit a creature with an attack, you can use this feature to instantly transport the target through the lower planes. At the end of your next turn, the target returns to the space it previously occupied, or the nearest unoccupied space. If the target is not a fiend, it takes 10d10 psychic damage. Once you use this feature, you can't use it again until you finish a long rest.",
-  "required_level": 14
-}

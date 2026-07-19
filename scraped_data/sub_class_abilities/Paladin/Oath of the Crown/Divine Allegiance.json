@@ -1,8 +1,0 @@
-{
-  "name": "Divine Allegiance",
-  "ability_type": "reaction",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "When a creature within 5 feet of you takes damage, you can use your reaction to magically substitute your own health for that of the target creature, taking the damage instead.",
-  "required_level": 7
-}

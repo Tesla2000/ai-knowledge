@@ -1,8 +1,0 @@
-{
-  "name": "Dual Mind (Unearthed Arcana)",
-  "ability_type": "reaction",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "When you make a Wisdom saving throw, you can use your reaction to gain advantage on the roll. You can use this trait immediately before or after you roll, but before any of the roll's effects occur.",
-  "required_level": 0
-}

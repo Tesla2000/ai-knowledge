@@ -1,8 +1,0 @@
-{
-  "name": "Channel Divinity: Twilight Sanctuary",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "At 2nd level, as an action, you can create a sphere of twilight with a 30-foot radius that lasts for 1 minute. Creatures in the sphere can gain temporary hit points or have effects causing them to be charmed or frightened ended.",
-  "required_level": 2
-}

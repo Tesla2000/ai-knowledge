@@ -1,8 +1,0 @@
-{
-  "name": "Feral Senses",
-  "ability_type": "free_action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "When you attack a creature you can't see, your inability to see it doesn't impose disadvantage, and you can detect the location of any invisible creature within 30 feet of you.",
-  "required_level": 18
-}

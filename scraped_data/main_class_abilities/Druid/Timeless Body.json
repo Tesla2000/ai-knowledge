@@ -1,8 +1,0 @@
-{
-  "name": "Timeless Body",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "Starting at 18th level, you age more slowly; for every 10 years that pass, your body ages only 1 year.",
-  "required_level": 18
-}

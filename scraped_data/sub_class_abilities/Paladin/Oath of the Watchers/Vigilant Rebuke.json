@@ -1,8 +1,0 @@
-{
-  "name": "Vigilant Rebuke",
-  "ability_type": "reaction",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Whenever you or a creature within 30 feet succeeds on an Intelligence, Wisdom, or Charisma saving throw, you can deal 2d8 + your Charisma modifier force damage to the creature that forced the saving throw.",
-  "required_level": 15
-}

@@ -1,8 +1,0 @@
-{
-  "name": "Totemic Attunement (Elk)",
-  "ability_type": "free_action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "While raging, you can use a bonus action to pass through the space of a Large or smaller creature which must succeed on a Strength saving throw or be knocked prone and take damage.",
-  "required_level": 14
-}

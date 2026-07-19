@@ -1,8 +1,0 @@
-{
-  "name": "Psychic Blades",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "You can manifest your psionic power as shimmering blades of psychic energy. Whenever you take the Attack action, you can manifest a psychic blade from your free hand and make the attack with that blade. This magic blade is a simple melee weapon with the finesse and thrown properties, dealing psychic damage equal to 1d6 plus your ability modifier used for the attack roll. After attacking with the blade, you can make a bonus action attack with a second psychic blade, dealing 1d4 damage.",
-  "required_level": 3
-}

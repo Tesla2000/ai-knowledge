@@ -1,8 +1,0 @@
-{
-  "name": "Arcane Jolt",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "At 9th level, when you hit a target with a magic weapon or your steel defender hits a target, you can channel magical energy to either deal an extra 2d6 force damage or heal a creature or object for 2d6 hit points.",
-  "required_level": 9
-}

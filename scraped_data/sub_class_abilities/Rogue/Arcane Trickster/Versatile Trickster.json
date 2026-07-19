@@ -1,8 +1,0 @@
-{
-  "name": "Versatile Trickster",
-  "ability_type": "bonus_action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "At 13th level, you can use your Mage Hand to distract targets. As a bonus action, you can designate a creature within 5 feet of the spectral hand, giving you advantage on attack rolls against that creature until the end of the turn.",
-  "required_level": 13
-}

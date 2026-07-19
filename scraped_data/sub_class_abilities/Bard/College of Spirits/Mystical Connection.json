@@ -1,8 +1,0 @@
-{
-  "name": "Mystical Connection",
-  "ability_type": "free_action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "At 14th level, whenever you roll on the Spirit Tales table, you can roll the die twice and choose which of the two effects to bestow. If you roll the same number on both dice, you can ignore the number and choose any effect on the table.",
-  "required_level": 14
-}

@@ -1,8 +1,0 @@
-{
-  "name": "Acolyte of Nature",
-  "ability_type": "free_action",
-  "combat_related": false,
-  "spell_grant": true,
-  "description": "At 1st level, you learn one cantrip of your choice from the druid spell list. This cantrip counts as a cleric cantrip for you, but it doesn\u2019t count against the number of cleric cantrips you know. You also gain proficiency in one of the following skills of your choice: Animal Handling, Nature, or Survival.",
-  "required_level": 1
-}

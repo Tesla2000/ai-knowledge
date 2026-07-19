@@ -1,8 +1,0 @@
-{
-  "name": "Hold Breath",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "You can hold your breath for up to 1 hour.",
-  "required_level": 0
-}

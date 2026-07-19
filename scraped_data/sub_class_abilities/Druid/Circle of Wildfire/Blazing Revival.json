@@ -1,8 +1,0 @@
-{
-  "name": "Blazing Revival",
-  "ability_type": "reaction",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "At 14th level, if you are reduced to 0 hit points, you can cause your wildfire spirit to drop to 0 hit points, regaining half your hit points and standing up. Usable once per long rest.",
-  "required_level": 14
-}

@@ -1,8 +1,0 @@
-{
-  "name": "Arcane Mastery",
-  "ability_type": "free_action",
-  "combat_related": false,
-  "spell_grant": true,
-  "description": "At 17th level, you choose four spells from the wizard spell list, one from each of the following levels: 6th, 7th, 8th, and 9th. You add them to your list of domain spells, which are always prepared and count as cleric spells for you.",
-  "required_level": 17
-}

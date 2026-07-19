@@ -1,8 +1,0 @@
-{
-  "name": "Soul of Vengeance",
-  "ability_type": "reaction",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "When a creature under the effect of your Vow of Enmity makes an attack, you can use your reaction to make a melee weapon attack against that creature if it is within range.",
-  "required_level": 15
-}

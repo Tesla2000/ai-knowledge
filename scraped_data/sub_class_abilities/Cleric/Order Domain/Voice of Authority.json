@@ -1,8 +1,0 @@
-{
-  "name": "Voice of Authority",
-  "ability_type": "reaction",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "When you cast a spell targeting an ally, that ally can use their reaction to make one weapon attack against a creature you can see.",
-  "required_level": 1
-}

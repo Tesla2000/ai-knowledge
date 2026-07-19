@@ -1,8 +1,0 @@
-{
-  "name": "Dwarven Resilience",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "You have advantage on saving throws against poison, and you have resistance against poison damage.",
-  "required_level": 0
-}

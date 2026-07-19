@@ -1,8 +1,0 @@
-{
-  "name": "Eldritch Versatility",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "Whenever you reach a level in this class that grants the Ability Score Improvement feature, you can do one of the following: Replace one cantrip you learned from this class's Pact Magic feature with another cantrip from the warlock spell list; Replace the option you chose for the Pact Boon feature with one of that feature's other options; If you're 12th level or higher, replace one spell from your Mystic Arcanum feature with another warlock spell of the same level.",
-  "required_level": 4
-}

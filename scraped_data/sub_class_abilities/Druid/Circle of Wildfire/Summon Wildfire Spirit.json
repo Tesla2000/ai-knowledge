@@ -1,8 +1,0 @@
-{
-  "name": "Summon Wildfire Spirit",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "At 2nd level, you can summon your wildfire spirit by expending one use of your Wild Shape feature. The spirit appears in an unoccupied space within 30 feet and deals fire damage to creatures nearby upon its arrival.",
-  "required_level": 2
-}

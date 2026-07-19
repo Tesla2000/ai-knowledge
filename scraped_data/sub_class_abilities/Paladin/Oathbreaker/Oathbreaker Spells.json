@@ -1,8 +1,0 @@
-{
-  "name": "Oathbreaker Spells",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": true,
-  "description": "You gain oath spells at the paladin levels listed: 3rd level - Hellish Rebuke, Inflict Wounds; 5th level - Crown of Madness, Darkness; 9th level - Animate Dead, Bestow Curse; 13th level - Blight, Confusion; 17th level - Contagion, Dominate Person.",
-  "required_level": 3
-}

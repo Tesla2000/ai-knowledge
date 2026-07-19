@@ -1,8 +1,0 @@
-{
-  "name": "Enchantment Savant",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "The gold and time you must spend to copy an Enchantment spell into your spellbook is halved.",
-  "required_level": 2
-}

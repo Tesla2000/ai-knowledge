@@ -1,8 +1,0 @@
-{
-  "name": "Ki",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "You can harness the mystic energy of ki, starting with three features: Flurry of Blows, Patient Defense, and Step of the Wind. You can spend ki points to fuel these features.",
-  "required_level": 2
-}

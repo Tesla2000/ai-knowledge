@@ -1,8 +1,0 @@
-{
-  "name": "Signature Spells",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": true,
-  "description": "When you reach 20th level, you gain mastery over two powerful spells and can cast them with little effort.",
-  "required_level": 20
-}

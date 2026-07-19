@@ -1,8 +1,0 @@
-{
-  "name": "Necrotic Husk",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "At 10th level, you have resistance to necrotic damage and immunity while transformed using Form of Dread. When reduced to 0 hit points, you can drop to 1 hit point, dealing necrotic damage to creatures around you, gaining 1 level of exhaustion. This can be used once until 1d4 long rests.",
-  "required_level": 10
-}

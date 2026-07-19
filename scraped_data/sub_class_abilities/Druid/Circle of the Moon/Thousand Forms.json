@@ -1,8 +1,0 @@
-{
-  "name": "Thousand Forms",
-  "ability_type": "action",
-  "combat_related": false,
-  "spell_grant": true,
-  "description": "You can cast the Alter Self spell at will.",
-  "required_level": 14
-}

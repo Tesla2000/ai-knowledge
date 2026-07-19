@@ -1,8 +1,0 @@
-{
-  "name": "Beast Spells",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": true,
-  "description": "Beginning at 18th level, you can cast many of your druid spells in any shape you assume using Wild Shape, performing somatic and verbal components while in beast shape.",
-  "required_level": 18
-}

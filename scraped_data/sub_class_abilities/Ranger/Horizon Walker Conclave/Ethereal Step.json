@@ -1,8 +1,0 @@
-{
-  "name": "Ethereal Step",
-  "ability_type": "bonus_action",
-  "combat_related": false,
-  "spell_grant": true,
-  "description": "At 7th level, you learn to step through the Ethereal Plane. As a bonus action on your turn, you can cast the Etherealness spell with this feature, without expending a spell slot, but the spell ends at the end of the current turn. Once you use this feature, you can\u2019t use it again until you finish a short or long rest.",
-  "required_level": 7
-}

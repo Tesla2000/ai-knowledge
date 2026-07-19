@@ -1,8 +1,0 @@
-{
-  "name": "Searing Sunburst",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "You create an orb of light that erupts into a 20-foot-radius sphere of radiant light. Each creature in that sphere must succeed on a Constitution saving throw or take 2d6 radiant damage. You can spend ki points to increase the damage by 2d6 per point spent, up to a maximum of 3 points.",
-  "required_level": 11
-}

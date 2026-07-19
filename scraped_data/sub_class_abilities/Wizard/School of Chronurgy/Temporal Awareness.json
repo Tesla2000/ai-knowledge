@@ -1,8 +1,0 @@
-{
-  "name": "Temporal Awareness",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "Starting at 2nd level, you can add your Intelligence modifiers to your initiative rolls.",
-  "required_level": 2
-}

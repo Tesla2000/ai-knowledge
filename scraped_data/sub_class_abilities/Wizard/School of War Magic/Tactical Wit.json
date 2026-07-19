@@ -1,8 +1,0 @@
-{
-  "name": "Tactical Wit",
-  "ability_type": "bonus_action",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "You can give yourself a bonus to your initiative rolls equal to your Intelligence modifier.",
-  "required_level": 2
-}

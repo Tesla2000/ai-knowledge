@@ -1,8 +1,0 @@
-{
-  "name": "Mastery of Death",
-  "ability_type": "reaction",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "When you are reduced to 0 hit points, you can expend 1 ki point (no action required) to have 1 hit point instead.",
-  "required_level": 11
-}

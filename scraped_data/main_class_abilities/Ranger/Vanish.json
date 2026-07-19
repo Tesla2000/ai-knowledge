@@ -1,8 +1,0 @@
-{
-  "name": "Vanish",
-  "ability_type": "free_action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "You can use the Hide action as a bonus action on your turn and can't be tracked by nonmagical means unless you choose to leave a trail.",
-  "required_level": 14
-}

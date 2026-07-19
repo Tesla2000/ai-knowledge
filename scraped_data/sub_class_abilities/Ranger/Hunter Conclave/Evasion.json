@@ -1,8 +1,0 @@
-{
-  "name": "Evasion",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "When you are subjected to an effect, such as a red dragon\u2019s fiery breath or a lightning bolt spell, that allows you to make a Dexterity saving throw to take only half damage, you instead take no damage if you succeed on a saving throw, and only half damage if you fail.",
-  "required_level": 15
-}

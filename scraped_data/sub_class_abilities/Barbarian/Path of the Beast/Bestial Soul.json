@@ -1,8 +1,0 @@
-{
-  "name": "Bestial Soul",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Beginning at 6th level, the natural weapons of your Form of the Beast count as magical for the purpose of overcoming resistance and immunity to nonmagical attacks and damage. You can also gain benefits when you finish a short or long rest, such as gaining a swimming/climbing speed or enhancing your jump.",
-  "required_level": 6
-}

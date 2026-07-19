@@ -1,8 +1,0 @@
-{
-  "name": "Brutal Critical",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Beginning at 9th level, you can roll one additional weapon damage die for a critical hit with a melee attack. This increases to two additional dice at 13th level and three additional dice at 17th level.",
-  "required_level": 9
-}

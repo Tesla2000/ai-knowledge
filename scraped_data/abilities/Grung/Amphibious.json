@@ -1,8 +1,0 @@
-{
-  "name": "Amphibious",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "You can breathe air and water.",
-  "required_level": 0
-}

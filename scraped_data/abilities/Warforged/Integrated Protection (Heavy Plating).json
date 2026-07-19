@@ -1,8 +1,0 @@
-{
-  "name": "Integrated Protection (Heavy Plating)",
-  "ability_type": "passive",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "AC = 16 + your proficiency bonus; disadvantage on Dexterity (Stealth) checks.",
-  "required_level": 1
-}

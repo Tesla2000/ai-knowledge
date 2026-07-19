@@ -1,8 +1,0 @@
-{
-  "name": "Diamond Soul",
-  "ability_type": "passive",
-  "combat_related": false,
-  "spell_grant": false,
-  "description": "You gain proficiency in all saving throws and can reroll a failed saving throw by spending 1 ki point.",
-  "required_level": 14
-}

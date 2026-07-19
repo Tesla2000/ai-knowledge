@@ -1,8 +1,0 @@
-{
-  "name": "Bond of Fang and Scale",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "At 7th level the bond you share with your drake intensifies, protecting you and stoking the drake\u2019s fury. When you summon your drake, it grows wings on its back and gains a flying speed equal to its walking speed. You can use the drake as a mount if your size is Medium or smaller. The drake\u2019s Bite attack deals an extra 1d6 damage of the type chosen for the drake\u2019s Draconic Essence, and you gain resistance to that damage type.",
-  "required_level": 7
-}

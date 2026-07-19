@@ -1,8 +1,0 @@
-{
-  "name": "Wards and Seals",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": true,
-  "description": "You can cast the Alarm and Mage Armor spells with this trait. Starting at 3rd level, you can also cast the Arcane Lock spell with it. Once you cast either spell with this trait, you can't cast that spell again until you finish a Long Rest.",
-  "required_level": 3
-}

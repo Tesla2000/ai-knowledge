@@ -1,8 +1,0 @@
-{
-  "name": "Illusory Reality",
-  "ability_type": "bonus_action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "When you cast an illusion spell of 1st level or higher, you can choose one inanimate, nonmagical object that is part of the illusion and make that object real for 1 minute as a bonus action.",
-  "required_level": 14
-}

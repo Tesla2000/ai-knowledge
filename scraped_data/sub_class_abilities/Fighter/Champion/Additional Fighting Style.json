@@ -1,8 +1,0 @@
-{
-  "name": "Additional Fighting Style",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "You can choose a second option from the Fighting Style class feature.",
-  "required_level": 10
-}

@@ -1,8 +1,0 @@
-{
-  "name": "Vigilant Blessing",
-  "ability_type": "action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "At 1st level, you give one creature you touch advantage on the next initiative roll it makes. This benefit ends immediately after the roll or if you use this feature again.",
-  "required_level": 1
-}

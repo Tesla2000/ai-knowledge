@@ -1,8 +1,0 @@
-{
-  "name": "Ranger Conclave",
-  "ability_type": "free_action",
-  "combat_related": true,
-  "spell_grant": false,
-  "description": "Choose a ranger conclave to emulate, granting you features at levels 3, 7, 11, and 15.",
-  "required_level": 3
-}

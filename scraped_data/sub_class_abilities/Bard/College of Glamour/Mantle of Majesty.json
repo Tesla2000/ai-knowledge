@@ -1,8 +1,0 @@
-{
-  "name": "Mantle of Majesty",
-  "ability_type": "bonus_action",
-  "combat_related": true,
-  "spell_grant": true,
-  "description": "As a bonus action, you cast Command without expending a spell slot and take on an appearance of unearthly beauty for 1 minute. During this time, you can cast Command as a bonus action on each of your turns. Any creature charmed by you automatically fails its saving throw against the Command you cast with this feature. This feature can be used once per long rest.",
-  "required_level": 6
-}

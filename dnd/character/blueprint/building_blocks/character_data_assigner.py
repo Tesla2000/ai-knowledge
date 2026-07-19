@@ -32,10 +32,11 @@ from dnd.character.blueprint.states.state import Blueprint
 from dnd.character.blueprint.states.wizard._info import WizardInfo
 from typing import TypeVar
 
-_WIK = TypeVar("_WIK", bound=WizardInfo[AnyWizardLevel] | None)
-_CK = TypeVar("_CK", bound=CasterInfo | None)
 from pydantic import ConfigDict
 from pydantic import Field
+
+_WIK = TypeVar("_WIK", bound=WizardInfo[AnyWizardLevel] | None)
+_CK = TypeVar("_CK", bound=CasterInfo | None)
 
 
 class CharacterDataAssigner(BuildingBlock):

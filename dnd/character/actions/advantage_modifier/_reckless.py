@@ -9,7 +9,6 @@ from dnd.character.actions.advantage_modifier._base import (
 from dnd.character.actions.advantage_modifier._type import AdvantageModifierType
 
 if TYPE_CHECKING:
-    from dnd.fight.battlemap import Battlemap
     from dnd.fight.fight_character import FightCharacter
 
 
@@ -18,9 +17,8 @@ class _RecklessAdvantageModifier(_AdvantageModifier):
 
     def apply(
         self,
-        battlemap: Battlemap,
         attacker: FightCharacter,
-        defender: FightCharacter,
+        _defender: FightCharacter,
     ) -> bool:
         return True
 
@@ -32,8 +30,7 @@ class _RecklessGrantsAdvantageModifier(_GrantsAdvantageModifier):
 
     def apply(
         self,
-        battlemap: Battlemap,
         attacker: FightCharacter,
-        defender: FightCharacter,
+        _defender: FightCharacter,
     ) -> bool:
         return True

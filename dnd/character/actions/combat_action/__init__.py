@@ -1,6 +1,5 @@
-from typing import Annotated, Union
-
-from pydantic import Field
+from enum import IntEnum
+from typing import Union
 
 from dnd.character.actions._base_action import (
     Action,
@@ -9,27 +8,24 @@ from dnd.character.actions._base_action import (
     CombatAction,
     FreeAction,
 )
-from dnd.character.actions.attack_with_axe import AttackWithAxe
 from dnd.character.actions.attack_with_battleaxe import AttackWithBattleaxe
 from dnd.character.actions.attack_with_greataxe import AttackWithGreataxe
 from dnd.character.actions.attack_with_handaxe import AttackWithHandaxe
 from dnd.character.actions.cast_chromatic_orb import CastChromaticOrb
 from dnd.character.actions.cast_fireball import CastFireball
-from dnd.character.actions.use_rage import UseRage
+from dnd.character.actions.combat.attack_with_axe import AttackWithAxe
+from dnd.character.actions.combat.use_rage import UseRage
 from dnd.character.actions.use_reckless_attack import UseRecklessAttack
 
-AnyCombatAction = Annotated[
-    Union[
-        AttackWithAxe,
-        AttackWithBattleaxe,
-        AttackWithGreataxe,
-        AttackWithHandaxe,
-        CastChromaticOrb,
-        CastFireball,
-        UseRage,
-        UseRecklessAttack,
-    ],
-    Field(discriminator="name"),
+type AnyCombatAction[T: IntEnum] = Union[
+    AttackWithAxe[T],
+    AttackWithBattleaxe[T],
+    AttackWithGreataxe[T],
+    AttackWithHandaxe[T],
+    CastChromaticOrb[T],
+    CastFireball[T],
+    UseRage[T],
+    UseRecklessAttack[T],
 ]
 
 __all__ = [

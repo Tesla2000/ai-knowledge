@@ -1,33 +1,33 @@
 from __future__ import annotations
 
 from random import randint
-from typing import TYPE_CHECKING, Literal, Protocol, Self, runtime_checkable
-
-from pydantic import InstanceOf
+from typing import TYPE_CHECKING, Generic, Literal
 
 from dnd.character._ability_name import AbilityName
 from dnd.character.actions._base_action import Action
 from dnd.choices.stats_creation.statistic import Statistic
+from dnd.fight._combatant_slot import SlotT
 from dnd.fight.fight_character import FightCharacter, SpellcasterFightCharacter
 
 if TYPE_CHECKING:
     from dnd.fight.battlemap import Battlemap
 
 
-@runtime_checkable
-class _FireballPerformer(Protocol):
-    def cast_fireball(self, battlemap: Battlemap) -> Battlemap: ...
-
-
-class CastFireball(Action):
+class CastFireball(Action[SlotT], Generic[SlotT]):
     name: Literal[AbilityName.FIREBALL] = AbilityName.FIREBALL
     range_tails: Literal[30] = 30
     radius_tails: Literal[4] = 4
+    actor_slot: SlotT
     center_position: tuple[int, int]
-    performer: InstanceOf[_FireballPerformer]
+    spell_save_dc: int
 
     @classmethod
-    def create(cls, fighter: FightCharacter, battlemap: Battlemap) -> tuple[Self, ...]:
+    def create(
+        cls,
+        actor_slot: SlotT,
+        fighter: FightCharacter,
+        battlemap: Battlemap[SlotT],
+    ) -> tuple[CastFireball[SlotT], ...]:
         if not isinstance(fighter, SpellcasterFightCharacter):
             return ()
         if not fighter.has_action:
@@ -36,25 +36,41 @@ class CastFireball(Action):
             return ()
         if AbilityName.FIREBALL not in fighter.character.actions:
             return ()
-
         spell_save_dc = 8 + sum(
             m.apply(fighter.character)
             for m in fighter.character.spell_save_dc_modifiers
         )
-        center = fighter.position
+        results: list[CastFireball[SlotT]] = []
+        for target_slot in battlemap.all_slots():
+            if target_slot == actor_slot:
+                continue
+            match battlemap.get_combatant(target_slot):
+                case FightCharacter() as target:
+                    results.append(
+                        cls(
+                            actor_slot=actor_slot,
+                            center_position=target.position,
+                            spell_save_dc=spell_save_dc,
+                        )
+                    )
+                case _:
+                    pass
+        return tuple(results)
 
-        class _Performer:
-            def __init__(self, target_pos: tuple[int, int]) -> None:
-                self._center = target_pos
-                self._spell_save_dc = spell_save_dc
-
-            def cast_fireball(self, bm: Battlemap) -> Battlemap:
-                damage = sum(randint(1, 6) for _ in range(8))
-                cx, cy = self._center
-                result = bm.replace_combatant(
-                    fighter.position, fighter.spend_action().spend_level_3_slot()
-                )
-                for combatant in bm.combatants:
+    def perform(self, battlemap: Battlemap[SlotT]) -> Battlemap[SlotT]:
+        match battlemap.get_combatant(self.actor_slot):
+            case SpellcasterFightCharacter() as fighter:
+                pass
+            case _:
+                return battlemap
+        battlemap = battlemap.replace_combatant(
+            self.actor_slot, fighter.spend_action().spend_level_3_slot()
+        )
+        damage = sum(randint(1, 6) for _ in range(8))
+        cx, cy = self.center_position
+        for slot in battlemap.all_slots():
+            match battlemap.get_combatant(slot):
+                case FightCharacter() as combatant:
                     tx, ty = combatant.position
                     if max(abs(tx - cx), abs(ty - cy)) > 4:
                         continue
@@ -64,26 +80,10 @@ class CastFireball(Action):
                             Statistic.DEXTERITY
                         ]
                     )
-                    hit_damage = damage if roll < self._spell_save_dc else damage // 2
-                    current = next(
-                        c for c in result.combatants if c.position == combatant.position
+                    hit_damage = damage if roll < self.spell_save_dc else damage // 2
+                    battlemap = battlemap.replace_combatant(
+                        slot, combatant.take_damage(hit_damage)
                     )
-                    result = result.replace_combatant(
-                        combatant.position, current.take_damage(hit_damage)
-                    )
-                return result
-
-        results: list[Self] = []
-        for combatant in battlemap.combatants:
-            if combatant.position == center:
-                continue
-            results.append(
-                cls(
-                    center_position=combatant.position,
-                    performer=_Performer(combatant.position),
-                )
-            )
-        return tuple(results)
-
-    def perform(self, battlemap: Battlemap) -> Battlemap:
-        return self.performer.cast_fireball(battlemap)
+                case _:
+                    pass
+        return battlemap

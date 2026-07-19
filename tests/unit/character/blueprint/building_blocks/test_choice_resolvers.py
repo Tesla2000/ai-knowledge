@@ -269,11 +269,17 @@ class TestSignatureSpellChoiceResolver:
         resolver = RandomSignatureSpellChoiceResolver(seed=1)
         result = resolver.apply(bp)
         assert ThirdLevel.FIREBALL in result.wizard.signature_spells
-        assert len(set(result.wizard.signature_spells)) == len(result.wizard.signature_spells)
+        assert len(set(result.wizard.signature_spells)) == len(
+            result.wizard.signature_spells
+        )
 
     def test_skips_when_no_choices(self) -> None:
         bp = _WIZ_L20_BP.model_copy(
-            update={"wizard": _WIZ_L20_BP.wizard.model_copy(update={"n_signature_spell_choices": 0})}
+            update={
+                "wizard": _WIZ_L20_BP.wizard.model_copy(
+                    update={"n_signature_spell_choices": 0}
+                )
+            }
         )
         resolver = RandomSignatureSpellChoiceResolver()
         result = resolver.apply(bp)

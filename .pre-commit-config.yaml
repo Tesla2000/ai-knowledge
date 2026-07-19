@@ -55,6 +55,7 @@ repos:
           - typing_protocol_intersection
           - structured_output_creator
           - pydantic_frozendict
+          - uuid-string
         args: [ --strict, --config-file, pyproject.toml ]
   - repo: https://github.com/Tesla2000/any-hook
     rev: v3.21.0

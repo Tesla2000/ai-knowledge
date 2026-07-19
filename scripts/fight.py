@@ -209,9 +209,6 @@ class _FightCli(BaseSettings):
             for i, c in turn_order
             if isinstance(c, _Creature)
         ]
-        player_prefixes: list[str] = [
-            c.name for i, c in turn_order if not isinstance(c, _Creature)
-        ]
         hp: dict[str, int] = {}
         max_hp: dict[str, int] = {}
         for idx, c in turn_order:

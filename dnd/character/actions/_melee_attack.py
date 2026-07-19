@@ -2,11 +2,10 @@ from __future__ import annotations
 
 from abc import abstractmethod
 from random import randint
-from typing import TYPE_CHECKING, Literal, Protocol, runtime_checkable
+from typing import TYPE_CHECKING, ClassVar, Generic, Literal, Self
 from uuid import uuid4
 
-from pydantic import InstanceOf
-from typing import Self
+from pydantic import BaseModel, ConfigDict
 from uuid_string import UUIDString
 
 from dnd._combat_event import (
@@ -22,22 +21,142 @@ from dnd.character.actions.advantage_modifier import (
     GrantsAdvantageModifier,
 )
 from dnd.character.actions.attack_bonus_modifier import AttackBonusModifier
-from dnd.choices.equipment_creation.weapons import HitDieSize
+from dnd.choices.equipment_creation.weapons import HitDieSize, WeaponName
+from dnd.fight._combatant_slot import SlotT
 from dnd.fight.fight_character import FightCharacter
 
 if TYPE_CHECKING:
     from dnd.fight.battlemap import Battlemap
 
 
-@runtime_checkable
-class _MeleeAttackPerformer(Protocol):
-    def attack(self, battlemap: Battlemap) -> Battlemap: ...
+class _MeleeAttackExecutor(BaseModel, Generic[SlotT]):
+    model_config: ClassVar[ConfigDict] = ConfigDict(frozen=True)
+    actor_slot: SlotT
+    target_slot: SlotT
+    die: HitDieSize
+    is_oa: bool = False
+
+    def attack(self, bm: Battlemap[SlotT]) -> Battlemap[SlotT]:
+        match bm.get_combatant(self.actor_slot):
+            case FightCharacter() as fighter:
+                pass
+            case _:
+                return bm
+
+        if self.is_oa:
+            bm = bm.replace_combatant(self.actor_slot, fighter.spend_reaction())
+        else:
+            bm = bm.replace_combatant(self.actor_slot, fighter.spend_attack())
+
+        match bm.get_combatant(self.target_slot):
+            case FightCharacter() as target:
+                pass
+            case _:
+                return bm
+
+        attack_id = UUIDString(str(uuid4()))
+
+        bm = bm.emit(
+            CreatureTargetedEvent(
+                attacker_id=fighter.id,
+                defender_id=target.id,
+                attack_id=attack_id,
+            )
+        )
+
+        match bm.get_combatant(self.actor_slot):
+            case FightCharacter() as fighter:
+                pass
+            case _:
+                return bm
+
+        match bm.get_combatant(self.target_slot):
+            case FightCharacter() as target:
+                pass
+            case _:
+                return bm
+
+        use_advantage = any(
+            isinstance(m, AdvantageModifier) and m.apply(fighter, target)
+            for m in fighter.modifiers
+        ) or any(
+            isinstance(m, GrantsAdvantageModifier) and m.apply(fighter, target)
+            for m in target.modifiers
+        )
+        use_disadvantage = any(
+            isinstance(m, DisadvantageModifier) and m.apply(fighter, target)
+            for m in fighter.modifiers
+        )
+        roll1 = randint(1, 20)
+        roll2 = randint(1, 20) if (use_advantage or use_disadvantage) else roll1
+        if use_advantage and not use_disadvantage:
+            roll = max(roll1, roll2)
+        elif use_disadvantage and not use_advantage:
+            roll = min(roll1, roll2)
+        else:
+            roll = roll1
+        is_crit = roll == 20
+        total_bonus = sum(
+            m.apply(fighter, target)
+            for m in fighter.modifiers
+            if isinstance(m, AttackBonusModifier)
+        )
+
+        bm = bm.emit(
+            CreatureAttackedEvent(
+                attacker_id=fighter.id,
+                defender_id=target.id,
+                roll=roll,
+                total_bonus=total_bonus,
+                is_crit=is_crit,
+                attack_id=attack_id,
+            )
+        )
+
+        match bm.get_combatant(self.target_slot):
+            case FightCharacter() as target:
+                pass
+            case _:
+                return bm
+
+        if roll + total_bonus >= target.ac:
+            damage = randint(1, int(self.die))
+            match bm.get_combatant(self.actor_slot):
+                case FightCharacter() as fighter:
+                    pass
+                case _:
+                    return bm
+            if is_crit:
+                damage += sum(
+                    randint(1, int(self.die))
+                    for _ in range(fighter.brutal_critical_dice)
+                )
+
+            bm = bm.emit(
+                MeleeDamageEvent(
+                    attacker_id=fighter.id,
+                    defender_id=target.id,
+                    damage=damage,
+                    is_crit=is_crit,
+                    attack_id=attack_id,
+                )
+            )
+
+            match bm.get_combatant(self.target_slot):
+                case FightCharacter() as target:
+                    bm = bm.replace_combatant(
+                        self.target_slot, target.take_damage(damage)
+                    )
+                case _:
+                    pass
+
+        return bm
 
 
-class _MeleeAttack(Action):
+class _MeleeAttack(Action[SlotT], Generic[SlotT]):
     range_tails: Literal[1] = 1
-    target_position: tuple[int, int]
-    performer: InstanceOf[_MeleeAttackPerformer]
+    actor_slot: SlotT
+    executor: _MeleeAttackExecutor[SlotT]
 
     @classmethod
     @abstractmethod
@@ -48,142 +167,77 @@ class _MeleeAttack(Action):
     def _ability(cls) -> AbilityName: ...
 
     @classmethod
-    def create(cls, fighter: FightCharacter, battlemap: Battlemap) -> tuple[Self, ...]:
-        class _Performer:
-            def __init__(
-                self,
-                fighter_id: UUIDString,
-                target_id: UUIDString,
-                die: HitDieSize,
-            ) -> None:
-                self._fighter_id = fighter_id
-                self._target_id = target_id
-                self._die = die
+    @abstractmethod
+    def _weapon(cls) -> WeaponName: ...
 
-            def attack(self, bm: Battlemap) -> Battlemap:
-                current_fighter = bm.find_fight_character(self._fighter_id)
-                if current_fighter is None:
-                    return bm
-                target_opt = bm.find_fight_character(self._target_id)
+    @classmethod
+    @abstractmethod
+    def _two_handed(cls) -> bool: ...
 
-                bm = bm.replace_combatant(
-                    current_fighter.position, current_fighter.spend_attack()
-                )
-
-                if target_opt is None:
-                    return bm
-
-                attack_id = UUIDString(str(uuid4()))
-
-                bm = bm.emit(
-                    CreatureTargetedEvent(
-                        attacker_id=self._fighter_id,
-                        defender_id=self._target_id,
-                        attack_id=attack_id,
-                    )
-                )
-
-                current_fighter = bm.find_fight_character(self._fighter_id)
-                if current_fighter is None:
-                    return bm
-
-                target_opt = bm.find_fight_character(self._target_id)
-                if target_opt is None:
-                    return bm
-
-                use_advantage = any(
-                    m.apply(bm, current_fighter, target_opt)
-                    for m in current_fighter.modifiers
-                    if isinstance(m, AdvantageModifier)
-                ) or any(
-                    m.apply(bm, current_fighter, target_opt)
-                    for m in target_opt.modifiers
-                    if isinstance(m, GrantsAdvantageModifier)
-                )
-                use_disadvantage = any(
-                    m.apply(bm, current_fighter, target_opt)
-                    for m in current_fighter.modifiers
-                    if isinstance(m, DisadvantageModifier)
-                )
-                roll1 = randint(1, 20)
-                roll2 = randint(1, 20) if (use_advantage or use_disadvantage) else roll1
-                if use_advantage and not use_disadvantage:
-                    roll = max(roll1, roll2)
-                elif use_disadvantage and not use_advantage:
-                    roll = min(roll1, roll2)
-                else:
-                    roll = roll1
-                is_crit = roll == 20
-                total_bonus = sum(
-                    m.apply(bm, current_fighter, target_opt)
-                    for m in current_fighter.modifiers
-                    if isinstance(m, AttackBonusModifier)
-                )
-
-                bm = bm.emit(
-                    CreatureAttackedEvent(
-                        attacker_id=self._fighter_id,
-                        defender_id=self._target_id,
-                        roll=roll,
-                        total_bonus=total_bonus,
-                        is_crit=is_crit,
-                        attack_id=attack_id,
-                    )
-                )
-
-                target_opt = bm.find_fight_character(self._target_id)
-                if target_opt is None:
-                    return bm
-
-                if roll + total_bonus >= target_opt.ac:
-                    damage = randint(1, int(self._die))
-                    if is_crit:
-                        damage += sum(
-                            randint(1, int(self._die))
-                            for _ in range(current_fighter.brutal_critical_dice)
-                        )
-
-                    bm = bm.emit(
-                        MeleeDamageEvent(
-                            attacker_id=self._fighter_id,
-                            defender_id=self._target_id,
-                            damage=damage,
-                            is_crit=is_crit,
-                            attack_id=attack_id,
-                        )
-                    )
-
-                    target_opt = bm.find_fight_character(self._target_id)
-                    if target_opt is not None:
-                        bm = bm.replace_combatant(
-                            target_opt.position, target_opt.take_damage(damage)
-                        )
-
-                return bm
-
+    @classmethod
+    def create(
+        cls, actor_slot: SlotT, fighter: FightCharacter, battlemap: Battlemap[SlotT]
+    ) -> tuple[Self, ...]:
         if (
             fighter.attacks_remaining <= 0
             or cls._ability() not in fighter.character.actions
         ):
             return ()
+        weapon = cls._weapon()
+        if cls._two_handed():
+            if fighter.main_hand != weapon or fighter.off_hand != weapon:
+                return ()
+        else:
+            if fighter.main_hand != weapon and fighter.off_hand != weapon:
+                return ()
         fx, fy = fighter.position
         die = cls._damage_die()
         results: list[Self] = []
-        for combatant in battlemap.combatants:
-            if not isinstance(combatant, FightCharacter):
-                continue
-            if combatant.position == fighter.position:
-                continue
-            tx, ty = combatant.position
-            if max(abs(tx - fx), abs(ty - fy)) > 1:
-                continue
-            results.append(
-                cls(
-                    target_position=combatant.position,
-                    performer=_Performer(fighter.id, combatant.id, die),
-                )
-            )
+        for target_slot in battlemap.all_slots():
+            match battlemap.get_combatant(target_slot):
+                case FightCharacter() as target if target.position != fighter.position:
+                    tx, ty = target.position
+                    if max(abs(tx - fx), abs(ty - fy)) <= 1:
+                        results.append(
+                            cls(
+                                name=cls._ability(),
+                                actor_slot=actor_slot,
+                                executor=_MeleeAttackExecutor(
+                                    actor_slot=actor_slot,
+                                    target_slot=target_slot,
+                                    die=die,
+                                ),
+                            )
+                        )
+                case _:
+                    pass
         return tuple(results)
 
-    def perform(self, battlemap: Battlemap) -> Battlemap:
-        return self.performer.attack(battlemap)
+    @classmethod
+    def create_oa(
+        cls,
+        actor_slot: SlotT,
+        attacker: FightCharacter,
+        target_slot: SlotT,
+        battlemap: Battlemap[SlotT],
+    ) -> tuple[Self, ...]:
+        if cls._ability() not in attacker.character.actions:
+            return ()
+        if not attacker.has_reaction:
+            return ()
+        die = cls._damage_die()
+        return (
+            cls(
+                name=cls._ability(),
+                actor_slot=actor_slot,
+                executor=_MeleeAttackExecutor(
+                    actor_slot=actor_slot,
+                    target_slot=target_slot,
+                    die=die,
+                    is_oa=True,
+                ),
+            ),
+        )
+
+    def perform(self, battlemap: Battlemap[SlotT]) -> Battlemap[SlotT]:
+        return self.executor.attack(battlemap)

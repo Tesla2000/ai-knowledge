@@ -1,5 +1,6 @@
 from typing import Literal
 
+from dnd.character._ability_name import AbilityName
 from dnd.character.blueprint.building_blocks.building_block_type import (
     BuildingBlockType,
 )
@@ -75,6 +76,3 @@ class SorcererLevel1WildMagic(SorcererLevel1Base[Literal[SorcererSubclass.WILD_M
             )
         result = blueprint.model_copy(update=update)
         return self.skill_choice_resolver.apply(result) if is_first_class else result
-
-
-from dnd.character._ability_name import AbilityName

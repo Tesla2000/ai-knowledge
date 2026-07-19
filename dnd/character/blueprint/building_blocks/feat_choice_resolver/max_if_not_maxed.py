@@ -33,11 +33,12 @@ from dnd.character.blueprint.states._caster_info import CasterInfo
 from dnd.character.blueprint.states.state import Blueprint
 from dnd.character.blueprint.states.wizard._info import WizardInfo
 
-_WIK = TypeVar("_WIK", bound=WizardInfo[AnyWizardLevel] | None)
-_CK = TypeVar("_CK", bound=CasterInfo | None)
 from dnd.character.stats import Stats
 from dnd.character.feature.feats import FeatName
 from pydantic import Field
+
+_WIK = TypeVar("_WIK", bound=WizardInfo[AnyWizardLevel] | None)
+_CK = TypeVar("_CK", bound=CasterInfo | None)
 
 
 class MaxIfNotMaxedResolver(FeatChoiceResolver):

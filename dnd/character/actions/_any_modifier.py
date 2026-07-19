@@ -10,7 +10,9 @@ from dnd.character.actions.attack_bonus_modifier import RageAttackBonusModifier
 from dnd.character.actions.conditional_immunity_modifier import (
     MindlessRageConditionalImmunityModifier,
 )
-from dnd.character.actions.damage_resistance_modifier import RageDamageResistanceModifier
+from dnd.character.actions.damage_resistance_modifier import (
+    RageDamageResistanceModifier,
+)
 
 AnyModifier = Annotated[
     Union[

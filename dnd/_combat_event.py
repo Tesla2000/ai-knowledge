@@ -14,6 +14,7 @@ class CombatEventType(StrEnum):
     CREATURE_TARGETED = auto()
     CREATURE_ATTACKED = auto()
     MELEE_DAMAGE = auto()
+    OPPORTUNITY_ATTACK = auto()
 
 
 class RageEndsEvent(BaseModel):
@@ -73,6 +74,15 @@ class MeleeDamageEvent(BaseModel):
     attack_id: UUIDString
 
 
+class OpportunityAttackEvent(BaseModel):
+    model_config = ConfigDict(frozen=True)
+    type: Literal[CombatEventType.OPPORTUNITY_ATTACK] = (
+        CombatEventType.OPPORTUNITY_ATTACK
+    )
+    attacker_slot: int
+    target_slot: int
+
+
 AnyCombatEvent = Annotated[
     Union[
         RageEndsEvent,
@@ -83,6 +93,7 @@ AnyCombatEvent = Annotated[
         CreatureTargetedEvent,
         CreatureAttackedEvent,
         MeleeDamageEvent,
+        OpportunityAttackEvent,
     ],
     Field(discriminator="type"),
 ]
@@ -93,6 +104,7 @@ __all__ = [
     "CreatureAttackedEvent",
     "CreatureTargetedEvent",
     "MeleeDamageEvent",
+    "OpportunityAttackEvent",
     "RageEndsEvent",
     "RoundEndEvent",
     "RoundStartEvent",

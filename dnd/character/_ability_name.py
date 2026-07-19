@@ -6,6 +6,10 @@ class AbilityName(StrEnum):
     ATTACK_WITH_BATTLEAXE = auto()
     ATTACK_WITH_GREATAXE = auto()
     ATTACK_WITH_HANDAXE = auto()
+    DRAW_ITEM = "Draw Item"
+    DROP_ITEM = "Drop Item"
+    MOVE = auto()
+    PASS = auto()
     RAGE = auto()
     ABJURATION_SAVANT = "Abjuration Savant"
     ADJUST_DENSITY = "Adjust Density"

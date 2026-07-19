@@ -8,7 +8,6 @@ from typing import Self
 
 if TYPE_CHECKING:
     from dnd.fight._combat_event import AnyCombatEvent
-    from dnd.fight.battlemap import Battlemap
     from dnd.fight.fight_character import FightCharacter
 
 
@@ -18,9 +17,8 @@ class _AttackBonusModifier(BaseModel, ABC):
     @abstractmethod
     def apply(
         self,
-        battlemap: Battlemap,
         attacker: FightCharacter,
-        defender: FightCharacter,
+        _defender: FightCharacter,
     ) -> int: ...
 
     def on_event(

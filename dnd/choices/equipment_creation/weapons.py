@@ -49,3 +49,20 @@ class WeaponName(StrEnum):
     CROSSBOW_HEAVY = "Crossbow, heavy"
     LONGBOW = "Longbow"
     NET = "Net"
+    SHIELD = "Shield"
+
+
+TWO_HANDED_WEAPONS: frozenset[WeaponName] = frozenset(
+    {
+        WeaponName.GREATAXE,
+        WeaponName.GREATSWORD,
+        WeaponName.GLAIVE,
+        WeaponName.HALBERD,
+        WeaponName.LANCE,
+        WeaponName.PIKE,
+        WeaponName.MAUL,
+        WeaponName.GREATCLUB,
+        WeaponName.CROSSBOW_HEAVY,
+        WeaponName.LONGBOW,
+    }
+)

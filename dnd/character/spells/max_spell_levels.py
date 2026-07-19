@@ -65,7 +65,7 @@ class SpellSlots(NamedTuple):
         for i in range(8, -1, -1):
             if self[i] > 0:
                 return cast(SpellLevel, i + 1)
-        return cast(SpellLevel, 0)
+        return 0
 
 
 FULL_CASTER_SPELL_SLOTS: tuple[SpellSlots, ...] = (

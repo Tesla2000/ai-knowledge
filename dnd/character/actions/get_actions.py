@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from enum import IntEnum
 
 from dnd.character._ability_name import AbilityName
 from dnd.character.actions.combat import (
@@ -11,53 +11,73 @@ from dnd.character.actions.combat import (
     AttackWithHandaxe,
     CastChromaticOrb,
     CastFireball,
+    DrawItem,
+    DropItem,
+    Pass,
     UseRage,
     UseRecklessAttack,
 )
+from dnd.fight.battlemap import Battlemap
 from dnd.fight.fight_character import FightCharacter
 
-if TYPE_CHECKING:
-    from dnd.fight.battlemap import Battlemap
 
-
-def get_actions(
-    fighter: FightCharacter, battlemap: Battlemap
-) -> tuple[tuple[AnyCombatAction, ...], ...]:
-    candidates: list[tuple[AnyCombatAction, ...]] = []
+def get_actions[T: IntEnum](
+    actor_slot: T,
+    fighter: FightCharacter,
+    battlemap: Battlemap[T],
+) -> tuple[tuple[AnyCombatAction[T], ...], ...]:
+    candidates: list[tuple[AnyCombatAction[T], ...]] = []
     for action_name in fighter.character.actions:
         match action_name:
             case AbilityName.ATTACK_WITH_AXE:
-                options = AttackWithAxe.create(fighter, battlemap)
-                if options:
-                    candidates.append(options)
+                axe_options = AttackWithAxe.create(actor_slot, fighter, battlemap)
+                if axe_options:
+                    candidates.append(axe_options)
             case AbilityName.ATTACK_WITH_BATTLEAXE:
-                options = AttackWithBattleaxe.create(fighter, battlemap)
-                if options:
-                    candidates.append(options)
+                battleaxe_options = AttackWithBattleaxe.create(
+                    actor_slot, fighter, battlemap
+                )
+                if battleaxe_options:
+                    candidates.append(battleaxe_options)
             case AbilityName.ATTACK_WITH_GREATAXE:
-                options = AttackWithGreataxe.create(fighter, battlemap)
-                if options:
-                    candidates.append(options)
+                greataxe_options = AttackWithGreataxe.create(
+                    actor_slot, fighter, battlemap
+                )
+                if greataxe_options:
+                    candidates.append(greataxe_options)
             case AbilityName.ATTACK_WITH_HANDAXE:
-                options = AttackWithHandaxe.create(fighter, battlemap)
-                if options:
-                    candidates.append(options)
+                handaxe_options = AttackWithHandaxe.create(
+                    actor_slot, fighter, battlemap
+                )
+                if handaxe_options:
+                    candidates.append(handaxe_options)
             case AbilityName.CHROMATIC_ORB:
-                orb_options = CastChromaticOrb.create(fighter, battlemap)
+                orb_options = CastChromaticOrb.create(actor_slot, fighter, battlemap)
                 if orb_options:
                     candidates.append(orb_options)
             case AbilityName.FIREBALL:
-                fireball_options = CastFireball.create(fighter, battlemap)
+                fireball_options = CastFireball.create(actor_slot, fighter, battlemap)
                 if fireball_options:
                     candidates.append(fireball_options)
             case AbilityName.RAGE:
-                rage_options = UseRage.create(fighter)
+                rage_options = UseRage.create(actor_slot, fighter, battlemap)
                 if rage_options:
                     candidates.append(rage_options)
             case AbilityName.RECKLESS_ATTACK:
-                reckless_options = UseRecklessAttack.create(fighter)
+                reckless_options = UseRecklessAttack.create(
+                    actor_slot, fighter, battlemap
+                )
                 if reckless_options:
                     candidates.append(reckless_options)
             case _:
                 pass
+    pass_options = Pass.create(actor_slot, fighter, battlemap)
+    if pass_options:
+        candidates.append(pass_options)
+    drop_options = DropItem.create(actor_slot, fighter, battlemap)
+    if drop_options:
+        candidates.append(drop_options)
+    draw_options = DrawItem.create(actor_slot, fighter, battlemap)
+    if draw_options:
+        candidates.append(draw_options)
     return tuple(candidates)

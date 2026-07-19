@@ -33,7 +33,6 @@ from pydantic import NonNegativeInt, BaseModel, ConfigDict
 from pydantic import PositiveInt
 from dnd.character.blueprint.sentinels import ClassPreSubclassLevel
 from dnd.character.blueprint.sentinels import FirstSubclassPreLevel
-from dnd.character.blueprint.sentinels import SecondSubclassPreLevel
 from dnd.character.blueprint.sentinels import SorcererPreSubclassLevel
 from dnd.character.blueprint.sentinels import ThirdSubclassPreLevel
 from dnd.character.blueprint.sentinels import _ARK_co

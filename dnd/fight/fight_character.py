@@ -35,11 +35,14 @@ from dnd.fight._combat_event import (
     RageEndsEvent,
     TurnStartEvent,
 )
+from dnd.fight._team_id import TeamId
 from dnd.character.presentable_character import PresentableCharacter
 from dnd.character.spells.max_spell_levels import SpellSlots
+from dnd.choices.equipment_creation.weapons import TWO_HANDED_WEAPONS, WeaponName
 from dnd.choices.stats_creation.statistic import Statistic
 from dnd.fight._condition import Condition
 from dnd.fight._fight_resource import _FightResource, ResourceName
+from dnd.other_profficiencies import ArmorProficiency
 
 
 class _CombatantBase[HealthType: NonNegativeInt](BaseModel):
@@ -52,6 +55,9 @@ class _CombatantBase[HealthType: NonNegativeInt](BaseModel):
     temporary_health: NonNegativeInt = 0
     conditions: frozenset[Condition] = frozenset()
     resources: tuple[_FightResource, ...] = ()
+    team_id: TeamId = TeamId.A
+    speed: int = 30
+    movement_remaining: int = 0
     position: tuple[int, int] = (0, 0)
 
     @property
@@ -98,10 +104,16 @@ class FightCharacter(_CombatantBase[PositiveInt]):
     attacks_remaining: int = 1
     brutal_critical_dice: int = 0
     con_save_bonus: int = 0
+    main_hand: WeaponName | None = None
+    off_hand: WeaponName | None = None
 
     @property
     def ac(self) -> int:
-        return self.base_ac
+        shield_held = (
+            self.main_hand == WeaponName.SHIELD or self.off_hand == WeaponName.SHIELD
+        )
+        shield_prof = ArmorProficiency.SHIELDS in self.character.armor_proficiencies
+        return self.base_ac + (2 if shield_held and shield_prof else 0)
 
     @classmethod
     def from_presentable(
@@ -109,6 +121,7 @@ class FightCharacter(_CombatantBase[PositiveInt]):
         character: PresentableCharacter,
         initiative: int,
         resources: tuple[_FightResource, ...] = (),
+        team_id: TeamId = TeamId.A,
     ) -> FightCharacter:
         number_of_attacks = 2 if AbilityName.EXTRA_ATTACK in character.actions else 1
         brutal_critical_dice = (
@@ -121,6 +134,22 @@ class FightCharacter(_CombatantBase[PositiveInt]):
             else 0
         )
         con_save_bonus = character.stats.get_modifier(Statistic.CONSTITUTION)
+        weapons = character.weapons
+        has_shield = WeaponName.SHIELD in character.other_equipment
+        main_hand: WeaponName | None = None
+        off_hand: WeaponName | None = None
+        for w in weapons:
+            if w in TWO_HANDED_WEAPONS:
+                main_hand = w
+                off_hand = w
+                break
+            if main_hand is None:
+                main_hand = w
+            elif off_hand is None:
+                off_hand = w
+                break
+        if has_shield and off_hand is None:
+            off_hand = WeaponName.SHIELD
         return cls(
             character=character,
             initiative=initiative,
@@ -128,10 +157,14 @@ class FightCharacter(_CombatantBase[PositiveInt]):
             current_health=character.health,
             base_ac=character.ac,
             resources=resources,
+            team_id=team_id,
+            speed=character.speed or 30,
             number_of_attacks=number_of_attacks,
             attacks_remaining=number_of_attacks,
             brutal_critical_dice=brutal_critical_dice,
             con_save_bonus=con_save_bonus,
+            main_hand=main_hand,
+            off_hand=off_hand,
         )
 
     def on_event(
@@ -154,10 +187,17 @@ class FightCharacter(_CombatantBase[PositiveInt]):
                 update["has_reaction"] = True
                 update["has_free_action"] = True
                 update["attacks_remaining"] = self.number_of_attacks
+                update["movement_remaining"] = self.speed
                 surviving = [
-                    m for m in surviving
+                    m
+                    for m in surviving
                     if not isinstance(
-                        m, (AdvantageModifier, DisadvantageModifier, GrantsAdvantageModifier)
+                        m,
+                        (
+                            AdvantageModifier,
+                            DisadvantageModifier,
+                            GrantsAdvantageModifier,
+                        ),
                     )
                 ]
             case RageEndsEvent() if event.target_id == self.id:
@@ -235,6 +275,7 @@ class SpellcasterFightCharacter(FightCharacter):
         character: PresentableCharacter,
         initiative: int,
         resources: tuple[_FightResource, ...] = (),
+        team_id: TeamId = TeamId.A,
     ) -> SpellcasterFightCharacter:
         number_of_attacks = 2 if AbilityName.EXTRA_ATTACK in character.actions else 1
         brutal_critical_dice = (
@@ -247,18 +288,40 @@ class SpellcasterFightCharacter(FightCharacter):
             else 0
         )
         con_save_bonus = character.stats.get_modifier(Statistic.CONSTITUTION)
+        weapons = character.weapons
+        has_shield = WeaponName.SHIELD in character.other_equipment
+        main_hand: WeaponName | None = None
+        off_hand: WeaponName | None = None
+        for w in weapons:
+            if w in TWO_HANDED_WEAPONS:
+                main_hand = w
+                off_hand = w
+                break
+            if main_hand is None:
+                main_hand = w
+            elif off_hand is None:
+                off_hand = w
+                break
+        if has_shield and off_hand is None:
+            off_hand = WeaponName.SHIELD
+        caster_info = character.caster
+        assert caster_info is not None
         return cls(
             character=character,
             initiative=initiative,
             max_health=character.health,
             current_health=character.health,
             base_ac=character.ac,
-            remaining_spell_slots=character.spell_slots,
+            remaining_spell_slots=caster_info.spell_slots,
             resources=resources,
+            team_id=team_id,
+            speed=character.speed or 30,
             number_of_attacks=number_of_attacks,
             attacks_remaining=number_of_attacks,
             brutal_critical_dice=brutal_critical_dice,
             con_save_bonus=con_save_bonus,
+            main_hand=main_hand,
+            off_hand=off_hand,
         )
 
     def spend_level_1_slot(self) -> Self:
@@ -276,7 +339,7 @@ class SpellcasterFightCharacter(FightCharacter):
         )
 
 
-class DownedFightCharacter(_CombatantBase):
+class DownedFightCharacter(_CombatantBase[NonNegativeInt]):
     current_health: NonNegativeInt = 0
     death_save_successes: Annotated[int, Field(ge=0, le=3)] = 0
     death_save_failures: Annotated[int, Field(ge=0, le=3)] = 0
@@ -291,6 +354,9 @@ class DownedFightCharacter(_CombatantBase):
             temporary_health=0,
             conditions=fc.conditions | {Condition.UNCONSCIOUS},
             resources=fc.resources,
+            team_id=fc.team_id,
+            speed=fc.speed,
+            position=fc.position,
         )
 
     def make_death_save(
@@ -320,10 +386,13 @@ class DownedFightCharacter(_CombatantBase):
             temporary_health=self.temporary_health,
             conditions=self.conditions - {Condition.UNCONSCIOUS},
             resources=self.resources,
+            team_id=self.team_id,
+            speed=self.speed,
+            position=self.position,
         )
 
 
-class StabilizedFightCharacter(_CombatantBase):
+class StabilizedFightCharacter(_CombatantBase[NonNegativeInt]):
     current_health: NonNegativeInt = 0
 
     @classmethod
@@ -336,6 +405,9 @@ class StabilizedFightCharacter(_CombatantBase):
             temporary_health=fc.temporary_health,
             conditions=fc.conditions,
             resources=fc.resources,
+            team_id=fc.team_id,
+            speed=fc.speed,
+            position=fc.position,
         )
 
     def heal(self, amount: int) -> FightCharacter:
@@ -348,10 +420,13 @@ class StabilizedFightCharacter(_CombatantBase):
             temporary_health=self.temporary_health,
             conditions=self.conditions - {Condition.UNCONSCIOUS},
             resources=self.resources,
+            team_id=self.team_id,
+            speed=self.speed,
+            position=self.position,
         )
 
 
-class DeadFightCharacter(_CombatantBase):
+class DeadFightCharacter(_CombatantBase[NonNegativeInt]):
     current_health: NonNegativeInt = 0
 
     @classmethod
@@ -364,6 +439,9 @@ class DeadFightCharacter(_CombatantBase):
             temporary_health=0,
             conditions=fc.conditions | {Condition.UNCONSCIOUS},
             resources=fc.resources,
+            team_id=fc.team_id,
+            speed=fc.speed,
+            position=fc.position,
         )
 
     def revive(self, amount: int) -> FightCharacter:
@@ -376,6 +454,9 @@ class DeadFightCharacter(_CombatantBase):
             temporary_health=0,
             conditions=self.conditions - {Condition.UNCONSCIOUS},
             resources=self.resources,
+            team_id=self.team_id,
+            speed=self.speed,
+            position=self.position,
         )
 
 

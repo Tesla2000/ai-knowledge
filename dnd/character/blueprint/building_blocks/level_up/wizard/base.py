@@ -20,7 +20,6 @@ from dnd.character.blueprint.sentinels import AnyClassLevel
 from dnd.character.blueprint.sentinels import AnyNonZeroWizardLevel
 from dnd.character.blueprint.sentinels import AnySorcererLevel
 from dnd.character.blueprint.sentinels import AnyStatChoices
-from dnd.character.blueprint.sentinels import AnyWizardLevel
 from dnd.character.blueprint.sentinels import MaybeCharacterData
 from dnd.character.blueprint.sentinels import MaybeHealth
 from dnd.character.blueprint.sentinels import SecondSubclassPostLevel
@@ -38,9 +37,7 @@ from dnd.choices.class_creation.character_class import WizardSubclass
 from pydantic import PositiveInt
 
 
-class WizardUpgradeLevelBase[LevelOut: AnyNonZeroWizardLevel](
-    BuildingBlock, ABC
-):
+class WizardUpgradeLevelBase[LevelOut: AnyNonZeroWizardLevel](BuildingBlock, ABC):
     """Base for WizardLevel1: upgrades Blueprint[Race, Stats, ...] -> Blueprint[..., WizardInfo, CasterInfo, ...]."""
 
     health_increase: AnyD6HealthIncrease = Field(
@@ -545,9 +542,11 @@ class WizardLevel18UpgradeLevelBase[
     ]:
         r1 = self._update_blueprint(blueprint)
         r2 = self.health_increase.apply(r1)
-        interim_wizard: WizardInfo[WizardSubclassLevel[LevelOut, SubclassT]] = WizardInfo[
-            WizardSubclassLevel[LevelOut, SubclassT]
-        ].model_validate({"prepared_spells": blueprint.wizard.prepared_spells})
+        interim_wizard: WizardInfo[WizardSubclassLevel[LevelOut, SubclassT]] = (
+            WizardInfo[WizardSubclassLevel[LevelOut, SubclassT]].model_validate(
+                {"prepared_spells": blueprint.wizard.prepared_spells}
+            )
+        )
         interim = Blueprint[
             Race,
             Stats,
@@ -577,10 +576,10 @@ class WizardLevel18UpgradeLevelBase[
             }
         )
         after_spells = self.spell_assigner.apply(interim)
-        new_wizard18: WizardLevel18Info[WizardSubclassLevel[LevelOut, SubclassT]] = WizardLevel18Info[
-            WizardSubclassLevel[LevelOut, SubclassT]
-        ].model_validate(
-            dict(after_spells.wizard) | {"spell_mastery_spells": ()}
+        new_wizard18: WizardLevel18Info[WizardSubclassLevel[LevelOut, SubclassT]] = (
+            WizardLevel18Info[WizardSubclassLevel[LevelOut, SubclassT]].model_validate(
+                dict(after_spells.wizard) | {"spell_mastery_spells": ()}
+            )
         )
         new_caster = after_spells.caster.increase_full_caster()
         return Blueprint[
@@ -690,9 +689,11 @@ class WizardPostLevel18SharedLevelBase[
     ]:
         r1 = self._update_blueprint(blueprint)
         r2 = self.health_increase.apply(r1)
-        interim_wizard: WizardInfo[WizardSubclassLevel[LevelOut, SubclassT]] = WizardInfo[
-            WizardSubclassLevel[LevelOut, SubclassT]
-        ].model_validate({"prepared_spells": blueprint.wizard.prepared_spells})
+        interim_wizard: WizardInfo[WizardSubclassLevel[LevelOut, SubclassT]] = (
+            WizardInfo[WizardSubclassLevel[LevelOut, SubclassT]].model_validate(
+                {"prepared_spells": blueprint.wizard.prepared_spells}
+            )
+        )
         interim = Blueprint[
             Race,
             Stats,
@@ -722,11 +723,11 @@ class WizardPostLevel18SharedLevelBase[
             }
         )
         after_spells = self.spell_assigner.apply(interim)
-        new_wizard18: WizardLevel18Info[WizardSubclassLevel[LevelOut, SubclassT]] = WizardLevel18Info[
-            WizardSubclassLevel[LevelOut, SubclassT]
-        ].model_validate(
-            dict(after_spells.wizard)
-            | {"spell_mastery_spells": blueprint.wizard.spell_mastery_spells}
+        new_wizard18: WizardLevel18Info[WizardSubclassLevel[LevelOut, SubclassT]] = (
+            WizardLevel18Info[WizardSubclassLevel[LevelOut, SubclassT]].model_validate(
+                dict(after_spells.wizard)
+                | {"spell_mastery_spells": blueprint.wizard.spell_mastery_spells}
+            )
         )
         new_caster = after_spells.caster.increase_full_caster()
         return Blueprint[
@@ -918,9 +919,11 @@ class WizardLevel20UpgradeLevelBase[
     ]:
         r1 = self._update_blueprint(blueprint)
         r2 = self.health_increase.apply(r1)
-        interim_wizard: WizardInfo[WizardSubclassLevel[LevelOut, SubclassT]] = WizardInfo[
-            WizardSubclassLevel[LevelOut, SubclassT]
-        ].model_validate({"prepared_spells": blueprint.wizard.prepared_spells})
+        interim_wizard: WizardInfo[WizardSubclassLevel[LevelOut, SubclassT]] = (
+            WizardInfo[WizardSubclassLevel[LevelOut, SubclassT]].model_validate(
+                {"prepared_spells": blueprint.wizard.prepared_spells}
+            )
+        )
         interim = Blueprint[
             Race,
             Stats,
@@ -950,15 +953,15 @@ class WizardLevel20UpgradeLevelBase[
             }
         )
         after_spells = self.spell_assigner.apply(interim)
-        new_wizard20: WizardLevel20Info[WizardSubclassLevel[LevelOut, SubclassT]] = WizardLevel20Info[
-            WizardSubclassLevel[LevelOut, SubclassT]
-        ].model_validate(
-            dict(after_spells.wizard)
-            | {
-                "spell_mastery_spells": blueprint.wizard.spell_mastery_spells,
-                "signature_spells": (),
-                "n_signature_spell_choices": 2,
-            }
+        new_wizard20: WizardLevel20Info[WizardSubclassLevel[LevelOut, SubclassT]] = (
+            WizardLevel20Info[WizardSubclassLevel[LevelOut, SubclassT]].model_validate(
+                dict(after_spells.wizard)
+                | {
+                    "spell_mastery_spells": blueprint.wizard.spell_mastery_spells,
+                    "signature_spells": (),
+                    "n_signature_spell_choices": 2,
+                }
+            )
         )
         new_caster = after_spells.caster.increase_full_caster()
         return Blueprint[

@@ -8,7 +8,6 @@ from typing import Self
 
 if TYPE_CHECKING:
     from dnd.fight._combat_event import AnyCombatEvent
-    from dnd.fight.battlemap import Battlemap
     from dnd.fight.fight_character import FightCharacter
 
 
@@ -18,9 +17,8 @@ class _AdvantageModifier(BaseModel, ABC):
     @abstractmethod
     def apply(
         self,
-        battlemap: Battlemap,
         attacker: FightCharacter,
-        defender: FightCharacter,
+        _defender: FightCharacter,
     ) -> bool: ...
 
     def on_event(
@@ -31,14 +29,14 @@ class _AdvantageModifier(BaseModel, ABC):
 
 class _GrantsAdvantageModifier(BaseModel, ABC):
     """Placed on a defender; causes all attackers to gain advantage against them."""
+
     model_config = ConfigDict(frozen=True)
 
     @abstractmethod
     def apply(
         self,
-        battlemap: Battlemap,
         attacker: FightCharacter,
-        defender: FightCharacter,
+        _defender: FightCharacter,
     ) -> bool: ...
 
     def on_event(
@@ -53,9 +51,8 @@ class _DisadvantageModifier(BaseModel, ABC):
     @abstractmethod
     def apply(
         self,
-        battlemap: Battlemap,
         attacker: FightCharacter,
-        defender: FightCharacter,
+        _defender: FightCharacter,
     ) -> bool: ...
 
     def on_event(

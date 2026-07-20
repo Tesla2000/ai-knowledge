@@ -1,0 +1,94 @@
+{
+  "permissions": {
+    "allow": [
+      "Read",
+      "Grep",
+      "Glob",
+      "Bash(cat *)",
+      "Bash(ls)",
+      "Bash(ls *)",
+      "Bash(grep *)",
+      "Bash(rg *)",
+      "Bash(find *)",
+      "Bash(head *)",
+      "Bash(tail *)",
+      "Bash(wc *)",
+      "Bash(pwd)",
+      "Bash(tree *)",
+      "Bash(file *)",
+      "Bash(which *)",
+      "Bash(git status)",
+      "Bash(git status *)",
+      "Bash(git diff)",
+      "Bash(git diff *)",
+      "Bash(git log)",
+      "Bash(git log *)",
+      "Bash(git show *)",
+      "Bash(git branch *)",
+      "Write(./.claude/plans/**)",
+      "Edit(./.claude/plans/**)"
+    ],
+    "deny": [
+      "Write(./.pre-commit-config.yaml)",
+      "Edit(./.pre-commit-config.yaml)",
+      "Write(./pyproject.toml)",
+      "Edit(./pyproject.toml)",
+      "Write(./mypy.ini)",
+      "Edit(./mypy.ini)",
+      "Write(./.claude/settings.json)",
+      "Edit(./.claude/settings.json)",
+      "Write(./.claude/settings.local.json)",
+      "Edit(./.claude/settings.local.json)",
+      "Write(./.coveragerc)",
+      "Edit(./.coveragerc)",
+      "Read(./.env)",
+      "Bash(cat .env)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 .claude/hooks/pyi_guard.py"
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.file_path // .tool_input.command // \"\"' | { read -r target; case \"$target\" in *pre-commit-config.yaml*) reason=\"Do not weaken or remove pre-commit hooks to make checks pass; fix the underlying code instead.\";; *pyproject.toml*) reason=\"Do not add/remove dependencies or loosen tool config directly; use uv add and keep constraints intact.\";; *mypy.ini*) reason=\"Do not loosen mypy strictness to dodge type errors; fix the code instead.\";; *.claude/settings*.json*) reason=\"Claude must not modify its own permission scope. Instead, write the updated content to a new file next to the original (e.g. settings.json.new) so the user can review and apply it manually.\";; $HOME/.claude/plans/*) exit 0;; $HOME/.claude/*) reason=\"Do not write to the global ~/.claude config; use the project's local .claude/ directory instead. If that file is also protected, write the updated content to a new file next to the original so the user can apply it manually.\";; *) exit 0;; esac; jq -n --arg reason \"$reason\" '{hookSpecificOutput:{hookEventName:\"PreToolUse\",permissionDecision:\"deny\",permissionDecisionReason:$reason}}'; }"
+          }
+        ]
+      },
+      {
+        "matcher": "Read|Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.file_path // .tool_input.command // \"\"' | { read -r target; case \"$target\" in *.env*) reason=\".env contains secrets/credentials and must never be read into context.\";; *) exit 0;; esac; jq -n --arg reason \"$reason\" '{hookSpecificOutput:{hookEventName:\"PreToolUse\",permissionDecision:\"deny\",permissionDecisionReason:$reason}}'; }"
+          }
+        ]
+      }
+    ]
+  },
+  "sandbox": {
+    "enabled": true,
+    "network": {
+      "allowedDomains": [
+        "api.anthropic.com",
+        "github.com",
+        "*.github.com",
+        "*.githubusercontent.com",
+        "pypi.org",
+        "files.pythonhosted.org",
+        "registry.npmjs.org"
+      ]
+    }
+  },
+  "theme": "dark"
+}

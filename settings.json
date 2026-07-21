@@ -25,21 +25,14 @@
       "Bash(git log *)",
       "Bash(git show *)",
       "Bash(git branch *)",
-      "Write(./.claude/plans/**)",
       "Edit(./.claude/plans/**)"
     ],
     "deny": [
-      "Write(./.pre-commit-config.yaml)",
       "Edit(./.pre-commit-config.yaml)",
-      "Write(./pyproject.toml)",
       "Edit(./pyproject.toml)",
-      "Write(./mypy.ini)",
       "Edit(./mypy.ini)",
-      "Write(./.claude/settings.json)",
       "Edit(./.claude/settings.json)",
-      "Write(./.claude/settings.local.json)",
       "Edit(./.claude/settings.local.json)",
-      "Write(./.coveragerc)",
       "Edit(./.coveragerc)",
       "Read(./.env)",
       "Bash(cat .env)"

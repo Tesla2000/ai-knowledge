@@ -21,7 +21,11 @@ class PostToolUseHookPayload(BaseModel):
     model_config: ClassVar[ConfigDict] = ConfigDict(frozen=True)
 
     tool_name: str
-    tool_input: dict[str, str]
+    tool_input: dict[str, str | bool]
+
+    def string_field(self, key: str) -> str:
+        value = self.tool_input.get(key, "")
+        return value if isinstance(value, str) else ""
 
 
 class MatchStatementAdvisorHook(BaseModel):
@@ -30,12 +34,12 @@ class MatchStatementAdvisorHook(BaseModel):
     def evaluate(self, payload: PostToolUseHookPayload) -> None:
         if payload.tool_name not in ("Write", "Edit"):
             return
-        if not payload.tool_input.get("file_path", "").endswith(".py"):
+        if not payload.string_field("file_path").endswith(".py"):
             return
         if payload.tool_name == "Write":
-            content = payload.tool_input.get("content", "")
+            content = payload.string_field("content")
         else:
-            content = payload.tool_input.get("new_string", "")
+            content = payload.string_field("new_string")
 
         m = _PATTERN.search(content)
         if m:

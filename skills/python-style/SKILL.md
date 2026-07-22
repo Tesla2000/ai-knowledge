@@ -22,6 +22,7 @@ description: Python style rules: comprehensions, defaultdict, staticmethod vs cl
 - Do not define types between imports.
 - Do not remove unused imports unless they risk circular import.
 - Never use # type: ignore[import-not-found] -- add the package or create stubs.
+- Avoid a generic method whose type parameter isn't reflected in its return type, unless there's a valid reason (e.g. constraining two or more parameters to agree with each other); otherwise use the bound type directly instead of a TypeVar.
 - Use only ASCII punctuation. No em dashes, curly quotes, or ellipsis characters.
 - When mentioning files always use full path from root with line number: full_path:69
 
@@ -61,6 +62,19 @@ class _MyService(BaseModel): ...
 # module/__init__.py  -- public
 from module._my_service import _MyService as MyService
 __all__: list[str] = ["MyService"]
+```
+
+## Generic methods must use the type parameter in the return type
+
+```python
+# bad -- T only types one input, never comes back out
+def from_active[T: IntEnum](cls, fc: FightCharacter[T]) -> DownedFightCharacter: ...
+
+# good -- T flows through to the return type
+def on_event[T: IntEnum](self, event: AnyCombatEvent[T]) -> tuple[Self, tuple[AnyCombatEvent[T], ...]]: ...
+
+# good -- valid exception: T constrains two parameters to agree, return is unrelated
+def apply[SlotT: IntEnum](self, attacker: FightCharacter[SlotT], defender: FightCharacter[SlotT]) -> bool: ...
 ```
 
 ## Exhaustive enum matching (replaces runtime dict-completeness guards)

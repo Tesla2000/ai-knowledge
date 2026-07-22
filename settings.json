@@ -92,6 +92,14 @@
           {
             "type": "command",
             "command": "python3 .claude/hooks/match_statement_advisor.py"
+          },
+          {
+            "type": "command",
+            "command": "python3 .claude/hooks/literal_advisor.py"
+          },
+          {
+            "type": "command",
+            "command": "python3 .claude/hooks/generic_return_advisor.py"
           }
         ]
       }

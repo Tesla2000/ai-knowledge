@@ -4,14 +4,11 @@
       "Read",
       "Grep",
       "Glob",
-      "Bash(cat *)",
       "Bash(ls)",
       "Bash(ls *)",
       "Bash(grep *)",
       "Bash(rg *)",
       "Bash(find *)",
-      "Bash(head *)",
-      "Bash(tail *)",
       "Bash(wc *)",
       "Bash(pwd)",
       "Bash(tree *)",
@@ -66,11 +63,43 @@
             "command": "jq -r '.tool_input.file_path // .tool_input.command // \"\"' | { read -r target; case \"$target\" in *.env*) reason=\".env contains secrets/credentials and must never be read into context.\";; *) exit 0;; esac; jq -n --arg reason \"$reason\" '{hookSpecificOutput:{hookEventName:\"PreToolUse\",permissionDecision:\"deny\",permissionDecisionReason:$reason}}'; }"
           }
         ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "if": "Bash(cat *)",
+            "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"Use the Read tool instead of cat. Read/Grep/Glob do not go through the sandboxed bwrap wrapper that Bash commands do, which currently fails to initialize in this devcontainer. This is a permanent redirect, not a temporary restriction -- do not retry with dangerouslyDisableSandbox.\"}}'"
+          },
+          {
+            "type": "command",
+            "if": "Bash(head *)",
+            "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"Use the Read tool with a limit parameter instead of head. Read/Grep/Glob do not go through the sandboxed bwrap wrapper that Bash commands do, which currently fails to initialize in this devcontainer. This is a permanent redirect, not a temporary restriction -- do not retry with dangerouslyDisableSandbox.\"}}'"
+          },
+          {
+            "type": "command",
+            "if": "Bash(tail *)",
+            "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"Use the Read tool with offset/limit parameters instead of tail. Read/Grep/Glob do not go through the sandboxed bwrap wrapper that Bash commands do, which currently fails to initialize in this devcontainer. This is a permanent redirect, not a temporary restriction -- do not retry with dangerouslyDisableSandbox.\"}}'"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 .claude/hooks/match_statement_advisor.py"
+          }
+        ]
       }
     ]
   },
   "sandbox": {
     "enabled": true,
+    "autoAllowBashIfSandboxed": true,
     "network": {
       "allowedDomains": [
         "api.anthropic.com",

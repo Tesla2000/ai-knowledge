@@ -14,14 +14,7 @@
       "Bash(tree *)",
       "Bash(file *)",
       "Bash(which *)",
-      "Bash(git status)",
-      "Bash(git status *)",
-      "Bash(git diff)",
-      "Bash(git diff *)",
-      "Bash(git log)",
-      "Bash(git log *)",
-      "Bash(git show *)",
-      "Bash(git branch *)",
+      "Bash(git *)",
       "Edit(./.claude/plans/**)"
     ],
     "deny": [
@@ -32,7 +25,20 @@
       "Edit(./.claude/settings.local.json)",
       "Edit(./.coveragerc)",
       "Read(./.env)",
-      "Bash(cat .env)"
+      "Bash(cat .env)",
+      "Bash(git push)",
+      "Bash(git push *)",
+      "Bash(git commit)",
+      "Bash(git commit *)",
+      "Bash(git reset --hard)",
+      "Bash(git reset --hard *)",
+      "Bash(git clean -f*)",
+      "Bash(git branch -D*)",
+      "Bash(git branch --delete --force*)",
+      "Bash(git checkout -- *)",
+      "Bash(git checkout .)",
+      "Bash(git restore *)",
+      "Bash(git restore .)"
     ]
   },
   "hooks": {

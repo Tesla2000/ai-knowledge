@@ -23,6 +23,7 @@ description: Python style rules: comprehensions, defaultdict, staticmethod vs cl
 - Do not remove unused imports unless they risk circular import.
 - Never use # type: ignore[import-not-found] -- add the package or create stubs.
 - Avoid a generic method whose type parameter isn't reflected in its return type, unless there's a valid reason (e.g. constraining two or more parameters to agree with each other); otherwise use the bound type directly instead of a TypeVar.
+- Never use `@dataclass` -- use a frozen Pydantic BaseModel for validated data, or NamedTuple for a plain fixed-arity immutable record.
 - Use only ASCII punctuation. No em dashes, curly quotes, or ellipsis characters.
 - When mentioning files always use full path from root with line number: full_path:69
 
@@ -75,6 +76,27 @@ def on_event[T: IntEnum](self, event: AnyCombatEvent[T]) -> tuple[Self, tuple[An
 
 # good -- valid exception: T constrains two parameters to agree, return is unrelated
 def apply[SlotT: IntEnum](self, attacker: FightCharacter[SlotT], defender: FightCharacter[SlotT]) -> bool: ...
+```
+
+## No dataclass -- Pydantic or NamedTuple instead
+
+```python
+# bad
+@dataclass
+class Point:
+    x: int
+    y: int
+
+# good -- validated, has methods, can be frozen
+class Point(BaseModel):
+    model_config: ClassVar[ConfigDict] = ConfigDict(frozen=True)
+    x: int
+    y: int
+
+# good -- plain fixed-arity immutable record, no validation needed
+class Point(NamedTuple):
+    x: int
+    y: int
 ```
 
 ## Exhaustive enum matching (replaces runtime dict-completeness guards)

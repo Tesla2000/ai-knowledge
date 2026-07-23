@@ -81,6 +81,11 @@
             "type": "command",
             "if": "Bash(tail *)",
             "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"Use the Read tool with offset/limit parameters instead of tail. Read/Grep/Glob do not go through the sandboxed bwrap wrapper that Bash commands do, which currently fails to initialize in this devcontainer. This is a permanent redirect, not a temporary restriction -- do not retry with dangerouslyDisableSandbox.\"}}'"
+          },
+          {
+            "type": "command",
+            "if": "Bash(echo *)",
+            "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"Do not use echo. For file output/creation use the Write or Edit tool; for communicating with the user, output plain text directly rather than shelling out. This matches the project rule against echo/printf for communication. This is a permanent redirect, not a temporary restriction -- do not retry with dangerouslyDisableSandbox.\"}}'"
           }
         ]
       }
@@ -100,6 +105,10 @@
           {
             "type": "command",
             "command": "python3 .claude/hooks/generic_return_advisor.py"
+          },
+          {
+            "type": "command",
+            "command": "python3 .claude/hooks/dataclass_advisor.py"
           }
         ]
       }

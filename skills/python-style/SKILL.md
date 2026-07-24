@@ -24,6 +24,7 @@ description: Python style rules: comprehensions, defaultdict, staticmethod vs cl
 - Never use # type: ignore[import-not-found] -- add the package or create stubs.
 - Avoid a generic method whose type parameter isn't reflected in its return type, unless there's a valid reason (e.g. constraining two or more parameters to agree with each other); otherwise use the bound type directly instead of a TypeVar.
 - Never use `@dataclass` -- use a frozen Pydantic BaseModel for validated data, or NamedTuple for a plain fixed-arity immutable record.
+- When editing a file that's already committed, judge whether the change bolts a field onto an existing class (possible OCP violation) instead of solving it architecturally; enum members, match/case arms, AnyX union members, and genuine bugfixes are normal and fine.
 - Use only ASCII punctuation. No em dashes, curly quotes, or ellipsis characters.
 - When mentioning files always use full path from root with line number: full_path:69
 
@@ -98,6 +99,34 @@ class Point(NamedTuple):
     x: int
     y: int
 ```
+
+## Open/Closed Principle on already-committed files
+
+A class that's already shipped should stay closed to modification. Extending it to
+cover a new case is usually a sign the new case needs a different shape, not a
+wider one.
+
+```python
+# bad -- Character already shipped; bolting on a nullable field for one new case
+class Character(BaseModel):
+    model_config: ClassVar[ConfigDict] = ConfigDict(frozen=True)
+    name: str
+    hit_points: int
+    wild_shape_form: CreatureStatBlock | None = None  # only druids ever set this
+
+# good -- the new case gets its own type instead of widening the shipped one
+class Character(BaseModel):
+    model_config: ClassVar[ConfigDict] = ConfigDict(frozen=True)
+    name: str
+    hit_points: int
+
+class WildShapedCharacter(Character):
+    wild_shape_form: CreatureStatBlock
+```
+
+Extending an Enum, adding a match/case arm, adding a member to an AnyX union, or a
+genuine bugfix is normal maintenance, not an OCP violation -- this only applies to
+widening an existing class's shape to absorb a new responsibility.
 
 ## Exhaustive enum matching (replaces runtime dict-completeness guards)
 

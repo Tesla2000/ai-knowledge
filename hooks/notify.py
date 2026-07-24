@@ -5,6 +5,7 @@ import re
 import struct
 import subprocess
 import sys
+from pathlib import Path
 
 
 class Notification:
@@ -37,13 +38,36 @@ class Notification:
         return cls._tone(freq, note_dur) + [0] * int(cls.RATE * rest_dur)
 
     @classmethod
+    def _agent_transcript_is_complete(cls, subagents_dir: Path, agent_id: str) -> bool:
+        agent_file = subagents_dir / f"agent-{agent_id}.jsonl"
+        try:
+            with open(agent_file, encoding="utf-8") as handle:
+                lines = handle.readlines()
+        except OSError:
+            return False
+        for raw_line in reversed(lines):
+            stripped = raw_line.strip()
+            if not stripped:
+                continue
+            try:
+                entry = json.loads(stripped)
+            except json.JSONDecodeError:
+                return False
+            message = entry.get("message")
+            if not isinstance(message, dict):
+                return False
+            return entry.get("type") == "assistant" and message.get("stop_reason") is not None
+        return False
+
+    @classmethod
     def _pending_background_task_ids(cls, transcript_path: str) -> set[str]:
         try:
             with open(transcript_path, encoding="utf-8") as handle:
                 lines = handle.readlines()
         except OSError:
             return set()
-        launched: set[str] = set()
+        agent_ids: set[str] = set()
+        background_task_ids: set[str] = set()
         resolved: set[str] = set()
         for raw_line in lines:
             stripped = raw_line.strip()
@@ -55,11 +79,33 @@ class Notification:
             except json.JSONDecodeError:
                 continue
             result = entry.get("toolUseResult")
-            if isinstance(result, dict):
-                task_id = result.get("agentId") or result.get("backgroundTaskId")
-                if isinstance(task_id, str):
-                    launched.add(task_id)
-        return launched - resolved
+            if not isinstance(result, dict):
+                continue
+            agent_id = result.get("agentId")
+            if isinstance(agent_id, str):
+                agent_ids.add(agent_id)
+                continue
+            background_task_id = result.get("backgroundTaskId")
+            if isinstance(background_task_id, str):
+                background_task_ids.add(background_task_id)
+
+        # Agent-tool launches get their own sidechain transcript
+        # (<session>/subagents/agent-<id>.jsonl) that's independent of this
+        # transcript and survives /compact, so completion is checked there
+        # directly instead of relying on notification text surviving in
+        # this (possibly-compacted) transcript. Other background tasks
+        # (e.g. Bash run_in_background) have no equivalent file, so they
+        # still rely on the notification-text match.
+        subagents_dir = (
+            Path(transcript_path).parent / Path(transcript_path).stem / "subagents"
+        )
+        pending_agents = {
+            agent_id
+            for agent_id in agent_ids
+            if not cls._agent_transcript_is_complete(subagents_dir, agent_id)
+        }
+        pending_background_tasks = background_task_ids - resolved
+        return pending_agents | pending_background_tasks
 
     @classmethod
     def should_play(cls) -> bool:

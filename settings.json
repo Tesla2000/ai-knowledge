@@ -76,7 +76,7 @@
           {
             "type": "command",
             "if": "Bash(cat *)",
-            "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"Use the Read tool instead of cat. Read/Grep/Glob do not go through the sandboxed bwrap wrapper that Bash commands do, which currently fails to initialize in this devcontainer. This is a permanent redirect, not a temporary restriction -- do not retry with dangerouslyDisableSandbox.\"}}'"
+            "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"Do not use cat. For reading file contents use the Read tool; for creating or writing files (including here-doc redirection like cat > file <<EOF) use the Write or Edit tool instead. This is a permanent redirect, not a temporary restriction -- do not retry with dangerouslyDisableSandbox.\"}}'"
           },
           {
             "type": "command",

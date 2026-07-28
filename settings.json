@@ -129,6 +129,10 @@
           {
             "type": "command",
             "command": "python3 .claude/hooks/open_closed_advisor.py"
+          },
+          {
+            "type": "command",
+            "command": "python3 .claude/hooks/redundant_name_advisor.py"
           }
         ]
       }

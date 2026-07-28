@@ -34,10 +34,20 @@ class PostToolUseHookPayload(BaseModel):
 class CommittedFileChecker(BaseModel):
     model_config: ClassVar[ConfigDict] = ConfigDict(frozen=True)
 
-    def is_committed(self, repo_root: Path, file_path: str) -> bool:
-        relative_path = Path(file_path)
-        if relative_path.is_absolute():
-            relative_path = relative_path.relative_to(repo_root)
+    def is_committed(self, file_path: str) -> bool:
+        path = Path(file_path)
+        cwd = path.parent if path.is_absolute() else Path.cwd()
+        toplevel = subprocess.run(
+            ["git", "rev-parse", "--show-toplevel"],
+            cwd=cwd,
+            capture_output=True,
+            text=True,
+            timeout=10,
+        )
+        if toplevel.returncode != 0:
+            return False
+        repo_root = Path(toplevel.stdout.strip())
+        relative_path = path.relative_to(repo_root) if path.is_absolute() else path
         result = subprocess.run(
             ["git", "cat-file", "-e", f"HEAD:{relative_path.as_posix()}"],
             cwd=repo_root,
@@ -65,8 +75,7 @@ class OpenClosedAdvisorHook(BaseModel):
         ):
             return
 
-        repo_root = Path(__file__).resolve().parent.parent.parent
-        if not CommittedFileChecker().is_committed(repo_root, file_path):
+        if not CommittedFileChecker().is_committed(file_path):
             return
 
         sys.stdout.write(

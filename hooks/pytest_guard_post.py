@@ -1,59 +1,42 @@
 #!/usr/bin/env python3
+import json
 import re
 import sys
 from pathlib import Path
-from typing import ClassVar
 
 sys.path.insert(0, str(Path(__file__).parent))
 
 from _pytest_guard import (  # noqa: E402
-    CodeStateHasher,
-    PytestCommandMatcher,
-    PytestGuardStateStore,
     PytestRunRecord,
+    hash_working_tree,
+    is_pytest_command,
+    save_record,
 )
-from pydantic import BaseModel, ConfigDict  # noqa: E402
 
 _FAILURE_PATTERN = re.compile(r"=+ .*\d+ failed")
 
 
-class PostToolUseHookPayload(BaseModel):
-    model_config: ClassVar[ConfigDict] = ConfigDict(frozen=True)
-
-    tool_name: str
-    tool_input: dict[str, str]
-    tool_response: dict[str, object]
-
-
-class PytestGuardPostHook(BaseModel):
-    model_config: ClassVar[ConfigDict] = ConfigDict(frozen=True)
-
-    repo_root: Path
-
-    def record_result(self, payload: PostToolUseHookPayload) -> None:
-        command = payload.tool_input.get("command", "")
-        if payload.tool_name != "Bash" or not PytestCommandMatcher.is_pytest_command(
-            command
-        ):
-            return
-        stdout = str(payload.tool_response.get("stdout", ""))
-        stderr = str(payload.tool_response.get("stderr", ""))
-        output = stdout + stderr
-        current_hash = CodeStateHasher(repo_root=self.repo_root).hash_working_tree()
-        state_store = PytestGuardStateStore(
-            state_path=self.repo_root / ".claude" / "hooks" / ".pytest_state.json"
-        )
-        state_store.save(
-            PytestRunRecord(
-                code_hash=current_hash,
-                passed=not _FAILURE_PATTERN.search(output),
-                output=output,
-            )
-        )
+def record_result(payload: dict[str, object], repo_root: Path) -> None:
+    tool_input = payload.get("tool_input", {})
+    command = str(tool_input.get("command", "")) if isinstance(tool_input, dict) else ""
+    if payload.get("tool_name") != "Bash" or not is_pytest_command(command):
+        return
+    tool_response = payload.get("tool_response", {})
+    if not isinstance(tool_response, dict):
+        tool_response = {}
+    stdout = str(tool_response.get("stdout", ""))
+    stderr = str(tool_response.get("stderr", ""))
+    output = stdout + stderr
+    current_hash = hash_working_tree(repo_root)
+    save_record(
+        repo_root / ".claude" / "hooks" / ".pytest_state.json",
+        PytestRunRecord(
+            code_hash=current_hash,
+            passed=not _FAILURE_PATTERN.search(output),
+            output=output,
+        ),
+    )
 
 
 if __name__ == "__main__":
-    payload = PostToolUseHookPayload.model_validate_json(sys.stdin.read())
-    PytestGuardPostHook(repo_root=Path(__file__).parent.parent.parent).record_result(
-        payload
-    )
+    record_result(json.loads(sys.stdin.read()), Path(__file__).parent.parent.parent)

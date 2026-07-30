@@ -2,9 +2,6 @@
 import json
 import re
 import sys
-from typing import ClassVar
-
-from pydantic import BaseModel, ConfigDict
 
 _PATTERN = re.compile(r"#\s*pragma:\s*no\s*cover", re.MULTILINE)
 
@@ -16,42 +13,35 @@ _DENIAL = (
 )
 
 
-class PreToolUseHookPayload(BaseModel):
-    model_config: ClassVar[ConfigDict] = ConfigDict(frozen=True)
+def evaluate(payload: dict[str, object]) -> None:
+    tool_name = payload.get("tool_name")
+    if tool_name not in ("Write", "Edit"):
+        return
+    tool_input = payload.get("tool_input", {})
+    if not isinstance(tool_input, dict):
+        return
+    if not str(tool_input.get("file_path", "")).endswith(".py"):
+        return
+    if tool_name == "Write":
+        content = str(tool_input.get("content", ""))
+    else:
+        content = str(tool_input.get("new_string", ""))
 
-    tool_name: str
-    tool_input: dict[str, str]
-
-
-class PragmaNoCoverGuardHook(BaseModel):
-    model_config: ClassVar[ConfigDict] = ConfigDict(frozen=True)
-
-    def evaluate(self, payload: PreToolUseHookPayload) -> None:
-        if payload.tool_name not in ("Write", "Edit"):
-            return
-        if not payload.tool_input.get("file_path", "").endswith(".py"):
-            return
-        if payload.tool_name == "Write":
-            content = payload.tool_input.get("content", "")
-        else:
-            content = payload.tool_input.get("new_string", "")
-
-        m = _PATTERN.search(content)
-        if m:
-            line = content[: m.start()].count("\n") + 1
-            sys.stdout.write(
-                json.dumps(
-                    {
-                        "hookSpecificOutput": {
-                            "hookEventName": "PreToolUse",
-                            "permissionDecision": "deny",
-                            "permissionDecisionReason": _DENIAL.format(line=line),
-                        }
+    m = _PATTERN.search(content)
+    if m:
+        line = content[: m.start()].count("\n") + 1
+        sys.stdout.write(
+            json.dumps(
+                {
+                    "hookSpecificOutput": {
+                        "hookEventName": "PreToolUse",
+                        "permissionDecision": "deny",
+                        "permissionDecisionReason": _DENIAL.format(line=line),
                     }
-                )
+                }
             )
+        )
 
 
 if __name__ == "__main__":
-    payload = PreToolUseHookPayload.model_validate_json(sys.stdin.read())
-    PragmaNoCoverGuardHook().evaluate(payload)
+    evaluate(json.loads(sys.stdin.read()))

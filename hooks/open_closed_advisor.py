@@ -3,9 +3,6 @@ import json
 import subprocess
 import sys
 from pathlib import Path
-from typing import ClassVar
-
-from pydantic import BaseModel, ConfigDict
 
 _ADVICE = (
     "{file_path} was already committed before this edit. Before moving on, judge "
@@ -20,76 +17,67 @@ _ADVICE = (
 )
 
 
-class PostToolUseHookPayload(BaseModel):
-    model_config: ClassVar[ConfigDict] = ConfigDict(frozen=True)
-
-    tool_name: str
-    tool_input: dict[str, str | bool]
-
-    def string_field(self, key: str) -> str:
-        value = self.tool_input.get(key, "")
-        return value if isinstance(value, str) else ""
+def _string_field(tool_input: dict[str, object], key: str) -> str:
+    value = tool_input.get(key, "")
+    return value if isinstance(value, str) else ""
 
 
-class CommittedFileChecker(BaseModel):
-    model_config: ClassVar[ConfigDict] = ConfigDict(frozen=True)
-
-    def is_committed(self, file_path: str) -> bool:
-        path = Path(file_path)
-        cwd = path.parent if path.is_absolute() else Path.cwd()
-        toplevel = subprocess.run(
-            ["git", "rev-parse", "--show-toplevel"],
-            cwd=cwd,
-            capture_output=True,
-            text=True,
-            timeout=10,
-        )
-        if toplevel.returncode != 0:
-            return False
-        repo_root = Path(toplevel.stdout.strip())
-        relative_path = path.relative_to(repo_root) if path.is_absolute() else path
-        result = subprocess.run(
-            ["git", "cat-file", "-e", f"HEAD:{relative_path.as_posix()}"],
-            cwd=repo_root,
-            capture_output=True,
-            text=True,
-            timeout=10,
-        )
-        return result.returncode == 0
+def _is_committed(file_path: str) -> bool:
+    path = Path(file_path)
+    cwd = path.parent if path.is_absolute() else Path.cwd()
+    toplevel = subprocess.run(
+        ["git", "rev-parse", "--show-toplevel"],
+        cwd=cwd,
+        capture_output=True,
+        text=True,
+        timeout=10,
+    )
+    if toplevel.returncode != 0:
+        return False
+    repo_root = Path(toplevel.stdout.strip())
+    relative_path = path.relative_to(repo_root) if path.is_absolute() else path
+    result = subprocess.run(
+        ["git", "cat-file", "-e", f"HEAD:{relative_path.as_posix()}"],
+        cwd=repo_root,
+        capture_output=True,
+        text=True,
+        timeout=10,
+    )
+    return result.returncode == 0
 
 
-class OpenClosedAdvisorHook(BaseModel):
-    model_config: ClassVar[ConfigDict] = ConfigDict(frozen=True)
+def evaluate(payload: dict[str, object]) -> None:
+    tool_name = payload.get("tool_name")
+    if tool_name not in ("Write", "Edit"):
+        return
+    tool_input = payload.get("tool_input", {})
+    if not isinstance(tool_input, dict):
+        return
+    file_path = _string_field(tool_input, "file_path")
+    if not file_path.endswith(".py"):
+        return
+    path = Path(file_path)
+    if (
+        "tests" in path.parts
+        or path.name.startswith("test_")
+        or path.name.endswith("_test.py")
+    ):
+        return
 
-    def evaluate(self, payload: PostToolUseHookPayload) -> None:
-        if payload.tool_name not in ("Write", "Edit"):
-            return
-        file_path = payload.string_field("file_path")
-        if not file_path.endswith(".py"):
-            return
-        path = Path(file_path)
-        if (
-            "tests" in path.parts
-            or path.name.startswith("test_")
-            or path.name.endswith("_test.py")
-        ):
-            return
+    if not _is_committed(file_path):
+        return
 
-        if not CommittedFileChecker().is_committed(file_path):
-            return
-
-        sys.stdout.write(
-            json.dumps(
-                {
-                    "hookSpecificOutput": {
-                        "hookEventName": "PostToolUse",
-                        "additionalContext": _ADVICE.format(file_path=file_path),
-                    }
+    sys.stdout.write(
+        json.dumps(
+            {
+                "hookSpecificOutput": {
+                    "hookEventName": "PostToolUse",
+                    "additionalContext": _ADVICE.format(file_path=file_path),
                 }
-            )
+            }
         )
+    )
 
 
 if __name__ == "__main__":
-    payload = PostToolUseHookPayload.model_validate_json(sys.stdin.read())
-    OpenClosedAdvisorHook().evaluate(payload)
+    evaluate(json.loads(sys.stdin.read()))

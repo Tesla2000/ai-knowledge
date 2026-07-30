@@ -2,9 +2,6 @@
 import json
 import re
 import sys
-from typing import ClassVar
-
-from pydantic import BaseModel, ConfigDict
 
 _PATTERNS = [
     re.compile(r"\scast\("),
@@ -13,48 +10,38 @@ _PATTERNS = [
 ]
 
 
-class PreToolUseHookPayload(BaseModel):
-    model_config: ClassVar[ConfigDict] = ConfigDict(frozen=True)
+def evaluate(payload: dict[str, object]) -> None:
+    tool_name = payload.get("tool_name")
+    if tool_name == "Write":
+        content = str(payload.get("tool_input", {}).get("content", ""))
+    elif tool_name == "Edit":
+        content = str(payload.get("tool_input", {}).get("new_string", ""))
+    else:
+        return
 
-    tool_name: str
-    tool_input: dict[str, str]
-
-
-class CastGuardHook(BaseModel):
-    model_config: ClassVar[ConfigDict] = ConfigDict(frozen=True)
-
-    def evaluate(self, payload: PreToolUseHookPayload) -> None:
-        if payload.tool_name == "Write":
-            content = payload.tool_input.get("content", "")
-        elif payload.tool_name == "Edit":
-            content = payload.tool_input.get("new_string", "")
-        else:
-            return
-
-        for p in _PATTERNS:
-            m = p.search(content, re.MULTILINE)
-            if m:
-                line = content[: m.start()].count("\n") + 1
-                reason = (
-                    f"cast() on line {line}: remove it -- cast() creates a discrepancy "
-                    "between static type checking and runtime behaviour. If it is "
-                    "genuinely necessary, the user must explicitly approve it and add "
-                    "it themselves."
-                )
-                sys.stdout.write(
-                    json.dumps(
-                        {
-                            "hookSpecificOutput": {
-                                "hookEventName": "PreToolUse",
-                                "permissionDecision": "deny",
-                                "permissionDecisionReason": reason,
-                            }
+    for p in _PATTERNS:
+        m = p.search(content)
+        if m:
+            line = content[: m.start()].count("\n") + 1
+            reason = (
+                f"cast() on line {line}: remove it -- cast() creates a discrepancy "
+                "between static type checking and runtime behaviour. If it is "
+                "genuinely necessary, the user must explicitly approve it and add "
+                "it themselves."
+            )
+            sys.stdout.write(
+                json.dumps(
+                    {
+                        "hookSpecificOutput": {
+                            "hookEventName": "PreToolUse",
+                            "permissionDecision": "deny",
+                            "permissionDecisionReason": reason,
                         }
-                    )
+                    }
                 )
-                return
+            )
+            return
 
 
 if __name__ == "__main__":
-    payload = PreToolUseHookPayload.model_validate_json(sys.stdin.read())
-    CastGuardHook().evaluate(payload)
+    evaluate(json.loads(sys.stdin.read()))

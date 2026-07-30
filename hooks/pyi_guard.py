@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
 import json
 import sys
-from typing import ClassVar
-
-from pydantic import BaseModel, ConfigDict
 
 _DENIAL = (
     "Creating .pyi stub files is forbidden for Claude. "
@@ -18,34 +15,26 @@ _DENIAL = (
 )
 
 
-class PreToolUseHookPayload(BaseModel):
-    model_config: ClassVar[ConfigDict] = ConfigDict(frozen=True)
-
-    tool_name: str
-    tool_input: dict[str, str]
-
-
-class PyiGuardHook(BaseModel):
-    model_config: ClassVar[ConfigDict] = ConfigDict(frozen=True)
-
-    def evaluate(self, payload: PreToolUseHookPayload) -> None:
-        if payload.tool_name != "Write":
-            return
-        if not payload.tool_input.get("file_path", "").endswith(".pyi"):
-            return
-        sys.stdout.write(
-            json.dumps(
-                {
-                    "hookSpecificOutput": {
-                        "hookEventName": "PreToolUse",
-                        "permissionDecision": "deny",
-                        "permissionDecisionReason": _DENIAL,
-                    }
+def evaluate(payload: dict[str, object]) -> None:
+    if payload.get("tool_name") != "Write":
+        return
+    tool_input = payload.get("tool_input", {})
+    if not isinstance(tool_input, dict):
+        return
+    if not str(tool_input.get("file_path", "")).endswith(".pyi"):
+        return
+    sys.stdout.write(
+        json.dumps(
+            {
+                "hookSpecificOutput": {
+                    "hookEventName": "PreToolUse",
+                    "permissionDecision": "deny",
+                    "permissionDecisionReason": _DENIAL,
                 }
-            )
+            }
         )
+    )
 
 
 if __name__ == "__main__":
-    payload = PreToolUseHookPayload.model_validate_json(sys.stdin.read())
-    PyiGuardHook().evaluate(payload)
+    evaluate(json.loads(sys.stdin.read()))

@@ -142,6 +142,10 @@
           {
             "type": "command",
             "command": "python3 .claude/hooks/redundant_name_advisor.py"
+          },
+          {
+            "type": "command",
+            "command": "python3 .claude/hooks/field_validator_advisor.py"
           }
         ]
       }

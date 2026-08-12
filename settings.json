@@ -41,6 +41,7 @@
       "Bash(git restore .)"
     ]
   },
+  "model": "sonnet",
   "hooks": {
     "PreToolUse": [
       {
@@ -151,6 +152,9 @@
       }
     ]
   },
+  "enabledPlugins": {
+    "rust-analyzer-lsp@claude-plugins-official": true
+  },
   "sandbox": {
     "enabled": true,
     "autoAllowBashIfSandboxed": true,
@@ -166,5 +170,7 @@
       ]
     }
   },
+  "effortLevel": "high",
+  "skipDangerousModePermissionPrompt": true,
   "theme": "dark"
 }

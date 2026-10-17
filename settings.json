@@ -14,7 +14,14 @@
       "Bash(tree *)",
       "Bash(file *)",
       "Bash(which *)",
-      "Bash(git *)",
+      "Bash(git status)",
+      "Bash(git status *)",
+      "Bash(git diff)",
+      "Bash(git diff *)",
+      "Bash(git log)",
+      "Bash(git log *)",
+      "Bash(git show *)",
+      "Bash(git branch *)",
       "Edit(./.claude/plans/**)"
     ],
     "deny": [
@@ -25,34 +32,11 @@
       "Edit(./.claude/settings.local.json)",
       "Edit(./.coveragerc)",
       "Read(./.env)",
-      "Bash(cat .env)",
-      "Bash(git push)",
-      "Bash(git push *)",
-      "Bash(git commit)",
-      "Bash(git commit *)",
-      "Bash(git reset --hard)",
-      "Bash(git reset --hard *)",
-      "Bash(git clean -f*)",
-      "Bash(git branch -D*)",
-      "Bash(git branch --delete --force*)",
-      "Bash(git checkout -- *)",
-      "Bash(git checkout .)",
-      "Bash(git restore *)",
-      "Bash(git restore .)"
+      "Bash(cat .env)"
     ]
   },
-  "model": "sonnet",
   "hooks": {
     "PreToolUse": [
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "rtk hook claude"
-          }
-        ]
-      },
       {
         "matcher": "Write",
         "hooks": [
@@ -85,33 +69,18 @@
         "hooks": [
           {
             "type": "command",
-            "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"Do not use cat. For reading file contents use the Read tool; for creating or writing files (including here-doc redirection like cat > file <<EOF) use the Write or Edit tool instead. This is a permanent redirect, not a temporary restriction -- do not retry with dangerouslyDisableSandbox.\"}}'",
-            "if": "Bash(cat *)"
+            "if": "Bash(cat *)",
+            "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"Use the Read tool instead of cat. Read/Grep/Glob do not go through the sandboxed bwrap wrapper that Bash commands do, which currently fails to initialize in this devcontainer. This is a permanent redirect, not a temporary restriction -- do not retry with dangerouslyDisableSandbox.\"}}'"
           },
           {
             "type": "command",
-            "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"Use the Read tool with a limit parameter instead of head. Read/Grep/Glob do not go through the sandboxed bwrap wrapper that Bash commands do, which currently fails to initialize in this devcontainer. This is a permanent redirect, not a temporary restriction -- do not retry with dangerouslyDisableSandbox.\"}}'",
-            "if": "Bash(head *)"
+            "if": "Bash(head *)",
+            "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"Use the Read tool with a limit parameter instead of head. Read/Grep/Glob do not go through the sandboxed bwrap wrapper that Bash commands do, which currently fails to initialize in this devcontainer. This is a permanent redirect, not a temporary restriction -- do not retry with dangerouslyDisableSandbox.\"}}'"
           },
           {
             "type": "command",
-            "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"Use the Read tool with offset/limit parameters instead of tail. Read/Grep/Glob do not go through the sandboxed bwrap wrapper that Bash commands do, which currently fails to initialize in this devcontainer. This is a permanent redirect, not a temporary restriction -- do not retry with dangerouslyDisableSandbox.\"}}'",
-            "if": "Bash(tail *)"
-          },
-          {
-            "type": "command",
-            "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"Do not use echo. For file output/creation use the Write or Edit tool; for communicating with the user, output plain text directly rather than shelling out. This matches the project rule against echo/printf for communication. This is a permanent redirect, not a temporary restriction -- do not retry with dangerouslyDisableSandbox.\"}}'",
-            "if": "Bash(echo *)"
-          },
-          {
-            "type": "command",
-            "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"Do not use cd. Use absolute paths in each command instead, or a tool-specific flag such as git -C <dir> ... Chaining cd in front of an otherwise-allowlisted command (e.g. cd dir && git status) also defeats the Bash(git *) allowlist entry, since the compound command no longer starts with an allowlisted prefix. This is a permanent redirect, not a temporary restriction -- do not retry with dangerouslyDisableSandbox.\"}}'",
-            "if": "Bash(cd *)"
-          },
-          {
-            "type": "command",
-            "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"Do not use sed. Use the Edit tool for in-place text replacement instead. This is a permanent redirect, not a temporary restriction -- do not retry with dangerouslyDisableSandbox.\"}}'",
-            "if": "Bash(sed *)"
+            "if": "Bash(tail *)",
+            "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"Use the Read tool with offset/limit parameters instead of tail. Read/Grep/Glob do not go through the sandboxed bwrap wrapper that Bash commands do, which currently fails to initialize in this devcontainer. This is a permanent redirect, not a temporary restriction -- do not retry with dangerouslyDisableSandbox.\"}}'"
           }
         ]
       }
@@ -131,32 +100,14 @@
           {
             "type": "command",
             "command": "python3 .claude/hooks/generic_return_advisor.py"
-          },
-          {
-            "type": "command",
-            "command": "python3 .claude/hooks/dataclass_advisor.py"
-          },
-          {
-            "type": "command",
-            "command": "python3 .claude/hooks/open_closed_advisor.py"
-          },
-          {
-            "type": "command",
-            "command": "python3 .claude/hooks/redundant_name_advisor.py"
-          },
-          {
-            "type": "command",
-            "command": "python3 .claude/hooks/field_validator_advisor.py"
           }
         ]
       }
     ]
   },
-  "enabledPlugins": {
-    "rust-analyzer-lsp@claude-plugins-official": true
-  },
   "sandbox": {
     "enabled": true,
+    "enableWeakerNestedSandbox": true,
     "autoAllowBashIfSandboxed": true,
     "network": {
       "allowedDomains": [
@@ -170,7 +121,5 @@
       ]
     }
   },
-  "effortLevel": "high",
-  "skipDangerousModePermissionPrompt": true,
   "theme": "dark"
 }

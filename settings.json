@@ -121,5 +121,6 @@
       ]
     }
   },
-  "theme": "dark"
+  "theme": "dark",
+  "autoCompactWindow": 200000
 }

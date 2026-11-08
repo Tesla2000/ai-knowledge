@@ -1,179 +1,241 @@
 {
-  "permissions": {
-    "deny": [
-      "Bash(git commit *)",
-      "Bash(git commit)"
-    ]
+  "enabledPlugins": {
+    "superpowers@claude-plugins-official": true
   },
   "hooks": {
-    "Stop": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/notify.sh\""
-          }
-        ]
-      }
-    ],
     "Notification": [
       {
         "hooks": [
           {
-            "type": "command",
-            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/notify.sh\""
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/notify.sh\"",
+            "type": "command"
           }
         ]
       }
     ],
     "PostToolUse": [
       {
-        "matcher": "EnterPlanMode",
         "hooks": [
           {
-            "type": "command",
-            "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PostToolUse\",\"additionalContext\":\"Interview me to find the goal for this change and the acceptance criteria. The baseline acceptance criteria is pre-commit and github test workflows passing.\"}}'"
+            "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PostToolUse\",\"additionalContext\":\"Interview me to find the goal for this change and the acceptance criteria. The baseline acceptance criteria is pre-commit and github test workflows passing.\"}}'",
+            "type": "command"
           }
-        ]
+        ],
+        "matcher": "EnterPlanMode"
       },
       {
-        "matcher": "ExitPlanMode",
         "hooks": [
           {
-            "type": "command",
-            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/notify.sh\""
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/notify.sh\"",
+            "type": "command"
           }
-        ]
+        ],
+        "matcher": "ExitPlanMode"
+      },
+      {
+        "hooks": [
+          {
+            "command": "/home/moj/.local/bin/lean-ctx hook observe",
+            "type": "command"
+          }
+        ],
+        "matcher": ".*"
+      },
+      {
+        "hooks": [
+          {
+            "command": "/home/moj/.local/bin/lean-ctx hook read-dedup",
+            "type": "command"
+          }
+        ],
+        "matcher": "Read|mcp__lean-ctx__ctx_read|mcp__lean_ctx__ctx_read"
+      }
+    ],
+    "PreCompact": [
+      {
+        "hooks": [
+          {
+            "command": "/home/moj/.local/bin/lean-ctx hook observe",
+            "type": "command"
+          }
+        ],
+        "matcher": ".*"
       }
     ],
     "PreToolUse": [
       {
-        "matcher": "Bash",
         "hooks": [
           {
-            "type": "command",
+            "command": "/home/moj/.local/bin/lean-ctx hook rewrite",
+            "type": "command"
+          },
+          {
             "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"Do not run mypy directly. Run validation through the project pre-commit configuration instead, e.g. pre-commit run mypy (mypy is just an example, the same applies to any hook). All pre-commit hooks must pass, but mypy and any-hook are the most problematic: mypy errors must never be ignored or suppressed, and Any is forbidden.\"}}'",
-            "if": "Bash(mypy *)"
+            "if": "Bash(mypy *)",
+            "type": "command"
           },
           {
-            "type": "command",
             "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"Do not run mypy directly. Run validation through the project pre-commit configuration instead, e.g. pre-commit run mypy (mypy is just an example, the same applies to any hook). All pre-commit hooks must pass, but mypy and any-hook are the most problematic: mypy errors must never be ignored or suppressed, and Any is forbidden.\"}}'",
-            "if": "Bash(mypy)"
+            "if": "Bash(mypy)",
+            "type": "command"
           },
           {
-            "type": "command",
             "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"Do not run mypy directly (including via uv run). Run validation through the project pre-commit configuration instead, e.g. pre-commit run mypy. All pre-commit hooks must pass, but mypy and any-hook are the most problematic: mypy errors must never be ignored or suppressed, and Any is forbidden.\"}}'",
-            "if": "Bash(uv run mypy *)"
+            "if": "Bash(uv run mypy *)",
+            "type": "command"
           },
           {
-            "type": "command",
             "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"Do not run mypy directly (including via uv run). Run validation through the project pre-commit configuration instead, e.g. pre-commit run mypy. All pre-commit hooks must pass, but mypy and any-hook are the most problematic: mypy errors must never be ignored or suppressed, and Any is forbidden.\"}}'",
-            "if": "Bash(uv run mypy)"
+            "if": "Bash(uv run mypy)",
+            "type": "command"
           },
           {
-            "type": "command",
             "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"Do not run mypy directly (including via poetry run). Run validation through the project pre-commit configuration instead, e.g. pre-commit run mypy. All pre-commit hooks must pass, but mypy and any-hook are the most problematic: mypy errors must never be ignored or suppressed, and Any is forbidden.\"}}'",
-            "if": "Bash(poetry run mypy *)"
+            "if": "Bash(poetry run mypy *)",
+            "type": "command"
           },
           {
-            "type": "command",
             "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"Do not run mypy directly (including via poetry run). Run validation through the project pre-commit configuration instead, e.g. pre-commit run mypy. All pre-commit hooks must pass, but mypy and any-hook are the most problematic: mypy errors must never be ignored or suppressed, and Any is forbidden.\"}}'",
-            "if": "Bash(poetry run mypy)"
+            "if": "Bash(poetry run mypy)",
+            "type": "command"
           },
           {
-            "type": "command",
             "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"Do not run mypy directly (including via python -m mypy). Run validation through the project pre-commit configuration instead, e.g. pre-commit run mypy. All pre-commit hooks must pass, but mypy and any-hook are the most problematic: mypy errors must never be ignored or suppressed, and Any is forbidden.\"}}'",
-            "if": "Bash(python -m mypy *)"
+            "if": "Bash(python -m mypy *)",
+            "type": "command"
           },
           {
-            "type": "command",
             "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"Do not run mypy directly (including via python -m mypy). Run validation through the project pre-commit configuration instead, e.g. pre-commit run mypy. All pre-commit hooks must pass, but mypy and any-hook are the most problematic: mypy errors must never be ignored or suppressed, and Any is forbidden.\"}}'",
-            "if": "Bash(python -m mypy)"
+            "if": "Bash(python -m mypy)",
+            "type": "command"
           },
           {
-            "type": "command",
             "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"Do not run mypy directly (including via python3 -m mypy). Run validation through the project pre-commit configuration instead, e.g. pre-commit run mypy. All pre-commit hooks must pass, but mypy and any-hook are the most problematic: mypy errors must never be ignored or suppressed, and Any is forbidden.\"}}'",
-            "if": "Bash(python3 -m mypy *)"
+            "if": "Bash(python3 -m mypy *)",
+            "type": "command"
           },
           {
-            "type": "command",
             "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"Do not run mypy directly (including via python3 -m mypy). Run validation through the project pre-commit configuration instead, e.g. pre-commit run mypy. All pre-commit hooks must pass, but mypy and any-hook are the most problematic: mypy errors must never be ignored or suppressed, and Any is forbidden.\"}}'",
-            "if": "Bash(python3 -m mypy)"
+            "if": "Bash(python3 -m mypy)",
+            "type": "command"
           },
           {
-            "type": "command",
             "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"Do not run ruff directly. Run validation through the project pre-commit configuration instead, e.g. pre-commit run ruff. All pre-commit hooks must pass.\"}}'",
-            "if": "Bash(ruff *)"
+            "if": "Bash(ruff *)",
+            "type": "command"
           },
           {
-            "type": "command",
             "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"Do not run ruff directly. Run validation through the project pre-commit configuration instead, e.g. pre-commit run ruff. All pre-commit hooks must pass.\"}}'",
-            "if": "Bash(ruff)"
+            "if": "Bash(ruff)",
+            "type": "command"
           },
           {
-            "type": "command",
             "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"Do not run ruff directly (including via uv run). Run validation through the project pre-commit configuration instead, e.g. pre-commit run ruff. All pre-commit hooks must pass.\"}}'",
-            "if": "Bash(uv run ruff *)"
+            "if": "Bash(uv run ruff *)",
+            "type": "command"
           },
           {
-            "type": "command",
             "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"Do not run ruff directly (including via uv run). Run validation through the project pre-commit configuration instead, e.g. pre-commit run ruff. All pre-commit hooks must pass.\"}}'",
-            "if": "Bash(uv run ruff)"
+            "if": "Bash(uv run ruff)",
+            "type": "command"
           },
           {
-            "type": "command",
             "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"Do not run ruff directly (including via poetry run). Run validation through the project pre-commit configuration instead, e.g. pre-commit run ruff. All pre-commit hooks must pass.\"}}'",
-            "if": "Bash(poetry run ruff *)"
+            "if": "Bash(poetry run ruff *)",
+            "type": "command"
           },
           {
-            "type": "command",
             "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"Do not run ruff directly (including via poetry run). Run validation through the project pre-commit configuration instead, e.g. pre-commit run ruff. All pre-commit hooks must pass.\"}}'",
-            "if": "Bash(poetry run ruff)"
+            "if": "Bash(poetry run ruff)",
+            "type": "command"
           },
           {
-            "type": "command",
             "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"Do not run ruff directly (including via python -m ruff). Run validation through the project pre-commit configuration instead, e.g. pre-commit run ruff. All pre-commit hooks must pass.\"}}'",
-            "if": "Bash(python -m ruff *)"
+            "if": "Bash(python -m ruff *)",
+            "type": "command"
           },
           {
-            "type": "command",
             "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"Do not run ruff directly (including via python -m ruff). Run validation through the project pre-commit configuration instead, e.g. pre-commit run ruff. All pre-commit hooks must pass.\"}}'",
-            "if": "Bash(python -m ruff)"
+            "if": "Bash(python -m ruff)",
+            "type": "command"
           },
           {
-            "type": "command",
             "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"Do not run ruff directly (including via python3 -m ruff). Run validation through the project pre-commit configuration instead, e.g. pre-commit run ruff. All pre-commit hooks must pass.\"}}'",
-            "if": "Bash(python3 -m ruff *)"
+            "if": "Bash(python3 -m ruff *)",
+            "type": "command"
           },
           {
-            "type": "command",
             "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"Do not run ruff directly (including via python3 -m ruff). Run validation through the project pre-commit configuration instead, e.g. pre-commit run ruff. All pre-commit hooks must pass.\"}}'",
-            "if": "Bash(python3 -m ruff)"
+            "if": "Bash(python3 -m ruff)",
+            "type": "command"
           },
           {
-            "type": "command",
             "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"Commits must be reviewed by the user before finalizing. Stage and prepare the change but do not run git commit without explicit go-ahead.\"}}'",
-            "if": "Bash(git commit *)"
+            "if": "Bash(git commit *)",
+            "type": "command"
           },
           {
-            "type": "command",
             "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"Commits must be reviewed by the user before finalizing. Stage and prepare the change but do not run git commit without explicit go-ahead.\"}}'",
-            "if": "Bash(git commit)"
+            "if": "Bash(git commit)",
+            "type": "command"
+          }
+        ],
+        "matcher": "Bash"
+      },
+      {
+        "hooks": [
+          {
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/notify.sh\"",
+            "type": "command"
+          }
+        ],
+        "matcher": "AskUserQuestion"
+      },
+      {
+        "hooks": [
+          {
+            "command": "/home/moj/.local/bin/lean-ctx hook redirect",
+            "type": "command"
+          }
+        ],
+        "matcher": "Read|Grep|Glob"
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/notify.sh\"",
+            "type": "command"
           }
         ]
       },
       {
-        "matcher": "AskUserQuestion",
         "hooks": [
           {
-            "type": "command",
-            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/notify.sh\""
+            "command": "/home/moj/.local/bin/lean-ctx hook observe",
+            "type": "command"
           }
-        ]
+        ],
+        "matcher": ".*"
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "command": "/home/moj/.local/bin/lean-ctx hook observe",
+            "type": "command"
+          }
+        ],
+        "matcher": ".*"
       }
     ]
   },
-  "enabledPlugins": {
-    "superpowers@claude-plugins-official": true
+  "permissions": {
+    "deny": [
+      "Bash(git commit *)",
+      "Bash(git commit)"
+    ]
   }
 }

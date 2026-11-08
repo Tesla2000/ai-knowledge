@@ -25,6 +25,7 @@ description: Python style rules: comprehensions, defaultdict, staticmethod vs cl
 - Avoid a generic method whose type parameter isn't reflected in its return type, unless there's a valid reason (e.g. constraining two or more parameters to agree with each other); otherwise use the bound type directly instead of a TypeVar.
 - Never use `@dataclass` -- use a frozen Pydantic BaseModel for validated data, or NamedTuple for a plain fixed-arity immutable record.
 - When editing a file that's already committed, judge whether the change bolts a field onto an existing class (possible OCP violation) instead of solving it architecturally; enum members, match/case arms, AnyX union members, and genuine bugfixes are normal and fine.
+- Syntax follows the project's `requires-python`. The examples here assume a recent floor; for lower floors see `.claude/topics/python/python-version.md`.
 - Use only ASCII punctuation. No em dashes, curly quotes, or ellipsis characters.
 - When mentioning files always use full path from root with line number: full_path:69
 

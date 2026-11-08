@@ -10,7 +10,8 @@
 - Never use `from __future__ import annotations`. Type hints must be real types evaluated at
   definition time, not strings deferred to runtime.
 - For self-referential return types inside a class (e.g., a classmethod returning its own
-  class), use `typing.Self` — never a quoted string like `"MyClass"`.
+  class), use `typing.Self` — never a quoted string like `"MyClass"`. If the project's
+  `requires-python` is below 3.11, see [python-version.md](python-version.md).
 - Do not define types between imports.
 
 ## NamedTuple
@@ -38,7 +39,9 @@ for heterogeneous mappings). If you know the set of types, use `Union` or a spec
 
 ## Type aliases (Python 3.12+)
 
-Use the `type` statement (PEP 695) instead of `X: TypeAlias = Y` for all type aliases:
+When the project's `requires-python` allows 3.12+, use the `type` statement (PEP 695)
+instead of `X: TypeAlias = Y` for all type aliases. Below 3.12 keep `TypeAlias`; see
+[python-version.md](python-version.md).
 
 ```python
 # good (Python 3.12+)

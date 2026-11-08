@@ -15,6 +15,10 @@ forced by the type checker to handle them.
 If a raise is needed to guard against bad input, the type signature is too loose.
 Make the invalid state unrepresentable through stricter types.
 
+`raise` is forbidden in any code path that does not call an external service.
+Validation there is the job of type hints (stricter types, `Annotated` validators,
+enums), not runtime guards.
+
 ```python
 # bad -- raise guards a type the signature already allows
 def process(value: int | None) -> str:

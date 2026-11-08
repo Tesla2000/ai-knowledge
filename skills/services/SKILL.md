@@ -27,6 +27,11 @@ services/
 ```
 
 ### types.py
+
+`StrEnum` and `auto()` apply only when the project's `requires-python` is 3.11+. Below
+that use `class ServiceType(str, Enum)` with explicit values; see
+`.claude/topics/python/python-version.md`.
+
 ```python
 from enum import StrEnum, auto
 class ServiceType(StrEnum):

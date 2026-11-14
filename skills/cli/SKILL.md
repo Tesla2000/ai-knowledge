@@ -23,9 +23,18 @@ class Main(BaseSettings):
     def cli_cmd(self) -> None:
         result = self.processor.run(self.input_path)
         result.save(self.output_path)
+```
+
+The entry point is `__main__.py` in the package. It runs the settings class through `CliApp`, which parses the arguments and calls `cli_cmd`. Do not put an `if __name__` block in the settings module.
+
+```python
+# pkg/__main__.py
+from pydantic_settings import CliApp
+
+from pkg._main import Main
 
 if __name__ == "__main__":
-    Main().cli_cmd()
+    CliApp.run(Main)
 ```
 
 cli_cmd only: read fields, call service entry-point, return or print result.

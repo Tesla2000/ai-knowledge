@@ -1,23 +1,21 @@
 ---
 name: exception-handling
-description: Error handling rules: return specific exception types as values, no raise, no bare Exception
+description: Error handling rules: code never raises; exceptions from third-party calls are returned as values and handled at the appropriate level; no bare Exception
 ---
 
 # Exception Handling
 
-Raised exceptions are invisible to the type system -- callers have no static guarantee
-an exception won't surface. The fewer raise expressions, the better.
-Operate on return values. Errors must appear in the return type so the caller is
-forced by the type checker to handle them.
+Code must not raise. Raised exceptions are invisible to the type system -- callers have
+no static guarantee an exception won't surface. Operate on return values. Errors from
+third-party calls must appear in the return type so the type checker forces the caller
+to handle them.
 
 ## Internal logic
 
-If a raise is needed to guard against bad input, the type signature is too loose.
-Make the invalid state unrepresentable through stricter types.
-
-`raise` is forbidden in any code path that does not call an external service.
-Validation there is the job of type hints (stricter types, `Annotated` validators,
-enums), not runtime guards.
+Methods that do not depend on third-party code never return exceptions and never raise.
+The type hints must be enough to determine that the input cannot cause an exception.
+If a bad input is possible, the type signature is too loose: make the invalid state
+unrepresentable through stricter types (`Annotated` validators, enums, narrower types).
 
 ```python
 # bad -- raise guards a type the signature already allows
@@ -33,8 +31,10 @@ def process(value: int) -> str:
 
 ## External APIs and IO
 
-Return the specific exception type as a value, or a typed NamedTuple result.
-Never use bare Exception in the return type.
+Only code that calls third-party code (external services, libraries, IO) catches
+exceptions, and it returns the specific exception type as a value, or a typed NamedTuple
+result. The exception is handled at the level that can act on it, which is not always
+the method that caught it. Never use bare Exception in the return type.
 
 ```python
 # good

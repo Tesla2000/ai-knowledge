@@ -14,7 +14,7 @@ description: Python style rules: comprehensions, defaultdict, staticmethod vs cl
 - Never import private members from outside their module.
 - Import public members from __init__.py, not private submodules.
 - Name collision: use _ suffix on the local name, never alias public as private.
-- Classes and files are private by default; export via __init__.py with import-as and __all__.
+- Only files are private by default; export via __init__.py with import-as and __all__.
 - Always type hint both arguments and return type.
 - Never use plain tuple for fixed-arity returns -- use NamedTuple.
 - Use object only when type cannot be narrowed.

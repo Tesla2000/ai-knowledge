@@ -29,6 +29,8 @@
       "mcp__claude-context__index_codebase",
       "mcp__claude-context__search_code",
       "mcp__claude-context__get_indexing_status",
+      "mcp__codegraph__*",
+      "Bash(codegraph *)",
       "Edit(./.claude/plans/**)"
     ],
     "deny": [
@@ -46,7 +48,7 @@
       "Bash(cat .env)"
     ]
   },
-  "enabledMcpjsonServers": ["claude-context"],
+  "enabledMcpjsonServers": ["claude-context", "codegraph"],
   "sandbox": {
     "enabled": false
   },

@@ -1,6 +1,6 @@
 ---
 name: python-style
-description: Python style rules: comprehensions, defaultdict, staticmethod vs classmethod, no bare functions, imports, typing
+description: python style, comprehension, defaultdict, staticmethod, classmethod, bare function, imports, __init__.py exports, typing, dataclass, NamedTuple, TypeVar, type: ignore
 ---
 
 # Python Style

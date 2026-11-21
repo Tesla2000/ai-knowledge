@@ -1,6 +1,6 @@
 ---
 name: pydantic
-description: Pydantic model rules: frozen, Annotated validators, cross-field defaults, InstanceOf for non-pydantic fields
+description: pydantic, BaseModel, ConfigDict frozen, allow_arbitrary_types, Annotated, AfterValidator, BeforeValidator, field_validator, default_factory, InstanceOf, model_validate
 ---
 
 # Pydantic

@@ -1,6 +1,6 @@
 ---
 name: testing
-description: pytest rules: patch.object format, autospec, coverage expectations, save output before reading
+description: pytest, patch.object, autospec, coverage, pragma no cover, skipif, smoke test, branch coverage, test output, model_construct
 ---
 
 # Testing

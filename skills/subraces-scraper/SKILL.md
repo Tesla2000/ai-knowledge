@@ -1,6 +1,6 @@
 ---
 name: subraces-scraper
-description: TDD workflow for dnd subraces. Build and fix the subrace scraper, scrape the wiki to a cache, map every subrace class to its scraped section, write red unit tests under tests/unit/subraces, then stop and wait for the user's approval before any implementation. Use when subrace scrapes, subrace classes or their tests change.
+description: subrace, subraces, subrace scraper, wiki scrape, scrape cache, subrace classes, darkvision, tests/unit/subraces, red tests, TDD, approval gate
 ---
 
 # Subraces TDD

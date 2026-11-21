@@ -1,6 +1,6 @@
 ---
 name: services
-description: Pydantic service creation pattern: frozen BaseModel, types.py StrEnum, __init__.py exports, PydanticLogger, InstanceOf
+description: service, frozen BaseModel, types.py, StrEnum, __init__.py exports, PydanticLogger, extra forbid, ABC, InstanceOf, multi-implementation
 ---
 
 # Service Creation Pattern

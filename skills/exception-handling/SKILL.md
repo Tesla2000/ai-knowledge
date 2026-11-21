@@ -1,6 +1,6 @@
 ---
 name: exception-handling
-description: Error handling rules: code never raises; exceptions from third-party calls are returned as values and handled at the appropriate level; no bare Exception
+description: exception, raise, error handling, return error value, third-party call, bare Exception, NamedTuple result, isinstance check
 ---
 
 # Exception Handling

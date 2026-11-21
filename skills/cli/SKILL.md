@@ -1,6 +1,6 @@
 ---
 name: cli
-description: CLI app pattern using pydantic-settings BaseSettings with cli_cmd entry point
+description: cli, CLI app, pydantic-settings, BaseSettings, cli_cmd, CliApp, __main__.py, entry point, cli_kebab_case
 ---
 
 # CLI Apps

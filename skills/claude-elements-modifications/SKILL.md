@@ -4,7 +4,7 @@ description: settings, claude, hooks, permission, skill, CLAUDE.md
 ---
 
 ## Settings
-Settings require human approval to change. You can suggest settings change by creating settings-proposition.json file and providing user with a command that replaces old setting with new once. Write settings to settings.json file
+Settings require human approval to change. You can suggest settings change by creating settings-proposition.json file and providing user with a `mv` or`cp` command that replaces old setting with new once. Write settings to settings.json file
 
 ## Branches
 There is a following branch structure in place

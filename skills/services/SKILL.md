@@ -1,13 +1,13 @@
 ---
 name: services
-description: Pydantic service creation pattern: frozen BaseModel, types.py StrEnum, __init__.py exports, PydanticLogger, InstanceOf
+description: Pydantic service creation pattern: frozen BaseModel, types.py StrEnum, __init__.py exports, stdlib Logger, InstanceOf
 ---
 
 # Service Creation Pattern
 
 - Services are frozen BaseModel subclasses. Never instantiate directly -- always a field.
 - Entry-point method must be descriptively named. Never use __call__.
-- Use PydanticLogger (from pydantic_logger): logger: PydanticLogger = PydanticLogger(name=__name__).
+- Use the stdlib logger injected as a field: logger: InstanceOf[Logger] = Field(exclude=True, default_factory=lambda: getLogger(__name__)).
 - Forbid extra parameters: extra="forbid".
 - Create a separate directory with types.py and __init__.py only when 2+ implementations exist.
 - Add ABC only when 3+ implementations exist. Do not use Protocol.
@@ -44,7 +44,9 @@ class ServiceType(StrEnum):
 class _FastService(BaseModel):
     model_config: ClassVar[ConfigDict] = ConfigDict(frozen=True, extra="forbid")
     type: Literal[ServiceType.fast] = ServiceType.fast
-    logger: PydanticLogger = PydanticLogger(name=__name__)
+    logger: InstanceOf[Logger] = Field(
+        exclude=True, default_factory=lambda: getLogger(__name__)
+    )
 
     def process(self, data: str) -> str: ...
 ```

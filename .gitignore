@@ -28,3 +28,7 @@ skills/synced/
 
 # Drafts to copy over the read-only settings files
 proposed-settings*.json
+
+# Settings proposals, applied by hand with mv or cp
+settings-proposition.json
+settings-local-proposition.json

@@ -18,6 +18,7 @@ description: skill, SKILL.md, frontmatter, description, keywords, trigger, creat
 - Do not repeat a rule in both the description and the body. The description names the topic. The body states the rules.
 - Body: short bullets for rules. Use a code block only when the pattern is not clear from a bullet.
   Start with the rule, not with a summary of the skill.
+- No steps, procedures, or checklists in a skill body. A skill states rules. Work order and verification belong to the task, not the skill.
 - Bad description: `Pydantic model rules: frozen, Annotated validators, cross-field defaults, InstanceOf for non-pydantic fields`
 - Good description: `pydantic, BaseModel, ConfigDict frozen, Annotated validator, cross-field default, InstanceOf, non-pydantic field`
 - Bad description: `When writing tests for a new class, function or module that does not exist yet, never edit production code.`

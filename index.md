@@ -1,4 +1,9 @@
-# Knowledge Base Index
+# DEPRECATED: this index is no longer maintained
+
+Shared agentic config moved to `Tesla2000/agentic-*` submodules (see [MIGRATION.md](MIGRATION.md)).
+Rules are loaded automatically from `.claude/rules/`, so this index is not needed.
+
+# Knowledge Base Index (last version, not maintained)
 
 | File | Summary |
 |------|---------|

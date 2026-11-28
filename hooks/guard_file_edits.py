@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 import json
 import os
+import re
 import sys
 from pathlib import Path
 
 
 class FileGuard:
+    ALL: str = "all"
     IMPLEMENTATION: str = "implementation"
     TEST: str = "test"
     TEST_TDD: str = "test-tdd"
@@ -13,6 +15,12 @@ class FileGuard:
     UNIT_DIR: str = "unit"
     CONFIG_DIR: str = ".claude"
     TITLE_TYPE: str = "custom-title"
+    ROLE_PATTERNS: tuple[tuple[str, str], ...] = (
+        (ALL, r"(?<![a-z0-9])all"),
+        (IMPLEMENTATION, r"(?<![a-z0-9])implementation"),
+        (TEST_TDD, r"(?<![a-z0-9])test-tdd"),
+        (TEST, r"(?<![a-z0-9])test(?!-tdd)"),
+    )
 
     @classmethod
     def project_dir(cls) -> Path:
@@ -28,7 +36,7 @@ class FileGuard:
             return None
 
     @classmethod
-    def session_role(cls, session_id: str, transcript_path: str) -> str | None:
+    def session_roles(cls, session_id: str, transcript_path: str) -> frozenset[str]:
         title: object = None
         try:
             with open(transcript_path, encoding="utf-8") as transcript:
@@ -46,17 +54,43 @@ class FileGuard:
                     ):
                         title = entry.get("customTitle")
         except OSError:
-            return None
+            return frozenset()
         if not isinstance(title, str):
-            return None
+            return frozenset()
         name = title.lower()
-        if name.startswith(cls.IMPLEMENTATION):
-            return cls.IMPLEMENTATION
-        if name.startswith(cls.TEST_TDD):
-            return cls.TEST_TDD
-        if name.startswith(cls.TEST):
-            return cls.TEST
-        return None
+        return frozenset(
+            role
+            for role, pattern in cls.ROLE_PATTERNS
+            if re.search(pattern, name) is not None
+        )
+
+    @classmethod
+    def role_allows(cls, role: str, in_tests: bool, in_unit: bool) -> bool:
+        if role == cls.ALL:
+            return True
+        if role == cls.IMPLEMENTATION:
+            return not in_tests
+        if role == cls.TEST_TDD:
+            return in_unit
+        return in_tests
+
+    @classmethod
+    def role_denial(cls, role: str) -> str:
+        if role == cls.IMPLEMENTATION:
+            return (
+                f"the implementation role may not modify {cls.TESTS_DIR}/. "
+                "Tests are the spec. Change production code instead, "
+                "and report any test that looks wrong without editing it."
+            )
+        if role == cls.TEST_TDD:
+            return (
+                f"test-tdd sessions may only modify files under {cls.TESTS_DIR}/{cls.UNIT_DIR}/. "
+                "Leave production code and other test folders alone and report what needs changing."
+            )
+        return (
+            f"the test role may only modify files under {cls.TESTS_DIR}/. "
+            "Leave production code alone and report what needs changing."
+        )
 
     @classmethod
     def blocked_reason(cls, hook_input: object) -> str | None:
@@ -72,29 +106,24 @@ class FileGuard:
         transcript_path = hook_input.get("transcript_path")
         if not isinstance(session_id, str) or not isinstance(transcript_path, str):
             return None
-        role = cls.session_role(session_id, transcript_path)
+        roles = cls.session_roles(session_id, transcript_path)
+        if cls.ALL in roles:
+            return None
         parts = cls.relative_parts(file_path)
         if parts is not None and parts[:1] == (cls.CONFIG_DIR,):
             return None
+        if not roles:
+            return (
+                "Blocked: this session has no role, so it may not modify anything. "
+                f"Put one or more of {cls.ALL}, {cls.IMPLEMENTATION}, "
+                f"{cls.TEST} or {cls.TEST_TDD} anywhere in the session name."
+            )
         in_tests = parts is not None and parts[:1] == (cls.TESTS_DIR,)
         in_unit = parts is not None and parts[:2] == (cls.TESTS_DIR, cls.UNIT_DIR)
-        if role == cls.IMPLEMENTATION and in_tests:
-            return (
-                f"Blocked: the implementation role may not modify {cls.TESTS_DIR}/. "
-                "Tests are the spec. Change production code under dnd/ instead, "
-                "and report any test that looks wrong without editing it."
-            )
-        if role == cls.TEST_TDD and not in_unit:
-            return (
-                f"Blocked: test-tdd sessions may only modify files under {cls.TESTS_DIR}/{cls.UNIT_DIR}/. "
-                "Leave production code and other test folders alone and report what needs changing."
-            )
-        if role == cls.TEST and not in_tests:
-            return (
-                f"Blocked: the test role may only modify files under {cls.TESTS_DIR}/. "
-                "Leave production code alone and report what needs changing."
-            )
-        return None
+        if any(cls.role_allows(role, in_tests, in_unit) for role in roles):
+            return None
+        denials = " Also, ".join(cls.role_denial(role) for role in sorted(roles))
+        return f"Blocked: {denials}"
 
 
 if __name__ == "__main__":
